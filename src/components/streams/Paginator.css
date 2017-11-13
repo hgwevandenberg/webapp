@@ -33,9 +33,8 @@
   transform: translate3d(0, 0, 0);
 }
 
-.Paginator .ElloMark {
-  transform: scale(0);
-  display: none;
+.NotificationsContainer .Paginator.isBusy {
+  height: 10px;
 }
 
 .PaginatorMessage {
