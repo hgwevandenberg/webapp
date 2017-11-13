@@ -79,10 +79,10 @@ class StreamContainer extends Component {
   static defaultProps = {
     action: null,
     className: '',
-    hasShowMoreButton: false,
+    hasShowMoreButton: true,
     isModalComponent: false,
     isPostHeaderHidden: false,
-    paginatorCentered: false,
+    paginatorCentered: true,
     paginatorText: 'Loading',
     paginatorTo: null,
     scrollContainer: null,

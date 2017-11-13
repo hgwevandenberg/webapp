@@ -81,10 +81,7 @@ class ArtistInvitesPage extends Component {
         <StreamContainer
           action={loadArtistInvites(this.props.isPreview)}
           className={`${streamStyle}`}
-          hasShowMoreButton
           paginatorText="Load More"
-          paginatorCentered
-          shouldInfiniteScroll={false}
         />
       </MainView>
     )

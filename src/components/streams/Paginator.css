@@ -35,6 +35,7 @@
 
 .Paginator .ElloMark {
   transform: scale(0);
+  display: none;
 }
 
 .PaginatorMessage {
@@ -46,6 +47,10 @@
 .ArtistInvites .Paginator,
 .ArtistInvitesDetail .Paginator,
 .Editorial .Paginator,
+.Following .Paginator,
+.UserDetails .Paginator,
+.Discover .Paginator,
+.Search .Paginator,
 .BlockedUsers .Paginator,
 .MutedUsers .Paginator {
   position: static;
@@ -64,6 +69,10 @@
 .no-touch .ArtistInvites .Paginator:hover,
 .no-touch .ArtistInvitesDetail .Paginator:hover,
 .no-touch .Editorial .Paginator:hover,
+.no-touch .Following .Paginator:hover,
+.no-touch .UserDetails .Paginator:hover,
+.no-touch .Search .Paginator:hover,
+.no-touch .Discover .Paginator:hover,
 .no-touch .BlockedUsers .Paginator:hover,
 .no-touch .MutedUsers .Paginator:hover {
   background-color: #000;
@@ -80,6 +89,10 @@
 
 .ArtistInvites .Paginator,
 .ArtistInvitesDetail .Paginator,
+.Following .Paginator,
+.UserDetails .Paginator,
+.Search .Paginator,
+.Discover .Paginator,
 .Editorial .Paginator {
   width: calc(100% - 20px);
   max-width: 420px;
@@ -94,6 +107,11 @@
 
 .ArtistInvites .Paginator button,
 .ArtistInvitesDetail .Paginator button,
+.Following .Paginator button,
+.UserDetails .Paginator button,
+.Search .Paginator button,
+.Discover .Paginator button,
+.Search .Paginator button,
 .Editorial .Paginator button {
   width: 100%;
 }
@@ -102,12 +120,13 @@
   width: calc(100% - 40px);
 }
 
-.TabListStreamContainer .Paginator:not(.isBusy) .ElloMark,
-.ArtistInvites .Paginator:not(.isBusy) .ElloMark,
-.ArtistInvitesDetail .Paginator:not(.isBusy) .ElloMark,
-.Editorial .Paginator:not(.isBusy) .ElloMark,
-.BlockedUsers .Paginator:not(.isBusy) .ElloMark,
-.MutedUsers .Paginator:not(.isBusy) .ElloMark {
+.Paginator.isBusy {
+  background: linear-gradient(225deg, #f00, #d200ff, #0063ff, #00ffc1, #0bff66, #16ff00, #f0ff00, #f00);
+  background-size: 1600% 1600%;
+  animation: paginatorLoading 10s ease infinite;
+}
+
+.Paginator.isBusy .PaginatorButton span {
   display: none;
 }
 

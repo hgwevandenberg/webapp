@@ -8,7 +8,11 @@ export const Discover = ({
   inAllCategories,
   }) =>
     (<MainView className="Discover">
-      <StreamContainer className={inAllCategories ? 'inAllCategories' : null} action={streamAction} />
+      <StreamContainer
+        className={inAllCategories ? 'inAllCategories' : null}
+        action={streamAction}
+        paginatorText="Load More"
+      />
     </MainView>)
 
 Discover.propTypes = {

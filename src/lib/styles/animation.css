@@ -58,3 +58,10 @@
   from { transform: translateX(0); }
   to { transform: translateX(calc(100% + 10px)); }
 }
+
+
+@keyframes paginatorLoading {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
