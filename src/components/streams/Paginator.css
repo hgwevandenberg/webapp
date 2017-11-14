@@ -29,8 +29,10 @@
 .Paginator.isBusy {
   height: 40px;
   line-height: 40px;
-  background-color: #fff;
-  transform: translate3d(0, 0, 0);
+  background: linear-gradient(225deg, #f00, #d200ff, #0063ff, #00ffc1, #0bff66, #16ff00, #f0ff00, #f00);
+  background-size: 1600% 1600%;
+  transform: translate3d(0, 0, 0); /* force gpu to help with rendering? */
+  animation: paginatorLoading 10s ease infinite;
 }
 
 .NotificationsContainer .Paginator.isBusy {
@@ -100,12 +102,10 @@
   max-width: 580px;
 }
 
-
 .ArtistInvites .Paginator button,
 .ArtistInvitesDetail .Paginator button,
 .Following .Paginator button,
 .UserDetails .Paginator button,
-.Search .Paginator button,
 .Discover .Paginator button,
 .Search .Paginator button,
 .Editorial .Paginator button {
@@ -114,12 +114,6 @@
 
 .TabListStreamContainer .Paginator button {
   width: calc(100% - 40px);
-}
-
-.Paginator.isBusy {
-  background: linear-gradient(225deg, #f00, #d200ff, #0063ff, #00ffc1, #0bff66, #16ff00, #f0ff00, #f00);
-  background-size: 1600% 1600%;
-  animation: paginatorLoading 10s ease infinite;
 }
 
 .Paginator.isBusy .PaginatorButton span {
