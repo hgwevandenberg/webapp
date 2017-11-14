@@ -42,7 +42,6 @@
 }
 
 /* // Position to the bottom for post detail */
-.TabListStreamContainer .Paginator,
 .ArtistInvites .Paginator,
 .ArtistInvitesDetail .Paginator,
 .Editorial .Paginator,
@@ -53,15 +52,30 @@
 .BlockedUsers .Paginator,
 .MutedUsers .Paginator {
   position: static;
-  width: 100%;
+  width: calc(100% - 20px);
+  max-width: 420px;
   height: 40px;
   margin-top: 30px;
+  margin-bottom: 50px;
   line-height: 40px;
   color: #fff;
   vertical-align: middle;
   background-color: #aaa;
   border-radius: 5px;
   transform: none;
+}
+
+.ArtistInvites .Paginator,
+.ArtistInvitesDetail .Paginaton,
+.Discover .Paginator,
+.Editorial .Paginator,
+.Following .Paginator {
+  margin-top: 0;
+}
+
+.inEditorial .Paginator {
+  display: none;
+  margin-bottom: 0;
 }
 
 .no-touch .TabListStreamContainer .Paginator:hover,
@@ -86,23 +100,6 @@
   max-width: 580px;
 }
 
-.ArtistInvites .Paginator,
-.ArtistInvitesDetail .Paginator,
-.Following .Paginator,
-.UserDetails .Paginator,
-.Search .Paginator,
-.Discover .Paginator,
-.Editorial .Paginator {
-  width: calc(100% - 20px);
-  max-width: 420px;
-  margin-top: 0;
-  margin-bottom: 60px;
-}
-
-.inEditorial .Paginator {
-  display: none;
-  margin-bottom: 0;
-}
 
 .ArtistInvites .Paginator button,
 .ArtistInvitesDetail .Paginator button,
