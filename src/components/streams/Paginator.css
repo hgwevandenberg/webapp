@@ -39,6 +39,10 @@
   height: 10px;
 }
 
+.NotificationsContainer .Paginator span {
+  display: none;
+}
+
 .PaginatorMessage {
   margin-left: 10px;
 }
