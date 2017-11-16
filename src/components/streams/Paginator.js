@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import classNames from 'classnames'
-import { ElloMark } from '../assets/Icons'
 
 function getMessage({ hasShowMoreButton, messageText, totalPages, totalPagesRemaining }) {
   if (totalPagesRemaining === 0) {
@@ -32,7 +31,6 @@ PaginatorLink.propTypes = {
 
 const PaginatorButton = ({ loadNextPage, message }) =>
   (<button className="PaginatorButton" onClick={loadNextPage}>
-    <ElloMark className="isSpinner" />
     <span>{message}</span>
   </button>)
 PaginatorButton.propTypes = {
@@ -42,7 +40,6 @@ PaginatorButton.propTypes = {
 
 const PaginatorLoader = ({ message }) =>
   (<span className="PaginatorLoader">
-    <ElloMark className="isSpinner" />
     <span className="PaginatorMessage">{message}</span>
   </span>)
 PaginatorLoader.propTypes = {

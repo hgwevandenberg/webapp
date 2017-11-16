@@ -84,7 +84,7 @@ export const UserDetail = (props) => {
     <MainView className="UserDetail">
       <div className="UserDetails">
         {!isSystemUser && (hasZeroPosts || hasZeroFollowers) && <ZeroStates {...zeroProps} />}
-        {streamAction && <StreamContainer {...streamProps} />}
+        {streamAction && <StreamContainer {...streamProps} paginatorText="Load More" />}
       </div>
     </MainView>
   )

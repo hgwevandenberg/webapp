@@ -125,6 +125,7 @@ class SearchContainer extends PureComponent {
         <StreamContainer
           action={getStreamAction(terms, type)}
           key={`search_${type}_${terms}`}
+          paginatorText="Load More"
         />
       </MainView>
     )

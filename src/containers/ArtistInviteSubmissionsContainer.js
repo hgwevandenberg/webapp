@@ -122,11 +122,9 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
         {streamAction &&
           <StreamContainer
             action={streamAction}
-            hasShowMoreButton
             key={`submissionStream_${selectedKey}`}
             paginatorText="Load More"
             paginatorCentered
-            shouldInfiniteScroll={false}
           />
         }
       </div>
