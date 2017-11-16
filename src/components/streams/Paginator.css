@@ -35,11 +35,13 @@
   animation: paginatorLoading 10s ease infinite;
 }
 
-.NotificationsContainer .Paginator.isBusy {
+.NotificationsContainer .Paginator.isBusy,
+.Notifications .Paginator.isBusy {
   height: 10px;
 }
 
-.NotificationsContainer .Paginator span {
+.NotificationsContainer .Paginator span,
+.Notifications .Paginator span {
   display: none;
 }
 
