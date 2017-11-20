@@ -50,6 +50,7 @@
 }
 
 /* // Position to the bottom for post detail */
+.TabListStreamContainer .Paginator,
 .ArtistInvites .Paginator,
 .ArtistInvitesDetail .Paginator,
 .Editorial .Paginator,
