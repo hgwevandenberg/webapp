@@ -147,7 +147,19 @@
 
 @media (--break-4) {
   .CategoryTabBarUtility {
+    position: absolute;
+    top: 0;
+    right: 0;
     padding-right: 40px;
   }
-}
 
+  .CategoryTabs {
+    display: flex;
+    width: calc(100% - 90px);
+  }
+
+  .CategoryTab {
+    width: 100%;
+    min-width: 120px;
+  }
+}
