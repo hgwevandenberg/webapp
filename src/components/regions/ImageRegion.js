@@ -89,6 +89,7 @@ class ImageRegion extends Component {
     isNotification: PropTypes.bool,
     shouldUseVideo: PropTypes.bool.isRequired,
     lightBox: PropTypes.bool,
+    handleStaticImageRegionClick: PropTypes.func,
   }
 
   static defaultProps = {
@@ -103,6 +104,7 @@ class ImageRegion extends Component {
     isPostDetail: false,
     isGridMode: false,
     lightBox: false,
+    handleStaticImageRegionClick: null,
   }
 
   static contextTypes = {
@@ -112,15 +114,26 @@ class ImageRegion extends Component {
   componentWillMount() {
     const { shouldUseVideo, lightBox } = this.props
 
+    console.log(`lightbox: ${lightBox}`)
+
     this.state = {
       scale: null,
       currentImageHeight: null,
       currentImageWidth: null,
       measuredImageHeight: null,
       measuredImageWidth: null,
-      lightBox: lightBox,
+      lightBox,
       status: shouldUseVideo ? STATUS.SUCCESS : STATUS.REQUEST,
     }
+  }
+
+  componentDidUpdate() {
+    const { lightBox } = this.props
+
+    if (!lightBox) {
+      return this.resetImageScale()
+    }
+    return this.setImageScale()
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -133,17 +146,8 @@ class ImageRegion extends Component {
   }
 
   onClickStaticImageRegion = (event) => {
-    const { lightBox } = this.state
-    const { isPostBody, isPostDetail, isGridMode } = this.props
-    const buyButtonClick = event.target.classList.contains('ElloBuyButton')
-
-    if (isPostBody && !buyButtonClick && (isPostDetail || !isGridMode)) {
-      if (lightBox) {
-        return this.resetImageScale()
-      }
-      return this.setImageScale()
-    }
-    return null
+    this.props.handleStaticImageRegionClick(event)
+    return false
   }
 
   onLoadSuccess = (img) => {
@@ -435,8 +439,7 @@ class ImageRegion extends Component {
   }
 
   renderRegionAsStatic() {
-    const { lightBox } = this.state
-    const { currentImageHeight, currentImageWidth } = this.state
+    const { currentImageHeight, currentImageWidth, lightBox } = this.state
     const { buyLinkURL } = this.props
     return (
       <div
