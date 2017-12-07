@@ -114,8 +114,6 @@ class ImageRegion extends Component {
   componentWillMount() {
     const { shouldUseVideo, lightBox } = this.props
 
-    console.log(`lightbox: ${lightBox}`)
-
     this.state = {
       scale: null,
       currentImageHeight: null,
@@ -137,7 +135,7 @@ class ImageRegion extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !Immutable.is(nextProps.content, this.props.content) ||
+    return !Immutable.is(nextProps.lightBox, this.props.lightBox) ||
       !Immutable.is(nextProps.asset, this.props.asset) ||
       ['buyLinkURL', 'columnWidth', 'contentWidth', 'isGridMode'].some(prop =>
         nextProps[prop] !== this.props[prop],

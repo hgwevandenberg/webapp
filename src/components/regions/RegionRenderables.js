@@ -25,47 +25,48 @@ export class RegionItems extends Component {
   componentWillMount() {
     this.state = {
       lightBox: false,
-      regionKeyToSet: null,
+      assetIdToSet: null,
     }
   }
 
-  componentDidUpdate() {
-    console.log(`lightBox? ${this.state.lightBox} on ${this.state.regionKeyToSet}`)
-  }
 
   // set light box
-  handleStaticImageRegionClick(event, regionKey) {
-    console.log(`i been clicked, yo ${regionKey}`)
-
-    const { isPostBody, isPostDetail, isGridMode } = this.props
+  handleStaticImageRegionClick(event, assetId) {
+    const { isPostBody, isPostDetail, isGridMode, isComment } = this.props
     const { lightBox } = this.state
     const buyButtonClick = event.target.classList.contains('ElloBuyButton')
 
     if (isPostBody && !buyButtonClick && (isPostDetail || !isGridMode)) {
-      console.log(`set lightBox ${!lightBox}, on ${regionKey}`)
       return this.setState({
         lightBox: !lightBox,
-        regionKeyToSet: regionKey,
+        assetIdToSet: assetId,
       })
     }
-    console.log('do not set lightBox')
+
+    if (isComment) {
+      return this.setState({
+        lightBox: !lightBox,
+        assetIdToSet: assetId,
+      })
+    }
+
     return this.setState({
       lightBox: false,
-      regionKeyToSet: null,
+      assetIdToSet: null,
     })
   }
 
   render() {
     const { columnWidth, commentOffset, content, contentWidth,
       detailPath, innerHeight, isComment, isGridMode, isPostDetail } = this.props
-    const { lightBox, regionKeyToSet } = this.state
+    const { lightBox, assetIdToSet } = this.state
 
     // sometimes the content is null/undefined for some reason
     if (!content) { return null }
+
     const cells = []
-    content.forEach((region) => {
+    content.map((region) => {
       const regionKey = region.get('id', JSON.stringify(region.get('data')))
-      const lightBoxOn = (lightBox && (regionKeyToSet === regionKey))
 
       switch (region.get('kind')) {
         case 'text':
@@ -81,6 +82,9 @@ export class RegionItems extends Component {
           break
         case 'image': {
           const asset = region.get('asset')
+          const assetId = asset.get('id')
+          const lightBoxOn = (lightBox && (assetIdToSet === assetId))
+
           cells.push(
             <ImageRegion
               key={`ImageRegion_${regionKey}`}
@@ -97,7 +101,7 @@ export class RegionItems extends Component {
               isPostDetail={isPostDetail}
               shouldUseVideo={!!(asset && asset.getIn(['attachment', 'video'], Immutable.Map()).size) && !isIOS() && !isPostDetail}
               lightBox={lightBoxOn}
-              handleStaticImageRegionClick={(event) => this.handleStaticImageRegionClick(event, regionKey)}
+              handleStaticImageRegionClick={(event) => this.handleStaticImageRegionClick(event, assetId)}
             />,
           )
           break
