@@ -88,6 +88,7 @@ class ImageRegion extends Component {
     isGridMode: PropTypes.bool.isRequired,
     isNotification: PropTypes.bool,
     shouldUseVideo: PropTypes.bool.isRequired,
+    lightBox: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -101,6 +102,7 @@ class ImageRegion extends Component {
     isPostBody: true,
     isPostDetail: false,
     isGridMode: false,
+    lightBox: false,
   }
 
   static contextTypes = {
@@ -108,7 +110,7 @@ class ImageRegion extends Component {
   }
 
   componentWillMount() {
-    const { shouldUseVideo } = this.props
+    const { shouldUseVideo, lightBox } = this.props
 
     this.state = {
       scale: null,
@@ -116,7 +118,7 @@ class ImageRegion extends Component {
       currentImageWidth: null,
       measuredImageHeight: null,
       measuredImageWidth: null,
-      lightBox: false,
+      lightBox: lightBox,
       status: shouldUseVideo ? STATUS.SUCCESS : STATUS.REQUEST,
     }
   }

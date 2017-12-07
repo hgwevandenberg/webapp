@@ -30,6 +30,7 @@ export function RegionItems(props) {
         const asset = region.get('asset')
         cells.push(
           <ImageRegion
+            key={`ImageRegion_${regionKey}`}
             asset={asset}
             buyLinkURL={region.get('linkUrl')}
             columnWidth={columnWidth}
@@ -41,8 +42,8 @@ export function RegionItems(props) {
             isComment={isComment}
             isGridMode={isGridMode}
             isPostDetail={isPostDetail}
-            key={`ImageRegion_${regionKey}`}
             shouldUseVideo={!!(asset && asset.getIn(['attachment', 'video'], Immutable.Map()).size) && !isIOS() && !isPostDetail}
+            lightBox={false}
           />,
         )
         break
