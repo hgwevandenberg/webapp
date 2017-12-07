@@ -1,10 +1,12 @@
 import Immutable from 'immutable'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import Mousetrap from 'mousetrap'
 import EmbedRegion from '../regions/EmbedRegion'
 import ImageRegion from '../regions/ImageRegion'
 import TextRegion from '../regions/TextRegion'
 import { isIOS } from '../../lib/jello'
+import { SHORTCUT_KEYS } from '../../constants/application_types'
 
 export class RegionItems extends Component {
   static propTypes = {
@@ -14,11 +16,13 @@ export class RegionItems extends Component {
     contentWidth: PropTypes.number.isRequired,
     detailPath: PropTypes.string.isRequired,
     innerHeight: PropTypes.number.isRequired,
-    isComment: PropTypes.bool,
     isGridMode: PropTypes.bool.isRequired,
     isPostDetail: PropTypes.bool.isRequired,
+    isPostBody: PropTypes.bool,
+    isComment: PropTypes.bool,
   }
   static defaultProps = {
+    isPostBody: false,
     isComment: false,
   }
 
@@ -29,25 +33,38 @@ export class RegionItems extends Component {
     }
   }
 
-
   // set light box
+  setLightBox(lightBox, assetId) {
+    if (assetId) {
+      this.bindLightBoxKeys(!lightBox, assetId)
+
+      return this.setState({
+        lightBox: !lightBox,
+        assetIdToSet: assetId,
+      })
+    }
+    return null
+  }
+
+  bindLightBoxKeys(lightBox, assetId) {
+    Mousetrap.unbind(SHORTCUT_KEYS.ESC)
+
+    if (lightBox && assetId) {
+      Mousetrap.bind(SHORTCUT_KEYS.ESC, () => { this.setLightBox(lightBox, assetId) })
+    }
+  }
+
   handleStaticImageRegionClick(event, assetId) {
     const { isPostBody, isPostDetail, isGridMode, isComment } = this.props
     const { lightBox } = this.state
     const buyButtonClick = event.target.classList.contains('ElloBuyButton')
 
     if (isPostBody && !buyButtonClick && (isPostDetail || !isGridMode)) {
-      return this.setState({
-        lightBox: !lightBox,
-        assetIdToSet: assetId,
-      })
+      return this.setLightBox(lightBox, assetId)
     }
 
     if (isComment) {
-      return this.setState({
-        lightBox: !lightBox,
-        assetIdToSet: assetId,
-      })
+      return this.setLightBox(lightBox, assetId)
     }
 
     return this.setState({
@@ -65,7 +82,7 @@ export class RegionItems extends Component {
     if (!content) { return null }
 
     const cells = []
-    content.map((region) => {
+    content.forEach((region) => {
       const regionKey = region.get('id', JSON.stringify(region.get('data')))
 
       switch (region.get('kind')) {
@@ -101,7 +118,9 @@ export class RegionItems extends Component {
               isPostDetail={isPostDetail}
               shouldUseVideo={!!(asset && asset.getIn(['attachment', 'video'], Immutable.Map()).size) && !isIOS() && !isPostDetail}
               lightBox={lightBoxOn}
-              handleStaticImageRegionClick={(event) => this.handleStaticImageRegionClick(event, assetId)}
+              handleStaticImageRegionClick={
+                event => this.handleStaticImageRegionClick(event, assetId)
+              }
             />,
           )
           break

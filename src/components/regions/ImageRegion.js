@@ -4,11 +4,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import classNames from 'classnames'
-import Mousetrap from 'mousetrap'
 import ImageAsset from '../assets/ImageAsset'
 import { ElloBuyButton } from '../editor/ElloBuyButton'
 import { DismissButtonLGReverse } from '../buttons/Buttons'
-import { SHORTCUT_KEYS } from '../../constants/application_types'
 import { css, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
@@ -125,15 +123,6 @@ class ImageRegion extends Component {
     }
   }
 
-  componentDidUpdate() {
-    const { lightBox } = this.props
-
-    if (!lightBox) {
-      return this.resetImageScale()
-    }
-    return this.setImageScale()
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
     return !Immutable.is(nextProps.lightBox, this.props.lightBox) ||
       !Immutable.is(nextProps.asset, this.props.asset) ||
@@ -141,6 +130,15 @@ class ImageRegion extends Component {
         nextProps[prop] !== this.props[prop],
       ) ||
       ['scale', 'currentImageHeight', 'currentImageWidth', 'lightBox', 'status'].some(prop => nextState[prop] !== this.state[prop])
+  }
+
+  componentDidUpdate() {
+    const { lightBox } = this.props
+
+    if (!lightBox) {
+      return this.resetImageScale()
+    }
+    return this.setImageScale()
   }
 
   onClickStaticImageRegion = (event) => {
@@ -265,8 +263,6 @@ class ImageRegion extends Component {
       currentImageWidth: measuredImageWidth,
       lightBox: true,
     })
-
-    Mousetrap.bind(SHORTCUT_KEYS.ESC, () => { this.resetImageScale() })
   }
 
   handleScreenDimensions = (measuredDimensions) => {
@@ -290,8 +286,6 @@ class ImageRegion extends Component {
         currentImageWidth: null,
       })
     }, 100)
-
-    Mousetrap.unbind(SHORTCUT_KEYS.ESC)
   }
 
   isBasicAttachment() {
