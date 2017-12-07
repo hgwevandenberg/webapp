@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import Immutable from 'immutable'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import classNames from 'classnames'
@@ -70,7 +70,7 @@ const lightBoxImageStyle = css(
   ),
 )
 
-class ImageRegion extends Component {
+class ImageRegion extends PureComponent {
 
   static propTypes = {
     asset: PropTypes.object,

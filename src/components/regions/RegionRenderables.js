@@ -1,5 +1,5 @@
 import Immutable from 'immutable'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Mousetrap from 'mousetrap'
 import EmbedRegion from '../regions/EmbedRegion'
@@ -8,7 +8,7 @@ import TextRegion from '../regions/TextRegion'
 import { isIOS } from '../../lib/jello'
 import { SHORTCUT_KEYS } from '../../constants/application_types'
 
-export class RegionItems extends Component {
+export class RegionItems extends PureComponent {
   static propTypes = {
     columnWidth: PropTypes.number.isRequired,
     commentOffset: PropTypes.number.isRequired,
@@ -99,7 +99,7 @@ export class RegionItems extends Component {
           break
         case 'image': {
           const asset = region.get('asset')
-          const assetId = asset.get('id')
+          const assetId = asset ? asset.get('id') : null
           const lightBoxOn = (lightBox && (assetIdToSet === assetId))
 
           cells.push(
