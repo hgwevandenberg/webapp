@@ -7,7 +7,7 @@ const EmbedRegion = ({ detailPath, region }) => {
   const data = {}
   data[`data-${region.getIn(['data', 'service'])}-id`] = region.getIn(['data', 'id'])
   return (
-    <div className="EmbedRegion">
+    <div className={`EmbedRegion ${region.getIn(['data', 'service'])}`}>
       <div className="embetter" {...data}>
         <Link className="EmbedRegionContent" to={detailPath || region.getIn(['data', 'url'])}>
           <img src={region.getIn(['data', 'thumbnailLargeUrl'])} alt={region.getIn(['data', 'service'])} />
