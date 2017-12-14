@@ -106,7 +106,6 @@ const titleWrapperStyle = css(
 const titleStyle = css(
   s.colorA,
   s.fontSize24,
-  s.inlineBlock,
   s.sansBlack,
   s.truncate,
   media(s.minBreak3, s.mb20, parent('.ArtistInvitesDetail', s.mb0, s.fontSize38)),
@@ -115,6 +114,19 @@ const titleStyle = css(
 const blackTitleStyle = css(
   { ...titleStyle },
   s.colorBlack,
+)
+
+const postsAsListblackTitleStyle = css(
+  { ...blackTitleStyle },
+  s.fullWidth,
+  s.maxSiteWidth,
+  css({ margin: '0 auto' }),
+)
+
+const postsAsListStyle = css(
+  s.fullWidth,
+  s.maxSiteWidth,
+  css({ margin: '0 auto' }),
 )
 
 export const artistInviteSubmissionsAsGrid = (submissionIds, columnCount, headerText) => {
@@ -149,10 +161,10 @@ export const artistInviteSubmissionsAsList = (submissionIds, headerText) => {
   return (
     <div className="Posts asList">
       {headerText &&
-        <h2 className={blackTitleStyle}>{headerText}</h2>
+        <h2 className={postsAsListblackTitleStyle}>{headerText}</h2>
       }
       {submissionIds.map(id => (
-        <article className="PostList ArtistInviteSubmission" key={`postsAsList_${id}`}>
+        <article className={`PostList ArtistInviteSubmission ${postsAsListStyle}`} key={`postsAsList_${id}`}>
           <ArtistInviteSubmissionContainer submissionId={id} />
         </article>
       ))}
