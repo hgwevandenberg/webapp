@@ -144,6 +144,22 @@ export const artistInviteSubmissionsAsGrid = (submissionIds, columnCount, header
   )
 }
 
+export const artistInviteSubmissionsAsList = (submissionIds, headerText) => {
+  if (!submissionIds || submissionIds.size === 0) { return null }
+  return (
+    <div className="Posts asList">
+      {headerText &&
+        <h2 className={blackTitleStyle}>{headerText}</h2>
+      }
+      {submissionIds.map(id => (
+        <article className="PostList ArtistInviteSubmission" key={`postsAsList_${id}`}>
+          <ArtistInviteSubmissionContainer submissionId={id} />
+        </article>
+      ))}
+    </div>
+  )
+}
+
 // POSTS
 export const postsAsGrid = (postIds, columnCount, isPostHeaderHidden) => {
   const columns = []
