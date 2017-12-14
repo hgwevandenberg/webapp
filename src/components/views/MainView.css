@@ -13,9 +13,13 @@
 }
 
 .PostDetail.MainView {
-  height: calc(100vh - 80px);
   padding-bottom: 30px;
-  overflow: hidden;
+
+  @media (--break-3) {
+    height: calc(100vh - 80px);
+    padding-bottom: 30px;
+    overflow: hidden;
+  }
 }
 
 .RelatedPostsTitle {
