@@ -467,7 +467,12 @@ export const ArtistInviteDetail = ({
         </div>
       </div>
     </article>
-    <ArtistInviteSubmissionsContainer links={links} slug={slug} status={status} isLoggedIn={isLoggedIn} />
+    <ArtistInviteSubmissionsContainer
+      links={links}
+      slug={slug}
+      status={status}
+      isLoggedIn={isLoggedIn}
+    />
   </div>
 )
 ArtistInviteDetail.propTypes = {
