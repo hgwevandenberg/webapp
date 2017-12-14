@@ -59,10 +59,10 @@ const postDetailStyle = css(
 
 const streamStyle = css(
   s.px10,
-  s.overflowScrollWebY,
-  { height: 'calc(100vh - 80px)', paddingBottom: 80 },
   media(
-    s.minBreak2,
+    s.minBreak3,
+    s.overflowScrollWebY,
+    { height: 'calc(100vh - 80px)', paddingBottom: 80 },
     s.px20,
   ),
   media(
