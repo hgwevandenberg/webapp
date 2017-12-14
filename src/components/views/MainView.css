@@ -14,8 +14,10 @@
 
 .PostDetail.MainView {
   padding-bottom: 30px;
+}
 
-  @media (--break-3) {
+@media (--break-3) {
+  .PostDetail.MainView {
     height: calc(100vh - 80px);
     padding-bottom: 30px;
     overflow: hidden;
