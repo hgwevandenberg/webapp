@@ -400,7 +400,7 @@ export const NavbarProfile = ({
           <Link className={profileLinkStyle} to="/invitations">Invite</Link>
           <Link className={profileLinkStyle} to="/settings">Settings</Link>
           {isBrand &&
-            <a className={profileLinkStyle} href="/manage">Artist Invite Performance</a>
+            <a className={profileLinkStyle} href="/manage">Analytics</a>
           }
           <hr className={dividerStyle} />
           <a
