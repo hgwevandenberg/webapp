@@ -160,6 +160,7 @@ export const NavbarLoggedIn = ({
   categoryTabs,
   deviceSize,
   hasLoadMoreButton,
+  isBrand,
   isGridMode,
   isLayoutToolHidden,
   isNotificationsActive,
@@ -238,6 +239,7 @@ export const NavbarLoggedIn = ({
       <NavbarProfile
         artistInvitesInProfileMenu={artistInvitesInProfileMenu}
         avatar={avatar}
+        isBrand={isBrand}
         isProfileMenuActive={isProfileMenuActive}
         onClickAvatar={onClickAvatar}
         onLogOut={onLogOut}
@@ -266,6 +268,7 @@ NavbarLoggedIn.propTypes = {
   categoryTabs: PropTypes.array,
   deviceSize: PropTypes.string.isRequired,
   hasLoadMoreButton: PropTypes.bool.isRequired,
+  isBrand: PropTypes.bool.isRequired,
   isGridMode: PropTypes.bool,
   isLayoutToolHidden: PropTypes.bool.isRequired,
   isNotificationsActive: PropTypes.bool.isRequired,
