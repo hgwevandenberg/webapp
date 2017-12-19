@@ -73,6 +73,7 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
     streamAction: PropTypes.object,
     selectedKey: PropTypes.string.isRequired,
     pathname: PropTypes.string.isRequired,
+    isLoggedIn: PropTypes.bool.isRequired,
   }
 
   static defaultProps = {
@@ -175,11 +176,11 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
   }
 
   render() {
-    const { links } = this.props
+    const { links, isLoggedIn } = this.props
     if (links.size === 0) { return null }
     return (
       <section className={`Submissions ${containerStyle}`}>
-        {links.size >= 3 && this.renderAdmin()}
+        {links.size >= 3 && isLoggedIn && this.renderAdmin()}
         {links.size > 0 && links.size < 3 && this.renderNormal()}
       </section>
     )

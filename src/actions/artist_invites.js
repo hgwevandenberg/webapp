@@ -1,7 +1,7 @@
 import { LOAD_STREAM } from '../constants/action_types'
 import { ARTIST_INVITES, ARTIST_INVITE_SUBMISSIONS } from '../constants/mapping_types'
 import { artistInvites as artistInvitesApi, artistInviteDetail } from '../networking/api'
-import { artistInvites as artistInvitesRenderable, artistInviteSubmissionsAsGrid } from '../components/streams/StreamRenderables'
+import { artistInvites as artistInvitesRenderable, artistInviteSubmissionsAsGrid, artistInviteSubmissionsAsList } from '../components/streams/StreamRenderables'
 
 export const loadArtistInvites = isPreview => (
   {
@@ -34,7 +34,7 @@ export const loadArtistInviteSubmissions = (path, key, slug, headerText) => (
     meta: {
       mappingType: ARTIST_INVITE_SUBMISSIONS,
       renderStream: {
-        asList: (ids, colCount) => artistInviteSubmissionsAsGrid(ids, colCount, headerText),
+        asList: ids => artistInviteSubmissionsAsList(ids, headerText),
         asGrid: (ids, colCount) => artistInviteSubmissionsAsGrid(ids, colCount, headerText),
       },
       resultKey: `/artist-invites/${slug}/${key}`,

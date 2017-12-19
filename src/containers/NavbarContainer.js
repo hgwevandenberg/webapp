@@ -27,7 +27,7 @@ import {
 import { selectAnnouncementHasBeenViewed } from '../selectors/notifications'
 import { selectPage } from '../selectors/pages'
 import { selectParamsType } from '../selectors/params'
-import { selectAvatar, selectUsername } from '../selectors/profile'
+import { selectAvatar, selectUsername, selectIsBrand } from '../selectors/profile'
 import { selectPathname, selectViewNameFromRoute } from '../selectors/routing'
 
 function mapStateToProps(state, props) {
@@ -59,6 +59,7 @@ function mapStateToProps(state, props) {
       isProfileMenuActive: selectIsProfileMenuActive(state),
       pathname,
       username: selectUsername(state),
+      isBrand: selectIsBrand(state),
       viewName,
     }
   }
