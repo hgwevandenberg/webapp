@@ -27,7 +27,7 @@ import { closeOmnibar } from '../../actions/omnibar'
 import * as ACTION_TYPES from '../../constants/action_types'
 import { addDragObject, removeDragObject } from '../../interactions/Drag'
 import { scrollToLastTextBlock } from '../../lib/jello'
-import { selectIsMobileGridStream, selectIsNavbarHidden } from '../../selectors/gui'
+import { selectIsMobileGridStream, selectIsNavbarHidden, selectIsGridMode } from '../../selectors/gui'
 import { selectPropsPostId } from '../../selectors/post'
 import { selectIsPostDetail, selectPathname } from '../../selectors/routing'
 import { css, hover, media, parent, select } from '../../styles/jss'
@@ -100,6 +100,7 @@ function mapStateToProps(state, props) {
     isPosting: editor.get('isPosting'),
     isMobileGridStream: selectIsMobileGridStream(state),
     isNavbarHidden: selectIsNavbarHidden(state),
+    isGridMode: selectIsGridMode(state),
     order,
     orderLength: order ? order.size : 0,
     pathname: selectPathname(state),
@@ -133,6 +134,7 @@ class BlockCollection extends PureComponent {
     isPostEditing: PropTypes.bool.isRequired,
     isPostReposting: PropTypes.bool.isRequired,
     isPosting: PropTypes.bool,
+    isGridMode: PropTypes.bool,
     order: PropTypes.object.isRequired,
     orderLength: PropTypes.number.isRequired,
     pathname: PropTypes.string.isRequired,
@@ -160,6 +162,7 @@ class BlockCollection extends PureComponent {
     isNavbarHidden: false,
     isOwnPost: false,
     isPosting: false,
+    isGridMode: false,
     postId: null,
     repostContent: Immutable.List(),
     submitText: 'Post',
@@ -341,7 +344,7 @@ class BlockCollection extends PureComponent {
   }
 
   getBlockElement(block) {
-    const { editorId } = this.props
+    const { editorId, isGridMode } = this.props
     const blockProps = {
       data: block.get('data'),
       editorId,
@@ -350,6 +353,7 @@ class BlockCollection extends PureComponent {
       linkURL: block.get('linkUrl'),
       onRemoveBlock: this.remove,
       uid: block.get('uid'),
+      isGridMode,
     }
     switch (block.get('kind')) {
       case 'block':
