@@ -1,5 +1,6 @@
 import Immutable from 'immutable'
-import React from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import ArtistInviteContainer from '../../containers/ArtistInviteContainer'
 import CategoryContainer from '../../containers/CategoryContainer'
 import CommentContainer from '../../containers/CommentContainer'
@@ -7,6 +8,7 @@ import NotificationContainer from '../../containers/NotificationContainer'
 import ArtistInviteSubmissionContainer from '../../containers/ArtistInviteSubmissionContainer'
 import PostContainer from '../../containers/PostContainer'
 import UserContainer from '../../containers/UserContainer'
+import withLightBoxContainer from '../../containers/LightBoxContainer'
 import { SlickCarousel } from '../../components/carousels/CarouselRenderables'
 import EditorialLayout from '../../components/editorials/EditorialLayout'
 import Preference from '../../components/forms/Preference'
@@ -42,15 +44,39 @@ export const categoriesAsGrid = categoryIds =>
   </div>)
 
 // COMMENTS
+class CommentsAsListSimple extends Component {
+  static propTypes = {
+    commentIds: PropTypes.object,
+  }
+
+  static defaultProps = {
+    commentIds: null,
+  }
+
+  render() {
+    const { commentIds } = this.props
+
+    return (
+      <div className="Comments">
+        {commentIds.map(id =>
+          (<CommentContainer
+            commentId={id}
+            key={`commentContainer_${id}`}
+          />),
+        )}
+      </div>
+    )
+  }
+}
+
+// wrap comments in LightBox factory
+const CommentsAsList = withLightBoxContainer(CommentsAsListSimple)
+
 export const commentsAsList = commentIds =>
-  (<div className="Comments">
-    {commentIds.map(id =>
-      (<CommentContainer
-        commentId={id}
-        key={`commentContainer_${id}`}
-      />),
-    )}
-  </div>)
+  (<CommentsAsList
+    commentIds={commentIds}
+  />)
+
 
 // EDITORIAL: chunk layouts into pages of 24 editorials
 export const editorials = editorialIds => (
