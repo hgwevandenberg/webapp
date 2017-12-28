@@ -2,6 +2,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { scrollToPosition } from '../../lib/jello'
 import { LockIcon, RepostIcon } from '../assets/Icons'
 import { css, media } from '../../styles/jss'
 import * as s from '../../styles/jso'
@@ -41,12 +42,44 @@ const toolsStyle = css(
 class RepostBlock extends Component {
 
   static propTypes = {
+    editorId: PropTypes.string.isRequired,
     currentUser: PropTypes.object.isRequired,
     data: PropTypes.object.isRequired,
+    isGridMode: PropTypes.bool.isRequired,
+  }
+
+  componentDidMount() {
+    const { isGridMode } = this.props
+
+    // timeout gives images a chance to load/position themselves
+    setTimeout(() => {
+      this.scrollToRepostActions()
+    }, (isGridMode ? 1000 : 500))
   }
 
   shouldComponentUpdate() {
     return false
+  }
+
+  scrollToRepostActions() {
+    const { editorId } = this.props
+
+    // scroll the repost block panel to make actions visible
+    const postList = document.getElementsByClassName('PostList')
+    const postSideBar = document.getElementsByClassName('PostSideBar')
+    const repostActions = document.getElementById(editorId)
+    let actionTopOffset = null
+    if (postSideBar.length) { // post detail view (scrolling inner-div needs different treatement)
+      actionTopOffset = repostActions.offsetTop
+    } else {
+      actionTopOffset = repostActions.getBoundingClientRect().top + window.scrollY
+    }
+    const windowHeight = window.innerHeight
+    const scrollToOffset = (actionTopOffset - (windowHeight / 4))
+    if (postList.length && postSideBar.length) { // post detail view
+      return scrollToPosition(0, scrollToOffset, { el: postList[0] })
+    }
+    return scrollToPosition(0, scrollToOffset) // stream container view
   }
 
   render() {
@@ -67,4 +100,3 @@ class RepostBlock extends Component {
 }
 
 export default connect(mapStateToProps)(RepostBlock)
-

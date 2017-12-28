@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import {
   ApprovedAristInviteSubmissionNotification,
+  ApprovedArtistInviteSubmissionFromFollowingNotification,
   CommentNotification,
   CommentMentionNotification,
   CommentOnOriginalPostNotification,
@@ -27,6 +28,7 @@ import { selectJson } from '../selectors/store'
 
 const NOTIFICATION_KIND = {
   APPROVED_ARTIST_INVITE_SUBMISSION: 'approved_artist_invite_submission',
+  APPROVED_ARTIST_INVITE_SUBMISSION_FROM_FOLLOWING: 'approved_artist_invite_submission_notification_for_followers',
   COMMENT: 'comment_notification',
   COMMENT_MENTION: 'comment_mention_notification',
   COMMENT_ORIGINAL: 'comment_on_original_post_notification',
@@ -51,7 +53,7 @@ const SUBJECT_TYPE = {
   POST: 'post',
   USER: 'user',
   WATCH: 'watch',
-  ARTIST_INVITE_SUBMISSION: 'artist_invite_submission',
+  ARTIST_INVITE_SUBMISSION: 'artistinvitesubmission',
 }
 
 function mapStateToProps(state, ownProps) {
@@ -107,6 +109,12 @@ function mapStateToProps(state, ownProps) {
       repostedSourceAuthor = getLinkObject(repostedSource, 'author', json) ||
         json.getIn([MAPPING_TYPES.USERS, repostedSource.get('authorId')])
     }
+  }
+  // subject is an artist invite submission
+  if (subjectType === SUBJECT_TYPE.ARTIST_INVITE_SUBMISSION) {
+    postActionPost = getLinkObject(subject, 'post', json)
+    postActionAuthor = getLinkObject(postActionPost, 'author', json) ||
+      json.getIn([MAPPING_TYPES.USERS, postActionPost.get('authorId')])
   }
   // subject can be a user as well but we don't
   // need to add any additional properties
@@ -184,6 +192,15 @@ class NotificationParser extends Component {
         return (
           <ApprovedAristInviteSubmissionNotification
             subject={subject}
+            createdAt={createdAt}
+          />
+        )
+      case NOTIFICATION_KIND.APPROVED_ARTIST_INVITE_SUBMISSION_FROM_FOLLOWING:
+        return (
+          <ApprovedArtistInviteSubmissionFromFollowingNotification
+            subject={subject}
+            postActionPost={postActionPost}
+            postActionAuthor={postActionAuthor}
             createdAt={createdAt}
           />
         )

@@ -172,10 +172,10 @@ class PostActionBar extends Component {
   }
 
   render() {
-    const { disableSubmitAction, hasMedia, replyAllAction, submitText } = this.props
+    const { disableSubmitAction, hasMedia, replyAllAction, submitText, editorId } = this.props
     const isBuyLinked = this.props.buyLink && this.props.buyLink.length
     return (
-      <div className={wrapperStyle}>
+      <div className={wrapperStyle} id={editorId}>
         <div className={leftStyle}>
           <button
             className={`PostActionButton forUpload ${buttonStyle}`}
