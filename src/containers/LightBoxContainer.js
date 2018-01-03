@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import CommentContainer from '../containers/CommentContainer'
+import { DismissButtonLGReverse } from '../components/buttons/Buttons'
+import CommentContainer from './CommentContainer'
 import { css, media, parent, select } from '../styles/jss'
 import * as s from '../styles/jso'
 
@@ -23,8 +24,19 @@ const lightBoxImageStyle = css(
       s.containedAlignMiddle,
       s.center,
       select(
+        '> .Comment',
+        { padding: 0 },
+        select(
+          '> .CommentBody',
+          { padding: 0,
+            margin: 0,
+            border: 'none',
+          },
+        ),
+      ),
+      select(
         '> .ImageAttachment',
-        { width: '200px', backgroundColor: 'red' }
+        { width: '200px', backgroundColor: 'red' },
       ),
     ),
   ),
@@ -69,6 +81,7 @@ export default function (WrappedComponent) {
         <div className="with-lightbox">
           <div className={lightBoxImageStyle}>
             <div className="LightBoxMask">
+              <DismissButtonLGReverse />
               <div className="LightBox">
                 <p className="ImageAttachment">lol</p>
                 {commentIds.map(id =>

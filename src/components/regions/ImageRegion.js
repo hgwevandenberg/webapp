@@ -17,55 +17,20 @@ const STATUS = {
   FAILURE: 'isFailing',
 }
 
-const lightBoxInactiveImageStyle = css(
+const imageStyle = css(
   s.inline,
   s.relative,
   s.center,
   s.bgcF2,
   select(
-    '> .LightBoxMask',
-    s.bgcTransparent,
+    '> .ImgHolder',
+    s.relative,
+    s.inlineBlock,
     select(
-      '> .LightBox',
-      s.relative,
-      s.alignTop,
-      s.inline,
-      select(
-        '> .ImgHolder',
-        s.relative,
-        s.inlineBlock,
-        select(
-          '> .ImageAttachment',
-          {
-            transform: 'scale(1.0)',
-          },
-        ),
-      ),
-    ),
-  ),
-)
-
-const lightBoxImageStyle = css(
-  s.block,
-  s.relative,
-  s.bgcF2,
-  { margin: '0 auto' },
-  select(
-    '> .LightBoxMask',
-    s.fullscreen,
-    s.fullWidth,
-    s.fullHeight,
-    s.bgcModal,
-    s.zModal,
-    { transition: `background-color 0.4s ${s.ease}` },
-    select(
-      '> .LightBox',
-      s.relative,
-      s.containedAlignMiddle,
-      s.center,
-      select(
-        '> .ImageAttachment',
-      ),
+      '> .ImageAttachment',
+      {
+        transform: 'scale(1.0)',
+      },
     ),
   ),
 )
@@ -435,26 +400,17 @@ class ImageRegion extends PureComponent {
     const { buyLinkURL } = this.props
     return (
       <div
-        className={`${lightBox ? lightBoxImageStyle : lightBoxInactiveImageStyle}`}
+        className={imageStyle}
         onClick={this.onClickStaticImageRegion}
         style={{ height: currentImageHeight, width: currentImageWidth }}
       >
-        <div className="LightBoxMask">
+        <div className="ImgHolder">
+          {this.renderAttachment()}
           {
-            lightBox ?
-              <DismissButtonLGReverse /> :
+            buyLinkURL && buyLinkURL.length ?
+              <ElloBuyButton to={buyLinkURL} /> :
               null
           }
-          <div className="LightBox">
-            <div className="ImgHolder">
-              {this.renderAttachment()}
-              {
-                buyLinkURL && buyLinkURL.length && !lightBox ?
-                  <ElloBuyButton to={buyLinkURL} /> :
-                  null
-              }
-            </div>
-          </div>
         </div>
       </div>
     )
