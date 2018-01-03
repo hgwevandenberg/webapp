@@ -20,10 +20,12 @@ export class RegionItems extends PureComponent {
     isPostDetail: PropTypes.bool.isRequired,
     isPostBody: PropTypes.bool,
     isComment: PropTypes.bool,
+    isLightBox: PropTypes.bool,
   }
   static defaultProps = {
     isPostBody: false,
     isComment: false,
+    isLightBox: false,
   }
 
   componentWillMount() {

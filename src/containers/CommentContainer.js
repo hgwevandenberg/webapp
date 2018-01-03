@@ -89,11 +89,13 @@ class CommentContainer extends Component {
     isNavbarHidden: PropTypes.bool.isRequired,
     isOwnComment: PropTypes.bool.isRequired,
     isPostDetail: PropTypes.bool.isRequired,
+    isLightBox: PropTypes.bool,
     post: PropTypes.object.isRequired,
   }
 
   static defaultProps = {
     commentBody: null,
+    isLightBox: false,
   }
 
   static contextTypes = {
@@ -214,6 +216,7 @@ class CommentContainer extends Component {
       isLoggedIn,
       isOwnComment,
       isPostDetail,
+      isLightBox,
     } = this.props
     if (!comment || !comment.get('id') || !author || !author.get('id')) { return null }
     if (isEditing && commentBody && ElloAndroidInterface.supportsNativeEditor()) {
@@ -221,7 +224,7 @@ class CommentContainer extends Component {
     }
     return (
       <div className="Comment">
-        {!isEditing ?
+        {!isEditing && !isLightBox ?
           <CommentHeader author={author} commentId={commentId} /> :
           null
         }
@@ -237,9 +240,10 @@ class CommentContainer extends Component {
             innerHeight={innerHeight}
             isGridMode={isGridMode}
             isPostDetail={isPostDetail}
+            isLightBox={isLightBox}
           />
         }
-        {!isEditing &&
+        {!isEditing && !isLightBox &&
           <CommentTools
             canDeleteComment={canDeleteComment}
             commentCreatedAt={commentCreatedAt}
