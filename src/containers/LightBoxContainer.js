@@ -117,6 +117,13 @@ export default function (WrappedComponent) {
       })
     }
 
+    handleMaskClick(e) {
+      if (e.target.nodeName !== 'IMG' && e.target.nodeName !== 'BUTTON') {
+        return this.closeLightBox()
+      }
+      return null
+    }
+
     render() {
       const { commentIds } = this.props
 
@@ -124,7 +131,7 @@ export default function (WrappedComponent) {
         <div className="with-lightbox">
           {this.state.open &&
             <div className={lightBoxImageStyle}>
-              <div className="LightBoxMask">
+              <div className="LightBoxMask" onClick={(e) => this.handleMaskClick(e)}>
                 <DismissButtonLGReverse
                   onClick={this.closeLightBox}
                 />
