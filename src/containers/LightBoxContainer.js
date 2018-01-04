@@ -4,12 +4,13 @@ import { DismissButtonLGReverse } from '../components/buttons/Buttons'
 import CommentContainer from './CommentContainer'
 import { css, media, parent, select } from '../styles/jss'
 import * as s from '../styles/jso'
+import { SHORTCUT_KEYS } from '../constants/application_types'
 
 const lightBoxImageStyle = css(
   s.block,
   s.relative,
   s.bgcF2,
-  { display: 'none', margin: '0 auto' },
+  { margin: '0 auto' },
   select(
     '> .LightBoxMask',
     s.fullscreen,
@@ -59,6 +60,9 @@ export default function (WrappedComponent) {
       this.state = {
         open: false,
       }
+
+      this.handleToggle = this.handleToggle.bind(this)
+      this.closeLightBox = this.closeLightBox.bind(this)
     }
 
     componentDidMount() {
@@ -68,10 +72,49 @@ export default function (WrappedComponent) {
 
     componentWillUnmount() {
       console.log('$$$ goodbye')
+
+      const releaseKeys = true
+      this.bindKeys(releaseKeys)
     }
 
     componentDidUpdate() {
       console.log(this.props.commentIds)
+    }
+
+    bindKeys(unbind) {
+      Mousetrap.unbind(SHORTCUT_KEYS.ESC)
+      // Mousetrap.unbind(SHORTCUT_KEYS.PREV)
+      // Mousetrap.unbind(SHORTCUT_KEYS.NEXT)
+
+      if (!unbind) {
+        Mousetrap.bind(SHORTCUT_KEYS.ESC, () => { this.closeLightBox() })
+
+        // if (lightBox && assetId) {
+        //   Mousetrap.bind(SHORTCUT_KEYS.ESC, () => { this.setLightBox(lightBox, assetId) })
+        //   Mousetrap.bind(SHORTCUT_KEYS.PREV, () => { this.advanceLightBox('prev') })
+        //   Mousetrap.bind(SHORTCUT_KEYS.NEXT, () => { this.advanceLightBox('next') })
+        // }
+      }
+    }
+
+    handleToggle() {
+      console.log('show/hide lightbox')
+
+      this.bindKeys()
+      return this.setState({
+        open: true,
+      })
+    }
+
+    closeLightBox() {
+      console.log('close me')
+
+      const releaseKeys = true
+      this.bindKeys(releaseKeys)
+
+      return this.setState({
+        open: false,
+      })
     }
 
     render() {
@@ -79,22 +122,30 @@ export default function (WrappedComponent) {
 
       return (
         <div className="with-lightbox">
-          <div className={lightBoxImageStyle}>
-            <div className="LightBoxMask">
-              <DismissButtonLGReverse />
-              <div className="LightBox">
-                <p className="ImageAttachment">lol</p>
-                {commentIds.map(id =>
-                  (<CommentContainer
-                    isLightBox
-                    commentId={id}
-                    key={`commentContainer_${id}`}
-                  />),
-                )}
+          {this.state.open &&
+            <div className={lightBoxImageStyle}>
+              <div className="LightBoxMask">
+                <DismissButtonLGReverse
+                  onClick={this.closeLightBox}
+                />
+                <div className="LightBox">
+                  <p className="ImageAttachment">lol</p>
+                  {commentIds.map(id =>
+                    (<CommentContainer
+                      toggleLightBox={this.handleToggle}
+                      isLightBox
+                      commentId={id}
+                      key={`commentContainer_${id}`}
+                    />),
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-          <WrappedComponent {...this.props} />
+          }
+          <WrappedComponent
+            toggleLightBox={this.handleToggle}
+            {...this.props}
+          />
         </div>
       )
     }

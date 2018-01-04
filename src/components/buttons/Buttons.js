@@ -121,8 +121,11 @@ export const DismissButton = () =>
 export const DismissButtonLG = () =>
   <button className={`CloseModal ${dismissButtonStyle}`}><XIconLG /></button>
 
-export const DismissButtonLGReverse = () =>
-  <button className={`CloseModal ${dismissButtonStyle} ${dismissButtonStyleReverse}`}><XIconLG /></button>
+export const DismissButtonLGReverse = ({ onClick }) =>
+  <button className={`CloseModal ${dismissButtonStyle} ${dismissButtonStyleReverse}`} onClick={onClick}><XIconLG /></button>
+DismissButtonLGReverse.propTypes = {
+  onClick: PropTypes.func,
+}
 
 // -------------------------------------
 

@@ -46,20 +46,23 @@ export const categoriesAsGrid = categoryIds =>
 // COMMENTS
 class CommentsAsListSimple extends Component {
   static propTypes = {
+    toggleLightBox: PropTypes.func.isRequired,
     commentIds: PropTypes.object,
   }
 
   static defaultProps = {
+    toggleLightBox: null,
     commentIds: null,
   }
 
   render() {
-    const { commentIds } = this.props
+    const { toggleLightBox, commentIds } = this.props
 
     return (
       <div className="Comments">
         {commentIds.map(id =>
           (<CommentContainer
+            toggleLightBox={toggleLightBox}
             commentId={id}
             key={`commentContainer_${id}`}
           />),

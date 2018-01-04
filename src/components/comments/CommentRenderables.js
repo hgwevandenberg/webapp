@@ -50,6 +50,7 @@ export class CommentBody extends PureComponent {
     isGridMode: PropTypes.bool.isRequired,
     isPostDetail: PropTypes.bool.isRequired,
     isLightBox: PropTypes.bool.isRequired,
+    toggleLightBox: PropTypes.func.isRequired,
   }
   render() {
     const {
@@ -63,6 +64,7 @@ export class CommentBody extends PureComponent {
       isGridMode,
       isPostDetail,
       isLightBox,
+      toggleLightBox,
     } = this.props
     return (
       <div className="CommentBody" key={`CommentBody${commentId}`} >
@@ -78,6 +80,7 @@ export class CommentBody extends PureComponent {
           isGridMode={isGridMode}
           isPostDetail={isPostDetail}
           isLightBox={isLightBox}
+          toggleLightBox={toggleLightBox}
         />
       </div>
     )

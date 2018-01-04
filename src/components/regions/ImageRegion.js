@@ -6,7 +6,6 @@ import { Link } from 'react-router'
 import classNames from 'classnames'
 import ImageAsset from '../assets/ImageAsset'
 import { ElloBuyButton } from '../editor/ElloBuyButton'
-import { DismissButtonLGReverse } from '../buttons/Buttons'
 import { css, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
@@ -100,10 +99,10 @@ class ImageRegion extends PureComponent {
   componentDidUpdate() {
     const { lightBox } = this.props
 
-    if (!lightBox) {
-      return this.resetImageScale()
+    if (lightBox) {
+      return this.setImageScale()
     }
-    return this.setImageScale()
+    return null
   }
 
   onClickStaticImageRegion = (event) => {
@@ -239,19 +238,19 @@ class ImageRegion extends PureComponent {
     }
   }
 
-  resetImageScale() {
-    this.setState({
-      scale: null,
-      lightBox: false,
-    })
+  // resetImageScale() {
+  //   this.setState({
+  //     scale: null,
+  //     lightBox: false,
+  //   })
 
-    setTimeout(() => {
-      this.setState({
-        currentImageHeight: null,
-        currentImageWidth: null,
-      })
-    }, 100)
-  }
+  //   setTimeout(() => {
+  //     this.setState({
+  //       currentImageHeight: null,
+  //       currentImageWidth: null,
+  //     })
+  //   }, 100)
+  // }
 
   isBasicAttachment() {
     const { asset } = this.props

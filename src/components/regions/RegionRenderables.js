@@ -21,11 +21,13 @@ export class RegionItems extends PureComponent {
     isPostBody: PropTypes.bool,
     isComment: PropTypes.bool,
     isLightBox: PropTypes.bool,
+    toggleLightBox: PropTypes.func,
   }
   static defaultProps = {
     isPostBody: false,
     isComment: false,
     isLightBox: false,
+    toggleLightBox: null,
   }
 
   componentWillMount() {
@@ -135,28 +137,33 @@ export class RegionItems extends PureComponent {
     }
   }
 
-  handleStaticImageRegionClick(event, assetId) {
-    const { isPostBody, isPostDetail, isGridMode, isComment } = this.props
-    const { lightBox } = this.state
-    const buyButtonClick = event.target.classList.contains('ElloBuyButton')
-
-    if (isPostBody && !buyButtonClick && (isPostDetail || !isGridMode)) {
-      return this.setLightBox(lightBox, assetId)
+  handleStaticImageRegionClick(event, assetId, toggleLightBox) {
+    console.log('invoke lightbox')
+    if (toggleLightBox) {
+      toggleLightBox(true)        
     }
+    // const { isPostBody, isPostDetail, isGridMode, isComment } = this.props
+    // const { lightBox } = this.state
+    // const buyButtonClick = event.target.classList.contains('ElloBuyButton')
 
-    if (isComment) {
-      return this.setLightBox(lightBox, assetId)
-    }
+    // if (isPostBody && !buyButtonClick && (isPostDetail || !isGridMode)) {
+    //   return this.setLightBox(lightBox, assetId)
+    // }
 
-    return this.setState({
-      lightBox: false,
-      assetIdToSet: null,
-    })
+    // if (isComment) {
+    //   return this.setLightBox(lightBox, assetId)
+    // }
+
+    // return this.setState({
+    //   lightBox: false,
+    //   assetIdToSet: null,
+    // })
+    return null
   }
 
   render() {
     const { columnWidth, commentOffset, content, contentWidth,
-      detailPath, innerHeight, isComment, isGridMode, isPostDetail } = this.props
+      detailPath, innerHeight, isComment, isGridMode, isPostDetail, toggleLightBox } = this.props
     const { lightBox, assetIdToSet } = this.state
 
     // sometimes the content is null/undefined for some reason
@@ -200,7 +207,7 @@ export class RegionItems extends PureComponent {
               shouldUseVideo={!!(asset && asset.getIn(['attachment', 'video'], Immutable.Map()).size) && !isIOS() && !isPostDetail}
               lightBox={lightBoxOn}
               handleStaticImageRegionClick={
-                event => this.handleStaticImageRegionClick(event, assetId)
+                event => this.handleStaticImageRegionClick(event, assetId, toggleLightBox)
               }
             />,
           )

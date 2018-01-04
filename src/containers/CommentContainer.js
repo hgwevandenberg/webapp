@@ -90,12 +90,14 @@ class CommentContainer extends Component {
     isOwnComment: PropTypes.bool.isRequired,
     isPostDetail: PropTypes.bool.isRequired,
     isLightBox: PropTypes.bool,
+    toggleLightBox: PropTypes.func.isRequired,
     post: PropTypes.object.isRequired,
   }
 
   static defaultProps = {
     commentBody: null,
     isLightBox: false,
+    toggleLightBox: null,
   }
 
   static contextTypes = {
@@ -217,6 +219,7 @@ class CommentContainer extends Component {
       isOwnComment,
       isPostDetail,
       isLightBox,
+      toggleLightBox,
     } = this.props
     if (!comment || !comment.get('id') || !author || !author.get('id')) { return null }
     if (isEditing && commentBody && ElloAndroidInterface.supportsNativeEditor()) {
@@ -241,6 +244,7 @@ class CommentContainer extends Component {
             isGridMode={isGridMode}
             isPostDetail={isPostDetail}
             isLightBox={isLightBox}
+            toggleLightBox={toggleLightBox}
           />
         }
         {!isEditing && !isLightBox &&
