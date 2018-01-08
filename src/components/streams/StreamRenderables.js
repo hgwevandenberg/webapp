@@ -23,7 +23,6 @@ import * as s from '../../styles/jso'
 // which contains ids required for their respective containers to
 // do their own lookup in the store to ensure they are up to date
 // CATEGORIES
-
 const categoriesStyle = css(
   s.flex,
   s.flexRow,
@@ -56,7 +55,10 @@ class CommentsAsListSimple extends Component {
   }
 
   render() {
-    const { toggleLightBox, commentIds } = this.props
+    const {
+      toggleLightBox,
+      commentIds,
+    } = this.props
 
     return (
       <div className="Comments">
@@ -75,10 +77,11 @@ class CommentsAsListSimple extends Component {
 // wrap comments in LightBox factory
 const CommentsAsList = withLightBoxContainer(CommentsAsListSimple)
 
-export const commentsAsList = commentIds =>
-  (<CommentsAsList
+export const commentsAsList = commentIds => (
+  <CommentsAsList
     commentIds={commentIds}
-  />)
+  />
+)
 
 // EDITORIAL: chunk layouts into pages of 24 editorials
 export const editorials = editorialIds => (
@@ -226,14 +229,50 @@ const postListStyle = css(
   select('& .ImageRegion img', { height: 'auto' }),
 )
 
+class PostsAsListSimple extends Component {
+  static propTypes = {
+    toggleLightBox: PropTypes.func.isRequired,
+    postIds: PropTypes.object.isRequired,
+    isPostHeaderHidden: PropTypes.bool.isRequired,
+  }
+
+  static defaultProps = {
+    toggleLightBox: null,
+    postIds: null,
+    isPostHeaderHidden: false,
+  }
+
+  render() {
+    const {
+      toggleLightBox,
+      postIds,
+      isPostHeaderHidden,
+    } = this.props
+
+    return (
+      <div className={`Posts asList ${postListStyle}`}>
+        {postIds.map(id =>
+          (<article className="PostList" key={`postsAsList_${id}`}>
+            <PostContainer
+              toggleLightBox={toggleLightBox}
+              postId={id}
+              isPostHeaderHidden={isPostHeaderHidden}
+            />
+          </article>),
+        )}
+      </div>
+    )
+  }
+}
+
+// wrap posts list in LightBox factory
+const PostsAsList = withLightBoxContainer(PostsAsListSimple)
+
 export const postsAsList = (postIds, columnCount, isPostHeaderHidden) => (
-  <div className={`Posts asList ${postListStyle}`}>
-    {postIds.map(id => (
-      <article className="PostList" key={`postsAsList_${id}`}>
-        <PostContainer postId={id} isPostHeaderHidden={isPostHeaderHidden} />
-      </article>
-    ))}
-  </div>
+  <PostsAsList
+    postIds={postIds}
+    isPostHeaderHidden={isPostHeaderHidden}
+  />
 )
 
 const relatedPostsTitleStyle = css(

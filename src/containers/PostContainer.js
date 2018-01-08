@@ -164,6 +164,8 @@ class PostContainer extends Component {
     isRepost: PropTypes.bool.isRequired,
     isReposting: PropTypes.bool.isRequired,
     isWatchingPost: PropTypes.bool.isRequired,
+    isLightBox: PropTypes.bool,
+    toggleLightBox: PropTypes.func,
     pathname: PropTypes.string.isRequired,
     post: PropTypes.object.isRequired,
     postBody: PropTypes.object,
@@ -194,6 +196,8 @@ class PostContainer extends Component {
     contentWarning: null,
     isPostHeaderHidden: false,
     isRelatedPost: false,
+    isLightBox: false,
+    toggleLightBox: null,
     postBody: null,
     postCommentsCount: null,
     postCreatedAt: null,
@@ -426,6 +430,8 @@ class PostContainer extends Component {
       isRepost,
       isReposting,
       isWatchingPost,
+      isLightBox,
+      toggleLightBox,
       post,
       postBody,
       postCommentsCount,
@@ -459,7 +465,7 @@ class PostContainer extends Component {
           repostedBy={author}
         />
       )
-    } else if (isPostHeaderHidden) {
+    } else if (isPostHeaderHidden || isLightBox) {
       postHeader = null
     } else if (isDiscoverRoot && categoryName && categoryPath) {
       postHeader = (
@@ -632,6 +638,8 @@ class PostContainer extends Component {
               isRepost,
               isRepostAnimating,
               isWatchingPost,
+              isLightBox,
+              toggleLightBox,
               post,
               postCommentsCount,
               postCreatedAt,

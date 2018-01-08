@@ -613,6 +613,8 @@ export const Post = ({
   isRepost,
   isRepostAnimating,
   isWatchingPost,
+  isLightBox,
+  toggleLightBox,
   post,
   postCommentsCount,
   postCreatedAt,
@@ -632,7 +634,7 @@ export const Post = ({
 }) => (
   <div className={classNames('Post', { isPostHeaderHidden: isPostHeaderHidden && !isRepost })}>
     {postHeader}
-    {adminActions &&
+    {adminActions && !isLightBox &&
       <PostAdminActions
         actions={adminActions}
         status={submissionStatus}
@@ -651,6 +653,8 @@ export const Post = ({
         isGridMode,
         isPostDetail,
         isRepost,
+        isLightBox,
+        toggleLightBox,
         post,
         postId,
         repostContent,
@@ -659,36 +663,38 @@ export const Post = ({
         supportsNativeEditor,
       }}
     />
-    <PostTools
-      {...{
-        author,
-        detailPath,
-        isCommentsActive,
-        isCommentsRequesting,
-        isGridMode,
-        isLoggedIn,
-        isMobile,
-        isOwnOriginalPost,
-        isOwnPost,
-        isPostDetail,
-        isRelatedPost,
-        isRepostAnimating,
-        isWatchingPost,
-        postCreatedAt,
-        postCommentsCount,
-        postId,
-        postLoved,
-        postLovesCount,
-        postReposted,
-        postRepostsCount,
-        postViewsCountRounded,
-      }}
-    />
-    {isLoggedIn && showCommentEditor && supportsNativeEditor &&
+    {!isLightBox &&
+      <PostTools
+        {...{
+          author,
+          detailPath,
+          isCommentsActive,
+          isCommentsRequesting,
+          isGridMode,
+          isLoggedIn,
+          isMobile,
+          isOwnOriginalPost,
+          isOwnPost,
+          isPostDetail,
+          isRelatedPost,
+          isRepostAnimating,
+          isWatchingPost,
+          postCreatedAt,
+          postCommentsCount,
+          postId,
+          postLoved,
+          postLovesCount,
+          postReposted,
+          postRepostsCount,
+          postViewsCountRounded,
+        }}
+      />
+    }
+    {isLoggedIn && showCommentEditor && supportsNativeEditor && !isLightBox &&
       <LaunchNativeCommentEditorButton avatar={avatar} post={post} />
     }
-    {showCommentEditor && !supportsNativeEditor && <Editor post={post} isComment />}
-    {showCommentEditor &&
+    {showCommentEditor && !supportsNativeEditor && !isLightBox && <Editor post={post} isComment />}
+    {showCommentEditor && !isLightBox &&
       <StreamContainer
         action={loadComments(postId)}
         className="TabListStreamContainer isFullWidth"
@@ -724,6 +730,8 @@ Post.propTypes = {
   isRepost: PropTypes.bool.isRequired,
   isRepostAnimating: PropTypes.bool.isRequired,
   isWatchingPost: PropTypes.bool.isRequired,
+  isLightBox: PropTypes.bool,
+  toggleLightBox: PropTypes.func,
   post: PropTypes.object.isRequired,
   postCommentsCount: PropTypes.number,
   postCreatedAt: PropTypes.string,

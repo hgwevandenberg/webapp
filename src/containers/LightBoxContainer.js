@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { DismissButtonLGReverse } from '../components/buttons/Buttons'
 import CommentContainer from './CommentContainer'
+import PostContainer from './PostContainer'
 import { PostBody } from '../components/posts/PostRenderables'
 // import { RegionItems } from '../regions/RegionRenderables'
 import { css, media, parent, select } from '../styles/jss'
@@ -58,6 +59,39 @@ const commentsLightBoxStyle = css(
   ),
 )
 
+const postsListLightBoxStyle = css(
+  { ...baseLightBoxStyle },
+  select(
+    '> .LightBoxMask',
+    select(
+      '> .LightBox',
+      select(
+        '> .PostList',
+        select(
+          '> .Post',
+          s.inline,
+          { margin: 0,
+            padding: 0,
+          },
+          select(
+            '> .PostBody',
+            s.inline,
+            { padding: 0,
+              margin: 0,
+              border: 'none',
+              width: 'auto',
+            },
+            select(
+              '> div',
+              s.inline,
+            ),
+          ),
+        ),
+      ),
+    ),
+  ),
+)
+
 // Wraps LightBox controls/state around a component
 // This function takes a component
 export default function (WrappedComponent) {
@@ -65,11 +99,13 @@ export default function (WrappedComponent) {
     static propTypes = {
       content: PropTypes.object, // for individual posts
       commentIds: PropTypes.object, // for comment stream
+      postIds: PropTypes.object, // for posts list stream
     }
 
     static defaultProps = {
       content: null,
       commentIds: null,
+      postIds: null,
     }
 
     constructor(props) {
@@ -147,14 +183,26 @@ export default function (WrappedComponent) {
     }
 
     setLightBoxStyle() {
-      const { commentIds } = this.props
+      const {
+        commentIds,
+        postIds,
+      } = this.props
 
-      return commentIds ? commentsLightBoxStyle : baseLightBoxStyle
+      if (commentIds) {
+        return commentsLightBoxStyle
+      }
+
+      if (postIds) {
+        return postsListLightBoxStyle
+      }
+
+      return baseLightBoxStyle
     }
 
     render() {
       const {
         commentIds,
+        postIds,
         author,
         columnWidth,
         commentOffset,
@@ -173,9 +221,8 @@ export default function (WrappedComponent) {
         showEditor,
         summary,
         supportsNativeEditor,
+        isPostHeaderHidden,
       } = this.props
-
-      console.log(this.props)
 
       return (
         <div className="with-lightbox">
@@ -217,6 +264,16 @@ export default function (WrappedComponent) {
                       commentId={id}
                       key={`commentContainer_${id}`}
                     />),
+                  )}
+                  {postIds && postIds.map(id =>
+                    (<article className="PostList" key={`postsAsList_${id}`}>
+                      <PostContainer
+                        toggleLightBox={(assetId) => this.handleImageClick(assetId, true)}
+                        isLightBox
+                        postId={id}
+                        isPostHeaderHidden={isPostHeaderHidden}
+                      />
+                    </article>),
                   )}
                 </div>
               </div>
