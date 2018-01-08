@@ -80,7 +80,6 @@ export const commentsAsList = commentIds =>
     commentIds={commentIds}
   />)
 
-
 // EDITORIAL: chunk layouts into pages of 24 editorials
 export const editorials = editorialIds => (
   Immutable.Range(0, editorialIds.size - 1, 24)

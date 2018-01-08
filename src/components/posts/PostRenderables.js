@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import classNames from 'classnames'
+import withLightBoxContainer from '../../containers/LightBoxContainer'
 import Avatar from '../assets/Avatar'
 import {
   ArrowIcon,
@@ -375,6 +376,8 @@ export class PostBody extends PureComponent {
     isPostDetail: PropTypes.bool.isRequired,
     isPostBody: PropTypes.bool.isRequired,
     isRepost: PropTypes.bool.isRequired,
+    isLightBox: PropTypes.bool,
+    toggleLightBox: PropTypes.func,
     post: PropTypes.object.isRequired,
     postId: PropTypes.string.isRequired,
     repostContent: PropTypes.object,
@@ -401,6 +404,8 @@ export class PostBody extends PureComponent {
       isPostDetail,
       isPostBody,
       isRepost,
+      isLightBox,
+      toggleLightBox,
       post,
       postId,
       repostContent,
@@ -427,6 +432,8 @@ export class PostBody extends PureComponent {
       isGridMode,
       isPostDetail,
       isPostBody,
+      isLightBox,
+      toggleLightBox,
     }
     if (isRepost) {
       // this is weird, but the post summary is
@@ -504,6 +511,9 @@ const launchCommentEditorButtonStyle = css(
     },
   ),
 )
+
+// wrap post in LightBox factory
+export const PostBodyWithLightBox = withLightBoxContainer(PostBody)
 
 export const LaunchNativeCommentEditorButton = ({ avatar, post }, { onLaunchNativeEditor }) =>
   <LaunchCommentEditorButton avatar={avatar} post={post} onLaunch={onLaunchNativeEditor} />

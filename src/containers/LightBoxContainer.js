@@ -2,11 +2,13 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { DismissButtonLGReverse } from '../components/buttons/Buttons'
 import CommentContainer from './CommentContainer'
+import { PostBody } from '../components/posts/PostRenderables'
+// import { RegionItems } from '../regions/RegionRenderables'
 import { css, media, parent, select } from '../styles/jss'
 import * as s from '../styles/jso'
 import { SHORTCUT_KEYS } from '../constants/application_types'
 
-const lightBoxImageStyle = css(
+const baseLightBoxStyle = css(
   s.block,
   s.relative,
   s.bgcF2,
@@ -24,20 +26,33 @@ const lightBoxImageStyle = css(
       s.relative,
       s.containedAlignMiddle,
       s.center,
+    ),
+  ),
+)
+
+const commentsLightBoxStyle = css(
+  { ...baseLightBoxStyle },
+  select(
+    '> .LightBoxMask',
+    select(
+      '> .LightBox',
       select(
         '> .Comment',
+        s.inline,
         { padding: 0 },
         select(
           '> .CommentBody',
+          s.inline,
           { padding: 0,
             margin: 0,
             border: 'none',
+            width: 'auto',
           },
+          select(
+            '> div',
+            s.inline,
+          ),
         ),
-      ),
-      select(
-        '> .ImageAttachment',
-        { width: '200px', backgroundColor: 'red' },
       ),
     ),
   ),
@@ -48,10 +63,12 @@ const lightBoxImageStyle = css(
 export default function (WrappedComponent) {
   return class extends Component {
     static propTypes = {
-      commentIds: PropTypes.object,
+      content: PropTypes.object, // for individual posts
+      commentIds: PropTypes.object, // for comment stream
     }
 
     static defaultProps = {
+      content: null,
       commentIds: null,
     }
 
@@ -61,13 +78,14 @@ export default function (WrappedComponent) {
         open: false,
       }
 
-      this.handleToggle = this.handleToggle.bind(this)
+      this.handleImageClick = this.handleImageClick.bind(this)
       this.closeLightBox = this.closeLightBox.bind(this)
     }
 
     componentDidMount() {
       console.log('$$$ hi')
-      console.log(this.props.commentIds)
+      // console.log(this.props.commentIds)
+      console.log(this.props.content)
     }
 
     componentWillUnmount() {
@@ -97,8 +115,12 @@ export default function (WrappedComponent) {
       }
     }
 
-    handleToggle() {
-      console.log('show/hide lightbox')
+    handleImageClick(assetId, inLightBox) {
+      if (!inLightBox) {
+        console.log(`show/hide lightbox: ${assetId}`)
+      } else {
+        console.log(`advance lightbox: ${assetId}`)
+      }
 
       this.bindKeys()
       return this.setState({
@@ -124,22 +146,73 @@ export default function (WrappedComponent) {
       return null
     }
 
-    render() {
+    setLightBoxStyle() {
       const { commentIds } = this.props
+
+      return commentIds ? commentsLightBoxStyle : baseLightBoxStyle
+    }
+
+    render() {
+      const {
+        commentIds,
+        author,
+        columnWidth,
+        commentOffset,
+        content,
+        contentWarning,
+        contentWidth,
+        detailPath,
+        innerHeight,
+        innerWidth,
+        isGridMode,
+        isPostDetail,
+        isRepost,
+        post,
+        postId,
+        repostContent,
+        showEditor,
+        summary,
+        supportsNativeEditor,
+      } = this.props
+
+      console.log(this.props)
 
       return (
         <div className="with-lightbox">
           {this.state.open &&
-            <div className={lightBoxImageStyle}>
+            <div className={this.setLightBoxStyle()}>
               <div className="LightBoxMask" onClick={(e) => this.handleMaskClick(e)}>
                 <DismissButtonLGReverse
                   onClick={this.closeLightBox}
                 />
                 <div className="LightBox">
-                  <p className="ImageAttachment">lol</p>
-                  {commentIds.map(id =>
+                  {content &&
+                    <PostBody
+                      author={author}
+                      columnWidth={columnWidth}
+                      commentOffset={commentOffset}
+                      content={content}
+                      contentWarning={contentWarning}
+                      contentWidth={contentWidth}
+                      detailPath={detailPath}
+                      innerHeight={innerHeight}
+                      innerWidth={innerWidth}
+                      isGridMode={isGridMode}
+                      isPostDetail={isPostDetail}
+                      isRepost={isRepost}
+                      isLightBox
+                      toggleLightBox={(assetId) => this.handleImageClick(assetId, true)}
+                      post={post}
+                      postId={postId}
+                      repostContent={repostContent}
+                      showEditor={showEditor}
+                      summary={summary}
+                      supportsNativeEditor={supportsNativeEditor}
+                    />
+                  }
+                  {commentIds && commentIds.map(id =>
                     (<CommentContainer
-                      toggleLightBox={this.handleToggle}
+                      toggleLightBox={(assetId) => this.handleImageClick(assetId, true)}
                       isLightBox
                       commentId={id}
                       key={`commentContainer_${id}`}
@@ -150,7 +223,7 @@ export default function (WrappedComponent) {
             </div>
           }
           <WrappedComponent
-            toggleLightBox={this.handleToggle}
+            toggleLightBox={(assetId) => this.handleImageClick(assetId, false)}
             {...this.props}
           />
         </div>

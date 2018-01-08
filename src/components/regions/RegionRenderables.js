@@ -47,7 +47,7 @@ export class RegionItems extends PureComponent {
         this.setLighBoxPagination(assetId)
       }
 
-      this.bindLightBoxKeys(!lightBox, assetId)
+      // this.bindLightBoxKeys(!lightBox, assetId)
 
       return this.setState({
         lightBox: !lightBox,
@@ -140,7 +140,7 @@ export class RegionItems extends PureComponent {
   handleStaticImageRegionClick(event, assetId, toggleLightBox) {
     console.log('invoke lightbox')
     if (toggleLightBox) {
-      toggleLightBox(true)        
+      toggleLightBox(assetId)
     }
     // const { isPostBody, isPostDetail, isGridMode, isComment } = this.props
     // const { lightBox } = this.state
@@ -163,8 +163,8 @@ export class RegionItems extends PureComponent {
 
   render() {
     const { columnWidth, commentOffset, content, contentWidth,
-      detailPath, innerHeight, isComment, isGridMode, isPostDetail, toggleLightBox } = this.props
-    const { lightBox, assetIdToSet } = this.state
+      detailPath, innerHeight, isComment, isGridMode, isPostDetail, isLightBox, toggleLightBox } = this.props
+    const { assetIdToSet } = this.state
 
     // sometimes the content is null/undefined for some reason
     if (!content) { return null }
@@ -188,7 +188,7 @@ export class RegionItems extends PureComponent {
         case 'image': {
           const asset = region.get('asset')
           const assetId = asset ? asset.get('id') : null
-          const lightBoxOn = (lightBox && (assetIdToSet === assetId))
+          // const lightBoxOn = (lightBox && (assetIdToSet === assetId))
 
           cells.push(
             <ImageRegion
@@ -205,7 +205,7 @@ export class RegionItems extends PureComponent {
               isGridMode={isGridMode}
               isPostDetail={isPostDetail}
               shouldUseVideo={!!(asset && asset.getIn(['attachment', 'video'], Immutable.Map()).size) && !isIOS() && !isPostDetail}
-              lightBox={lightBoxOn}
+              lightBoxImage={isLightBox}
               handleStaticImageRegionClick={
                 event => this.handleStaticImageRegionClick(event, assetId, toggleLightBox)
               }

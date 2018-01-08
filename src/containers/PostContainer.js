@@ -25,6 +25,7 @@ import {
   PostDetailAsideBottom,
   PostDetailAsideTop,
   PostBody,
+  PostBodyWithLightBox,
   PostHeader,
   RepostHeader,
   UserModal,
@@ -553,6 +554,32 @@ class PostContainer extends Component {
           />
         )
       case 'PostDetailBody':
+        if (isPostDetail) {
+          return (
+            <PostBodyWithLightBox
+              {...{
+                author,
+                columnWidth,
+                commentOffset,
+                content,
+                contentWarning,
+                contentWidth,
+                detailPath,
+                innerHeight,
+                innerWidth,
+                isGridMode,
+                isPostDetail,
+                isRepost,
+                post,
+                postId,
+                repostContent,
+                showEditor,
+                summary,
+                supportsNativeEditor,
+              }}
+            />
+          )
+        }
         return (
           <PostBody
             {...{

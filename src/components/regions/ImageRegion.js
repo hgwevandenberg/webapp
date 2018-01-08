@@ -16,8 +16,12 @@ const STATUS = {
   FAILURE: 'isFailing',
 }
 
-const imageStyle = css(
+const baseImageStyle = css(
   s.inline,
+)
+
+const streamImageStyle = css(
+  { ...baseImageStyle },
   s.relative,
   s.center,
   s.bgcF2,
@@ -25,6 +29,14 @@ const imageStyle = css(
     '> .ImgHolder',
     s.relative,
     s.inlineBlock,
+  ),
+)
+
+const lightBoxImageStyle = css(
+  { ...baseImageStyle },
+  select(
+    '> .ImgHolder',
+    s.inline,
     select(
       '> .ImageAttachment',
       {
@@ -50,7 +62,7 @@ class ImageRegion extends PureComponent {
     isGridMode: PropTypes.bool.isRequired,
     isNotification: PropTypes.bool,
     shouldUseVideo: PropTypes.bool.isRequired,
-    lightBox: PropTypes.bool,
+    lightBoxImage: PropTypes.bool,
     handleStaticImageRegionClick: PropTypes.func,
   }
 
@@ -65,7 +77,7 @@ class ImageRegion extends PureComponent {
     isPostBody: true,
     isPostDetail: false,
     isGridMode: false,
-    lightBox: false,
+    lightBoxImage: false,
     handleStaticImageRegionClick: null,
   }
 
@@ -74,7 +86,7 @@ class ImageRegion extends PureComponent {
   }
 
   componentWillMount() {
-    const { shouldUseVideo, lightBox } = this.props
+    const { shouldUseVideo } = this.props
 
     this.state = {
       scale: null,
@@ -82,24 +94,23 @@ class ImageRegion extends PureComponent {
       currentImageWidth: null,
       measuredImageHeight: null,
       measuredImageWidth: null,
-      lightBox,
       status: shouldUseVideo ? STATUS.SUCCESS : STATUS.REQUEST,
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !Immutable.is(nextProps.lightBox, this.props.lightBox) ||
+    return !Immutable.is(nextProps.lightBoxImage, this.props.lightBoxImage) ||
       !Immutable.is(nextProps.asset, this.props.asset) ||
       ['buyLinkURL', 'columnWidth', 'contentWidth', 'isGridMode'].some(prop =>
         nextProps[prop] !== this.props[prop],
       ) ||
-      ['scale', 'currentImageHeight', 'currentImageWidth', 'lightBox', 'status'].some(prop => nextState[prop] !== this.state[prop])
+      ['scale', 'currentImageHeight', 'currentImageWidth', 'lightBoxImage', 'status'].some(prop => nextState[prop] !== this.state[prop])
   }
 
   componentDidUpdate() {
-    const { lightBox } = this.props
+    const { lightBoxImage } = this.props
 
-    if (lightBox) {
+    if (lightBoxImage) {
       return this.setImageScale()
     }
     return null
@@ -225,7 +236,6 @@ class ImageRegion extends PureComponent {
       scale,
       currentImageHeight: measuredImageHeight,
       currentImageWidth: measuredImageWidth,
-      lightBox: true,
     })
   }
 
@@ -241,7 +251,7 @@ class ImageRegion extends PureComponent {
   // resetImageScale() {
   //   this.setState({
   //     scale: null,
-  //     lightBox: false,
+  //     lightBoxImage: false,
   //   })
 
   //   setTimeout(() => {
@@ -395,11 +405,11 @@ class ImageRegion extends PureComponent {
   }
 
   renderRegionAsStatic() {
-    const { currentImageHeight, currentImageWidth, lightBox } = this.state
-    const { buyLinkURL } = this.props
+    const { currentImageHeight, currentImageWidth } = this.state
+    const { buyLinkURL, lightBoxImage } = this.props
     return (
       <div
-        className={imageStyle}
+        className={lightBoxImage ? lightBoxImageStyle : streamImageStyle}
         onClick={this.onClickStaticImageRegion}
         style={{ height: currentImageHeight, width: currentImageWidth }}
       >
