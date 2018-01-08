@@ -175,15 +175,17 @@ export class RegionItems extends PureComponent {
 
       switch (region.get('kind')) {
         case 'text':
-          cells.push(
-            <TextRegion
-              content={region.get('data')}
-              detailPath={detailPath}
-              isComment={isComment}
-              isGridMode={isGridMode}
-              key={`TextRegion_${regionKey}`}
-            />,
-          )
+          if (!isLightBox) {
+            cells.push(
+              <TextRegion
+                content={region.get('data')}
+                detailPath={detailPath}
+                isComment={isComment}
+                isGridMode={isGridMode}
+                key={`TextRegion_${regionKey}`}
+              />,
+            )
+          }
           break
         case 'image': {
           const asset = region.get('asset')
@@ -214,14 +216,16 @@ export class RegionItems extends PureComponent {
           break
         }
         case 'embed':
-          cells.push(
-            <EmbedRegion
-              detailPath={detailPath}
-              isComment={isComment}
-              key={`EmbedRegion_${regionKey}`}
-              region={region}
-            />,
-          )
+          if (!isLightBox) {
+            cells.push(
+              <EmbedRegion
+                detailPath={detailPath}
+                isComment={isComment}
+                key={`EmbedRegion_${regionKey}`}
+                region={region}
+              />,
+            )
+          }
           break
         default:
           break
