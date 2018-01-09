@@ -111,7 +111,8 @@ class ImageRegion extends PureComponent {
     const { lightBoxImage } = this.props
 
     if (lightBoxImage) {
-      return this.setImageScale()
+      // return this.setImageScale()
+      return null
     }
     return null
   }
@@ -407,13 +408,14 @@ class ImageRegion extends PureComponent {
   renderRegionAsStatic() {
     const { currentImageHeight, currentImageWidth } = this.state
     const { buyLinkURL, lightBoxImage } = this.props
+    const imgHolderClass = lightBoxImage ? 'ImgHolderLightBox' : 'ImgHolder'
     return (
       <div
         className={lightBoxImage ? lightBoxImageStyle : streamImageStyle}
         onClick={this.onClickStaticImageRegion}
-        style={{ height: currentImageHeight, width: currentImageWidth }}
+        style={!lightBoxImage ? { height: currentImageHeight, width: currentImageWidth } : null}
       >
-        <div className="ImgHolder">
+        <div className={imgHolderClass}>
           {this.renderAttachment()}
           {
             buyLinkURL && buyLinkURL.length ?

@@ -31,6 +31,16 @@ const baseLightBoxStyle = css(
   ),
 )
 
+const imageRegionStyle = css(
+  {
+    display: 'none',
+  },
+  select(
+    '> .ImgHolderLightBox',
+    { display: 'none' },
+  ),
+)
+
 const commentsLightBoxStyle = css(
   { ...baseLightBoxStyle },
   select(
@@ -52,6 +62,10 @@ const commentsLightBoxStyle = css(
           select(
             '> div',
             s.inline,
+            select(
+              '> .ImageRegion',
+              { ...imageRegionStyle },
+            ),
           ),
         ),
       ),
@@ -84,6 +98,10 @@ const postsListLightBoxStyle = css(
             select(
               '> div',
               s.inline,
+              select(
+                '> .ImageRegion',
+                { ...imageRegionStyle },
+              ),
             ),
           ),
         ),
@@ -184,6 +202,7 @@ export default function (WrappedComponent) {
 
     setLightBoxStyle() {
       const {
+        content,
         commentIds,
         postIds,
       } = this.props
@@ -192,7 +211,8 @@ export default function (WrappedComponent) {
         return commentsLightBoxStyle
       }
 
-      if (postIds) {
+      if (postIds || content) {
+        console.log('+++++++++++ hello')
         return postsListLightBoxStyle
       }
 
