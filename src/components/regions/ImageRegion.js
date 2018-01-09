@@ -61,8 +61,8 @@ class ImageRegion extends PureComponent {
     isPostDetail: PropTypes.bool,
     isGridMode: PropTypes.bool.isRequired,
     isNotification: PropTypes.bool,
+    isLightBoxImage: PropTypes.bool,
     shouldUseVideo: PropTypes.bool.isRequired,
-    lightBoxImage: PropTypes.bool,
     handleStaticImageRegionClick: PropTypes.func,
   }
 
@@ -77,7 +77,7 @@ class ImageRegion extends PureComponent {
     isPostBody: true,
     isPostDetail: false,
     isGridMode: false,
-    lightBoxImage: false,
+    isLightBoxImage: false,
     handleStaticImageRegionClick: null,
   }
 
@@ -99,18 +99,18 @@ class ImageRegion extends PureComponent {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !Immutable.is(nextProps.lightBoxImage, this.props.lightBoxImage) ||
+    return !Immutable.is(nextProps.isLightBoxImage, this.props.isLightBoxImage) ||
       !Immutable.is(nextProps.asset, this.props.asset) ||
       ['buyLinkURL', 'columnWidth', 'contentWidth', 'isGridMode'].some(prop =>
         nextProps[prop] !== this.props[prop],
       ) ||
-      ['scale', 'currentImageHeight', 'currentImageWidth', 'lightBoxImage', 'status'].some(prop => nextState[prop] !== this.state[prop])
+      ['scale', 'currentImageHeight', 'currentImageWidth', 'isLightBoxImage', 'status'].some(prop => nextState[prop] !== this.state[prop])
   }
 
   componentDidUpdate() {
-    const { lightBoxImage } = this.props
+    const { isLightBoxImage } = this.props
 
-    if (lightBoxImage) {
+    if (isLightBoxImage) {
       // return this.setImageScale()
       return null
     }
@@ -252,7 +252,7 @@ class ImageRegion extends PureComponent {
   // resetImageScale() {
   //   this.setState({
   //     scale: null,
-  //     lightBoxImage: false,
+  //     isLightBoxImage: false,
   //   })
 
   //   setTimeout(() => {
@@ -273,14 +273,14 @@ class ImageRegion extends PureComponent {
   }
 
   renderGifAttachment() {
-    const { content, isNotification, isPostBody, isPostDetail, isGridMode } = this.props
+    const { content, isNotification, isLightBoxImage, isPostBody, isPostDetail, isGridMode } = this.props
     const { scale } = this.state
     const dimensions = this.getImageDimensions()
     return (
       <ImageAsset
         alt={content.get('alt') ? content.get('alt').replace('.gif', '') : null}
         className="ImageAttachment"
-        height={isNotification ? 'auto' : dimensions.height}
+        height={(isNotification || isLightBoxImage) ? 'auto' : dimensions.height}
         onLoadFailure={this.onLoadFailure}
         onLoadSuccess={this.onLoadSuccess}
         role="presentation"
@@ -300,7 +300,7 @@ class ImageRegion extends PureComponent {
   }
 
   renderImageAttachment() {
-    const { content, isNotification, isPostBody, isPostDetail, isGridMode } = this.props
+    const { content, isNotification, isLightBoxImage, isPostBody, isPostDetail, isGridMode } = this.props
     const { scale } = this.state
     const srcset = this.getImageSourceSet()
     const dimensions = this.getImageDimensions()
@@ -308,7 +308,7 @@ class ImageRegion extends PureComponent {
       <ImageAsset
         alt={content.get('alt') ? content.get('alt').replace('.jpg', '') : null}
         className="ImageAttachment"
-        height={isNotification ? 'auto' : dimensions.height}
+        height={(isNotification || isLightBoxImage) ? 'auto' : dimensions.height}
         onLoadFailure={this.onLoadFailure}
         onLoadSuccess={this.onLoadSuccess}
         role="presentation"
@@ -407,13 +407,13 @@ class ImageRegion extends PureComponent {
 
   renderRegionAsStatic() {
     const { currentImageHeight, currentImageWidth } = this.state
-    const { buyLinkURL, lightBoxImage } = this.props
-    const imgHolderClass = lightBoxImage ? 'ImgHolderLightBox' : 'ImgHolder'
+    const { buyLinkURL, isLightBoxImage } = this.props
+    const imgHolderClass = isLightBoxImage ? 'ImgHolderLightBox' : 'ImgHolder'
     return (
       <div
-        className={lightBoxImage ? lightBoxImageStyle : streamImageStyle}
+        className={isLightBoxImage ? lightBoxImageStyle : streamImageStyle}
         onClick={this.onClickStaticImageRegion}
-        style={!lightBoxImage ? { height: currentImageHeight, width: currentImageWidth } : null}
+        style={!isLightBoxImage ? { height: currentImageHeight, width: currentImageWidth } : null}
       >
         <div className={imgHolderClass}>
           {this.renderAttachment()}

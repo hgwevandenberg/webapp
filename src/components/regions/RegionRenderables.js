@@ -206,8 +206,8 @@ export class RegionItems extends PureComponent {
               isComment={isComment}
               isGridMode={isGridMode}
               isPostDetail={isPostDetail}
+              isLightBoxImage={isLightBox}
               shouldUseVideo={!!(asset && asset.getIn(['attachment', 'video'], Immutable.Map()).size) && !isIOS() && !isPostDetail}
-              lightBoxImage={isLightBox}
               handleStaticImageRegionClick={
                 event => this.handleStaticImageRegionClick(event, assetId, toggleLightBox)
               }
