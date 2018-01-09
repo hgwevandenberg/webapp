@@ -33,11 +33,12 @@ const baseLightBoxStyle = css(
 
 const imageRegionStyle = css(
   {
-    display: 'none',
+    margin: 0,
+    width: 200,
   },
   select(
     '> .ImgHolderLightBox',
-    { display: 'none' },
+    {  },
   ),
 )
 
@@ -103,6 +104,33 @@ const postsListLightBoxStyle = css(
                 { ...imageRegionStyle },
               ),
             ),
+          ),
+        ),
+      ),
+    ),
+  ),
+)
+
+const postsBodyLightBoxStyle = css(
+  { ...baseLightBoxStyle },
+  select(
+    '> .LightBoxMask',
+    select(
+      '> .LightBox',
+      select(
+        '> .PostBody',
+        s.inline,
+        { padding: 0,
+          margin: 0,
+          border: 'none',
+          width: 'auto',
+        },
+        select(
+          '> div',
+          s.inline,
+          select(
+            '> .ImageRegion',
+            { ...imageRegionStyle },
           ),
         ),
       ),
@@ -211,9 +239,12 @@ export default function (WrappedComponent) {
         return commentsLightBoxStyle
       }
 
-      if (postIds || content) {
-        console.log('+++++++++++ hello')
+      if (postIds) {
         return postsListLightBoxStyle
+      }
+
+      if (content) {
+        return postsBodyLightBoxStyle
       }
 
       return baseLightBoxStyle
