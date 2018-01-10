@@ -418,7 +418,7 @@ class ImageRegion extends PureComponent {
         <div className={imgHolderClass}>
           {this.renderAttachment()}
           {
-            buyLinkURL && buyLinkURL.length ?
+            buyLinkURL && buyLinkURL.length && !lightBoxImageStyle ?
               <ElloBuyButton to={buyLinkURL} /> :
               null
           }
