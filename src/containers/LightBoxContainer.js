@@ -33,8 +33,9 @@ const baseLightBoxStyle = css(
         '> .LightBoxQueue',
         s.relative,
         {
-          width: 20000,
+          width: 'auto',
           height: '100%',
+          whiteSpace: 'nowrap',
         },
       ),
     ),
@@ -43,13 +44,13 @@ const baseLightBoxStyle = css(
 
 const imageRegionStyle = select(
   '> .ImageRegion',
+  s.inlineBlock,
   s.relative,
-  s.containedAlignMiddle,
   {
-    float: 'left',
     margin: 0,
     marginLeft: 40,
     marginRight: 40,
+    marginTop: 40,
     width: 'auto',
   },
   select(
@@ -175,27 +176,35 @@ export default function (WrappedComponent) {
       super(props)
       this.state = {
         open: false,
+        queueOffsetX: 0,
       }
 
       this.handleImageClick = this.handleImageClick.bind(this)
       this.closeLightBox = this.closeLightBox.bind(this)
     }
 
-    componentDidMount() {
-      console.log('$$$ hi')
-      // console.log(this.props.commentIds)
-      console.log(this.props.content)
+    componentDidUpdate(prevProps, prevState) {
+      // set keybindings
+      if (!prevState.open && this.state.open) {
+        this.bindKeys()
+      }
+
+      // move queue to new image position
+      let slideDelay = 0
+      if (!prevState.open) {
+        slideDelay = 500
+      }
+
+      if (this.state.open && (prevState.selectedAssetId !== this.state.selectedAssetId)) {
+        setTimeout(() => {
+          this.slideQueue()
+        }, slideDelay)
+      }
     }
 
     componentWillUnmount() {
-      console.log('$$$ goodbye')
-
       const releaseKeys = true
       this.bindKeys(releaseKeys)
-    }
-
-    componentDidUpdate() {
-      console.log(this.props.commentIds)
     }
 
     bindKeys(unbind) {
@@ -221,20 +230,44 @@ export default function (WrappedComponent) {
         console.log(`advance lightbox: ${assetId}`)
       }
 
-      this.bindKeys()
       return this.setState({
         open: true,
+        selectedAssetId: assetId,
+      })
+    }
+
+    slideQueue() {
+      const assetId = this.state.selectedAssetId
+      const assetDomId = `lightBoxAsset_${assetId}`
+
+      // select the DOM elements
+      const lightBoxDomQueue = document.getElementsByClassName('LightBoxQueue')[0]
+      const assetInDom = document.getElementById(assetDomId)
+
+      // measurements
+      const viewportWidth = window.innerWidth
+      const lightBoxDimensions = lightBoxDomQueue.getBoundingClientRect()
+      const assetDimensions = assetInDom.getBoundingClientRect()
+
+      // positioning calculations
+      const desiredGap = ((viewportWidth - (assetDimensions.width)) / 2)
+      const imageOffsetToBox = assetDimensions.x - lightBoxDimensions.x
+      const newOffset = desiredGap - imageOffsetToBox
+
+      // update the box position
+      return this.setState({
+        queueOffsetX: newOffset,
       })
     }
 
     closeLightBox() {
-      console.log('close me')
-
       const releaseKeys = true
       this.bindKeys(releaseKeys)
 
       return this.setState({
         open: false,
+        selectedAssetId: null,
+        queueOffsetX: 0,
       })
     }
 
@@ -301,7 +334,10 @@ export default function (WrappedComponent) {
                   onClick={this.closeLightBox}
                 />
                 <div className="LightBox">
-                  <div className="LightBoxQueue">
+                  <div
+                    className="LightBoxQueue"
+                    style={{ transform: `translateX(${this.state.queueOffsetX}px)` }}
+                  >
                     {content &&
                       <PostBody
                         author={author}
