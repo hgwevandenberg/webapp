@@ -24,21 +24,31 @@ const baseLightBoxStyle = css(
     { transition: `background-color 0.4s ${s.ease}` },
     select(
       '> .LightBox',
-      s.relative,
-      s.containedAlignMiddle,
-      s.center,
+      s.fixed,
+      s.flood,
+      s.fullWidth,
+      s.fullHeight,
+      s.overflowHidden,
+      select(
+        '> .LightBoxQueue',
+        {
+          width: 12000,
+        },
+      ),
     ),
   ),
 )
 
-const imageRegionStyle = css(
+const imageRegionStyle = select(
+  '> .ImageRegion',
   {
+    float: 'left',
     margin: 0,
     width: 200,
   },
   select(
     '> .ImgHolderLightBox',
-    {  },
+    s.inline,
   ),
 )
 
@@ -49,22 +59,22 @@ const commentsLightBoxStyle = css(
     select(
       '> .LightBox',
       select(
-        '> .Comment',
-        s.inline,
-        { padding: 0 },
+        '> .LightBoxQueue',
         select(
-          '> .CommentBody',
+          '> .Comment',
           s.inline,
-          { padding: 0,
-            margin: 0,
-            border: 'none',
-            width: 'auto',
-          },
+          { padding: 0 },
           select(
-            '> div',
+            '> .CommentBody',
             s.inline,
+            { padding: 0,
+              margin: 0,
+              border: 'none',
+              width: 'auto',
+            },
             select(
-              '> .ImageRegion',
+              '> div',
+              s.inline,
               { ...imageRegionStyle },
             ),
           ),
@@ -81,26 +91,26 @@ const postsListLightBoxStyle = css(
     select(
       '> .LightBox',
       select(
-        '> .PostList',
+        '> .LightBoxQueue',
         select(
-          '> .Post',
-          s.inline,
-          { margin: 0,
-            padding: 0,
-          },
+          '> .PostList',
           select(
-            '> .PostBody',
+            '> .Post',
             s.inline,
-            { padding: 0,
-              margin: 0,
-              border: 'none',
-              width: 'auto',
+            { margin: 0,
+              padding: 0,
             },
             select(
-              '> div',
+              '> .PostBody',
               s.inline,
+              { padding: 0,
+                margin: 0,
+                border: 'none',
+                width: 'auto',
+              },
               select(
-                '> .ImageRegion',
+                '> div',
+                s.inline,
                 { ...imageRegionStyle },
               ),
             ),
@@ -118,18 +128,18 @@ const postsBodyLightBoxStyle = css(
     select(
       '> .LightBox',
       select(
-        '> .PostBody',
-        s.inline,
-        { padding: 0,
-          margin: 0,
-          border: 'none',
-          width: 'auto',
-        },
+        '> .LightBoxQueue',
         select(
-          '> div',
+          '> .PostBody',
           s.inline,
+          { padding: 0,
+            margin: 0,
+            border: 'none',
+            width: 'auto',
+          },
           select(
-            '> .ImageRegion',
+            '> div',
+            s.inline,
             { ...imageRegionStyle },
           ),
         ),
@@ -284,48 +294,50 @@ export default function (WrappedComponent) {
                   onClick={this.closeLightBox}
                 />
                 <div className="LightBox">
-                  {content &&
-                    <PostBody
-                      author={author}
-                      columnWidth={columnWidth}
-                      commentOffset={commentOffset}
-                      content={content}
-                      contentWarning={contentWarning}
-                      contentWidth={contentWidth}
-                      detailPath={detailPath}
-                      innerHeight={innerHeight}
-                      innerWidth={innerWidth}
-                      isGridMode={isGridMode}
-                      isPostDetail={isPostDetail}
-                      isRepost={isRepost}
-                      isLightBox
-                      toggleLightBox={(assetId) => this.handleImageClick(assetId, true)}
-                      post={post}
-                      postId={postId}
-                      repostContent={repostContent}
-                      showEditor={showEditor}
-                      summary={summary}
-                      supportsNativeEditor={supportsNativeEditor}
-                    />
-                  }
-                  {commentIds && commentIds.map(id =>
-                    (<CommentContainer
-                      toggleLightBox={(assetId) => this.handleImageClick(assetId, true)}
-                      isLightBox
-                      commentId={id}
-                      key={`commentContainer_${id}`}
-                    />),
-                  )}
-                  {postIds && postIds.map(id =>
-                    (<article className="PostList" key={`postsAsList_${id}`}>
-                      <PostContainer
+                  <div className="LightBoxQueue">
+                    {content &&
+                      <PostBody
+                        author={author}
+                        columnWidth={columnWidth}
+                        commentOffset={commentOffset}
+                        content={content}
+                        contentWarning={contentWarning}
+                        contentWidth={contentWidth}
+                        detailPath={detailPath}
+                        innerHeight={innerHeight}
+                        innerWidth={innerWidth}
+                        isGridMode={isGridMode}
+                        isPostDetail={isPostDetail}
+                        isRepost={isRepost}
+                        isLightBox
+                        toggleLightBox={(assetId) => this.handleImageClick(assetId, true)}
+                        post={post}
+                        postId={postId}
+                        repostContent={repostContent}
+                        showEditor={showEditor}
+                        summary={summary}
+                        supportsNativeEditor={supportsNativeEditor}
+                      />
+                    }
+                    {commentIds && commentIds.map(id =>
+                      (<CommentContainer
                         toggleLightBox={(assetId) => this.handleImageClick(assetId, true)}
                         isLightBox
-                        postId={id}
-                        isPostHeaderHidden={isPostHeaderHidden}
-                      />
-                    </article>),
-                  )}
+                        commentId={id}
+                        key={`commentContainer_${id}`}
+                      />),
+                    )}
+                    {postIds && postIds.map(id =>
+                      (<article className="PostList" key={`postsAsList_${id}`}>
+                        <PostContainer
+                          toggleLightBox={(assetId) => this.handleImageClick(assetId, true)}
+                          isLightBox
+                          postId={id}
+                          isPostHeaderHidden={isPostHeaderHidden}
+                        />
+                      </article>),
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
