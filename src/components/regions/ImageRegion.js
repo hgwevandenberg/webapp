@@ -264,11 +264,12 @@ class ImageRegion extends PureComponent {
   }
 
   renderGifAttachment() {
-    const { content, isNotification, isLightBoxImage, isPostBody, isPostDetail, isGridMode } = this.props
+    const { asset, content, isNotification, isLightBoxImage, isPostBody, isPostDetail, isGridMode } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
     const dimensions = this.getImageDimensions()
     return (
       <ImageAsset
+        id={!isLightBoxImage ? `asset_${asset.get('id')}` : null}
         alt={content.get('alt') ? content.get('alt').replace('.gif', '') : null}
         className="ImageAttachment"
         height={(isNotification || isLightBoxImage) ? 'auto' : dimensions.height}
@@ -291,12 +292,13 @@ class ImageRegion extends PureComponent {
   }
 
   renderImageAttachment() {
-    const { content, isNotification, isLightBoxImage, isPostBody, isPostDetail, isGridMode } = this.props
+    const { asset, content, isNotification, isLightBoxImage, isPostBody, isPostDetail, isGridMode } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
     const srcset = this.getImageSourceSet()
     const dimensions = this.getImageDimensions()
     return (
       <ImageAsset
+        id={!isLightBoxImage ? `asset_${asset.get('id')}` : `lightBoxAsset_${asset.get('id')}`}
         alt={content.get('alt') ? content.get('alt').replace('.jpg', '') : null}
         className="ImageAttachment"
         height={(isNotification || isLightBoxImage) ? 'auto' : dimensions.height}
@@ -320,7 +322,7 @@ class ImageRegion extends PureComponent {
   }
 
   renderLegacyImageAttachment() {
-    const { content, isNotification, isLightBoxImage, isPostBody, isPostDetail, isGridMode } = this.props
+    const { asset, content, isNotification, isLightBoxImage, isPostBody, isPostDetail, isGridMode } = this.props
     const attrs = { src: content.get('url') }
     const { scaledImageHeight, scaledImageWidth, width, height } = this.state
     const stateDimensions = width ? { width, height } : {}
@@ -329,6 +331,7 @@ class ImageRegion extends PureComponent {
     }
     return (
       <ImageAsset
+        id={!isLightBoxImage ? `asset_${asset.get('id')}` : null}
         alt={content.get('alt') ? content.get('alt').replace('.jpg', '') : null}
         className="ImageAttachment"
         onLoadFailure={this.onLoadFailure}
