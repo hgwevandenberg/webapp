@@ -31,8 +31,10 @@ const baseLightBoxStyle = css(
       s.overflowHidden,
       select(
         '> .LightBoxQueue',
+        s.relative,
         {
-          width: 12000,
+          width: 20000,
+          height: '100%',
         },
       ),
     ),
@@ -41,10 +43,14 @@ const baseLightBoxStyle = css(
 
 const imageRegionStyle = select(
   '> .ImageRegion',
+  s.relative,
+  s.containedAlignMiddle,
   {
     float: 'left',
     margin: 0,
-    width: 200,
+    marginLeft: 40,
+    marginRight: 40,
+    width: 'auto',
   },
   select(
     '> .ImgHolderLightBox',
@@ -94,6 +100,7 @@ const postsListLightBoxStyle = css(
         '> .LightBoxQueue',
         select(
           '> .PostList',
+          s.inline,
           select(
             '> .Post',
             s.inline,

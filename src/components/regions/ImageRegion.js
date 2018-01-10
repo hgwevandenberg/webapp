@@ -89,11 +89,12 @@ class ImageRegion extends PureComponent {
     const { shouldUseVideo } = this.props
 
     this.state = {
-      scale: null,
       currentImageHeight: null,
       currentImageWidth: null,
       measuredImageHeight: null,
       measuredImageWidth: null,
+      scaledImageHeight: null,
+      scaledImageWidth: null,
       status: shouldUseVideo ? STATUS.SUCCESS : STATUS.REQUEST,
     }
   }
@@ -104,15 +105,14 @@ class ImageRegion extends PureComponent {
       ['buyLinkURL', 'columnWidth', 'contentWidth', 'isGridMode'].some(prop =>
         nextProps[prop] !== this.props[prop],
       ) ||
-      ['scale', 'currentImageHeight', 'currentImageWidth', 'isLightBoxImage', 'status'].some(prop => nextState[prop] !== this.state[prop])
+      ['currentImageHeight', 'currentImageWidth', 'scaledImageHeight', 'scaledImageWidth', 'isLightBoxImage', 'status'].some(prop => nextState[prop] !== this.state[prop])
   }
 
   componentDidUpdate() {
     const { isLightBoxImage } = this.props
 
     if (isLightBoxImage) {
-      // return this.setImageScale()
-      return null
+      return this.setImageScale()
     }
     return null
   }
@@ -203,6 +203,7 @@ class ImageRegion extends PureComponent {
     return images.join(', ')
   }
 
+  // scales lightbox images to fill available screen space
   setImageScale() {
     const { measuredImageHeight, measuredImageWidth } = this.state
 
@@ -220,7 +221,7 @@ class ImageRegion extends PureComponent {
     }
 
     const innerHeightPadded = (window.innerHeight - 80)
-    const innerWidthPadded = (window.innerWidth - 80)
+    const innerWidthPadded = (window.innerWidth - (80 * 3))
 
     const innerRatio = innerWidthPadded / innerHeightPadded
     const imageRatio = imageWidth / imageHeight
@@ -233,10 +234,14 @@ class ImageRegion extends PureComponent {
       scale = (innerWidthPadded / imageWidth)
     }
 
+    const setScaledImageHeight = (measuredImageHeight * scale)
+    const setScaledImageWidth = (measuredImageWidth * scale)
+
     this.setState({
-      scale,
       currentImageHeight: measuredImageHeight,
       currentImageWidth: measuredImageWidth,
+      scaledImageHeight: setScaledImageHeight,
+      scaledImageWidth: setScaledImageWidth,
     })
   }
 
@@ -249,20 +254,6 @@ class ImageRegion extends PureComponent {
     }
   }
 
-  // resetImageScale() {
-  //   this.setState({
-  //     scale: null,
-  //     isLightBoxImage: false,
-  //   })
-
-  //   setTimeout(() => {
-  //     this.setState({
-  //       currentImageHeight: null,
-  //       currentImageWidth: null,
-  //     })
-  //   }, 100)
-  // }
-
   isBasicAttachment() {
     const { asset } = this.props
     return !asset || !asset.get('attachment')
@@ -274,7 +265,7 @@ class ImageRegion extends PureComponent {
 
   renderGifAttachment() {
     const { content, isNotification, isLightBoxImage, isPostBody, isPostDetail, isGridMode } = this.props
-    const { scale } = this.state
+    const { scaledImageHeight, scaledImageWidth } = this.state
     const dimensions = this.getImageDimensions()
     return (
       <ImageAsset
@@ -289,7 +280,7 @@ class ImageRegion extends PureComponent {
         isGridMode={isGridMode}
         src={this.attachment.getIn(['optimized', 'url'])}
         width={isNotification ? null : dimensions.width}
-        style={{ transform: scale ? `scale(${scale})` : null }}
+        style={isLightBoxImage ? { width: scaledImageWidth, height: scaledImageHeight } : null}
         onScreenDimensions={
           isPostBody && (isPostDetail || !isGridMode) ?
             ((measuredDimensions) => { this.handleScreenDimensions(measuredDimensions) }) :
@@ -301,7 +292,7 @@ class ImageRegion extends PureComponent {
 
   renderImageAttachment() {
     const { content, isNotification, isLightBoxImage, isPostBody, isPostDetail, isGridMode } = this.props
-    const { scale } = this.state
+    const { scaledImageHeight, scaledImageWidth } = this.state
     const srcset = this.getImageSourceSet()
     const dimensions = this.getImageDimensions()
     return (
@@ -318,7 +309,7 @@ class ImageRegion extends PureComponent {
         srcSet={srcset}
         src={this.attachment.getIn(['hdpi', 'url'])}
         width={isNotification ? null : dimensions.width}
-        style={{ transform: scale ? `scale(${scale})` : null }}
+        style={isLightBoxImage ? { width: scaledImageWidth, height: scaledImageHeight } : null}
         onScreenDimensions={
           isPostBody && (isPostDetail || !isGridMode) ?
             ((measuredDimensions) => { this.handleScreenDimensions(measuredDimensions) }) :
@@ -329,9 +320,9 @@ class ImageRegion extends PureComponent {
   }
 
   renderLegacyImageAttachment() {
-    const { content, isNotification, isPostBody, isPostDetail, isGridMode } = this.props
+    const { content, isNotification, isLightBoxImage, isPostBody, isPostDetail, isGridMode } = this.props
     const attrs = { src: content.get('url') }
-    const { scale, width, height } = this.state
+    const { scaledImageHeight, scaledImageWidth, width, height } = this.state
     const stateDimensions = width ? { width, height } : {}
     if (isNotification) {
       attrs.height = 'auto'
@@ -346,7 +337,7 @@ class ImageRegion extends PureComponent {
         isPostBody={isPostBody}
         isPostDetail={isPostDetail}
         isGridMode={isGridMode}
-        style={{ transform: scale ? `scale(${scale})` : null }}
+        style={isLightBoxImage ? { width: scaledImageWidth, height: scaledImageHeight } : null}
         onScreenDimensions={
           isPostBody && (isPostDetail || !isGridMode) ?
             ((measuredDimensions) => { this.handleScreenDimensions(measuredDimensions) }) :
