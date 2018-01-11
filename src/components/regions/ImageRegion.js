@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import classNames from 'classnames'
 import ImageAsset from '../assets/ImageAsset'
+import VideoAsset from '../assets/VideoAsset'
 import { ElloBuyButton } from '../editor/ElloBuyButton'
 import { css, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
@@ -95,17 +96,25 @@ class ImageRegion extends PureComponent {
       measuredImageWidth: null,
       scaledImageHeight: null,
       scaledImageWidth: null,
-      status: shouldUseVideo ? STATUS.SUCCESS : STATUS.REQUEST,
+      status: STATUS.REQUEST,
+    }
+  }
+
+  componentDidMount() {
+    const { shouldUseVideo, isLightBoxImage } = this.props
+
+    if (shouldUseVideo && isLightBoxImage) {
+      this.triggerLoadSuccess()
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return !Immutable.is(nextProps.isLightBoxImage, this.props.isLightBoxImage) ||
       !Immutable.is(nextProps.asset, this.props.asset) ||
-      ['buyLinkURL', 'columnWidth', 'contentWidth', 'isGridMode'].some(prop =>
+      ['buyLinkURL', 'columnWidth', 'contentWidth', 'isGridMode', 'isLightBoxImage'].some(prop =>
         nextProps[prop] !== this.props[prop],
       ) ||
-      ['currentImageHeight', 'currentImageWidth', 'scaledImageHeight', 'scaledImageWidth', 'isLightBoxImage', 'status'].some(prop => nextState[prop] !== this.state[prop])
+      ['currentImageHeight', 'currentImageWidth', 'scaledImageHeight', 'scaledImageWidth', 'status'].some(prop => nextState[prop] !== this.state[prop])
   }
 
   componentDidUpdate() {
@@ -132,6 +141,12 @@ class ImageRegion extends PureComponent {
 
   onLoadFailure = () => {
     this.setState({ status: STATUS.FAILURE })
+  }
+
+  triggerLoadSuccess() {
+    if (this.props.shouldUseVideo) {
+      this.setState({ status: STATUS.SUCCESS })
+    }
   }
 
   getAttachmentMetadata() {
@@ -205,6 +220,7 @@ class ImageRegion extends PureComponent {
 
   // scales lightbox images to fill available screen space
   setImageScale() {
+    const { shouldUseVideo } = this.props
     const { measuredImageHeight, measuredImageWidth } = this.state
 
     const dimensions = this.getImageDimensions()
@@ -219,6 +235,8 @@ class ImageRegion extends PureComponent {
       imageHeight = height
       imageWidth = width
     }
+
+
 
     const innerHeightPadded = (window.innerHeight - 80)
     const innerWidthPadded = (window.innerWidth - (80 * 3))
@@ -251,6 +269,10 @@ class ImageRegion extends PureComponent {
         measuredImageHeight: measuredDimensions.height,
         measuredImageWidth: measuredDimensions.width,
       })
+
+      if (this.props.shouldUseVideo) {
+        return this.setImageScale()
+      }
     }
   }
 
@@ -269,7 +291,7 @@ class ImageRegion extends PureComponent {
     const dimensions = this.getImageDimensions()
     return (
       <ImageAsset
-        id={!isLightBoxImage ? `asset_${asset.get('id')}` : null}
+        id={!isLightBoxImage ? `asset_${asset.get('id')}` : `lightBoxAsset_${asset.get('id')}`}
         alt={content.get('alt') ? content.get('alt').replace('.gif', '') : null}
         className="ImageAttachment"
         height={(isNotification || isLightBoxImage) ? 'auto' : dimensions.height}
@@ -331,7 +353,7 @@ class ImageRegion extends PureComponent {
     }
     return (
       <ImageAsset
-        id={!isLightBoxImage ? `asset_${asset.get('id')}` : null}
+        id={!isLightBoxImage ? `asset_${asset.get('id')}` : `lightBoxAsset_${asset.get('id')}`}
         alt={content.get('alt') ? content.get('alt').replace('.jpg', '') : null}
         className="ImageAttachment"
         onLoadFailure={this.onLoadFailure}
@@ -353,19 +375,22 @@ class ImageRegion extends PureComponent {
   }
 
   renderVideoAttachment() {
-    const { height, width } = this.getImageDimensions()
+    const { asset, isLightBoxImage, isPostBody, isPostDetail, isGridMode } = this.props
+    const { scaledImageHeight, scaledImageWidth } = this.state
+    const dimensions = this.getImageDimensions()
     return (
-      <video
-        autoPlay
-        height={height}
-        loop
-        muted
-        playsInline
-        width={width}
-      >
-        <track kind="captions" />
-        <source src={this.attachment.getIn(['video', 'url'])} />
-      </video>
+      <VideoAsset
+        id={!isLightBoxImage ? `asset_${asset.get('id')}` : `lightBoxAsset_${asset.get('id')}`}
+        height={dimensions.height}
+        width={dimensions.width}
+        src={this.attachment.getIn(['video', 'url'])}
+        style={isLightBoxImage ? { width: scaledImageWidth, height: scaledImageHeight } : null}
+        onScreenDimensions={
+          isPostBody && (isPostDetail || !isGridMode) ?
+            ((measuredDimensions) => { this.handleScreenDimensions(measuredDimensions) }) :
+            null
+        }
+      />
     )
   }
 
@@ -434,4 +459,3 @@ class ImageRegion extends PureComponent {
 }
 
 export default ImageRegion
-

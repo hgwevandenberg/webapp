@@ -32,6 +32,7 @@ const baseLightBoxStyle = css(
       select(
         '> .LightBoxQueue',
         s.relative,
+        s.transitionTransform,
         {
           width: 'auto',
           height: '100%',
@@ -272,7 +273,9 @@ export default function (WrappedComponent) {
     }
 
     handleMaskClick(e) {
-      if (e.target.nodeName !== 'IMG' && e.target.nodeName !== 'BUTTON') {
+      if (e.target.nodeName !== 'IMG' &&
+        e.target.nodeName !== 'VIDEO' &&
+        e.target.nodeName !== 'BUTTON') {
         return this.closeLightBox()
       }
       return null
