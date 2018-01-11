@@ -221,8 +221,14 @@ export default function (WrappedComponent) {
       // remove loading close if lightbox was recently opened
       if (this.state.open && !prevState.open) {
         setTimeout(() => {
-          this.removeLoadingCLass()
+          this.removeLoadingClass()
         }, transitionDelay)
+      }
+
+      // manually set some stuff on the containers that are stateless (streams)
+      const { commentIds, postIds } = this.props
+      if (commentIds || postIds) {
+        this.manuallySetAssetClasses(prevState.selectedAssetId, this.state.selectedAssetId)
       }
     }
 
@@ -284,20 +290,6 @@ export default function (WrappedComponent) {
       })
     }
 
-    removeLoadingCLass() {
-      const transitionDelay = 200
-
-      this.setState({
-        loading: false,
-      })
-
-      return setTimeout(() => {
-        this.setState({
-          loaded: true,
-        })
-      }, transitionDelay)
-    }
-
     closeLightBox() {
       const releaseKeys = true
       this.bindKeys(releaseKeys)
@@ -318,6 +310,32 @@ export default function (WrappedComponent) {
         return this.closeLightBox()
       }
       return null
+    }
+
+    removeLoadingClass() {
+      const transitionDelay = 200
+
+      this.setState({
+        loading: false,
+      })
+
+      return setTimeout(() => {
+        this.setState({
+          loaded: true,
+        })
+      }, transitionDelay)
+    }
+
+    manuallySetAssetClasses(prevAssetId, currentAssetId) {
+      const prevAsset = document.getElementById(`lightBoxAsset_${prevAssetId}`)
+      const currentAsset = document.getElementById(`lightBoxAsset_${currentAssetId}`)
+
+      if (prevAsset) {
+        prevAsset.classList.remove('selected')
+      }
+      if (currentAsset) {
+        currentAsset.classList.add('selected')
+      }
     }
 
     setLightBoxStyle() {
