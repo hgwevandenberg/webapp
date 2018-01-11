@@ -22,12 +22,14 @@ export class RegionItems extends PureComponent {
     isComment: PropTypes.bool,
     isLightBox: PropTypes.bool,
     toggleLightBox: PropTypes.func,
+    lightBoxSelectedId: PropTypes.string,
   }
   static defaultProps = {
     isPostBody: false,
     isComment: false,
     isLightBox: false,
     toggleLightBox: null,
+    lightBoxSelectedId: null,
   }
 
   componentWillMount() {
@@ -163,7 +165,7 @@ export class RegionItems extends PureComponent {
 
   render() {
     const { columnWidth, commentOffset, content, contentWidth,
-      detailPath, innerHeight, isComment, isGridMode, isPostDetail, isLightBox, toggleLightBox } = this.props
+      detailPath, innerHeight, isComment, isGridMode, isPostDetail, isLightBox, toggleLightBox, lightBoxSelectedId } = this.props
     const { assetIdToSet } = this.state
 
     // sometimes the content is null/undefined for some reason
@@ -207,6 +209,7 @@ export class RegionItems extends PureComponent {
               isGridMode={isGridMode}
               isPostDetail={isPostDetail}
               isLightBoxImage={isLightBox}
+              lightBoxSelectedId={lightBoxSelectedId}
               shouldUseVideo={!!(asset && asset.getIn(['attachment', 'video'], Immutable.Map()).size) && !isIOS() && !isPostDetail}
               handleStaticImageRegionClick={
                 event => this.handleStaticImageRegionClick(event, assetId, toggleLightBox)

@@ -31,13 +31,28 @@ const baseLightBoxStyle = css(
       s.overflowHidden,
       select(
         '> .LightBoxQueue',
+        s.transitionOpacity,
         s.relative,
-        s.transitionTransform,
         {
           width: 'auto',
           height: '100%',
           whiteSpace: 'nowrap',
+          opacity: 1,
         },
+      ),
+    ),
+    select(
+      '> .LightBox.loaded',
+      select(
+        '> .LightBoxQueue',
+        s.transitionTransform,
+      ),
+    ),
+    select(
+      '> .LightBox.loading',
+      select(
+        '> .LightBoxQueue',
+        { opacity: 0 },
       ),
     ),
   ),
@@ -177,6 +192,9 @@ export default function (WrappedComponent) {
       super(props)
       this.state = {
         open: false,
+        loading: true,
+        loaded: false,
+        selectedAssetId: null,
         queueOffsetX: 0,
       }
 
@@ -190,16 +208,21 @@ export default function (WrappedComponent) {
         this.bindKeys()
       }
 
-      // move queue to new image position
-      let slideDelay = 0
-      if (!prevState.open) {
-        slideDelay = 500
-      }
+      const slideDelay = !prevState.open ? 5 : 0
+      const transitionDelay = 200
 
+      // advance lightbox queue to specific asset
       if (this.state.open && (prevState.selectedAssetId !== this.state.selectedAssetId)) {
         setTimeout(() => {
           this.slideQueue()
         }, slideDelay)
+      }
+
+      // remove loading close if lightbox was recently opened
+      if (this.state.open && !prevState.open) {
+        setTimeout(() => {
+          this.removeLoadingCLass()
+        }, transitionDelay)
       }
     }
 
@@ -261,12 +284,28 @@ export default function (WrappedComponent) {
       })
     }
 
+    removeLoadingCLass() {
+      const transitionDelay = 200
+
+      this.setState({
+        loading: false,
+      })
+
+      return setTimeout(() => {
+        this.setState({
+          loaded: true,
+        })
+      }, transitionDelay)
+    }
+
     closeLightBox() {
       const releaseKeys = true
       this.bindKeys(releaseKeys)
 
       return this.setState({
         open: false,
+        loading: true,
+        loaded: false,
         selectedAssetId: null,
         queueOffsetX: 0,
       })
@@ -336,7 +375,7 @@ export default function (WrappedComponent) {
                 <DismissButtonLGReverse
                   onClick={this.closeLightBox}
                 />
-                <div className="LightBox">
+                <div className={`LightBox ${this.state.loading ? 'loading' : ''}${this.state.loaded ? 'loaded' : ''}`}>
                   <div
                     className="LightBoxQueue"
                     style={{ transform: `translateX(${this.state.queueOffsetX}px)` }}
@@ -357,6 +396,7 @@ export default function (WrappedComponent) {
                         isRepost={isRepost}
                         isLightBox
                         toggleLightBox={(assetId) => this.handleImageClick(assetId, true)}
+                        lightBoxSelectedId={this.state.selectedAssetId}
                         post={post}
                         postId={postId}
                         repostContent={repostContent}
@@ -369,6 +409,7 @@ export default function (WrappedComponent) {
                       (<CommentContainer
                         toggleLightBox={(assetId) => this.handleImageClick(assetId, true)}
                         isLightBox
+                        lightBoxSelectedId={this.state.selectedAssetId}
                         commentId={id}
                         key={`commentContainer_${id}`}
                       />),
@@ -378,6 +419,7 @@ export default function (WrappedComponent) {
                         <PostContainer
                           toggleLightBox={(assetId) => this.handleImageClick(assetId, true)}
                           isLightBox
+                          lightBoxSelectedId={this.state.selectedAssetId}
                           postId={id}
                           isPostHeaderHidden={isPostHeaderHidden}
                         />

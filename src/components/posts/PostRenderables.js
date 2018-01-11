@@ -378,6 +378,7 @@ export class PostBody extends PureComponent {
     isRepost: PropTypes.bool.isRequired,
     isLightBox: PropTypes.bool,
     toggleLightBox: PropTypes.func,
+    lightBoxSelectedId: PropTypes.string,
     post: PropTypes.object.isRequired,
     postId: PropTypes.string.isRequired,
     repostContent: PropTypes.object,
@@ -406,6 +407,7 @@ export class PostBody extends PureComponent {
       isRepost,
       isLightBox,
       toggleLightBox,
+      lightBoxSelectedId,
       post,
       postId,
       repostContent,
@@ -434,6 +436,7 @@ export class PostBody extends PureComponent {
       isPostBody,
       isLightBox,
       toggleLightBox,
+      lightBoxSelectedId,
     }
     if (isRepost) {
       // this is weird, but the post summary is
@@ -615,6 +618,7 @@ export const Post = ({
   isWatchingPost,
   isLightBox,
   toggleLightBox,
+  lightBoxSelectedId,
   post,
   postCommentsCount,
   postCreatedAt,
@@ -655,6 +659,7 @@ export const Post = ({
         isRepost,
         isLightBox,
         toggleLightBox,
+        lightBoxSelectedId,
         post,
         postId,
         repostContent,
@@ -732,6 +737,7 @@ Post.propTypes = {
   isWatchingPost: PropTypes.bool.isRequired,
   isLightBox: PropTypes.bool,
   toggleLightBox: PropTypes.func,
+  lightBoxSelectedId: PropTypes.string,
   post: PropTypes.object.isRequired,
   postCommentsCount: PropTypes.number,
   postCreatedAt: PropTypes.string,

@@ -51,6 +51,7 @@ export class CommentBody extends PureComponent {
     isPostDetail: PropTypes.bool.isRequired,
     isLightBox: PropTypes.bool.isRequired,
     toggleLightBox: PropTypes.func.isRequired,
+    lightBoxSelectedId: PropTypes.string,
   }
   render() {
     const {
@@ -65,6 +66,7 @@ export class CommentBody extends PureComponent {
       isPostDetail,
       isLightBox,
       toggleLightBox,
+      lightBoxSelectedId,
     } = this.props
     return (
       <div className="CommentBody" key={`CommentBody${commentId}`} >
@@ -81,6 +83,7 @@ export class CommentBody extends PureComponent {
           isPostDetail={isPostDetail}
           isLightBox={isLightBox}
           toggleLightBox={toggleLightBox}
+          lightBoxSelectedId={lightBoxSelectedId}
         />
       </div>
     )
