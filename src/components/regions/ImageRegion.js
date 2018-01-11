@@ -17,24 +17,15 @@ const STATUS = {
   FAILURE: 'isFailing',
 }
 
-const baseImageStyle = css(
-  s.inline,
-)
-
 const streamImageStyle = css(
-  { ...baseImageStyle },
+  s.inline,
   s.relative,
   s.center,
   s.bgcF2,
-  select(
-    '> .ImgHolder',
-    s.relative,
-    s.inlineBlock,
-  ),
 )
 
 const lightBoxImageStyle = css(
-  { ...baseImageStyle },
+  s.inline,
   select(
     '> .ImgHolder',
     s.inline,
