@@ -245,12 +245,14 @@ export default function (WrappedComponent) {
         open: false,
         loading: true,
         loaded: false,
-        selectedAssetId: null,
+        assetIdToSet: null,
+        assetIdToSetPrev: null,
+        assetIdToSetNext: null,
         queueOffsetX: 0,
       }
 
       this.handleImageClick = this.handleImageClick.bind(this)
-      this.closeLightBox = this.closeLightBox.bind(this)
+      this.close = this.close.bind(this)
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -263,7 +265,7 @@ export default function (WrappedComponent) {
       const transitionDelay = 200
 
       // advance lightbox queue to specific asset
-      if (this.state.open && (prevState.selectedAssetId !== this.state.selectedAssetId)) {
+      if (this.state.open && (prevState.assetIdToSet !== this.state.assetIdToSet)) {
         setTimeout(() => {
           this.slideQueue()
         }, slideDelay)
@@ -279,7 +281,7 @@ export default function (WrappedComponent) {
       // manually set some stuff on the containers that are stateless (streams)
       const { commentIds, postIds } = this.props
       if (commentIds || postIds) {
-        manuallySetAssetClasses(prevState.selectedAssetId, this.state.selectedAssetId)
+        manuallySetAssetClasses(prevState.assetIdToSet, this.state.assetIdToSet)
       }
     }
 
@@ -290,29 +292,91 @@ export default function (WrappedComponent) {
 
     bindKeys(unbind) {
       Mousetrap.unbind(SHORTCUT_KEYS.ESC)
-      // Mousetrap.unbind(SHORTCUT_KEYS.PREV)
-      // Mousetrap.unbind(SHORTCUT_KEYS.NEXT)
+      Mousetrap.unbind(SHORTCUT_KEYS.PREV)
+      Mousetrap.unbind(SHORTCUT_KEYS.NEXT)
 
       if (!unbind) {
-        Mousetrap.bind(SHORTCUT_KEYS.ESC, () => { this.closeLightBox() })
-
-        // if (lightBox && assetId) {
-        //   Mousetrap.bind(SHORTCUT_KEYS.ESC, () => { this.setLightBox(lightBox, assetId) })
-        //   Mousetrap.bind(SHORTCUT_KEYS.PREV, () => { this.advanceLightBox('prev') })
-        //   Mousetrap.bind(SHORTCUT_KEYS.NEXT, () => { this.advanceLightBox('next') })
-        // }
+        Mousetrap.bind(SHORTCUT_KEYS.ESC, () => { this.close() })
+        Mousetrap.bind(SHORTCUT_KEYS.PREV, () => { this.advance('prev') })
+        Mousetrap.bind(SHORTCUT_KEYS.NEXT, () => { this.advance('next') })
       }
     }
 
     handleImageClick(assetId) {
-      return this.setState({
+      this.setState({
         open: true,
-        selectedAssetId: assetId,
+        assetIdToSet: assetId,
       })
+      // update pagination
+      return this.setPagination(assetId)
+    }
+
+    advance(direction) {
+      let newAssetIdToSet = null
+
+      switch (direction) {
+        case 'prev' :
+          newAssetIdToSet = this.state.assetIdToSetPrev
+          break
+        case 'next' :
+          newAssetIdToSet = this.state.assetIdToSetNext
+          break
+        default :
+          newAssetIdToSet = this.state.assetIdToSet
+      }
+
+      // advance to new image
+      this.setState({
+        assetIdToSet: newAssetIdToSet,
+      })
+
+      // update pagination
+      return this.setPagination(newAssetIdToSet)
+    }
+
+    setPagination(assetId) {
+      const { content } = this.props
+      const imageContent = content.filter(region => region.get('kind') === 'image')
+      const numberItems = imageContent.size
+
+      let existingItemIndex = null
+      imageContent.map((region, index) => {
+        const loopAsset = region.get('asset')
+        const loopAssetId = loopAsset ? loopAsset.get('id') : null
+
+        if (loopAssetId === assetId) {
+          existingItemIndex = index
+          return existingItemIndex
+        }
+        return null
+      })
+
+      if (existingItemIndex !== null) {
+        let prevIndex = existingItemIndex - 1
+        let nextIndex = existingItemIndex + 1
+
+        if (existingItemIndex === 0) {
+          prevIndex = numberItems - 1
+        }
+
+        if (existingItemIndex === (numberItems - 1)) {
+          nextIndex = 0
+        }
+
+        /* eslint-disable no-underscore-dangle */
+        const prevItemAssetId = imageContent._tail.array[prevIndex].get('asset').get('id')
+        const nextItemAssetId = imageContent._tail.array[nextIndex].get('asset').get('id')
+        /* eslint-enable no-underscore-dangle */
+
+        this.setState({
+          assetIdToSetPrev: prevItemAssetId,
+          assetIdToSetNext: nextItemAssetId,
+        })
+      }
     }
 
     slideQueue() {
-      const assetId = this.state.selectedAssetId
+      const assetId = this.state.assetIdToSet
       const assetDomId = `lightBoxAsset_${assetId}`
 
       // select the DOM elements
@@ -335,7 +399,7 @@ export default function (WrappedComponent) {
       })
     }
 
-    closeLightBox() {
+    close() {
       const releaseKeys = true
       this.bindKeys(releaseKeys)
 
@@ -343,7 +407,7 @@ export default function (WrappedComponent) {
         open: false,
         loading: true,
         loaded: false,
-        selectedAssetId: null,
+        assetIdToSet: null,
         queueOffsetX: 0,
       })
     }
@@ -352,7 +416,7 @@ export default function (WrappedComponent) {
       if (e.target.nodeName !== 'IMG' &&
         e.target.nodeName !== 'VIDEO' &&
         e.target.nodeName !== 'BUTTON') {
-        return this.closeLightBox()
+        return this.close()
       }
       return null
     }
@@ -424,7 +488,7 @@ export default function (WrappedComponent) {
             <div className={this.setLightBoxStyle()}>
               <div className="LightBoxMask" role="presentation" onClick={e => this.handleMaskClick(e)}>
                 <DismissButtonLGReverse
-                  onClick={this.closeLightBox}
+                  onClick={this.close}
                 />
                 <div className={`LightBox ${this.state.loading ? 'loading' : ''}${this.state.loaded ? 'loaded' : ''}`}>
                   <div
@@ -447,7 +511,7 @@ export default function (WrappedComponent) {
                         isRepost={isRepost}
                         isLightBox
                         toggleLightBox={assetId => this.handleImageClick(assetId)}
-                        lightBoxSelectedId={this.state.selectedAssetId}
+                        lightBoxSelectedId={this.state.assetIdToSet}
                         post={post}
                         postId={postId}
                         repostContent={repostContent}
@@ -460,7 +524,7 @@ export default function (WrappedComponent) {
                       (<CommentContainer
                         toggleLightBox={assetId => this.handleImageClick(assetId)}
                         isLightBox
-                        lightBoxSelectedId={this.state.selectedAssetId}
+                        lightBoxSelectedId={this.state.assetIdToSet}
                         commentId={id}
                         key={`commentContainer_${id}`}
                       />),
@@ -470,7 +534,7 @@ export default function (WrappedComponent) {
                         <PostContainer
                           toggleLightBox={assetId => this.handleImageClick(assetId)}
                           isLightBox
-                          lightBoxSelectedId={this.state.selectedAssetId}
+                          lightBoxSelectedId={this.state.assetIdToSet}
                           postId={id}
                           isPostHeaderHidden={isPostHeaderHidden}
                         />
