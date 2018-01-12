@@ -13,22 +13,6 @@ function handleStaticImageRegionClick(event, assetId, toggleLightBox) {
     return toggleLightBox(assetId)
   }
   return null
-  // const { isPostBody, isPostDetail, isGridMode, isComment } = this.props
-  // const { lightBox } = this.state
-  // const buyButtonClick = event.target.classList.contains('ElloBuyButton')
-
-  // if (isPostBody && !buyButtonClick && (isPostDetail || !isGridMode)) {
-  //   return this.setLightBox(lightBox, assetId)
-  // }
-
-  // if (isComment) {
-  //   return this.setLightBox(lightBox, assetId)
-  // }
-
-  // return this.setState({
-  //   lightBox: false,
-  //   assetIdToSet: null,
-  // })
 }
 
 export class RegionItems extends PureComponent {
@@ -51,113 +35,6 @@ export class RegionItems extends PureComponent {
     isLightBox: false,
     toggleLightBox: null,
     lightBoxSelectedId: null,
-  }
-
-  componentWillMount() {
-    this.state = {
-      lightBox: false,
-      assetIdToSet: null,
-      assetIdToSetPrev: null,
-      assetIdToSetNext: null,
-    }
-  }
-
-  // manage light box
-  setLightBox(lightBox, assetId) {
-    if (assetId) {
-      // find prev / next
-      if (!lightBox) {
-        this.setLighBoxPagination(assetId)
-      }
-
-      // this.bindLightBoxKeys(!lightBox, assetId)
-
-      return this.setState({
-        lightBox: !lightBox,
-        assetIdToSet: assetId,
-      })
-    }
-    return null
-  }
-
-  setLighBoxPagination(assetId) {
-    const { content } = this.props
-    const imageContent = content.filter(region => region.get('kind') === 'image')
-    const numberItems = imageContent.size
-
-    let existingItemIndex = null
-    imageContent.map((region, index) => {
-      const loopAsset = region.get('asset')
-      const loopAssetId = loopAsset ? loopAsset.get('id') : null
-
-      if (loopAssetId === assetId) {
-        existingItemIndex = index
-        return existingItemIndex
-      }
-      return null
-    })
-
-    if (existingItemIndex !== null) {
-      let prevIndex = existingItemIndex - 1
-      let nextIndex = existingItemIndex + 1
-
-      if (existingItemIndex === 0) {
-        prevIndex = numberItems - 1
-      }
-
-      if (existingItemIndex === (numberItems - 1)) {
-        nextIndex = 0
-      }
-
-      /* eslint-disable no-underscore-dangle */
-      const prevItemAssetId = imageContent._tail.array[prevIndex].get('asset').get('id')
-      const nextItemAssetId = imageContent._tail.array[nextIndex].get('asset').get('id')
-      /* eslint-enable no-underscore-dangle */
-
-      // console.log(
-      //   `existing: ${existingItemIndex}, next: ${nextItemAssetId}, prev: ${prevItemAssetId}`
-      // )
-
-      this.setState({
-        assetIdToSetPrev: prevItemAssetId,
-        assetIdToSetNext: nextItemAssetId,
-      })
-    }
-  }
-
-  advanceLightBox(direction) {
-    let newAssetIdToSet = null
-
-    switch (direction) {
-      case 'prev' :
-        newAssetIdToSet = this.state.assetIdToSetPrev
-        break
-      case 'next' :
-        newAssetIdToSet = this.state.assetIdToSetNext
-        break
-      default :
-        newAssetIdToSet = this.state.assetIdToSet
-    }
-
-    // advance to new image
-    this.setState({
-      assetIdToSet: newAssetIdToSet,
-    })
-
-    // update pagination
-    return this.setLighBoxPagination(newAssetIdToSet)
-  }
-
-  bindLightBoxKeys(lightBox, assetId) {
-    Mousetrap.unbind(SHORTCUT_KEYS.ESC)
-    Mousetrap.unbind(SHORTCUT_KEYS.PREV)
-    Mousetrap.unbind(SHORTCUT_KEYS.NEXT)
-
-    if (lightBox && assetId) {
-      Mousetrap.bind(SHORTCUT_KEYS.ESC, () => { this.setLightBox(lightBox, assetId) })
-      Mousetrap.bind(SHORTCUT_KEYS.PREV, () => { this.advanceLightBox('prev') })
-      Mousetrap.bind(SHORTCUT_KEYS.NEXT, () => { this.advanceLightBox('next') })
-    }
   }
 
   render() {
