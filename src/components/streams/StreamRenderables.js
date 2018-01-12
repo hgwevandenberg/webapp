@@ -43,7 +43,7 @@ export const categoriesAsGrid = categoryIds =>
   </div>)
 
 // COMMENTS
-class CommentsAsListSimple extends Component {
+class CommentsAsListSimple extends Component { // eslint-disable-line react/no-multi-comp
   static propTypes = {
     toggleLightBox: PropTypes.func.isRequired,
     commentIds: PropTypes.object,
@@ -229,7 +229,7 @@ const postListStyle = css(
   select('& .ImageRegion img', { height: 'auto' }),
 )
 
-class PostsAsListSimple extends Component {
+class PostsAsListSimple extends Component { // eslint-disable-line react/no-multi-comp
   static propTypes = {
     toggleLightBox: PropTypes.func.isRequired,
     postIds: PropTypes.object.isRequired,

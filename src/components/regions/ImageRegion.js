@@ -99,8 +99,6 @@ class ImageRegion extends PureComponent {
   }
 
   componentWillMount() {
-    const { shouldUseVideo } = this.props
-
     this.state = {
       currentImageHeight: null,
       currentImageWidth: null,
@@ -129,10 +127,9 @@ class ImageRegion extends PureComponent {
       ['currentImageHeight', 'currentImageWidth', 'scaledImageHeight', 'scaledImageWidth', 'status'].some(prop => nextState[prop] !== this.state[prop])
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate() {
     const { isLightBoxImage } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
-    const lightWasOff = (!prevProps.isLightBoxImage && isLightBoxImage)
 
     // return this.setImageScale()
     if (isLightBoxImage && scaledImageHeight === null && scaledImageWidth === null) {
@@ -156,12 +153,6 @@ class ImageRegion extends PureComponent {
 
   onLoadFailure = () => {
     this.setState({ status: STATUS.FAILURE })
-  }
-
-  triggerLoadSuccess() {
-    if (this.props.shouldUseVideo) {
-      this.setState({ status: STATUS.SUCCESS })
-    }
   }
 
   getAttachmentMetadata() {
@@ -275,6 +266,12 @@ class ImageRegion extends PureComponent {
     })
   }
 
+  triggerLoadSuccess() {
+    if (this.props.shouldUseVideo) {
+      this.setState({ status: STATUS.SUCCESS })
+    }
+  }
+
   handleScreenDimensions = (measuredDimensions) => {
     if (measuredDimensions) {
       this.setState({
@@ -285,7 +282,9 @@ class ImageRegion extends PureComponent {
       if (this.props.shouldUseVideo) {
         return this.setImageScale()
       }
+      return null
     }
+    return null
   }
 
   isBasicAttachment() {
@@ -298,7 +297,16 @@ class ImageRegion extends PureComponent {
   }
 
   renderImageAttachment() {
-    const { asset, content, isNotification, isLightBoxImage, isPostBody, isPostDetail, isGridMode, lightBoxSelectedId } = this.props
+    const {
+      asset,
+      content,
+      isNotification,
+      isLightBoxImage,
+      isPostBody,
+      isPostDetail,
+      isGridMode,
+      lightBoxSelectedId,
+    } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
     const selected = (asset.get('id') === lightBoxSelectedId)
     const srcset = this.getImageSourceSet()
@@ -329,7 +337,16 @@ class ImageRegion extends PureComponent {
   }
 
   renderLegacyImageAttachment() {
-    const { asset, content, isNotification, isLightBoxImage, isPostBody, isPostDetail, isGridMode, lightBoxSelectedId } = this.props
+    const {
+      asset,
+      content,
+      isNotification,
+      isLightBoxImage,
+      isPostBody,
+      isPostDetail,
+      isGridMode,
+      lightBoxSelectedId,
+    } = this.props
     const attrs = { src: content.get('url') }
     const { scaledImageHeight, scaledImageWidth, width, height } = this.state
     const stateDimensions = width ? { width, height } : {}
@@ -361,7 +378,16 @@ class ImageRegion extends PureComponent {
   }
 
   renderGifAttachment() {
-    const { asset, content, isNotification, isLightBoxImage, isPostBody, isPostDetail, isGridMode, lightBoxSelectedId } = this.props
+    const {
+      asset,
+      content,
+      isNotification,
+      isLightBoxImage,
+      isPostBody,
+      isPostDetail,
+      isGridMode,
+      lightBoxSelectedId,
+    } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
     const selected = (asset.get('id') === lightBoxSelectedId)
     const dimensions = this.getImageDimensions()
@@ -390,7 +416,14 @@ class ImageRegion extends PureComponent {
   }
 
   renderVideoAttachment() {
-    const { asset, isLightBoxImage, isPostBody, isPostDetail, isGridMode, lightBoxSelectedId } = this.props
+    const {
+      asset,
+      isLightBoxImage,
+      isPostBody,
+      isPostDetail,
+      isGridMode,
+      lightBoxSelectedId,
+    } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
     const selected = (asset.get('id') === lightBoxSelectedId)
     const dimensions = this.getImageDimensions()

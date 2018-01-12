@@ -18,18 +18,12 @@ export default class Asset extends PureComponent {
 
   static propTypes = {
     id: PropTypes.string,
-    isPostBody: PropTypes.bool,
-    isPostDetail: PropTypes.bool,
-    isGridMode: PropTypes.bool,
     onScreenDimensions: PropTypes.func,
     src: PropTypes.string,
   }
 
   static defaultProps = {
     id: null,
-    isPostBody: false,
-    isPostDetail: false,
-    isGridMode: false,
     onScreenDimensions: null,
     src: null,
   }
@@ -88,13 +82,10 @@ export default class Asset extends PureComponent {
     const elementProps = { ...this.props }
     delete elementProps.onLoadFailure
     delete elementProps.onLoadSuccess
-    delete elementProps.isPostBody
-    delete elementProps.isPostDetail
-    delete elementProps.isGridMode
     delete elementProps.onScreenDimensions
     return (
       <video
-        id={elementProps.id}
+        id={this.props.id}
         autoPlay
         loop
         muted
@@ -104,7 +95,7 @@ export default class Asset extends PureComponent {
         ref={(videoOnScreen) => { this.videoOnScreen = videoOnScreen }}
       >
         <track kind="captions" />
-        <source src={elementProps.src} />
+        <source src={elementProps.src} className={backgroundStyle} />
       </video>
     )
   }

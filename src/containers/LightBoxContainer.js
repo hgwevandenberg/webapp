@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import Mousetrap from 'mousetrap'
 import { DismissButtonLGReverse } from '../components/buttons/Buttons'
 import CommentContainer from './CommentContainer'
 import PostContainer from './PostContainer'
 import { PostBody } from '../components/posts/PostRenderables'
 // import { RegionItems } from '../regions/RegionRenderables'
-import { css, media, parent, select } from '../styles/jss'
+import { css, select } from '../styles/jss'
 import * as s from '../styles/jso'
 import { SHORTCUT_KEYS } from '../constants/application_types'
 
@@ -172,6 +173,18 @@ const postsBodyLightBoxStyle = css(
   ),
 )
 
+function manuallySetAssetClasses(prevAssetId, currentAssetId) {
+  const prevAsset = document.getElementById(`lightBoxAsset_${prevAssetId}`)
+  const currentAsset = document.getElementById(`lightBoxAsset_${currentAssetId}`)
+
+  if (prevAsset) {
+    prevAsset.classList.remove('selected')
+  }
+  if (currentAsset) {
+    currentAsset.classList.add('selected')
+  }
+}
+
 // Wraps LightBox controls/state around a component
 // This function takes a component
 export default function (WrappedComponent) {
@@ -180,12 +193,50 @@ export default function (WrappedComponent) {
       content: PropTypes.object, // for individual posts
       commentIds: PropTypes.object, // for comment stream
       postIds: PropTypes.object, // for posts list stream
+      // below for individual posts
+      author: PropTypes.object,
+      columnWidth: PropTypes.number,
+      commentOffset: PropTypes.number,
+      contentWarning: PropTypes.string,
+      contentWidth: PropTypes.number,
+      detailPath: PropTypes.string,
+      innerHeight: PropTypes.number,
+      innerWidth: PropTypes.number,
+      isGridMode: PropTypes.bool,
+      isPostDetail: PropTypes.bool,
+      isPostHeaderHidden: PropTypes.bool,
+      isRepost: PropTypes.bool,
+      post: PropTypes.object,
+      postId: PropTypes.string,
+      repostContent: PropTypes.object,
+      showEditor: PropTypes.bool,
+      summary: PropTypes.object,
+      supportsNativeEditor: PropTypes.bool,
     }
 
     static defaultProps = {
       content: null,
       commentIds: null,
       postIds: null,
+      // below for individual posts
+      author: null,
+      columnWidth: null,
+      commentOffset: null,
+      contentWarning: null,
+      contentWidth: null,
+      detailPath: null,
+      innerHeight: null,
+      innerWidth: null,
+      isGridMode: false,
+      isPostDetail: false,
+      isPostHeaderHidden: false,
+      isRepost: false,
+      post: null,
+      postId: null,
+      repostContent: null,
+      showEditor: false,
+      summary: null,
+      supportsNativeEditor: false,
     }
 
     constructor(props) {
@@ -228,7 +279,7 @@ export default function (WrappedComponent) {
       // manually set some stuff on the containers that are stateless (streams)
       const { commentIds, postIds } = this.props
       if (commentIds || postIds) {
-        this.manuallySetAssetClasses(prevState.selectedAssetId, this.state.selectedAssetId)
+        manuallySetAssetClasses(prevState.selectedAssetId, this.state.selectedAssetId)
       }
     }
 
@@ -320,18 +371,6 @@ export default function (WrappedComponent) {
       }, transitionDelay)
     }
 
-    manuallySetAssetClasses(prevAssetId, currentAssetId) {
-      const prevAsset = document.getElementById(`lightBoxAsset_${prevAssetId}`)
-      const currentAsset = document.getElementById(`lightBoxAsset_${currentAssetId}`)
-
-      if (prevAsset) {
-        prevAsset.classList.remove('selected')
-      }
-      if (currentAsset) {
-        currentAsset.classList.add('selected')
-      }
-    }
-
     setLightBoxStyle() {
       const {
         content,
@@ -383,7 +422,7 @@ export default function (WrappedComponent) {
         <div className="with-lightbox">
           {this.state.open &&
             <div className={this.setLightBoxStyle()}>
-              <div className="LightBoxMask" onClick={(e) => this.handleMaskClick(e)}>
+              <div className="LightBoxMask" role="presentation" onClick={e => this.handleMaskClick(e)}>
                 <DismissButtonLGReverse
                   onClick={this.closeLightBox}
                 />
@@ -407,7 +446,7 @@ export default function (WrappedComponent) {
                         isPostDetail={isPostDetail}
                         isRepost={isRepost}
                         isLightBox
-                        toggleLightBox={(assetId) => this.handleImageClick(assetId)}
+                        toggleLightBox={assetId => this.handleImageClick(assetId)}
                         lightBoxSelectedId={this.state.selectedAssetId}
                         post={post}
                         postId={postId}
@@ -419,7 +458,7 @@ export default function (WrappedComponent) {
                     }
                     {commentIds && commentIds.map(id =>
                       (<CommentContainer
-                        toggleLightBox={(assetId) => this.handleImageClick(assetId)}
+                        toggleLightBox={assetId => this.handleImageClick(assetId)}
                         isLightBox
                         lightBoxSelectedId={this.state.selectedAssetId}
                         commentId={id}
@@ -429,7 +468,7 @@ export default function (WrappedComponent) {
                     {postIds && postIds.map(id =>
                       (<article className="PostList" key={`postsAsList_${id}`}>
                         <PostContainer
-                          toggleLightBox={(assetId) => this.handleImageClick(assetId)}
+                          toggleLightBox={assetId => this.handleImageClick(assetId)}
                           isLightBox
                           lightBoxSelectedId={this.state.selectedAssetId}
                           postId={id}
@@ -443,7 +482,7 @@ export default function (WrappedComponent) {
             </div>
           }
           <WrappedComponent
-            toggleLightBox={(assetId) => this.handleImageClick(assetId)}
+            toggleLightBox={assetId => this.handleImageClick(assetId)}
             {...this.props}
           />
         </div>

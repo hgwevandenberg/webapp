@@ -8,6 +8,29 @@ import TextRegion from '../regions/TextRegion'
 import { isIOS } from '../../lib/jello'
 import { SHORTCUT_KEYS } from '../../constants/application_types'
 
+function handleStaticImageRegionClick(event, assetId, toggleLightBox) {
+  if (toggleLightBox) {
+    return toggleLightBox(assetId)
+  }
+  return null
+  // const { isPostBody, isPostDetail, isGridMode, isComment } = this.props
+  // const { lightBox } = this.state
+  // const buyButtonClick = event.target.classList.contains('ElloBuyButton')
+
+  // if (isPostBody && !buyButtonClick && (isPostDetail || !isGridMode)) {
+  //   return this.setLightBox(lightBox, assetId)
+  // }
+
+  // if (isComment) {
+  //   return this.setLightBox(lightBox, assetId)
+  // }
+
+  // return this.setState({
+  //   lightBox: false,
+  //   assetIdToSet: null,
+  // })
+}
+
 export class RegionItems extends PureComponent {
   static propTypes = {
     columnWidth: PropTypes.number.isRequired,
@@ -18,14 +41,12 @@ export class RegionItems extends PureComponent {
     innerHeight: PropTypes.number.isRequired,
     isGridMode: PropTypes.bool.isRequired,
     isPostDetail: PropTypes.bool.isRequired,
-    isPostBody: PropTypes.bool,
     isComment: PropTypes.bool,
     isLightBox: PropTypes.bool,
     toggleLightBox: PropTypes.func,
     lightBoxSelectedId: PropTypes.string,
   }
   static defaultProps = {
-    isPostBody: false,
     isComment: false,
     isLightBox: false,
     toggleLightBox: null,
@@ -139,34 +160,21 @@ export class RegionItems extends PureComponent {
     }
   }
 
-  handleStaticImageRegionClick(event, assetId, toggleLightBox) {
-    console.log('invoke lightbox')
-    if (toggleLightBox) {
-      toggleLightBox(assetId)
-    }
-    // const { isPostBody, isPostDetail, isGridMode, isComment } = this.props
-    // const { lightBox } = this.state
-    // const buyButtonClick = event.target.classList.contains('ElloBuyButton')
-
-    // if (isPostBody && !buyButtonClick && (isPostDetail || !isGridMode)) {
-    //   return this.setLightBox(lightBox, assetId)
-    // }
-
-    // if (isComment) {
-    //   return this.setLightBox(lightBox, assetId)
-    // }
-
-    // return this.setState({
-    //   lightBox: false,
-    //   assetIdToSet: null,
-    // })
-    return null
-  }
-
   render() {
-    const { columnWidth, commentOffset, content, contentWidth,
-      detailPath, innerHeight, isComment, isGridMode, isPostDetail, isLightBox, toggleLightBox, lightBoxSelectedId } = this.props
-    const { assetIdToSet } = this.state
+    const {
+      columnWidth,
+      commentOffset,
+      content,
+      contentWidth,
+      detailPath,
+      innerHeight,
+      isComment,
+      isGridMode,
+      isPostDetail,
+      isLightBox,
+      toggleLightBox,
+      lightBoxSelectedId,
+    } = this.props
 
     // sometimes the content is null/undefined for some reason
     if (!content) { return null }
@@ -192,7 +200,6 @@ export class RegionItems extends PureComponent {
         case 'image': {
           const asset = region.get('asset')
           const assetId = asset ? asset.get('id') : null
-          // const lightBoxOn = (lightBox && (assetIdToSet === assetId))
 
           cells.push(
             <ImageRegion
@@ -212,7 +219,7 @@ export class RegionItems extends PureComponent {
               lightBoxSelectedId={lightBoxSelectedId}
               shouldUseVideo={!!(asset && asset.getIn(['attachment', 'video'], Immutable.Map()).size) && !isIOS() && !isPostDetail}
               handleStaticImageRegionClick={
-                event => this.handleStaticImageRegionClick(event, assetId, toggleLightBox)
+                event => handleStaticImageRegionClick(event, assetId, toggleLightBox)
               }
             />,
           )

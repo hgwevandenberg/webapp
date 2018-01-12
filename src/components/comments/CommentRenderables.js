@@ -53,6 +53,11 @@ export class CommentBody extends PureComponent {
     toggleLightBox: PropTypes.func.isRequired,
     lightBoxSelectedId: PropTypes.string,
   }
+
+  static defaultProps = {
+    lightBoxSelectedId: null,
+  }
+
   render() {
     const {
       columnWidth,
