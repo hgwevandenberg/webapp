@@ -1,12 +1,10 @@
 import Immutable from 'immutable'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import Mousetrap from 'mousetrap'
 import EmbedRegion from '../regions/EmbedRegion'
 import ImageRegion from '../regions/ImageRegion'
 import TextRegion from '../regions/TextRegion'
 import { isIOS } from '../../lib/jello'
-import { SHORTCUT_KEYS } from '../../constants/application_types'
 
 function handleStaticImageRegionClick(event, assetId, toggleLightBox) {
   if (toggleLightBox) {

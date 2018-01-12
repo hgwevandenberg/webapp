@@ -291,14 +291,18 @@ export default function (WrappedComponent) {
     }
 
     bindKeys(unbind) {
+      const { content } = this.props
+
       Mousetrap.unbind(SHORTCUT_KEYS.ESC)
       Mousetrap.unbind(SHORTCUT_KEYS.PREV)
       Mousetrap.unbind(SHORTCUT_KEYS.NEXT)
 
       if (!unbind) {
         Mousetrap.bind(SHORTCUT_KEYS.ESC, () => { this.close() })
-        Mousetrap.bind(SHORTCUT_KEYS.PREV, () => { this.advance('prev') })
-        Mousetrap.bind(SHORTCUT_KEYS.NEXT, () => { this.advance('next') })
+        if (content) {
+          Mousetrap.bind(SHORTCUT_KEYS.PREV, () => { this.advance('prev') })
+          Mousetrap.bind(SHORTCUT_KEYS.NEXT, () => { this.advance('next') })
+        }
       }
     }
 
@@ -335,44 +339,48 @@ export default function (WrappedComponent) {
     }
 
     setPagination(assetId) {
-      const { content } = this.props
-      const imageContent = content.filter(region => region.get('kind') === 'image')
-      const numberItems = imageContent.size
+      const regionsContent = this.props.content
 
-      let existingItemIndex = null
-      imageContent.map((region, index) => {
-        const loopAsset = region.get('asset')
-        const loopAssetId = loopAsset ? loopAsset.get('id') : null
+      if (regionsContent) {
+        const imageContent = regionsContent.filter(region => region.get('kind') === 'image')
+        const numberItems = imageContent.size
 
-        if (loopAssetId === assetId) {
-          existingItemIndex = index
-          return existingItemIndex
-        }
-        return null
-      })
+        let existingItemIndex = null
+        imageContent.map((region, index) => {
+          const loopAsset = region.get('asset')
+          const loopAssetId = loopAsset ? loopAsset.get('id') : null
 
-      if (existingItemIndex !== null) {
-        let prevIndex = existingItemIndex - 1
-        let nextIndex = existingItemIndex + 1
-
-        if (existingItemIndex === 0) {
-          prevIndex = numberItems - 1
-        }
-
-        if (existingItemIndex === (numberItems - 1)) {
-          nextIndex = 0
-        }
-
-        /* eslint-disable no-underscore-dangle */
-        const prevItemAssetId = imageContent._tail.array[prevIndex].get('asset').get('id')
-        const nextItemAssetId = imageContent._tail.array[nextIndex].get('asset').get('id')
-        /* eslint-enable no-underscore-dangle */
-
-        this.setState({
-          assetIdToSetPrev: prevItemAssetId,
-          assetIdToSetNext: nextItemAssetId,
+          if (loopAssetId === assetId) {
+            existingItemIndex = index
+            return existingItemIndex
+          }
+          return null
         })
+
+        if (existingItemIndex !== null) {
+          let prevIndex = existingItemIndex - 1
+          let nextIndex = existingItemIndex + 1
+
+          if (existingItemIndex === 0) {
+            prevIndex = numberItems - 1
+          }
+
+          if (existingItemIndex === (numberItems - 1)) {
+            nextIndex = 0
+          }
+
+          /* eslint-disable no-underscore-dangle */
+          const prevItemAssetId = imageContent._tail.array[prevIndex].get('asset').get('id')
+          const nextItemAssetId = imageContent._tail.array[nextIndex].get('asset').get('id')
+          /* eslint-enable no-underscore-dangle */
+
+          this.setState({
+            assetIdToSetPrev: prevItemAssetId,
+            assetIdToSetNext: nextItemAssetId,
+          })
+        }
       }
+      return null
     }
 
     slideQueue() {
