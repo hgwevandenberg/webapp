@@ -22,6 +22,10 @@ const streamImageStyle = css(
   s.relative,
   s.center,
   s.bgcF2,
+  select(
+    '> .ImgHolder',
+    s.relative,
+  ),
 )
 
 const lightBoxImageStyle = css(

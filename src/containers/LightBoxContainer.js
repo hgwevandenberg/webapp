@@ -253,13 +253,7 @@ export default function (WrappedComponent) {
       }
     }
 
-    handleImageClick(assetId, inLightBox) {
-      if (!inLightBox) {
-        console.log(`show/hide lightbox: ${assetId}`)
-      } else {
-        console.log(`advance lightbox: ${assetId}`)
-      }
-
+    handleImageClick(assetId) {
       return this.setState({
         open: true,
         selectedAssetId: assetId,
@@ -413,7 +407,7 @@ export default function (WrappedComponent) {
                         isPostDetail={isPostDetail}
                         isRepost={isRepost}
                         isLightBox
-                        toggleLightBox={(assetId) => this.handleImageClick(assetId, true)}
+                        toggleLightBox={(assetId) => this.handleImageClick(assetId)}
                         lightBoxSelectedId={this.state.selectedAssetId}
                         post={post}
                         postId={postId}
@@ -425,7 +419,7 @@ export default function (WrappedComponent) {
                     }
                     {commentIds && commentIds.map(id =>
                       (<CommentContainer
-                        toggleLightBox={(assetId) => this.handleImageClick(assetId, true)}
+                        toggleLightBox={(assetId) => this.handleImageClick(assetId)}
                         isLightBox
                         lightBoxSelectedId={this.state.selectedAssetId}
                         commentId={id}
@@ -435,7 +429,7 @@ export default function (WrappedComponent) {
                     {postIds && postIds.map(id =>
                       (<article className="PostList" key={`postsAsList_${id}`}>
                         <PostContainer
-                          toggleLightBox={(assetId) => this.handleImageClick(assetId, true)}
+                          toggleLightBox={(assetId) => this.handleImageClick(assetId)}
                           isLightBox
                           lightBoxSelectedId={this.state.selectedAssetId}
                           postId={id}
@@ -449,7 +443,7 @@ export default function (WrappedComponent) {
             </div>
           }
           <WrappedComponent
-            toggleLightBox={(assetId) => this.handleImageClick(assetId, false)}
+            toggleLightBox={(assetId) => this.handleImageClick(assetId)}
             {...this.props}
           />
         </div>
