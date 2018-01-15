@@ -301,8 +301,10 @@ const HeroHeaderHeadingStyle = css(
 )
 
 const HeroHeaderSubHeadingStyle = css(
-  s.sansRegular, s.fontSize24, { lineHeight: 24 },
-  media(s.minBreak2, s.fontSize24),
+  s.sansRegular,
+  s.fontSize18,
+  { lineHeight: 24, margin: 0 },
+  media(s.minBreak2, s.fontSize24, { lineHeight: 30 }),
 )
 
 export const HeroHeader = ({
