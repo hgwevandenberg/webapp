@@ -272,7 +272,7 @@ class ArtistInviteCountDown extends PureComponent {
     if (r.asDays() > 2.0) {
       return `${Math.floor(r.asDays())} Days Remaining`
     }
-    return `${pad(r.hours())}:${pad(r.minutes())}:${pad(r.seconds())} Remaining`
+    return `${pad(Math.floor(r.asHours()))}:${pad(r.minutes())}:${pad(r.seconds())} Remaining`
   }
 
   renderByStatus() {
