@@ -73,16 +73,20 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
     streamAction: PropTypes.object,
     selectedKey: PropTypes.string.isRequired,
     pathname: PropTypes.string.isRequired,
+    sendResultStatus: PropTypes.func,
     isLoggedIn: PropTypes.bool.isRequired,
   }
 
   static defaultProps = {
     status: null,
     streamAction: null,
+    sendResultStatus: null,
   }
 
   componentWillMount() {
-    this.state = { streamAction: this.props.streamAction }
+    const { streamAction } = this.props
+
+    this.state = { streamAction }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -100,7 +104,7 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
   }
 
   renderAdmin() {
-    const { selectedKey, links } = this.props
+    const { selectedKey, links, sendResultStatus } = this.props
     const { streamAction } = this.state
     return (
       <div>
@@ -126,6 +130,7 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
             key={`submissionStream_${selectedKey}`}
             paginatorText="Load More"
             paginatorCentered
+            sendResultStatus={sendResultStatus}
           />
         }
       </div>
@@ -133,7 +138,7 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
   }
 
   renderNormal() {
-    const { links, slug, status } = this.props
+    const { links, slug, status, sendResultStatus } = this.props
     switch (status) {
       case 'closed':
         return (
@@ -145,6 +150,7 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
               paginatorText="Load More"
               paginatorCentered
               shouldInfiniteScroll={false}
+              sendResultStatus={sendResultStatus}
             />
             <StreamContainer
               action={loadArtistInviteSubmissions(links.getIn([KEYS[1], 'href']), KEYS[1], slug, 'Submissions')}
@@ -153,6 +159,7 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
               paginatorText="Load More"
               paginatorCentered
               shouldInfiniteScroll={false}
+              sendResultStatus={sendResultStatus}
             />
           </div>
         )
@@ -167,6 +174,7 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
               paginatorText="Load More"
               paginatorCentered
               shouldInfiniteScroll={false}
+              sendResultStatus={sendResultStatus}
             />
           </div>
         )

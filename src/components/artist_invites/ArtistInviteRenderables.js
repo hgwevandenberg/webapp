@@ -413,6 +413,8 @@ export const ArtistInviteDetail = ({
   dpi,
   guide,
   hasSubmissions,
+  hasLoaded,
+  sendResultStatus,
   headerImage,
   inviteType,
   isLoggedIn,
@@ -444,10 +446,15 @@ export const ArtistInviteDetail = ({
             openedAt={openedAt}
             closedAt={closedAt}
           />
-          {links.size !== 0 && hasSubmissions &&
+          {hasLoaded &&
             <RoundedRect className="ScrollButton GreenBorder" onClick={onClickScrollToContent}>
               <ArrowIcon />
               See Submissions
+            </RoundedRect>
+          }
+          {!hasLoaded &&
+            <RoundedRect className="ScrollButton BlackBorder" onClick={onClickScrollToContent}>
+              Loading Submissions…
             </RoundedRect>
           }
           <div dangerouslySetInnerHTML={{ __html: description }} />
@@ -472,6 +479,7 @@ export const ArtistInviteDetail = ({
       slug={slug}
       status={status}
       isLoggedIn={isLoggedIn}
+      sendResultStatus={sendResultStatus}
     />
   </div>
 )
@@ -481,6 +489,7 @@ ArtistInviteDetail.propTypes = {
   dpi: PropTypes.string.isRequired,
   guide: PropTypes.object.isRequired,
   hasSubmissions: PropTypes.bool.isRequired,
+  sendResultStatus: PropTypes.func.isRequired,
   headerImage: PropTypes.object.isRequired,
   inviteType: PropTypes.string.isRequired,
   isLoggedIn: PropTypes.bool.isRequired,
