@@ -446,13 +446,13 @@ export const ArtistInviteDetail = ({
             openedAt={openedAt}
             closedAt={closedAt}
           />
-          {hasLoaded &&
+          {status !== 'upcoming' && hasLoaded &&
             <RoundedRect className="ScrollButton GreenBorder" onClick={onClickScrollToContent}>
               <ArrowIcon />
               See Submissions
             </RoundedRect>
           }
-          {!hasLoaded &&
+          {status !== 'upcoming' && !hasLoaded &&
             <RoundedRect className="ScrollButton BlackBorder" onClick={onClickScrollToContent}>
               Loading Submissions…
             </RoundedRect>
