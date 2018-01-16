@@ -474,15 +474,17 @@ export const ArtistInviteDetail = ({
         </div>
       </div>
     </article>
-    <ArtistInviteSubmissionsContainer
-      links={links}
-      slug={slug}
-      status={status}
-      isLoggedIn={isLoggedIn}
-      sendResultStatus={sendResultStatus}
-      hasSubmissions={hasSubmissions}
-      hasLoaded={hasLoaded}
-    />
+    {status !== 'upcoming' &&
+      <ArtistInviteSubmissionsContainer
+        links={links}
+        slug={slug}
+        status={status}
+        isLoggedIn={isLoggedIn}
+        sendResultStatus={sendResultStatus}
+        hasSubmissions={hasSubmissions}
+        hasLoaded={hasLoaded}
+      />
+    }
   </div>
 )
 ArtistInviteDetail.propTypes = {
