@@ -376,6 +376,11 @@ const detailContainerStyle = css(
   ),
 )
 
+const upcomingDetailContainerStyle = css(
+  { ...detailContainerStyle },
+  { paddingBottom: 60 },
+)
+
 const detailContentContainerStyle = css(
   s.maxSiteWidthPadded, { margin: '0 auto' },
   media(s.maxBreak4, s.pr0, s.pl0),
@@ -430,7 +435,7 @@ export const ArtistInviteDetail = ({
   onClickSubmit,
 }) => (
   <div>
-    <article className={detailContainerStyle}>
+    <article className={(status === 'upcoming') ? upcomingDetailContainerStyle : detailContainerStyle}>
       <div className={imageContainerStyle}>
         <BackgroundImage className="hasOverlay3" dpi={dpi} sources={headerImage} />
         <ImageAsset className={logoImageStyle} src={logoImage.getIn(['optimized', 'url'])} />
