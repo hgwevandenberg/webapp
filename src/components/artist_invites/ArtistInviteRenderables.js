@@ -480,6 +480,8 @@ export const ArtistInviteDetail = ({
       status={status}
       isLoggedIn={isLoggedIn}
       sendResultStatus={sendResultStatus}
+      hasSubmissions={hasSubmissions}
+      hasLoaded={hasLoaded}
     />
   </div>
 )
@@ -489,6 +491,7 @@ ArtistInviteDetail.propTypes = {
   dpi: PropTypes.string.isRequired,
   guide: PropTypes.object.isRequired,
   hasSubmissions: PropTypes.bool.isRequired,
+  hasLoaded: PropTypes.bool.isRequired,
   sendResultStatus: PropTypes.func.isRequired,
   headerImage: PropTypes.object.isRequired,
   inviteType: PropTypes.string.isRequired,

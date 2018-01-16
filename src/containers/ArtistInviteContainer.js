@@ -168,7 +168,6 @@ class ArtistInviteContainer extends PureComponent {
       hasSubmissions = true
     }
 
-    console.log(numberResults)
     this.setState({
       hasSubmissions,
       hasLoaded,
@@ -204,7 +203,7 @@ class ArtistInviteContainer extends PureComponent {
             guide={guide}
             hasSubmissions={this.state.hasSubmissions}
             hasLoaded={this.state.hasLoaded}
-            sendResultStatus={(numberResults) => this.handleResultStatus(numberResults)}
+            sendResultStatus={numberResults => this.handleResultStatus(numberResults)}
             headerImage={headerImage}
             inviteType={inviteType}
             isLoggedIn={isLoggedIn}

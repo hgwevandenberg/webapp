@@ -74,6 +74,8 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
     selectedKey: PropTypes.string.isRequired,
     pathname: PropTypes.string.isRequired,
     sendResultStatus: PropTypes.func,
+    hasSubmissions: PropTypes.bool.isRequired,
+    hasLoaded: PropTypes.bool.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
   }
 
@@ -81,6 +83,8 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
     status: null,
     streamAction: null,
     sendResultStatus: null,
+    hasSubmissions: false,
+    hasLoaded: false,
   }
 
   componentWillMount() {
@@ -138,7 +142,23 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
   }
 
   renderNormal() {
-    const { links, slug, status, sendResultStatus } = this.props
+    const { links, slug, status, sendResultStatus, hasSubmissions, hasLoaded } = this.props
+
+    // zero state
+    if (hasLoaded && !hasSubmissions) {
+      return (
+        <div className="StreamContainer ZeroState">
+          <h1 className={titleStyle}>
+            No Submissions
+            {(status !== 'closed') &&
+              <span> Yet</span>
+            }
+          </h1>
+        </div>
+      )
+    }
+
+    // state for results
     switch (status) {
       case 'closed':
         return (
