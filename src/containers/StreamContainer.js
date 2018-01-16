@@ -74,6 +74,7 @@ class StreamContainer extends Component {
     scrollContainer: PropTypes.object,
     shouldInfiniteScroll: PropTypes.bool,
     stream: PropTypes.object.isRequired,
+    sendResultStatus: PropTypes.func,
   }
 
   static defaultProps = {
@@ -87,6 +88,7 @@ class StreamContainer extends Component {
     paginatorTo: null,
     scrollContainer: null,
     shouldInfiniteScroll: true,
+    sendResultStatus: null,
   }
 
   static contextTypes = {
@@ -152,8 +154,15 @@ class StreamContainer extends Component {
     if (window.embetter) {
       window.embetter.reloadPlayers()
     }
-    const { omnibar } = this.props
+    const { omnibar, result, sendResultStatus } = this.props
+
     this.wasOmnibarActive = omnibar.get('isActive')
+
+    // bubble up the number of results (if necessary)
+    if (sendResultStatus) {
+      const numberResults = result.get('ids').size
+      sendResultStatus(numberResults)
+    }
   }
 
   componentWillUnmount() {

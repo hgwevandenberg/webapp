@@ -208,6 +208,13 @@ const roundedRectStyle = css(
     s.colorGreen,
     hover(s.colorBlack, s.borderBlack),
   ),
+  modifier('.BlackBorder',
+    s.bgcWhite,
+    s.borderBlack,
+    s.colorBlack,
+    { opacity: 0.4 },
+    hover(s.colorBlack, s.borderBlack),
+  ),
   modifier(
     '.isXL',
     s.fontSize24,

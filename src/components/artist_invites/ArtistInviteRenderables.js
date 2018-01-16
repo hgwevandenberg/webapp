@@ -376,6 +376,11 @@ const detailContainerStyle = css(
   ),
 )
 
+const upcomingDetailContainerStyle = css(
+  { ...detailContainerStyle },
+  { paddingBottom: 60 },
+)
+
 const detailContentContainerStyle = css(
   s.maxSiteWidthPadded, { margin: '0 auto' },
   media(s.maxBreak4, s.pr0, s.pl0),
@@ -413,6 +418,8 @@ export const ArtistInviteDetail = ({
   dpi,
   guide,
   hasSubmissions,
+  hasLoaded,
+  sendResultStatus,
   headerImage,
   inviteType,
   isLoggedIn,
@@ -428,7 +435,7 @@ export const ArtistInviteDetail = ({
   onClickSubmit,
 }) => (
   <div>
-    <article className={detailContainerStyle}>
+    <article className={(status === 'upcoming') ? upcomingDetailContainerStyle : detailContainerStyle}>
       <div className={imageContainerStyle}>
         <BackgroundImage className="hasOverlay3" dpi={dpi} sources={headerImage} />
         <ImageAsset className={logoImageStyle} src={logoImage.getIn(['optimized', 'url'])} />
@@ -444,10 +451,15 @@ export const ArtistInviteDetail = ({
             openedAt={openedAt}
             closedAt={closedAt}
           />
-          {links.size !== 0 && hasSubmissions &&
+          {status !== 'upcoming' && hasLoaded &&
             <RoundedRect className="ScrollButton GreenBorder" onClick={onClickScrollToContent}>
               <ArrowIcon />
               See Submissions
+            </RoundedRect>
+          }
+          {status !== 'upcoming' && !hasLoaded &&
+            <RoundedRect className="ScrollButton BlackBorder" onClick={onClickScrollToContent}>
+              Loading Submissions…
             </RoundedRect>
           }
           <div dangerouslySetInnerHTML={{ __html: description }} />
@@ -467,12 +479,17 @@ export const ArtistInviteDetail = ({
         </div>
       </div>
     </article>
-    <ArtistInviteSubmissionsContainer
-      links={links}
-      slug={slug}
-      status={status}
-      isLoggedIn={isLoggedIn}
-    />
+    {status !== 'upcoming' &&
+      <ArtistInviteSubmissionsContainer
+        links={links}
+        slug={slug}
+        status={status}
+        isLoggedIn={isLoggedIn}
+        sendResultStatus={sendResultStatus}
+        hasSubmissions={hasSubmissions}
+        hasLoaded={hasLoaded}
+      />
+    }
   </div>
 )
 ArtistInviteDetail.propTypes = {
@@ -481,6 +498,8 @@ ArtistInviteDetail.propTypes = {
   dpi: PropTypes.string.isRequired,
   guide: PropTypes.object.isRequired,
   hasSubmissions: PropTypes.bool.isRequired,
+  hasLoaded: PropTypes.bool.isRequired,
+  sendResultStatus: PropTypes.func.isRequired,
   headerImage: PropTypes.object.isRequired,
   inviteType: PropTypes.string.isRequired,
   isLoggedIn: PropTypes.bool.isRequired,
