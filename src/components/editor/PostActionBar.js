@@ -205,7 +205,11 @@ class PostActionBar extends Component {
               </div>
             </button>
           }
-          <button className={`PostActionButton forCancel ${buttonStyle}`} onClick={this.cancel}>
+          <button
+            className={`PostActionButton forCancel ${buttonStyle}`}
+            onClick={this.cancel}
+            disabled={disableSubmitAction}
+          >
             <div className={buttonContentsStyle}>
               <span className={labelStyle}>Cancel</span>
               <XIconLG />
