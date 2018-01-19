@@ -20,12 +20,14 @@ export default class Asset extends PureComponent {
     id: PropTypes.string,
     onScreenDimensions: PropTypes.func,
     src: PropTypes.string,
+    style: PropTypes.object,
   }
 
   static defaultProps = {
     id: null,
     onScreenDimensions: null,
     src: null,
+    style: null,
   }
 
   componentDidMount() {
@@ -92,6 +94,7 @@ export default class Asset extends PureComponent {
         playsInline
         width={elementProps.width}
         height={elementProps.height}
+        style={elementProps.style}
         ref={(videoOnScreen) => { this.videoOnScreen = videoOnScreen }}
       >
         <track kind="captions" />
