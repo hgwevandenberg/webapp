@@ -111,9 +111,11 @@ class ImageRegion extends PureComponent {
   }
 
   componentDidMount() {
-    const { shouldUseVideo, isLightBoxImage } = this.props
+    const { shouldUseVideo } = this.props
 
-    if (shouldUseVideo && isLightBoxImage) {
+    // need to fake a successful load for video to trigger
+    // an update to the ImageRegion/VideoAsset components
+    if (shouldUseVideo) {
       this.triggerLoadSuccess()
     }
   }

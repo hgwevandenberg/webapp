@@ -92,6 +92,7 @@ export default class Asset extends PureComponent {
         width={elementProps.width}
         height={elementProps.height}
         style={elementProps.style}
+        className={elementProps.className}
         ref={(videoOnScreen) => { this.videoOnScreen = videoOnScreen }}
       >
         <track kind="captions" />
