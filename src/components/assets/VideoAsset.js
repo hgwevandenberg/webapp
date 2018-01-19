@@ -18,6 +18,9 @@ export default class Asset extends PureComponent {
 
   static propTypes = {
     id: PropTypes.string,
+    isPostBody: PropTypes.bool,
+    isPostDetail: PropTypes.bool,
+    isGridMode: PropTypes.bool,
     onScreenDimensions: PropTypes.func,
     src: PropTypes.string,
     style: PropTypes.object,
@@ -25,6 +28,9 @@ export default class Asset extends PureComponent {
 
   static defaultProps = {
     id: null,
+    isPostBody: false,
+    isPostDetail: false,
+    isGridMode: false,
     onScreenDimensions: null,
     src: null,
     style: null,
@@ -55,11 +61,15 @@ export default class Asset extends PureComponent {
   }
 
   getDimensionsOnScreen = () => {
-    const onScreenDimensions = {
-      width: this.videoOnScreen.clientWidth,
-      height: this.videoOnScreen.clientHeight,
+    const { isPostBody, isPostDetail, isGridMode } = this.props
+
+    if (isPostBody && (isPostDetail || !isGridMode)) {
+      const onScreenDimensions = {
+        width: this.videoOnScreen.clientWidth,
+        height: this.videoOnScreen.clientHeight,
+      }
+      this.props.onScreenDimensions(onScreenDimensions)
     }
-    this.props.onScreenDimensions(onScreenDimensions)
   }
 
   createLoader() {
