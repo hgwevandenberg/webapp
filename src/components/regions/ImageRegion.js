@@ -131,10 +131,9 @@ class ImageRegion extends PureComponent {
     const { isLightBoxImage } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
 
-    // return this.setImageScale()
-    if (isLightBoxImage &&
-      ((scaledImageHeight === null && scaledImageWidth === null) ||
-        scaledImageHeight === 0 && scaledImageWidth === 0)) {
+    const scaledBlank = scaledImageHeight === null && scaledImageWidth === null
+    const scaledZero = scaledImageHeight === 0 && scaledImageWidth === 0
+    if (isLightBoxImage && (scaledBlank || scaledZero)) {
       return this.setImageScale()
     }
     return null

@@ -23,7 +23,6 @@ export default class Asset extends PureComponent {
     isGridMode: PropTypes.bool,
     onScreenDimensions: PropTypes.func,
     src: PropTypes.string,
-    style: PropTypes.object,
   }
 
   static defaultProps = {
@@ -33,7 +32,6 @@ export default class Asset extends PureComponent {
     isGridMode: false,
     onScreenDimensions: null,
     src: null,
-    style: null,
   }
 
   componentDidUpdate() {
