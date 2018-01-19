@@ -124,7 +124,7 @@ class ImageRegion extends PureComponent {
       ['buyLinkURL', 'columnWidth', 'contentWidth', 'isGridMode', 'isLightBoxImage', 'lightBoxSelectedId'].some(prop =>
         nextProps[prop] !== this.props[prop],
       ) ||
-      ['scaledImageHeight', 'scaledImageWidth', 'status'].some(prop => nextState[prop] !== this.state[prop])
+      ['measuredImageHeight', 'measuredImageWidth', 'scaledImageHeight', 'scaledImageWidth', 'status'].some(prop => nextState[prop] !== this.state[prop])
   }
 
   componentDidUpdate() {
@@ -132,7 +132,9 @@ class ImageRegion extends PureComponent {
     const { scaledImageHeight, scaledImageWidth } = this.state
 
     // return this.setImageScale()
-    if (isLightBoxImage && scaledImageHeight === null && scaledImageWidth === null) {
+    if (isLightBoxImage &&
+      ((scaledImageHeight === null && scaledImageWidth === null) ||
+        scaledImageHeight === 0 && scaledImageWidth === 0)) {
       return this.setImageScale()
     }
     return null
@@ -278,10 +280,6 @@ class ImageRegion extends PureComponent {
         measuredImageHeight: measuredDimensions.height,
         measuredImageWidth: measuredDimensions.width,
       })
-
-      if (this.props.shouldUseVideo) {
-        return this.setImageScale()
-      }
       return null
     }
     return null
@@ -437,7 +435,7 @@ class ImageRegion extends PureComponent {
         isPostDetail={isPostDetail}
         isGridMode={isGridMode}
         src={this.attachment.getIn(['video', 'url'])}
-        style={isLightBoxImage ? { width: 200, height: 100 } : null}
+        style={isLightBoxImage ? { width: scaledImageWidth, height: scaledImageHeight } : null}
         onScreenDimensions={
           isPostBody && (isPostDetail || !isGridMode) ?
             ((measuredDimensions) => { this.handleScreenDimensions(measuredDimensions) }) :

@@ -36,19 +36,8 @@ export default class Asset extends PureComponent {
     style: null,
   }
 
-  componentDidMount() {
-    this.createLoader()
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.src !== this.props.src) {
-      this.createLoader()
-    }
+  componentDidUpdate() {
     this.getDimensionsOnScreen()
-  }
-
-  componentWillUnmount() {
-    this.disposeLoader()
   }
 
   onLoadSuccess = () => {
