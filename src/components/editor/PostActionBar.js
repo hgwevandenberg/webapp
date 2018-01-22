@@ -165,6 +165,7 @@ class PostActionBar extends Component {
     const { dispatch, buyLink } = this.props
     dispatch(openModal(
       <BuyLinkDialog
+        dispatch={dispatch}
         onConfirm={this.onAddBuyLink}
         onDismiss={this.onCloseModal}
         text={buyLink}

@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import { trackEvent } from '../../actions/analytics'
 import { dialogStyle as baseDialogStyle } from './Dialog'
 import TextControl from '../forms/TextControl'
 import { isValidURL } from '../forms/Validators'
@@ -39,12 +40,14 @@ const controlStyle = css(
 export default class BuyLinkDialog extends PureComponent {
 
   static propTypes = {
+    dispatch: PropTypes.func,
     onConfirm: PropTypes.func.isRequired,
     onDismiss: PropTypes.func.isRequired,
     text: PropTypes.string,
   }
 
   static defaultProps = {
+    dispatch: null,
     text: null,
   }
 
@@ -58,10 +61,12 @@ export default class BuyLinkDialog extends PureComponent {
     if (this.value.indexOf('http') !== 0) {
       this.value = `http://${this.value}`
     }
+    this.props.dispatch(trackEvent('buy-link-added-to-comment'))
     this.props.onConfirm({ value: this.value })
   }
 
   onClickReset = () => {
+    this.props.dispatch(trackEvent('buy-link-removed-from-comment'))
     this.props.onConfirm({ value: null })
   }
 
