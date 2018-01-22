@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import Mousetrap from 'mousetrap'
+import {
+  selectInnerHeight,
+  selectInnerWidth,
+} from '../selectors/gui'
 import { DismissButtonLGReverse } from '../components/buttons/Buttons'
 import CommentContainer from './CommentContainer'
 import PostContainer from './PostContainer'
@@ -187,9 +192,12 @@ function manuallySetAssetClasses(prevAssetId, currentAssetId) {
 
 // Wraps LightBox controls/state around a component
 // This function takes a component
-export default function (WrappedComponent) {
-  return class extends Component {
+
+function LightBoxWrapper(WrappedComponent) {
+  class BaseLightBox extends Component {
     static propTypes = {
+      innerHeight: PropTypes.number,
+      innerWidth: PropTypes.number,
       content: PropTypes.object, // for individual posts
       commentIds: PropTypes.object, // for comment stream
       postIds: PropTypes.object, // for posts list stream
@@ -200,8 +208,6 @@ export default function (WrappedComponent) {
       contentWarning: PropTypes.string,
       contentWidth: PropTypes.number,
       detailPath: PropTypes.string,
-      innerHeight: PropTypes.number,
-      innerWidth: PropTypes.number,
       isGridMode: PropTypes.bool,
       isPostDetail: PropTypes.bool,
       isPostHeaderHidden: PropTypes.bool,
@@ -248,10 +254,13 @@ export default function (WrappedComponent) {
         assetIdToSet: null,
         assetIdToSetPrev: null,
         assetIdToSetNext: null,
+        innerWidth: this.props.innerWidth,
+        innerHeight: this.props.innerHeight,
         queueOffsetX: 0,
       }
 
       this.handleImageClick = this.handleImageClick.bind(this)
+      this.handleViewPortResize = this.handleViewPortResize.bind(this)
       this.close = this.close.bind(this)
     }
 
@@ -283,6 +292,11 @@ export default function (WrappedComponent) {
       if (commentIds || postIds) {
         manuallySetAssetClasses(prevState.assetIdToSet, this.state.assetIdToSet)
       }
+
+      // check for viewport resizes
+      if (this.state.open && (this.props.innerWidth !== this.state.innerWidth)) {
+        this.handleViewPortResize()
+      }
     }
 
     componentWillUnmount() {
@@ -290,52 +304,26 @@ export default function (WrappedComponent) {
       this.bindKeys(releaseKeys)
     }
 
-    bindKeys(unbind) {
-      const { content } = this.props
+    setLightBoxStyle() {
+      const {
+        content,
+        commentIds,
+        postIds,
+      } = this.props
 
-      Mousetrap.unbind(SHORTCUT_KEYS.ESC)
-      Mousetrap.unbind(SHORTCUT_KEYS.PREV)
-      Mousetrap.unbind(SHORTCUT_KEYS.NEXT)
-
-      if (!unbind) {
-        Mousetrap.bind(SHORTCUT_KEYS.ESC, () => { this.close() })
-        if (content) {
-          Mousetrap.bind(SHORTCUT_KEYS.PREV, () => { this.advance('prev') })
-          Mousetrap.bind(SHORTCUT_KEYS.NEXT, () => { this.advance('next') })
-        }
-      }
-    }
-
-    handleImageClick(assetId) {
-      this.setState({
-        open: true,
-        assetIdToSet: assetId,
-      })
-      // update pagination
-      return this.setPagination(assetId)
-    }
-
-    advance(direction) {
-      let newAssetIdToSet = null
-
-      switch (direction) {
-        case 'prev' :
-          newAssetIdToSet = this.state.assetIdToSetPrev
-          break
-        case 'next' :
-          newAssetIdToSet = this.state.assetIdToSetNext
-          break
-        default :
-          newAssetIdToSet = this.state.assetIdToSet
+      if (commentIds) {
+        return commentsLightBoxStyle
       }
 
-      // advance to new image
-      this.setState({
-        assetIdToSet: newAssetIdToSet,
-      })
+      if (postIds) {
+        return postsListLightBoxStyle
+      }
 
-      // update pagination
-      return this.setPagination(newAssetIdToSet)
+      if (content) {
+        return postsBodyLightBoxStyle
+      }
+
+      return baseLightBoxStyle
     }
 
     setPagination(assetId) {
@@ -381,6 +369,29 @@ export default function (WrappedComponent) {
         }
       }
       return null
+    }
+
+    advance(direction) {
+      let newAssetIdToSet = null
+
+      switch (direction) {
+        case 'prev' :
+          newAssetIdToSet = this.state.assetIdToSetPrev
+          break
+        case 'next' :
+          newAssetIdToSet = this.state.assetIdToSetNext
+          break
+        default :
+          newAssetIdToSet = this.state.assetIdToSet
+      }
+
+      // advance to new image
+      this.setState({
+        assetIdToSet: newAssetIdToSet,
+      })
+
+      // update pagination
+      return this.setPagination(newAssetIdToSet)
     }
 
     slideQueue() {
@@ -429,6 +440,13 @@ export default function (WrappedComponent) {
       return null
     }
 
+    handleViewPortResize() {
+      this.setState({
+        innerWidth,
+        innerHeight,
+      })
+    }
+
     removeLoadingClass() {
       const transitionDelay = 200
 
@@ -443,26 +461,29 @@ export default function (WrappedComponent) {
       }, transitionDelay)
     }
 
-    setLightBoxStyle() {
-      const {
-        content,
-        commentIds,
-        postIds,
-      } = this.props
+    bindKeys(unbind) {
+      const { content } = this.props
 
-      if (commentIds) {
-        return commentsLightBoxStyle
+      Mousetrap.unbind(SHORTCUT_KEYS.ESC)
+      Mousetrap.unbind(SHORTCUT_KEYS.PREV)
+      Mousetrap.unbind(SHORTCUT_KEYS.NEXT)
+
+      if (!unbind) {
+        Mousetrap.bind(SHORTCUT_KEYS.ESC, () => { this.close() })
+        if (content) {
+          Mousetrap.bind(SHORTCUT_KEYS.PREV, () => { this.advance('prev') })
+          Mousetrap.bind(SHORTCUT_KEYS.NEXT, () => { this.advance('next') })
+        }
       }
+    }
 
-      if (postIds) {
-        return postsListLightBoxStyle
-      }
-
-      if (content) {
-        return postsBodyLightBoxStyle
-      }
-
-      return baseLightBoxStyle
+    handleImageClick(assetId) {
+      this.setState({
+        open: true,
+        assetIdToSet: assetId,
+      })
+      // update pagination
+      return this.setPagination(assetId)
     }
 
     render() {
@@ -561,4 +582,16 @@ export default function (WrappedComponent) {
       )
     }
   }
+
+  function makeMapStateToProps() {
+    return state =>
+      ({
+        innerHeight: selectInnerHeight(state),
+        innerWidth: selectInnerWidth(state),
+      })
+  }
+
+  return connect(makeMapStateToProps)(BaseLightBox)
 }
+
+export default LightBoxWrapper
