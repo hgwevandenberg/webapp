@@ -65,6 +65,7 @@ type ToolProps = {
 
 type ToolContext = {
   onClickLovePost?: () => {},
+  onClickRepostPost?: () => {},
   onClickOpenSignupModal?: () => {},
   onClickSharePost: () => {},
 }
@@ -86,7 +87,7 @@ export const EditorialTools = (props: ToolProps, context: ToolContext) => (
     </ToolButton>
     <ToolButton
       className={leftSpacer}
-      onClick={context.onClickOpenSignupModal}
+      onClick={context.onClickRepostPost}
       to={context.onClickOpenSignupModal ? null : props.postPath}
     >
       <RepostIcon />
@@ -101,6 +102,7 @@ export const EditorialTools = (props: ToolProps, context: ToolContext) => (
 )
 EditorialTools.contextTypes = {
   onClickLovePost: PropTypes.func,
+  onClickRepostPost: PropTypes.func,
   onClickOpenSignupModal: PropTypes.func,
   onClickSharePost: PropTypes.func.isRequired,
 }

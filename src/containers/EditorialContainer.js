@@ -60,6 +60,7 @@ class EditorialContainer extends Component {
 
   static childContextTypes = {
     onClickLovePost: PropTypes.func,
+    onClickRepostPost: PropTypes.func,
     onClickOpenSignupModal: PropTypes.func,
     onClickSharePost: PropTypes.func.isRequired,
     onClickShareExternal: PropTypes.func.isRequired,
@@ -69,6 +70,7 @@ class EditorialContainer extends Component {
     const { isLoggedIn } = this.props
     return {
       onClickLovePost: isLoggedIn ? this.onClickLovePost : this.onClickOpenSignupModal,
+      onClickRepostPost: isLoggedIn ? this.onClickRepostPost : this.onClickOpenSignupModal,
       onClickOpenSignupModal: isLoggedIn ? null : this.onClickOpenSignupModal,
       onClickSharePost: this.onClickSharePost,
       onClickShareExternal: this.onClickShareExternal,
@@ -89,6 +91,11 @@ class EditorialContainer extends Component {
     const { toggleLovePost } = this.context
     const trackLabel = 'editorial-module-loved'
     toggleLovePost({ isLoved: isPostLoved, post, trackLabel, trackOptions })
+  }
+
+  onClickRepostPost = () => {
+    const { dispatch, trackOptions } = this.props
+    dispatch(trackEvent('editorial-module-repost-clicked', trackOptions))
   }
 
   onClickOpenSignupModal = () => {
