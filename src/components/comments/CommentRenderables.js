@@ -50,6 +50,7 @@ export class CommentBody extends PureComponent {
     isGridMode: PropTypes.bool.isRequired,
     isPostDetail: PropTypes.bool.isRequired,
     isLightBox: PropTypes.bool.isRequired,
+    resizeLightBox: PropTypes.bool.isRequired,
     toggleLightBox: PropTypes.func.isRequired,
     lightBoxSelectedId: PropTypes.string,
   }
@@ -70,6 +71,7 @@ export class CommentBody extends PureComponent {
       isGridMode,
       isPostDetail,
       isLightBox,
+      resizeLightBox,
       toggleLightBox,
       lightBoxSelectedId,
     } = this.props
@@ -87,6 +89,7 @@ export class CommentBody extends PureComponent {
           isGridMode={isGridMode}
           isPostDetail={isPostDetail}
           isLightBox={isLightBox}
+          resizeLightBox={resizeLightBox}
           toggleLightBox={toggleLightBox}
           lightBoxSelectedId={lightBoxSelectedId}
         />

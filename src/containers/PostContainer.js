@@ -165,6 +165,7 @@ class PostContainer extends Component {
     isReposting: PropTypes.bool.isRequired,
     isWatchingPost: PropTypes.bool.isRequired,
     isLightBox: PropTypes.bool,
+    resizeLightBox: PropTypes.bool,
     toggleLightBox: PropTypes.func,
     lightBoxSelectedId: PropTypes.string,
     pathname: PropTypes.string.isRequired,
@@ -198,6 +199,7 @@ class PostContainer extends Component {
     isPostHeaderHidden: false,
     isRelatedPost: false,
     isLightBox: false,
+    resizeLightBox: false,
     toggleLightBox: null,
     lightBoxSelectedId: null,
     postBody: null,
@@ -264,7 +266,17 @@ class PostContainer extends Component {
     if (nextProps.isPostEmpty) { return false }
     return !Immutable.is(nextProps.post, this.props.post) ||
       !Immutable.is(nextProps.adminActions, this.props.adminActions) ||
-      ['columnWidth', 'contentWidth', 'innerHeight', 'innerWidth', 'isGridMode', 'isLoggedIn', 'isMobile', 'submissionStatus'].some(prop =>
+      [
+        'columnWidth',
+        'contentWidth',
+        'innerHeight',
+        'innerWidth',
+        'isGridMode',
+        'isLoggedIn',
+        'isMobile',
+        'submissionStatus',
+        'resizeLightBox',
+      ].some(prop =>
         nextProps[prop] !== this.props[prop],
       )
   }
@@ -433,6 +445,7 @@ class PostContainer extends Component {
       isReposting,
       isWatchingPost,
       isLightBox,
+      resizeLightBox,
       toggleLightBox,
       lightBoxSelectedId,
       post,
@@ -642,6 +655,7 @@ class PostContainer extends Component {
               isRepostAnimating,
               isWatchingPost,
               isLightBox,
+              resizeLightBox,
               toggleLightBox,
               lightBoxSelectedId,
               post,

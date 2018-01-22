@@ -73,6 +73,7 @@ class ImageRegion extends PureComponent {
     isGridMode: PropTypes.bool.isRequired,
     isNotification: PropTypes.bool,
     isLightBoxImage: PropTypes.bool,
+    resizeLightBoxImage: PropTypes.bool,
     lightBoxSelectedId: PropTypes.string,
     shouldUseVideo: PropTypes.bool.isRequired,
     handleStaticImageRegionClick: PropTypes.func,
@@ -90,6 +91,7 @@ class ImageRegion extends PureComponent {
     isPostDetail: false,
     isGridMode: false,
     isLightBoxImage: false,
+    resizeLightBoxImage: false,
     lightBoxSelectedId: null,
     handleStaticImageRegionClick: null,
   }
@@ -123,21 +125,23 @@ class ImageRegion extends PureComponent {
   shouldComponentUpdate(nextProps, nextState) {
     return !Immutable.is(nextProps.isLightBoxImage, this.props.isLightBoxImage) ||
       !Immutable.is(nextProps.asset, this.props.asset) ||
-      ['buyLinkURL', 'columnWidth', 'contentWidth', 'isGridMode', 'isLightBoxImage', 'lightBoxSelectedId'].some(prop =>
+      ['buyLinkURL', 'columnWidth', 'contentWidth', 'isGridMode', 'isLightBoxImage', 'resizeLightBoxImage', 'lightBoxSelectedId'].some(prop =>
         nextProps[prop] !== this.props[prop],
       ) ||
       ['measuredImageHeight', 'measuredImageWidth', 'scaledImageHeight', 'scaledImageWidth', 'status'].some(prop => nextState[prop] !== this.state[prop])
   }
 
   componentDidUpdate() {
-    const { isLightBoxImage } = this.props
+    const { isLightBoxImage, resizeLightBoxImage } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
 
     const scaledBlank = scaledImageHeight === null && scaledImageWidth === null
     const scaledZero = scaledImageHeight === 0 && scaledImageWidth === 0
-    if (isLightBoxImage && (scaledBlank || scaledZero)) {
+
+    if (isLightBoxImage && ((scaledBlank || scaledZero) || resizeLightBoxImage)) {
       return this.setImageScale()
     }
+
     return null
   }
 
@@ -229,19 +233,29 @@ class ImageRegion extends PureComponent {
 
   // scales lightbox images to fill available screen space
   setImageScale() {
-    const { measuredImageHeight, measuredImageWidth } = this.state
+    const {
+      measuredImageHeight,
+      measuredImageWidth,
+      scaledImageHeight,
+      scaledImageWidth,
+    } = this.state
 
     const dimensions = this.getImageDimensions()
     let imageHeight = null
     let imageWidth = null
 
-    if (dimensions) {
-      imageHeight = dimensions.height
-      imageWidth = dimensions.width
+    if (!this.props.resizeLightBoxImage) {
+      if (dimensions) {
+        imageHeight = dimensions.height
+        imageWidth = dimensions.width
+      } else {
+        const { width, height } = this.state
+        imageHeight = height
+        imageWidth = width
+      }
     } else {
-      const { width, height } = this.state
-      imageHeight = height
-      imageWidth = width
+      imageHeight = scaledImageHeight
+      imageWidth = scaledImageWidth
     }
 
     const innerHeightPadded = (window.innerHeight - 80)
@@ -258,14 +272,14 @@ class ImageRegion extends PureComponent {
       scale = (innerWidthPadded / imageWidth)
     }
 
-    const setScaledImageHeight = (measuredImageHeight * scale)
-    const setScaledImageWidth = (measuredImageWidth * scale)
+    const newScaledImageHeight = (measuredImageHeight * scale)
+    const newScaledImageWidth = (measuredImageWidth * scale)
 
     this.setState({
       currentImageHeight: measuredImageHeight,
       currentImageWidth: measuredImageWidth,
-      scaledImageHeight: setScaledImageHeight,
-      scaledImageWidth: setScaledImageWidth,
+      scaledImageHeight: newScaledImageHeight,
+      scaledImageWidth: newScaledImageWidth,
     })
   }
 

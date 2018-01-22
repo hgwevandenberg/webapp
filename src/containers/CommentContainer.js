@@ -90,6 +90,7 @@ class CommentContainer extends Component {
     isOwnComment: PropTypes.bool.isRequired,
     isPostDetail: PropTypes.bool.isRequired,
     isLightBox: PropTypes.bool,
+    resizeLightBox: PropTypes.bool,
     toggleLightBox: PropTypes.func.isRequired,
     lightBoxSelectedId: PropTypes.string,
     post: PropTypes.object.isRequired,
@@ -98,6 +99,7 @@ class CommentContainer extends Component {
   static defaultProps = {
     commentBody: null,
     isLightBox: false,
+    resizeLightBox: false,
     toggleLightBox: null,
     lightBoxSelectedId: null,
   }
@@ -133,6 +135,7 @@ class CommentContainer extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     return !Immutable.is(nextProps.comment, this.props.comment) ||
       !Immutable.is(nextProps.post, this.props.post) ||
+      ['resizeLightBox'].some(prop => nextProps[prop] !== this.props[prop]) ||
       ['isGridMode'].some(prop => nextProps[prop] !== this.props[prop]) ||
       ['isMoreToolActive'].some(prop => nextState[prop] !== this.state[prop])
   }
@@ -221,6 +224,7 @@ class CommentContainer extends Component {
       isOwnComment,
       isPostDetail,
       isLightBox,
+      resizeLightBox,
       toggleLightBox,
       lightBoxSelectedId,
     } = this.props
@@ -247,6 +251,7 @@ class CommentContainer extends Component {
             isGridMode={isGridMode}
             isPostDetail={isPostDetail}
             isLightBox={isLightBox}
+            resizeLightBox={resizeLightBox}
             toggleLightBox={toggleLightBox}
             lightBoxSelectedId={lightBoxSelectedId}
           />

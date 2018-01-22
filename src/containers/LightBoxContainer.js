@@ -192,7 +192,6 @@ function manuallySetAssetClasses(prevAssetId, currentAssetId) {
 
 // Wraps LightBox controls/state around a component
 // This function takes a component
-
 function LightBoxWrapper(WrappedComponent) {
   class BaseLightBox extends Component {
     static propTypes = {
@@ -256,6 +255,7 @@ function LightBoxWrapper(WrappedComponent) {
         assetIdToSetNext: null,
         innerWidth: this.props.innerWidth,
         innerHeight: this.props.innerHeight,
+        resize: false,
         queueOffsetX: 0,
       }
 
@@ -294,8 +294,15 @@ function LightBoxWrapper(WrappedComponent) {
       }
 
       // check for viewport resizes
-      if (this.state.open && (this.props.innerWidth !== this.state.innerWidth)) {
-        this.handleViewPortResize()
+      if ((this.state.open && !this.state.resize) &&
+        ((this.props.innerWidth !== this.state.innerWidth) ||
+        (this.props.innerHeight !== this.state.innerHeight))) {
+        this.handleViewPortResize(true)
+      }
+
+      // reset resize bool
+      if (!prevState.resize && this.state.resize) {
+        this.handleViewPortResize(false)
       }
     }
 
@@ -440,10 +447,23 @@ function LightBoxWrapper(WrappedComponent) {
       return null
     }
 
-    handleViewPortResize() {
-      this.setState({
-        innerWidth,
-        innerHeight,
+    handleViewPortResize(isResize) {
+      // resize on
+      if (isResize) {
+        return this.setState({
+          innerWidth,
+          innerHeight,
+          resize: true,
+        })
+      }
+
+      // resize off
+      setTimeout(() => {
+        this.slideQueue()
+      }, 250)
+
+      return this.setState({
+        resize: false,
       })
     }
 
@@ -539,6 +559,7 @@ function LightBoxWrapper(WrappedComponent) {
                         isPostDetail={isPostDetail}
                         isRepost={isRepost}
                         isLightBox
+                        resizeLightBox={this.state.resize}
                         toggleLightBox={assetId => this.handleImageClick(assetId)}
                         lightBoxSelectedId={this.state.assetIdToSet}
                         post={post}
@@ -553,6 +574,7 @@ function LightBoxWrapper(WrappedComponent) {
                       (<CommentContainer
                         toggleLightBox={assetId => this.handleImageClick(assetId)}
                         isLightBox
+                        resizeLightBox={this.state.resize}
                         lightBoxSelectedId={this.state.assetIdToSet}
                         commentId={id}
                         key={`commentContainer_${id}`}
@@ -563,6 +585,7 @@ function LightBoxWrapper(WrappedComponent) {
                         <PostContainer
                           toggleLightBox={assetId => this.handleImageClick(assetId)}
                           isLightBox
+                          resizeLightBox={this.state.resize}
                           lightBoxSelectedId={this.state.assetIdToSet}
                           postId={id}
                           isPostHeaderHidden={isPostHeaderHidden}

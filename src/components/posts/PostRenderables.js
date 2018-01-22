@@ -377,6 +377,7 @@ export class PostBody extends PureComponent {
     isPostBody: PropTypes.bool.isRequired,
     isRepost: PropTypes.bool.isRequired,
     isLightBox: PropTypes.bool,
+    resizeLightBox: PropTypes.bool,
     toggleLightBox: PropTypes.func,
     lightBoxSelectedId: PropTypes.string,
     post: PropTypes.object.isRequired,
@@ -390,6 +391,8 @@ export class PostBody extends PureComponent {
     contentWarning: null,
     repostContent: null,
     isPostBody: true,
+    isLightBox: false,
+    resizeLightBox: false,
   }
   render() {
     const {
@@ -406,6 +409,7 @@ export class PostBody extends PureComponent {
       isPostBody,
       isRepost,
       isLightBox,
+      resizeLightBox,
       toggleLightBox,
       lightBoxSelectedId,
       post,
@@ -435,6 +439,7 @@ export class PostBody extends PureComponent {
       isPostDetail,
       isPostBody,
       isLightBox,
+      resizeLightBox,
       toggleLightBox,
       lightBoxSelectedId,
     }
@@ -617,6 +622,7 @@ export const Post = ({
   isRepostAnimating,
   isWatchingPost,
   isLightBox,
+  resizeLightBox,
   toggleLightBox,
   lightBoxSelectedId,
   post,
@@ -658,6 +664,7 @@ export const Post = ({
         isPostDetail,
         isRepost,
         isLightBox,
+        resizeLightBox,
         toggleLightBox,
         lightBoxSelectedId,
         post,
@@ -736,6 +743,7 @@ Post.propTypes = {
   isRepostAnimating: PropTypes.bool.isRequired,
   isWatchingPost: PropTypes.bool.isRequired,
   isLightBox: PropTypes.bool,
+  resizeLightBox: PropTypes.bool,
   toggleLightBox: PropTypes.func,
   lightBoxSelectedId: PropTypes.string,
   post: PropTypes.object.isRequired,
