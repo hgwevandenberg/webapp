@@ -275,6 +275,7 @@ class PostContainer extends Component {
         'isLoggedIn',
         'isMobile',
         'submissionStatus',
+        'lightBoxSelectedId',
         'resizeLightBox',
       ].some(prop =>
         nextProps[prop] !== this.props[prop],

@@ -178,18 +178,6 @@ const postsBodyLightBoxStyle = css(
   ),
 )
 
-function manuallySetAssetClasses(prevAssetId, currentAssetId) {
-  const prevAsset = document.getElementById(`lightBoxAsset_${prevAssetId}`)
-  const currentAsset = document.getElementById(`lightBoxAsset_${currentAssetId}`)
-
-  if (prevAsset) {
-    prevAsset.classList.remove('selected')
-  }
-  if (currentAsset) {
-    currentAsset.classList.add('selected')
-  }
-}
-
 // Wraps LightBox controls/state around a component
 // This function takes a component
 function LightBoxWrapper(WrappedComponent) {
@@ -285,12 +273,6 @@ function LightBoxWrapper(WrappedComponent) {
         setTimeout(() => {
           this.removeLoadingClass()
         }, transitionDelay)
-      }
-
-      // manually set some stuff on the containers that are stateless (streams)
-      const { commentIds, postIds } = this.props
-      if (commentIds || postIds) {
-        manuallySetAssetClasses(prevState.assetIdToSet, this.state.assetIdToSet)
       }
 
       // check for viewport resizes

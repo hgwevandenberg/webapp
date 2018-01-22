@@ -135,8 +135,13 @@ class CommentContainer extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     return !Immutable.is(nextProps.comment, this.props.comment) ||
       !Immutable.is(nextProps.post, this.props.post) ||
-      ['resizeLightBox'].some(prop => nextProps[prop] !== this.props[prop]) ||
-      ['isGridMode'].some(prop => nextProps[prop] !== this.props[prop]) ||
+      [
+        'lightBoxSelectedId',
+        'resizeLightBox',
+        'isGridMode',
+      ].some(prop =>
+        nextProps[prop] !== this.props[prop],
+      ) ||
       ['isMoreToolActive'].some(prop => nextState[prop] !== this.state[prop])
   }
 
