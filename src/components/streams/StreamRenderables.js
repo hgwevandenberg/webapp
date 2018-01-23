@@ -227,6 +227,10 @@ const postListStyle = css(
   s.maxSiteWidth,
   s.mxAuto,
   select('& .ImageRegion img', { height: 'auto' }),
+  media(
+    s.minBreak3,
+    select('& .PostBody > div', s.flex, s.flexColumn, s.justifyCenter, s.itemsCenter, s.pt20),
+  ),
 )
 
 class PostsAsListSimple extends Component { // eslint-disable-line react/no-multi-comp

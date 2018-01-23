@@ -17,6 +17,12 @@ const STATUS = {
   FAILURE: 'isFailing',
 }
 
+const imageRegionStyle = css(
+  s.flex,
+  s.justifyCenter,
+  s.itemsCenter,
+)
+
 const streamImageStyle = css(
   s.inline,
   s.relative,
@@ -475,14 +481,14 @@ class ImageRegion extends PureComponent {
   }
 
   renderRegionAsLink() {
-    const { buyLinkURL, detailPath } = this.props
+    const { buyLinkURL, detailPath, isLightBoxImage } = this.props
     return (
       <div className="RegionContent">
         <Link to={detailPath} onClick={this.context.onTrackRelatedPostClick}>
           {this.renderAttachment()}
         </Link>
         {
-          buyLinkURL && buyLinkURL.length ?
+          buyLinkURL && buyLinkURL.length && !isLightBoxImage ?
             <ElloBuyButton to={buyLinkURL} /> :
             null
         }
@@ -517,7 +523,7 @@ class ImageRegion extends PureComponent {
     const { status } = this.state
     const asLink = isGridMode && detailPath
     return (
-      <div className={classNames('ImageRegion', status)} >
+      <div className={`${classNames('ImageRegion', status)} ${imageRegionStyle}`} >
         {asLink ? this.renderRegionAsLink() : this.renderRegionAsStatic()}
       </div>
     )

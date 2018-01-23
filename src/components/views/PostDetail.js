@@ -57,7 +57,7 @@ const postDetailStyle = css(
   ),
 )
 
-const streamStyle = css(
+const listStyle = css(
   s.px10,
   media(
     s.minBreak3,
@@ -148,7 +148,7 @@ export const PostDetail = (props) => {
   return (
     <MainView className={`PostDetail ${postDetailStyle}`}>
       <div className="PostDetails Posts asList">
-        <article className={`PostList ${streamStyle}`} id={`Post_${post.get('id')}`}>
+        <article className={`PostList ${listStyle}`} id={`Post_${post.get('id')}`}>
           <PostContainer type={shouldInlineComments ? null : 'PostDetailBody'} postId={post.get('id')} />
           {shouldInlineComments && <CommentContent {...props} />}
           <StreamContainer
