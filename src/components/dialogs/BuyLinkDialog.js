@@ -43,6 +43,7 @@ export default class BuyLinkDialog extends PureComponent {
     dispatch: PropTypes.func,
     onConfirm: PropTypes.func.isRequired,
     onDismiss: PropTypes.func.isRequired,
+    editorType: PropTypes.string.isRequired,
     text: PropTypes.string,
   }
 
@@ -61,12 +62,16 @@ export default class BuyLinkDialog extends PureComponent {
     if (this.value.indexOf('http') !== 0) {
       this.value = `http://${this.value}`
     }
-    this.props.dispatch(trackEvent('buy-link-added-to-comment'))
+    if (this.props.editorType === 'Comment') {
+      this.props.dispatch(trackEvent('buy-link-added-to-comment'))
+    }
     this.props.onConfirm({ value: this.value })
   }
 
   onClickReset = () => {
-    this.props.dispatch(trackEvent('buy-link-removed-from-comment'))
+    if (this.props.editorType === 'Comment') {
+      this.props.dispatch(trackEvent('buy-link-removed-from-comment'))
+    }
     this.props.onConfirm({ value: null })
   }
 
