@@ -94,8 +94,8 @@ class EditorialContainer extends Component {
     toggleLovePost({ isLoved: isPostLoved, post, trackLabel, trackOptions })
   }
 
-  onClickRepostEditorialPost = () => {
-    const { dispatch, trackOptions, postPath } = this.props
+  onClickRepostEditorialPost = (postPath) => {
+    const { dispatch, trackOptions } = this.props
     dispatch(trackEvent('editorial-module-repost-clicked', trackOptions))
     browserHistory.push(postPath)
   }

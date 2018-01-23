@@ -87,7 +87,7 @@ export const EditorialTools = (props: ToolProps, context: ToolContext) => (
     </ToolButton>
     <ToolButton
       className={leftSpacer}
-      onClick={context.onClickRepostEditorialPost}
+      onClick={() => context.onClickRepostEditorialPost(props.postPath)}
     >
       <RepostIcon />
     </ToolButton>
