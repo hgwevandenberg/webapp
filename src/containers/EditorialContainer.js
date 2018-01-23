@@ -1,6 +1,7 @@
 // @flow
 import { is } from 'immutable'
 import React, { Component } from 'react'
+import { browserHistory } from 'react-router'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { trackEvent } from '../actions/analytics'
@@ -60,7 +61,7 @@ class EditorialContainer extends Component {
 
   static childContextTypes = {
     onClickLovePost: PropTypes.func,
-    onClickRepostPost: PropTypes.func,
+    onClickRepostEditorialPost: PropTypes.func,
     onClickOpenSignupModal: PropTypes.func,
     onClickSharePost: PropTypes.func.isRequired,
     onClickShareExternal: PropTypes.func.isRequired,
@@ -70,7 +71,7 @@ class EditorialContainer extends Component {
     const { isLoggedIn } = this.props
     return {
       onClickLovePost: isLoggedIn ? this.onClickLovePost : this.onClickOpenSignupModal,
-      onClickRepostPost: isLoggedIn ? this.onClickRepostPost : this.onClickOpenSignupModal,
+      onClickRepostEditorialPost: isLoggedIn ? this.onClickRepostEditorialPost : this.onClickOpenSignupModal, // eslint-disable-line
       onClickOpenSignupModal: isLoggedIn ? null : this.onClickOpenSignupModal,
       onClickSharePost: this.onClickSharePost,
       onClickShareExternal: this.onClickShareExternal,
@@ -93,9 +94,10 @@ class EditorialContainer extends Component {
     toggleLovePost({ isLoved: isPostLoved, post, trackLabel, trackOptions })
   }
 
-  onClickRepostPost = () => {
-    const { dispatch, trackOptions } = this.props
+  onClickRepostEditorialPost = () => {
+    const { dispatch, trackOptions, postPath } = this.props
     dispatch(trackEvent('editorial-module-repost-clicked', trackOptions))
+    browserHistory.push(postPath)
   }
 
   onClickOpenSignupModal = () => {
