@@ -301,13 +301,14 @@ function LightBoxWrapper(WrappedComponent) {
         content,
         commentIds,
         postIds,
+        submissionIds,
       } = this.props
 
       if (commentIds) {
         return commentsLightBoxStyle
       }
 
-      if (postIds) {
+      if (postIds || submissionIds) {
         return postsListLightBoxStyle
       }
 
