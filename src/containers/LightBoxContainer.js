@@ -9,6 +9,7 @@ import {
 import { DismissButtonLGReverse } from '../components/buttons/Buttons'
 import CommentContainer from './CommentContainer'
 import PostContainer from './PostContainer'
+import ArtistInviteSubmissionContainer from './ArtistInviteSubmissionContainer'
 import { PostBody } from '../components/posts/PostRenderables'
 // import { RegionItems } from '../regions/RegionRenderables'
 import { css, select } from '../styles/jss'
@@ -188,6 +189,7 @@ function LightBoxWrapper(WrappedComponent) {
       content: PropTypes.object, // for individual posts
       commentIds: PropTypes.object, // for comment stream
       postIds: PropTypes.object, // for posts list stream
+      submissionIds: PropTypes.object, // for artist invite list stream
       // below for individual posts
       author: PropTypes.object,
       columnWidth: PropTypes.number,
@@ -211,6 +213,7 @@ function LightBoxWrapper(WrappedComponent) {
       content: null,
       commentIds: null,
       postIds: null,
+      submissionIds: null,
       // below for individual posts
       author: null,
       columnWidth: null,
@@ -492,6 +495,7 @@ function LightBoxWrapper(WrappedComponent) {
       const {
         commentIds,
         postIds,
+        submissionIds,
         author,
         columnWidth,
         commentOffset,
@@ -574,6 +578,17 @@ function LightBoxWrapper(WrappedComponent) {
                         />
                       </article>),
                     )}
+                    {submissionIds.map(id => (
+                      <article className="PostList" key={`postsAsList_${id}`}>
+                        <ArtistInviteSubmissionContainer
+                          toggleLightBox={assetId => this.handleImageClick(assetId)}
+                          isLightBox
+                          resizeLightBox={this.state.resize}
+                          lightBoxSelectedId={this.state.assetIdToSet}
+                          submissionId={id}
+                        />
+                      </article>
+                    ))}
                   </div>
                 </div>
               </div>

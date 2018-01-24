@@ -23,11 +23,19 @@ class ArtistInviteSubmissionContainer extends PureComponent {
     dispatch: PropTypes.func.isRequired,
     postId: PropTypes.string.isRequired,
     status: PropTypes.string,
+    toggleLightBox: PropTypes.func,
+    isLightBox: PropTypes.bool,
+    resizeLightBox: PropTypes.bool,
+    lightBoxSelectedId: PropTypes.string,
   }
 
   static defaultProps = {
     actions: null,
     status: null,
+    toggleLightBox: null,
+    isLightBox: false,
+    resizeLightBox: false,
+    lightBoxSelectedId: null,
   }
 
   static childContextTypes = {
@@ -50,9 +58,21 @@ class ArtistInviteSubmissionContainer extends PureComponent {
       actions,
       postId,
       status,
+      toggleLightBox,
+      isLightBox,
+      resizeLightBox,
+      lightBoxSelectedId,
     } = this.props
     return (
-      <PostContainer postId={postId} adminActions={actions} submissionStatus={status} />
+      <PostContainer
+        postId={postId}
+        adminActions={actions}
+        submissionStatus={status}
+        toggleLightBox={toggleLightBox}
+        isLightBox={isLightBox}
+        resizeLightBox={resizeLightBox}
+        lightBoxSelectedId={lightBoxSelectedId}
+      />
     )
   }
 }

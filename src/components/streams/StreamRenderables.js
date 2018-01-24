@@ -187,19 +187,54 @@ export const artistInviteSubmissionsAsGrid = (submissionIds, columnCount, header
   )
 }
 
+class ArtistInviteSubmissionsAsListSimple extends Component { // eslint-disable-line react/no-multi-comp
+  static propTypes = {
+    toggleLightBox: PropTypes.func.isRequired,
+    submissionIds: PropTypes.object.isRequired,
+    headerText: PropTypes.string.isRequired,
+  }
+
+  static defaultProps = {
+    toggleLightBox: null,
+    submissionIds: null,
+    headerText: null,
+  }
+
+  render() {
+    const {
+      toggleLightBox,
+      submissionIds,
+      headerText,
+    } = this.props
+
+    return (
+      <div className="Posts asList">
+        {headerText &&
+          <h2 className={postsAsListblackTitleStyle}>{headerText}</h2>
+        }
+        {submissionIds.map(id => (
+          <article className={`PostList ArtistInviteSubmission ${postsAsListStyle}`} key={`postsAsList_${id}`}>
+            <ArtistInviteSubmissionContainer
+              toggleLightBox={toggleLightBox}
+              submissionId={id}
+            />
+          </article>
+        ))}
+      </div>
+    )
+  }
+}
+
+// wrap posts list in LightBox factory
+const ArtistInviteSubmissionsAsList = withLightBoxContainer(ArtistInviteSubmissionsAsListSimple)
+
 export const artistInviteSubmissionsAsList = (submissionIds, headerText) => {
   if (!submissionIds || submissionIds.size === 0) { return null }
   return (
-    <div className="Posts asList">
-      {headerText &&
-        <h2 className={postsAsListblackTitleStyle}>{headerText}</h2>
-      }
-      {submissionIds.map(id => (
-        <article className={`PostList ArtistInviteSubmission ${postsAsListStyle}`} key={`postsAsList_${id}`}>
-          <ArtistInviteSubmissionContainer submissionId={id} />
-        </article>
-      ))}
-    </div>
+    <ArtistInviteSubmissionsAsList
+      submissionIds={submissionIds}
+      headerText={headerText}
+    />
   )
 }
 
