@@ -1,5 +1,5 @@
 import Immutable from 'immutable'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import ArtistInviteContainer from '../../containers/ArtistInviteContainer'
 import CategoryContainer from '../../containers/CategoryContainer'
@@ -43,7 +43,7 @@ export const categoriesAsGrid = categoryIds =>
   </div>)
 
 // COMMENTS
-class CommentsAsListSimple extends Component { // eslint-disable-line react/no-multi-comp
+class CommentsAsListSimple extends PureComponent { // eslint-disable-line react/no-multi-comp
   static propTypes = {
     toggleLightBox: PropTypes.func.isRequired,
     commentIds: PropTypes.object,
@@ -187,7 +187,7 @@ export const artistInviteSubmissionsAsGrid = (submissionIds, columnCount, header
   )
 }
 
-class ArtistInviteSubmissionsAsListSimple extends Component { // eslint-disable-line react/no-multi-comp
+class ArtistInviteSubmissionsAsListSimple extends PureComponent { // eslint-disable-line max-len, react/no-multi-comp
   static propTypes = {
     toggleLightBox: PropTypes.func.isRequired,
     submissionIds: PropTypes.object.isRequired,
@@ -268,7 +268,7 @@ const postListStyle = css(
   ),
 )
 
-class PostsAsListSimple extends Component { // eslint-disable-line react/no-multi-comp
+class PostsAsListSimple extends PureComponent { // eslint-disable-line react/no-multi-comp
   static propTypes = {
     toggleLightBox: PropTypes.func.isRequired,
     postIds: PropTypes.object.isRequired,
