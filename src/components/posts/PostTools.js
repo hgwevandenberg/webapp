@@ -14,6 +14,8 @@ import {
   RepostIcon,
   ShareIcon,
   XBoxIcon,
+  ArtistInviteSubmissionApprovedIcon,
+  ArtistInviteSubmissionSelectedIcon,
 } from '../assets/Icons'
 import { numberToHuman } from '../../lib/number_to_human'
 
@@ -210,6 +212,43 @@ class ShareTool extends PureComponent {
         </button>
       </span>
     )
+  }
+}
+
+export class ArtistInviteSubmissionStatusTool extends PureComponent {
+  static propTypes = {
+    status: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    slug: PropTypes.string.isRequired,
+  }
+
+  render() {
+    const { title, slug, status } = this.props
+    let resp = (<span />)
+    if (status === 'approved') {
+      const hint = `Accepted Submission to ${title}`
+      resp = (
+        <span className="PostTool ArtistInviteSubmissionStatusTool">
+          <Link to={`/artist-invites/${slug}`}>
+            <ArtistInviteSubmissionApprovedIcon />
+            <Hint>{hint}</Hint>
+          </Link>
+        </span>
+      )
+    }
+    if (status === 'selected') {
+      const hint = `Selected Submission to ${title}`
+      resp = (
+        <span className="PostTool ArtistInviteSubmissionStatusTool">
+          <Link to={`/artist-invites/${slug}`}>
+            <ArtistInviteSubmissionSelectedIcon />
+            <Hint>{hint}</Hint>
+          </Link>
+        </span>
+      )
+    }
+
+    return resp
   }
 }
 

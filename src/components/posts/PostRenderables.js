@@ -14,7 +14,7 @@ import {
 import { DismissButtonLG } from '../buttons/Buttons'
 import Editor from '../editor/Editor'
 import ContentWarningButton from '../posts/ContentWarningButton'
-import { PostTools, EditTool, DeleteTool } from '../posts/PostTools'
+import { PostTools, EditTool, DeleteTool, ArtistInviteSubmissionStatusTool } from '../posts/PostTools'
 import { TabListButtons } from '../tabs/TabList'
 import RelationshipContainer from '../../containers/RelationshipContainer'
 import StreamContainer from '../../containers/StreamContainer'
@@ -130,14 +130,30 @@ PostHeaderTimeAgoLink.propTypes = {
 export class PostHeader extends PureComponent {
   static propTypes = {
     author: PropTypes.object.isRequired,
+    artistInviteSubmission: PropTypes.object,
     detailPath: PropTypes.string.isRequired,
     isOwnPost: PropTypes.bool.isRequired,
+    isArtistInviteSubmission: PropTypes.bool.isRequired,
     isPostDetail: PropTypes.bool.isRequired,
     postCreatedAt: PropTypes.string.isRequired,
     postId: PropTypes.string.isRequired,
   }
+
+  static defaultProps = {
+    artistInviteSubmission: null,
+  }
+
   render() {
-    const { author, detailPath, isOwnPost, isPostDetail, postCreatedAt, postId } = this.props
+    const {
+      author,
+      artistInviteSubmission,
+      detailPath,
+      isArtistInviteSubmission,
+      isOwnPost,
+      isPostDetail,
+      postCreatedAt,
+      postId,
+    } = this.props
     return (
       <header
         className={classNames('PostHeader', { isOwnPost })}
@@ -190,6 +206,15 @@ export class PostHeader extends PureComponent {
             <span>
               <EditTool />
               <DeleteTool />
+            </span>
+          }
+          {isPostDetail && isArtistInviteSubmission &&
+            <span>
+              <ArtistInviteSubmissionStatusTool
+                status={artistInviteSubmission.get('status')}
+                slug={artistInviteSubmission.get('slug')}
+                title={artistInviteSubmission.get('title')}
+              />
             </span>
           }
         </div>
@@ -291,8 +316,10 @@ export class CategoryHeader extends PureComponent {
 
 export class RepostHeader extends PureComponent {
   static propTypes = {
+    artistInviteSubmission: PropTypes.object,
     detailPath: PropTypes.string.isRequired,
     inUserDetail: PropTypes.bool.isRequired,
+    isArtistInviteSubmission: PropTypes.bool.isRequired,
     isOwnPost: PropTypes.bool.isRequired,
     isPostDetail: PropTypes.bool.isRequired,
     postCreatedAt: PropTypes.string.isRequired,
@@ -300,10 +327,15 @@ export class RepostHeader extends PureComponent {
     repostAuthor: PropTypes.object.isRequired,
     repostedBy: PropTypes.object.isRequired,
   }
+  static defaultProps = {
+    artistInviteSubmission: null,
+  }
   render() {
     const {
+      artistInviteSubmission,
       detailPath,
       inUserDetail,
+      isArtistInviteSubmission,
       isOwnPost,
       isPostDetail,
       postCreatedAt,
@@ -353,6 +385,15 @@ export class RepostHeader extends PureComponent {
             <span>
               <EditTool />
               <DeleteTool />
+            </span>
+          }
+          {isPostDetail && isArtistInviteSubmission &&
+            <span>
+              <ArtistInviteSubmissionStatusTool
+                status={artistInviteSubmission.get('status')}
+                slug={artistInviteSubmission.get('slug')}
+                title={artistInviteSubmission.get('title')}
+              />
             </span>
           }
         </div>

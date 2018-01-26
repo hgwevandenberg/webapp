@@ -44,6 +44,7 @@ import {
 import {
   selectPost,
   selectPostAuthor,
+  selectPostArtistInviteSubmission,
   selectPostBody,
   selectPostCategoryName,
   selectPostCategorySlug,
@@ -98,6 +99,7 @@ export function makeMapStateToProps() {
       innerHeight: selectInnerHeight(state),
       innerWidth: selectInnerWidth(state),
       isArtistInviteSubmission: selectPostIsArtistInviteSubmission(state, props),
+      artistInviteSubmission: selectPostArtistInviteSubmission(state, props),
       isCommentsRequesting: selectPostIsCommentsRequesting(state, props),
       isDiscoverRoot: selectIsDiscoverRoot(state, props),
       isGridMode: selectPostIsGridMode(state, props),
@@ -148,6 +150,7 @@ class PostContainer extends Component {
     dispatch: PropTypes.func.isRequired,
     innerHeight: PropTypes.number.isRequired,
     innerWidth: PropTypes.number.isRequired,
+    artistInviteSubmission: PropTypes.object,
     isArtistInviteSubmission: PropTypes.bool.isRequired,
     isCommentsRequesting: PropTypes.bool.isRequired,
     isDiscoverRoot: PropTypes.bool.isRequired,
@@ -186,6 +189,7 @@ class PostContainer extends Component {
 
   static defaultProps = {
     adminActions: null,
+    artistInviteSubmission: null,
     avatar: null,
     categoryName: null,
     categoryPath: null,
@@ -399,6 +403,7 @@ class PostContainer extends Component {
     const {
       adminActions,
       author,
+      artistInviteSubmission,
       avatar,
       categoryName,
       categoryPath,
@@ -451,7 +456,9 @@ class PostContainer extends Component {
       postHeader = (
         <RepostHeader
           {...headerProps}
+          artistInviteSubmission={artistInviteSubmission}
           inUserDetail={isPostHeaderHidden}
+          isArtistInviteSubmission={isArtistInviteSubmission}
           isOwnPost={isOwnPost}
           isPostDetail={isPostDetail}
           repostAuthor={repostAuthor}
@@ -480,7 +487,9 @@ class PostContainer extends Component {
       postHeader = (
         <PostHeader
           {...headerProps}
+          artistInviteSubmission={artistInviteSubmission}
           author={author}
+          isArtistInviteSubmission={isArtistInviteSubmission}
           isOwnPost={isOwnPost}
           isPostDetail={isPostDetail}
         />

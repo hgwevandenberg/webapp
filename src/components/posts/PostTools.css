@@ -99,6 +99,14 @@
   left: 10px;
 }
 
+.ArtistInviteSubmissionStatusTool .SVGIcon {
+  margin-top: -6px;
+}
+
+.ArtistInviteSubmissionStatusTool .Hint {
+  left: -200px;
+}
+
 /* This is actually in the PostContainer */
 .WatchTool.isPill {
   position: absolute;
