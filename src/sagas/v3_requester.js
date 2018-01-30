@@ -1,7 +1,6 @@
 /* eslint-disable no-constant-condition,no-underscore-dangle */
 import React from 'react'
 import get from 'lodash/get'
-import { camelizeKeys } from 'humps'
 import { actionChannel, all, call, fork, put, select, take } from 'redux-saga/effects'
 import { extractJSON, fetchCredentials, getHeaders, sagaFetch } from './api'
 import { clearAuthToken, refreshAuthenticationToken } from '../actions/authentication'
@@ -76,8 +75,7 @@ export function* handleRequestError(error, action) {
 
     const contentType = error.response.headers.get('content-type')
     if (contentType && contentType.indexOf('application/json') > -1) {
-      const errorJson = yield call(extractJSON, error.response)
-      payload.response = camelizeKeys(errorJson)
+      payload.response = yield call(extractJSON, error.response)
     }
     yield put({ error, meta, payload, type: FAILURE })
     yield call(fireFailureAction)
@@ -139,7 +137,9 @@ export function* performRequest(action) {
   }
 
   const { json, serverResponse } = response
-  payload.response = camelizeKeys(json)
+  payload.response = json
+
+  // TODO: Errors come back as 200s, we need to deal with that here.
 
   updateRunningFetches(serverResponse)
 

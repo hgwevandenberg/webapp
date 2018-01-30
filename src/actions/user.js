@@ -53,6 +53,13 @@ export function loadUserPostsV3(username) {
             posts {
               id
               token
+              author {
+                id
+                username
+              }
+              assets {
+                id
+              }
             }
           }
         }

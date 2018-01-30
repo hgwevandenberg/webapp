@@ -13,6 +13,7 @@ import { findModel } from '../helpers/json_helper'
 import commentMethods from './comments'
 import postMethods from './posts'
 import relationshipMethods from './relationships'
+import v3Reducer from './v3_reducer'
 
 // adding methods and accessing them from this object
 // allows the unit tests to stub methods in this module
@@ -336,6 +337,8 @@ methods.markAnnouncementRead = state =>
 export default function json(state = initialState, action = { type: '' }) {
   // whitelist actions
   switch (action.type) {
+    case ACTION_TYPES.V3.LOAD_STREAM_SUCCESS:
+      return v3Reducer(state, action)
     case ACTION_TYPES.ADD_NEW_IDS_TO_RESULT:
       return methods.addNewIdsToResult(state, action)
     case ACTION_TYPES.AUTHENTICATION.LOGOUT_SUCCESS:
