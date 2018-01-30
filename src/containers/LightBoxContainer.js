@@ -182,15 +182,6 @@ const postsBodyLightBoxStyle = css(
   ),
 )
 
-// export function makeMapStateToProps() {
-//   return (state, props) =>
-//     ({
-//       content: selectPostContent(state, props),
-//       post: selectPost(state, props),
-//       postBody: selectPostBody(state, props),
-//     })
-// }
-
 // Wraps LightBox controls/state around a component
 // This function takes a component
 function LightBoxWrapper(WrappedComponent) {
@@ -198,12 +189,12 @@ function LightBoxWrapper(WrappedComponent) {
     static propTypes = {
       innerHeight: PropTypes.number,
       innerWidth: PropTypes.number,
-      content: PropTypes.object, // for individual posts
-      commentIds: PropTypes.object, // for comment stream
       postIds: PropTypes.object, // for posts list stream
+      commentIds: PropTypes.object, // for comment stream
       submissionIds: PropTypes.object, // for artist invite list stream
-      postsAssetIds: PropTypes.array, // for streams; grabs asset ids for navigation
+      postsAssetIds: PropTypes.array, // from selector; grabs asset ids for navigation
       // below for individual posts
+      content: PropTypes.object, // for individual posts
       author: PropTypes.object,
       columnWidth: PropTypes.number,
       commentOffset: PropTypes.number,
@@ -223,20 +214,20 @@ function LightBoxWrapper(WrappedComponent) {
     }
 
     static defaultProps = {
-      content: null,
-      commentIds: null,
+      innerHeight: null,
+      innerWidth: null,
       postIds: null,
+      commentIds: null,
       submissionIds: null,
       postsAssetIds: null,
       // below for individual posts
+      content: null,
       author: null,
       columnWidth: null,
       commentOffset: null,
       contentWarning: null,
       contentWidth: null,
       detailPath: null,
-      innerHeight: null,
-      innerWidth: null,
       isGridMode: false,
       isPostDetail: false,
       isPostHeaderHidden: false,
@@ -334,42 +325,19 @@ function LightBoxWrapper(WrappedComponent) {
     }
 
     setPagination(assetId) {
-      const regionsContent = this.props.content
+      const { postsAssetIds } = this.props
 
-      // console.log(`assetId: ${assetId}`)
-      // console.log(this.props.postIds)
-      // console.log(this.props.postsAssetIds)
-      if (regionsContent || this.props.postsAssetIds) {
-        let imageContent = null
-        if (regionsContent) {
-          imageContent = regionsContent.filter(region => region.get('kind') === 'image')
-        }
-        if (this.props.postsAssetIds) {
-          imageContent = this.props.postsAssetIds
-        }
-
-        const numberItems = imageContent.length
-        // console.log(`numberItems: ${numberItems}`)
+      if (postsAssetIds) {
+        const numberItems = postsAssetIds.length
 
         let existingItemIndex = null
-        imageContent.map((regionOrId, index) => {
-          let loopAssetId = null
-          if (regionsContent) {
-            const loopAsset = regionOrId.get('asset')
-            loopAssetId = loopAsset ? loopAsset.get('id') : null
-          }
-          if (this.props.postsAssetIds) {
-            loopAssetId = regionOrId
-          }
-
+        postsAssetIds.map((loopAssetId, index) => {
           if (loopAssetId === assetId) {
             existingItemIndex = index
             return existingItemIndex
           }
           return null
         })
-
-        // console.log(`existingItemIndex: ${existingItemIndex}`)
 
         if (existingItemIndex !== null) {
           let prevIndex = existingItemIndex - 1
@@ -383,18 +351,8 @@ function LightBoxWrapper(WrappedComponent) {
             nextIndex = 0
           }
 
-          let prevItemAssetId = null
-          let nextItemAssetId = null
-          /* eslint-disable no-underscore-dangle */
-          if (regionsContent) {
-            prevItemAssetId = imageContent._tail.array[prevIndex].get('asset').get('id')
-            nextItemAssetId = imageContent._tail.array[nextIndex].get('asset').get('id')
-          }
-          /* eslint-enable no-underscore-dangle */
-          if (this.props.postsAssetIds) {
-            prevItemAssetId = this.props.postsAssetIds[prevIndex]
-            nextItemAssetId = this.props.postsAssetIds[nextIndex]
-          }
+          const prevItemAssetId = postsAssetIds[prevIndex]
+          const nextItemAssetId = postsAssetIds[nextIndex]
 
           this.setState({
             assetIdToSetPrev: prevItemAssetId,
