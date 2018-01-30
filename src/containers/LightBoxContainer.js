@@ -6,6 +6,9 @@ import {
   selectInnerHeight,
   selectInnerWidth,
 } from '../selectors/gui'
+import {
+  selectPostsAssetIds,
+} from '../selectors/post'
 import { DismissButtonLGReverse } from '../components/buttons/Buttons'
 import CommentContainer from './CommentContainer'
 import PostContainer from './PostContainer'
@@ -179,6 +182,15 @@ const postsBodyLightBoxStyle = css(
   ),
 )
 
+// export function makeMapStateToProps() {
+//   return (state, props) =>
+//     ({
+//       content: selectPostContent(state, props),
+//       post: selectPost(state, props),
+//       postBody: selectPostBody(state, props),
+//     })
+// }
+
 // Wraps LightBox controls/state around a component
 // This function takes a component
 function LightBoxWrapper(WrappedComponent) {
@@ -190,6 +202,7 @@ function LightBoxWrapper(WrappedComponent) {
       commentIds: PropTypes.object, // for comment stream
       postIds: PropTypes.object, // for posts list stream
       submissionIds: PropTypes.object, // for artist invite list stream
+      postsAssetIds: PropTypes.array, // for streams; grabs asset ids for navigation
       // below for individual posts
       author: PropTypes.object,
       columnWidth: PropTypes.number,
@@ -214,6 +227,7 @@ function LightBoxWrapper(WrappedComponent) {
       commentIds: null,
       postIds: null,
       submissionIds: null,
+      postsAssetIds: null,
       // below for individual posts
       author: null,
       columnWidth: null,
@@ -322,14 +336,31 @@ function LightBoxWrapper(WrappedComponent) {
     setPagination(assetId) {
       const regionsContent = this.props.content
 
-      if (regionsContent) {
-        const imageContent = regionsContent.filter(region => region.get('kind') === 'image')
-        const numberItems = imageContent.size
+      // console.log(`assetId: ${assetId}`)
+      // console.log(this.props.postIds)
+      // console.log(this.props.postsAssetIds)
+      if (regionsContent || this.props.postsAssetIds) {
+        let imageContent = null
+        if (regionsContent) {
+          imageContent = regionsContent.filter(region => region.get('kind') === 'image')
+        }
+        if (this.props.postsAssetIds) {
+          imageContent = this.props.postsAssetIds
+        }
+
+        const numberItems = imageContent.length
+        // console.log(`numberItems: ${numberItems}`)
 
         let existingItemIndex = null
-        imageContent.map((region, index) => {
-          const loopAsset = region.get('asset')
-          const loopAssetId = loopAsset ? loopAsset.get('id') : null
+        imageContent.map((regionOrId, index) => {
+          let loopAssetId = null
+          if (regionsContent) {
+            const loopAsset = regionOrId.get('asset')
+            loopAssetId = loopAsset ? loopAsset.get('id') : null
+          }
+          if (this.props.postsAssetIds) {
+            loopAssetId = regionOrId
+          }
 
           if (loopAssetId === assetId) {
             existingItemIndex = index
@@ -337,6 +368,8 @@ function LightBoxWrapper(WrappedComponent) {
           }
           return null
         })
+
+        // console.log(`existingItemIndex: ${existingItemIndex}`)
 
         if (existingItemIndex !== null) {
           let prevIndex = existingItemIndex - 1
@@ -350,10 +383,18 @@ function LightBoxWrapper(WrappedComponent) {
             nextIndex = 0
           }
 
+          let prevItemAssetId = null
+          let nextItemAssetId = null
           /* eslint-disable no-underscore-dangle */
-          const prevItemAssetId = imageContent._tail.array[prevIndex].get('asset').get('id')
-          const nextItemAssetId = imageContent._tail.array[nextIndex].get('asset').get('id')
+          if (regionsContent) {
+            prevItemAssetId = imageContent._tail.array[prevIndex].get('asset').get('id')
+            nextItemAssetId = imageContent._tail.array[nextIndex].get('asset').get('id')
+          }
           /* eslint-enable no-underscore-dangle */
+          if (this.props.postsAssetIds) {
+            prevItemAssetId = this.props.postsAssetIds[prevIndex]
+            nextItemAssetId = this.props.postsAssetIds[nextIndex]
+          }
 
           this.setState({
             assetIdToSetPrev: prevItemAssetId,
@@ -468,7 +509,7 @@ function LightBoxWrapper(WrappedComponent) {
     }
 
     bindKeys(unbind) {
-      const { content } = this.props
+      const { content, postsAssetIds } = this.props
 
       Mousetrap.unbind(SHORTCUT_KEYS.ESC)
       Mousetrap.unbind(SHORTCUT_KEYS.PREV)
@@ -476,7 +517,7 @@ function LightBoxWrapper(WrappedComponent) {
 
       if (!unbind) {
         Mousetrap.bind(SHORTCUT_KEYS.ESC, () => { this.close() })
-        if (content) {
+        if (content || postsAssetIds) {
           Mousetrap.bind(SHORTCUT_KEYS.PREV, () => { this.advance('prev') })
           Mousetrap.bind(SHORTCUT_KEYS.NEXT, () => { this.advance('next') })
         }
@@ -489,6 +530,7 @@ function LightBoxWrapper(WrappedComponent) {
         assetIdToSet: assetId,
       })
       // update pagination
+      // console.log(`update click pagination: ${assetId}`)
       return this.setPagination(assetId)
     }
 
@@ -579,7 +621,7 @@ function LightBoxWrapper(WrappedComponent) {
                         />
                       </article>),
                     )}
-                    {submissionIds.map(id => (
+                    {submissionIds && submissionIds.map(id => (
                       <article className="PostList" key={`postsAsList_${id}`}>
                         <ArtistInviteSubmissionContainer
                           toggleLightBox={assetId => this.handleImageClick(assetId)}
@@ -605,10 +647,11 @@ function LightBoxWrapper(WrappedComponent) {
   }
 
   function makeMapStateToProps() {
-    return state =>
+    return (state, props) =>
       ({
         innerHeight: selectInnerHeight(state),
         innerWidth: selectInnerWidth(state),
+        postsAssetIds: selectPostsAssetIds(state, props),
       })
   }
 

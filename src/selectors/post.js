@@ -19,10 +19,47 @@ const countProtector = count => (count < 0 ? 0 : count)
 
 export const selectPropsPostId = (state, props) =>
   get(props, 'postId') || get(props, 'post', Immutable.Map()).get('id')
+export const selectPropsPostIds = (state, props) => get(props, 'postIds')
 
 export const selectPropsPostIsRelated = (state, props) => get(props, 'isRelatedPost', false)
 export const selectPropsLocationStateFrom = (state, props) => get(props, ['location', 'state', 'from'], null)
 export const selectPosts = state => state.json.get(POSTS, Immutable.Map())
+
+// in-progress
+// currently requires `postIds`
+export const selectPostsAssetIds = createSelector(
+  [selectPropsPostIds, selectPosts], (ids, posts) => {
+    const combinedPostsAssetIds = []
+    ids.map((id) => {
+      const post = posts.get(id, Immutable.Map())
+      // console.log(id)
+      // console.log(post.get('repostId'))
+      // console.log(post.get('content'))
+      // console.log(post.get('repostContent'))
+      const postContent = post.get('content')
+      const postRepostContent = post.get('repostContent')
+
+      postRepostContent.map((region) => {
+        const assetId = region.getIn(['links', 'assets'])
+        if (assetId) {
+          return combinedPostsAssetIds.push(assetId)
+        }
+        return null
+      })
+
+      postContent.map((region) => {
+        const assetId = region.getIn(['links', 'assets'])
+        if (assetId) {
+          return combinedPostsAssetIds.push(assetId)
+        }
+        return null
+      })
+
+      return combinedPostsAssetIds
+    })
+    return combinedPostsAssetIds
+  },
+)
 
 // Memoized selectors
 // Requires `postId`, `post` or `params.token` to be found in props
