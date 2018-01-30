@@ -8,7 +8,7 @@ import {
 } from '../selectors/gui'
 import {
   selectPostsAssetIds,
-} from '../selectors/post'
+} from '../selectors/light_box'
 import { DismissButtonLGReverse } from '../components/buttons/Buttons'
 import CommentContainer from './CommentContainer'
 import PostContainer from './PostContainer'
