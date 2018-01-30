@@ -42,6 +42,32 @@ export function loadUserPosts(username, type) {
   }
 }
 
+export function loadUserPostsV3(username) {
+  return {
+    type: ACTION_TYPES.V3.LOAD_STREAM,
+    payload: {
+      query: `
+        {
+          userPostStream(username: "${username}") {
+            next
+            posts {
+              id
+              token
+            }
+          }
+        }
+      `,
+    },
+    meta: {
+      mappingType: MAPPING_TYPES.POSTS,
+      renderStream: {
+        asList: StreamRenderables.postsAsList,
+        asGrid: StreamRenderables.postsAsGrid,
+      },
+    },
+  }
+}
+
 export function loadUserLoves(username, type) {
   return {
     type: ACTION_TYPES.LOAD_STREAM,
