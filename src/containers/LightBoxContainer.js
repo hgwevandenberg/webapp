@@ -496,6 +496,12 @@ function LightBoxWrapper(WrappedComponent) {
     }
 
     handleImageClick(assetId, postId) {
+      const { open, assetIdToSet, postIdToSet } = this.state
+
+      if (open && (assetId === assetIdToSet) && (postId === postIdToSet)) {
+        return this.close()
+      }
+
       this.setState({
         open: true,
         assetIdToSet: assetId,
