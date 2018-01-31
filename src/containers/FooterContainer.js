@@ -7,7 +7,7 @@ import { trackEvent } from '../actions/analytics'
 import { checkAvailability, resetAvailability } from '../actions/profile'
 import { getEmailStateFromClient, getEmailStateFromServer } from '../components/forms/Validators'
 import { Footer } from '../components/footer/FooterRenderables'
-import { LOAD_NEXT_CONTENT_REQUEST, SET_LAYOUT_MODE } from '../constants/action_types'
+import { LOAD_NEXT_CONTENT_REQUEST, SET_LAYOUT_MODE, V3 } from '../constants/action_types'
 import { FOOTER_LINKS as links } from '../constants/locales/en'
 import { FORM_CONTROL_STATUS as STATUS } from '../constants/status_types'
 import { isIOS, scrollToPosition } from '../lib/jello'
@@ -63,7 +63,8 @@ function mapStateToProps(state, props) {
     isLoggedIn: selectIsLoggedIn(state),
     isMobile: selectIsMobile(state),
     isModalActive: selectIsModalActive(state),
-    isPaginatoring: streamType === LOAD_NEXT_CONTENT_REQUEST,
+    isPaginatoring: streamType === LOAD_NEXT_CONTENT_REQUEST ||
+      streamType === V3.LOAD_NEXT_CONTENT_REQUEST,
     pathname,
   }
 }

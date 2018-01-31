@@ -50,6 +50,7 @@ export function loadUserPostsV3(username) {
         query($username: String!, $before: String) {
           userPostStream(username: $username, before: $before) {
             next
+            isLastPage
             posts {
               id
               token

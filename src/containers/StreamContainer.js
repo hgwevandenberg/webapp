@@ -160,7 +160,8 @@ class StreamContainer extends Component {
       addScrollTarget(this.scrollObject)
     }
     if (!action) { return }
-    if (stream.get('type') === ACTION_TYPES.LOAD_NEXT_CONTENT_SUCCESS) {
+    if (stream.get('type') === ACTION_TYPES.LOAD_NEXT_CONTENT_SUCCESS ||
+      stream.get('type') === ACTION_TYPES.V3.LOAD_NEXT_CONTENT_SUCCESS) {
       this.setState({ hidePaginator: true })
     }
     if (selectActionPath(this.props) === nextProps.stream.getIn(['payload', 'endpoint', 'path'])) {
@@ -257,6 +258,7 @@ class StreamContainer extends Component {
     const pagination = result.get('pagination')
     if ((!action.payload.endpoint && !action.payload.query) || !pagination.get('next') ||
         Number(pagination.get('totalPagesRemaining')) === 0 ||
+        pagination.get('isLastPage', false) === true ||
         (stream.get('type') === ACTION_TYPES.LOAD_NEXT_CONTENT_SUCCESS &&
          stream.getIn(['payload', 'serverStatus']) === 204)) { return }
     if (runningFetches[pagination[rel]]) { return }
@@ -316,10 +318,13 @@ class StreamContainer extends Component {
     if (!result.get('ids').size) {
       switch (renderType) {
         case ACTION_TYPES.LOAD_STREAM_SUCCESS:
+        case ACTION_TYPES.V3.LOAD_STREAM_SUCCESS:
           return this.renderZeroState()
         case ACTION_TYPES.LOAD_STREAM_REQUEST:
+        case ACTION_TYPES.V3.LOAD_STREAM_REQUEST:
           return this.renderLoading()
         case ACTION_TYPES.LOAD_STREAM_FAILURE:
+        case ACTION_TYPES.V3.LOAD_STREAM_FAILURE:
           if (stream.error) {
             return this.renderError()
           }
@@ -331,22 +336,26 @@ class StreamContainer extends Component {
     const { meta } = action
     const renderMethod = isGridMode ? 'asGrid' : 'asList'
     const pagination = result.get('pagination')
+    const isLastPage = pagination.get('isLastPage', false)
     return (
       <section className={classNames('StreamContainer', className)}>
         {meta.renderStream[renderMethod](result.get('ids'), columnCount, isPostHeaderHidden, meta.renderProps)}
-        <Paginator
-          hasShowMoreButton={
-            (hasShowMoreButton && stream.getIn(['payload', 'serverStatus']) !== 204) ||
-            (typeof meta.resultKey !== 'undefined' && typeof meta.updateKey !== 'undefined')
-          }
-          isCentered={paginatorCentered}
-          isHidden={hidePaginator}
-          loadNextPage={this.onLoadNextPage}
-          messageText={paginatorText}
-          to={paginatorTo}
-          totalPages={Number(pagination.get('totalPages'))}
-          totalPagesRemaining={Number(pagination.get('totalPagesRemaining'))}
-        />
+
+        {!isLastPage &&
+          <Paginator
+            hasShowMoreButton={
+              ((hasShowMoreButton && stream.getIn(['payload', 'serverStatus']) !== 204) && !pagination.get('isLastPage', false)) ||
+              (typeof meta.resultKey !== 'undefined' && typeof meta.updateKey !== 'undefined')
+            }
+            isCentered={paginatorCentered}
+            isHidden={hidePaginator}
+            loadNextPage={this.onLoadNextPage}
+            messageText={paginatorText}
+            to={paginatorTo}
+            totalPages={Number(pagination.get('totalPages'))}
+            totalPagesRemaining={Number(pagination.get('totalPagesRemaining'))}
+          />
+        }
       </section>
     )
   }

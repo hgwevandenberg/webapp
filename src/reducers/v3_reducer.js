@@ -6,9 +6,10 @@ function parseList(state, list, parser) {
   return list.reduce(parser, state)
 }
 
-function parsePagination(state, models, next, pathname, query, variables) {
+function parsePagination(state, stream, pathname, query, variables) {
+  const { posts: models, next, isLastPage } = stream
   const mergedState = state.mergeDeepIn(['pages', pathname], Immutable.Map({
-    pagination: Immutable.Map({ next, query, variables }),
+    pagination: Immutable.Map({ next, query, variables, isLastPage }),
   }))
   return mergedState.updateIn(['pages', pathname, 'ids'], ids =>
     (ids || Immutable.List()).concat(models.map(m => m.id)),
@@ -51,9 +52,10 @@ function parsePost(state, post) {
   return state3
 }
 
-function parseQueryType(state, { next, posts }, pathname, query, variables) {
+function parseQueryType(state, stream, pathname, query, variables) {
+  const { posts } = stream
   const state1 = parseList(state, posts, parsePost)
-  return parsePagination(state1, posts, next, pathname, query, variables)
+  return parsePagination(state1, stream, pathname, query, variables)
 }
 
 function parseStream(state, { payload: { response: { data }, pathname, query, variables } }) {
