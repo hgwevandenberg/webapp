@@ -598,7 +598,8 @@ function LightBoxWrapper(WrappedComponent) {
                     {submissionIds && submissionIds.map(id => (
                       <article className="PostList" key={`postsAsList_${id}`}>
                         <ArtistInviteSubmissionContainer
-                          toggleLightBox={assetId => this.handleImageClick(assetId)}
+                          toggleLightBox={(assetId, postIdToSet) =>
+                            this.handleImageClick(assetId, postIdToSet)}
                           isLightBox
                           resizeLightBox={this.state.resize}
                           lightBoxSelectedId={this.state.assetIdToSet}
