@@ -2,7 +2,7 @@ import Immutable from 'immutable'
 import { createSelector } from 'reselect'
 import { camelize } from 'humps'
 import get from 'lodash/get'
-import { ARTIST_INVITES, ARTIST_INVITE_SUBMISSIONS } from '..//constants/mapping_types'
+import { ARTIST_INVITES, ARTIST_INVITE_SUBMISSIONS } from '../constants/mapping_types'
 
 const selectPropsArtistInviteId = (state, props) =>
   get(props, 'artistInviteId') || get(props, 'artistInvite', Immutable.Map()).get('id')
