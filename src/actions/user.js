@@ -47,8 +47,8 @@ export function loadUserPostsV3(username) {
     type: ACTION_TYPES.V3.LOAD_STREAM,
     payload: {
       query: `
-        {
-          userPostStream(username: "${username}") {
+        query($username: String!, $before: String) {
+          userPostStream(username: $username, before: $before) {
             next
             posts {
               id
@@ -64,6 +64,7 @@ export function loadUserPostsV3(username) {
           }
         }
       `,
+      variables: {username}
     },
     meta: {
       mappingType: MAPPING_TYPES.POSTS,

@@ -338,6 +338,7 @@ export default function json(state = initialState, action = { type: '' }) {
   // whitelist actions
   switch (action.type) {
     case ACTION_TYPES.V3.LOAD_STREAM_SUCCESS:
+    case ACTION_TYPES.V3.LOAD_NEXT_CONTENT_SUCCESS:
       return v3Reducer(state, action)
     case ACTION_TYPES.ADD_NEW_IDS_TO_RESULT:
       return methods.addNewIdsToResult(state, action)

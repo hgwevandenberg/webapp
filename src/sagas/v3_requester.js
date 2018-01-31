@@ -14,6 +14,7 @@ const V3_GRAPHQL_PATH = '/api/v3/graphql'
 
 export const requestTypes = [
   ACTION_TYPES.V3.LOAD_STREAM,
+  ACTION_TYPES.V3.LOAD_NEXT_CONTENT,
 ]
 
 let unauthorizedActionQueue = []
@@ -93,7 +94,7 @@ export function* performRequest(action) {
   const {
     type,
     meta,
-    payload: { query },
+    payload: { query, variables },
   } = action
   let { payload } = action
   const pathname = yield select(selectPathname)
@@ -107,7 +108,7 @@ export function* performRequest(action) {
 
   const options = {
     method: 'POST',
-    body: JSON.stringify({ query }),
+    body: JSON.stringify({ query, variables }),
     headers: getHeaders(accessToken),
   }
 
