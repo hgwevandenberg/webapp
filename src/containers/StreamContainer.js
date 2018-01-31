@@ -52,6 +52,40 @@ function makeMapStateToProps() {
     })
 }
 
+function buildNextPageAction(action, pagination) {
+  const { meta } = action
+  const next = pagination.get('next')
+  // V3/GraphQL pagination
+  if (pagination.get('query')) {
+    const variables = pagination.get('variables', {})
+    return {
+      ...action,
+      type: ACTION_TYPES.V3.LOAD_NEXT_CONTENT,
+      payload: {
+        query: pagination.get('query'),
+        variables: { ...variables, before: next },
+      },
+      meta: {
+        mappingType: meta.mappingType,
+        resultFilter: meta.resultFilter,
+        resultKey: meta.resultKey,
+      },
+    }
+  }
+  return {
+    ...action,
+    type: ACTION_TYPES.LOAD_NEXT_CONTENT,
+    payload: {
+      endpoint: { path: next },
+    },
+    meta: {
+      mappingType: meta.mappingType,
+      resultFilter: meta.resultFilter,
+      resultKey: meta.resultKey,
+    },
+  }
+}
+
 class StreamContainer extends Component {
 
   static propTypes = {
@@ -216,45 +250,10 @@ class StreamContainer extends Component {
   }
 
 
-  buildNextPageAction(action, pagination) {
-    const { meta } = action
-    const next = pagination.get('next')
-    // V3/GraphQL pagination
-    if (pagination.get('query')) {
-      const variables = pagination.get('variables', {})
-      return {
-        ...action,
-        type: ACTION_TYPES.V3.LOAD_NEXT_CONTENT,
-        payload: {
-          query: pagination.get('query'),
-          variables: {...variables, before: next},
-        },
-        meta: {
-          mappingType: meta.mappingType,
-          resultFilter: meta.resultFilter,
-          resultKey: meta.resultKey,
-        },
-      }
-    }
-    return {
-      ...action,
-      type: ACTION_TYPES.LOAD_NEXT_CONTENT,
-      payload: {
-        endpoint: { path: next },
-      },
-      meta: {
-        mappingType: meta.mappingType,
-        resultFilter: meta.resultFilter,
-        resultKey: meta.resultKey,
-      },
-    }
-  }
-
   loadPage(rel) {
     const { dispatch, result, stream } = this.props
     const { action } = this.state
     if (!action) { return }
-    const { meta } = action
     const pagination = result.get('pagination')
     if ((!action.payload.endpoint && !action.payload.query) || !pagination.get('next') ||
         Number(pagination.get('totalPagesRemaining')) === 0 ||
@@ -262,7 +261,7 @@ class StreamContainer extends Component {
          stream.getIn(['payload', 'serverStatus']) === 204)) { return }
     if (runningFetches[pagination[rel]]) { return }
     this.setState({ hidePaginator: false })
-    const infiniteAction = this.buildNextPageAction(action, pagination, rel)
+    const infiniteAction = buildNextPageAction(action, pagination, rel)
     // this is used for updating the postId on a comment
     // so that the post exsists in the store after load
     if (action.payload.postIdOrToken) {

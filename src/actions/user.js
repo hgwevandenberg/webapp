@@ -64,7 +64,7 @@ export function loadUserPostsV3(username) {
           }
         }
       `,
-      variables: {username}
+      variables: { username },
     },
     meta: {
       mappingType: MAPPING_TYPES.POSTS,
