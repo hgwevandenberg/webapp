@@ -42,8 +42,8 @@ export const selectPostsAssetIds = createSelector(
 
     // iterate posts in state and return associated assetIds as array
     const combinedPostsAssetIds = []
-    postIds.map((id) => {
-      const post = postsToMap.get(id, Immutable.Map())
+    postIds.map((postId) => {
+      const post = postsToMap.get(postId, Immutable.Map())
       const postContent = post.get('content')
       const postRepostContent = post.get('repostContent')
 
@@ -51,7 +51,7 @@ export const selectPostsAssetIds = createSelector(
         postRepostContent.map((region) => {
           const assetId = region.getIn(['links', 'assets'])
           if (assetId) {
-            return combinedPostsAssetIds.push(assetId)
+            return combinedPostsAssetIds.push([postId, assetId])
           }
           return null
         })
@@ -60,7 +60,7 @@ export const selectPostsAssetIds = createSelector(
       postContent.map((region) => {
         const assetId = region.getIn(['links', 'assets'])
         if (assetId) {
-          return combinedPostsAssetIds.push(assetId)
+          return combinedPostsAssetIds.push([postId, assetId])
         }
         return null
       })

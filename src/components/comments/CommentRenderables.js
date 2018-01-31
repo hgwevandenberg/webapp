@@ -78,8 +78,8 @@ export class CommentBody extends PureComponent {
     return (
       <div className="CommentBody" key={`CommentBody${commentId}`} >
         <RegionItems
+          postId={commentId}
           columnWidth={columnWidth}
-          commentId={commentId}
           commentOffset={commentOffset}
           content={content}
           contentWidth={contentWidth}

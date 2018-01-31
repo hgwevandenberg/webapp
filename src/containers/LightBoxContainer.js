@@ -249,6 +249,9 @@ function LightBoxWrapper(WrappedComponent) {
         assetIdToSet: null,
         assetIdToSetPrev: null,
         assetIdToSetNext: null,
+        postIdToSet: null,
+        postIdToSetPrev: null,
+        postIdToSetNext: null,
         innerWidth: this.props.innerWidth,
         innerHeight: this.props.innerHeight,
         resize: false,
@@ -324,21 +327,24 @@ function LightBoxWrapper(WrappedComponent) {
       return baseLightBoxStyle
     }
 
-    setPagination(assetId) {
+    setPagination(assetId, postId) {
       const { postsAssetIds } = this.props
 
       if (postsAssetIds) {
         const numberItems = postsAssetIds.length
-
         let existingItemIndex = null
-        postsAssetIds.map((loopAssetId, index) => {
-          if (loopAssetId === assetId) {
+
+        // match `assetId` and `postId` with `postsAssetIds` pair
+        postsAssetIds.map((postAssetIdPair, index) => {
+          if ((postAssetIdPair[1] === assetId) &&
+            (postAssetIdPair[0] === postId)) {
             existingItemIndex = index
             return existingItemIndex
           }
           return null
         })
 
+        // if there was a match, set prev/next indices + grab ids
         if (existingItemIndex !== null) {
           let prevIndex = existingItemIndex - 1
           let nextIndex = existingItemIndex + 1
@@ -351,44 +357,55 @@ function LightBoxWrapper(WrappedComponent) {
             nextIndex = 0
           }
 
-          const prevItemAssetId = postsAssetIds[prevIndex]
-          const nextItemAssetId = postsAssetIds[nextIndex]
+          const prevItemAssetId = postsAssetIds[prevIndex][1]
+          const nextItemAssetId = postsAssetIds[nextIndex][1]
+          const prevItemPostId = postsAssetIds[prevIndex][0]
+          const nextItemPostId = postsAssetIds[nextIndex][0]
 
-          this.setState({
+          return this.setState({
             assetIdToSetPrev: prevItemAssetId,
             assetIdToSetNext: nextItemAssetId,
+            postIdToSetPrev: prevItemPostId,
+            postIdToSetNext: nextItemPostId,
           })
         }
+        return null
       }
       return null
     }
 
     advance(direction) {
       let newAssetIdToSet = null
+      let newPostIdToSet = null
 
       switch (direction) {
         case 'prev' :
           newAssetIdToSet = this.state.assetIdToSetPrev
+          newPostIdToSet = this.state.postIdToSetPrev
           break
         case 'next' :
           newAssetIdToSet = this.state.assetIdToSetNext
+          newPostIdToSet = this.state.postIdToSetNext
           break
         default :
           newAssetIdToSet = this.state.assetIdToSet
+          newPostIdToSet = this.state.postIdToSet
       }
 
       // advance to new image
       this.setState({
         assetIdToSet: newAssetIdToSet,
+        postIdToSet: newPostIdToSet,
       })
 
       // update pagination
-      return this.setPagination(newAssetIdToSet)
+      return this.setPagination(newAssetIdToSet, newPostIdToSet)
     }
 
     slideQueue() {
       const assetId = this.state.assetIdToSet
-      const assetDomId = `lightBoxAsset_${assetId}`
+      const postId = this.state.postIdToSet
+      const assetDomId = `lightBoxAsset_${assetId}_${postId}`
 
       // select the DOM elements
       const lightBoxDomQueue = document.getElementsByClassName('LightBoxQueue')[0]
@@ -467,29 +484,26 @@ function LightBoxWrapper(WrappedComponent) {
     }
 
     bindKeys(unbind) {
-      const { content, postsAssetIds } = this.props
-
       Mousetrap.unbind(SHORTCUT_KEYS.ESC)
       Mousetrap.unbind(SHORTCUT_KEYS.PREV)
       Mousetrap.unbind(SHORTCUT_KEYS.NEXT)
 
       if (!unbind) {
         Mousetrap.bind(SHORTCUT_KEYS.ESC, () => { this.close() })
-        if (content || postsAssetIds) {
-          Mousetrap.bind(SHORTCUT_KEYS.PREV, () => { this.advance('prev') })
-          Mousetrap.bind(SHORTCUT_KEYS.NEXT, () => { this.advance('next') })
-        }
+        Mousetrap.bind(SHORTCUT_KEYS.PREV, () => { this.advance('prev') })
+        Mousetrap.bind(SHORTCUT_KEYS.NEXT, () => { this.advance('next') })
       }
     }
 
-    handleImageClick(assetId) {
+    handleImageClick(assetId, postId) {
       this.setState({
         open: true,
         assetIdToSet: assetId,
+        postIdToSet: postId,
       })
+
       // update pagination
-      // console.log(`update click pagination: ${assetId}`)
-      return this.setPagination(assetId)
+      return this.setPagination(assetId, postId)
     }
 
     render() {
@@ -547,7 +561,8 @@ function LightBoxWrapper(WrappedComponent) {
                         isRepost={isRepost}
                         isLightBox
                         resizeLightBox={this.state.resize}
-                        toggleLightBox={assetId => this.handleImageClick(assetId)}
+                        toggleLightBox={(assetId, postIdToSet) =>
+                          this.handleImageClick(assetId, postIdToSet)}
                         lightBoxSelectedId={this.state.assetIdToSet}
                         post={post}
                         postId={postId}
@@ -570,7 +585,8 @@ function LightBoxWrapper(WrappedComponent) {
                     {postIds && postIds.map(id =>
                       (<article className="PostList" key={`postsAsList_${id}`}>
                         <PostContainer
-                          toggleLightBox={assetId => this.handleImageClick(assetId)}
+                          toggleLightBox={(assetId, postIdToSet) =>
+                            this.handleImageClick(assetId, postIdToSet)}
                           isLightBox
                           resizeLightBox={this.state.resize}
                           lightBoxSelectedId={this.state.assetIdToSet}
@@ -596,7 +612,7 @@ function LightBoxWrapper(WrappedComponent) {
             </div>
           }
           <WrappedComponent
-            toggleLightBox={assetId => this.handleImageClick(assetId)}
+            toggleLightBox={(assetId, postIdToSet) => this.handleImageClick(assetId, postIdToSet)}
             {...this.props}
           />
         </div>

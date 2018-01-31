@@ -430,6 +430,7 @@ export class PostBody extends PureComponent {
     }
 
     const regionProps = {
+      postId,
       columnWidth,
       commentOffset,
       contentWidth,

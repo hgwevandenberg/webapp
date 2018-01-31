@@ -66,6 +66,7 @@ const lightBoxImageStyle = css(
 class ImageRegion extends PureComponent {
 
   static propTypes = {
+    postId: PropTypes.string,
     asset: PropTypes.object,
     buyLinkURL: PropTypes.string,
     columnWidth: PropTypes.number,
@@ -86,6 +87,7 @@ class ImageRegion extends PureComponent {
   }
 
   static defaultProps = {
+    postId: null,
     asset: null,
     buyLinkURL: null,
     columnWidth: 0,
@@ -325,14 +327,20 @@ class ImageRegion extends PureComponent {
       isPostDetail,
       isGridMode,
       lightBoxSelectedId,
+      postId,
     } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
     const selected = (asset.get('id') === lightBoxSelectedId)
     const srcset = this.getImageSourceSet()
     const dimensions = this.getImageDimensions()
+    let imageDomId = null
+    if (postId) {
+      imageDomId = !isLightBoxImage ? `asset_${asset.get('id')}_${postId}` : `lightBoxAsset_${asset.get('id')}_${postId}`
+    }
+
     return (
       <ImageAsset
-        id={!isLightBoxImage ? `asset_${asset.get('id')}` : `lightBoxAsset_${asset.get('id')}`}
+        id={imageDomId}
         alt={content.get('alt') ? content.get('alt').replace('.jpg', '') : null}
         className={`ImageAttachment${selected ? ' selected' : ''}`}
         height={(isNotification || isLightBoxImage) ? 'auto' : dimensions.height}
@@ -365,17 +373,22 @@ class ImageRegion extends PureComponent {
       isPostDetail,
       isGridMode,
       lightBoxSelectedId,
+      postId,
     } = this.props
     const attrs = { src: content.get('url') }
     const { scaledImageHeight, scaledImageWidth, width, height } = this.state
     const stateDimensions = width ? { width, height } : {}
     const selected = (asset.get('id') === lightBoxSelectedId)
+    let imageDomId = null
+    if (postId) {
+      imageDomId = !isLightBoxImage ? `asset_${asset.get('id')}_${postId}` : `lightBoxAsset_${asset.get('id')}_${postId}`
+    }
     if (isNotification) {
       attrs.height = 'auto'
     }
     return (
       <ImageAsset
-        id={!isLightBoxImage ? `asset_${asset.get('id')}` : `lightBoxAsset_${asset.get('id')}`}
+        id={imageDomId}
         alt={content.get('alt') ? content.get('alt').replace('.jpg', '') : null}
         className={`ImageAttachment${selected ? ' selected' : ''}`}
         onLoadFailure={this.onLoadFailure}
@@ -406,13 +419,18 @@ class ImageRegion extends PureComponent {
       isPostDetail,
       isGridMode,
       lightBoxSelectedId,
+      postId,
     } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
     const selected = (asset.get('id') === lightBoxSelectedId)
     const dimensions = this.getImageDimensions()
+    let imageDomId = null
+    if (postId) {
+      imageDomId = !isLightBoxImage ? `asset_${asset.get('id')}_${postId}` : `lightBoxAsset_${asset.get('id')}_${postId}`
+    }
     return (
       <ImageAsset
-        id={!isLightBoxImage ? `asset_${asset.get('id')}` : `lightBoxAsset_${asset.get('id')}`}
+        id={imageDomId}
         alt={content.get('alt') ? content.get('alt').replace('.gif', '') : null}
         className={`ImageAttachment${selected ? ' selected' : ''}`}
         height={(isNotification || isLightBoxImage) ? 'auto' : dimensions.height}
@@ -442,13 +460,18 @@ class ImageRegion extends PureComponent {
       isPostDetail,
       isGridMode,
       lightBoxSelectedId,
+      postId,
     } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
     const selected = (asset.get('id') === lightBoxSelectedId)
     const dimensions = this.getImageDimensions()
+    let imageDomId = null
+    if (postId) {
+      imageDomId = !isLightBoxImage ? `asset_${asset.get('id')}_${postId}` : `lightBoxAsset_${asset.get('id')}_${postId}`
+    }
     return (
       <VideoAsset
-        id={!isLightBoxImage ? `asset_${asset.get('id')}` : `lightBoxAsset_${asset.get('id')}`}
+        id={imageDomId}
         className={`ImageAttachment${selected ? ' selected' : ''}`}
         height={dimensions.height}
         width={dimensions.width}

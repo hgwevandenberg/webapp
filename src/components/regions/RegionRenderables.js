@@ -6,9 +6,9 @@ import ImageRegion from '../regions/ImageRegion'
 import TextRegion from '../regions/TextRegion'
 import { isIOS } from '../../lib/jello'
 
-function handleStaticImageRegionClick(event, assetId, toggleLightBox) {
+function handleStaticImageRegionClick(event, assetId, postId, toggleLightBox) {
   if (toggleLightBox) {
-    return toggleLightBox(assetId)
+    return toggleLightBox(assetId, postId)
   }
   return null
 }
@@ -28,6 +28,7 @@ export class RegionItems extends PureComponent {
     resizeLightBox: PropTypes.bool,
     toggleLightBox: PropTypes.func,
     lightBoxSelectedId: PropTypes.string,
+    postId: PropTypes.string,
   }
   static defaultProps = {
     isComment: false,
@@ -35,6 +36,7 @@ export class RegionItems extends PureComponent {
     resizeLightBox: false,
     toggleLightBox: null,
     lightBoxSelectedId: null,
+    postId: null,
   }
 
   render() {
@@ -52,6 +54,7 @@ export class RegionItems extends PureComponent {
       resizeLightBox,
       toggleLightBox,
       lightBoxSelectedId,
+      postId,
     } = this.props
     // sometimes the content is null/undefined for some reason
     if (!content) { return null }
@@ -81,6 +84,7 @@ export class RegionItems extends PureComponent {
           cells.push(
             <ImageRegion
               key={`ImageRegion_${regionKey}`}
+              postId={postId}
               asset={asset}
               buyLinkURL={region.get('linkUrl')}
               columnWidth={columnWidth}
@@ -97,7 +101,7 @@ export class RegionItems extends PureComponent {
               lightBoxSelectedId={lightBoxSelectedId}
               shouldUseVideo={!!(asset && asset.getIn(['attachment', 'video'], Immutable.Map()).size) && !isIOS() && !isPostDetail}
               handleStaticImageRegionClick={
-                event => handleStaticImageRegionClick(event, assetId, toggleLightBox)
+                event => handleStaticImageRegionClick(event, assetId, postId, toggleLightBox)
               }
             />,
           )
