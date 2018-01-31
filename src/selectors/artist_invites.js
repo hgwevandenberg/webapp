@@ -42,6 +42,7 @@ export const selectTitle = createSelector([selectArtistInvite], ai => ai.get('ti
 // Artist Invite Submissions
 const selectPropsSubmissionId = (state, props) =>
   get(props, 'submissionId') || get(props, 'submission', Immutable.Map()).get('id')
+export const selectPropsSubmissionIds = (state, props) => get(props, 'submissionIds')
 
 export const selectArtistInviteSubmissions = state =>
   state.json.get(camelize(ARTIST_INVITE_SUBMISSIONS), Immutable.Map())

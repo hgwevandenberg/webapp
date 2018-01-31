@@ -192,7 +192,7 @@ function LightBoxWrapper(WrappedComponent) {
       postIds: PropTypes.object, // for posts list stream
       commentIds: PropTypes.object, // for comment stream
       submissionIds: PropTypes.object, // for artist invite list stream
-      postsAssetIds: PropTypes.array, // from selector; grabs asset ids for navigation
+      postAssetIdPairs: PropTypes.array, // post/asset id pairs for navigation
       // below for individual posts
       content: PropTypes.object, // for individual posts
       author: PropTypes.object,
@@ -219,7 +219,7 @@ function LightBoxWrapper(WrappedComponent) {
       postIds: null,
       commentIds: null,
       submissionIds: null,
-      postsAssetIds: null,
+      postAssetIdPairs: null,
       // below for individual posts
       content: null,
       author: null,
@@ -328,14 +328,14 @@ function LightBoxWrapper(WrappedComponent) {
     }
 
     setPagination(assetId, postId) {
-      const { postsAssetIds } = this.props
+      const { postAssetIdPairs } = this.props
 
-      if (postsAssetIds) {
-        const numberItems = postsAssetIds.length
+      if (postAssetIdPairs) {
+        const numberItems = postAssetIdPairs.length
         let existingItemIndex = null
 
-        // match `assetId` and `postId` with `postsAssetIds` pair
-        postsAssetIds.map((postAssetIdPair, index) => {
+        // match `assetId` and `postId` with `postAssetIdPairs` pair
+        postAssetIdPairs.map((postAssetIdPair, index) => {
           if ((postAssetIdPair[1] === assetId) &&
             (postAssetIdPair[0] === postId)) {
             existingItemIndex = index
@@ -357,10 +357,10 @@ function LightBoxWrapper(WrappedComponent) {
             nextIndex = 0
           }
 
-          const prevItemAssetId = postsAssetIds[prevIndex][1]
-          const nextItemAssetId = postsAssetIds[nextIndex][1]
-          const prevItemPostId = postsAssetIds[prevIndex][0]
-          const nextItemPostId = postsAssetIds[nextIndex][0]
+          const prevItemAssetId = postAssetIdPairs[prevIndex][1]
+          const nextItemAssetId = postAssetIdPairs[nextIndex][1]
+          const prevItemPostId = postAssetIdPairs[prevIndex][0]
+          const nextItemPostId = postAssetIdPairs[nextIndex][0]
 
           return this.setState({
             assetIdToSetPrev: prevItemAssetId,
@@ -574,7 +574,8 @@ function LightBoxWrapper(WrappedComponent) {
                     }
                     {commentIds && commentIds.map(id =>
                       (<CommentContainer
-                        toggleLightBox={assetId => this.handleImageClick(assetId)}
+                        toggleLightBox={(assetId, postIdToSet) =>
+                          this.handleImageClick(assetId, postIdToSet)}
                         isLightBox
                         resizeLightBox={this.state.resize}
                         lightBoxSelectedId={this.state.assetIdToSet}
@@ -626,7 +627,7 @@ function LightBoxWrapper(WrappedComponent) {
       ({
         innerHeight: selectInnerHeight(state),
         innerWidth: selectInnerWidth(state),
-        postsAssetIds: selectPostsAssetIds(state, props),
+        postAssetIdPairs: selectPostsAssetIds(state, props),
       })
   }
 

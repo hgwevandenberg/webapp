@@ -19,6 +19,7 @@ const countProtector = count => (count < 0 ? 0 : count)
 
 export const selectPropsPostId = (state, props) =>
   get(props, 'postId') || get(props, 'post', Immutable.Map()).get('id')
+export const selectPropsPostIds = (state, props) => get(props, 'postIds')
 
 export const selectPropsPostIsRelated = (state, props) => get(props, 'isRelatedPost', false)
 export const selectPropsLocationStateFrom = (state, props) => get(props, ['location', 'state', 'from'], null)
