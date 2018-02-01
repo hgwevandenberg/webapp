@@ -335,7 +335,6 @@ class ImageRegion extends PureComponent {
       selected = (asset.get('id') === lightBoxSelectedId)
     }
     const srcset = this.getImageSourceSet()
-    const dimensions = this.getImageDimensions()
     let imageDomId = null
     if (postId && asset) {
       imageDomId = !isLightBoxImage ? `asset_${asset.get('id')}_${postId}` : `lightBoxAsset_${asset.get('id')}_${postId}`
@@ -346,7 +345,6 @@ class ImageRegion extends PureComponent {
         id={imageDomId}
         alt={content.get('alt') ? content.get('alt').replace('.jpg', '') : null}
         className={`ImageAttachment${selected ? ' selected' : ''}`}
-        height={(isNotification || isLightBoxImage) ? 'auto' : dimensions.height}
         onLoadFailure={this.onLoadFailure}
         onLoadSuccess={this.onLoadSuccess}
         role="presentation"
@@ -355,7 +353,6 @@ class ImageRegion extends PureComponent {
         isGridMode={isGridMode}
         srcSet={srcset}
         src={this.attachment.getIn(['hdpi', 'url'])}
-        width={isNotification ? null : dimensions.width}
         style={isLightBoxImage ? { width: scaledImageWidth, height: scaledImageHeight } : null}
         onScreenDimensions={
           isPostBody && (isPostDetail || !isGridMode) ?
@@ -432,7 +429,6 @@ class ImageRegion extends PureComponent {
     if (!isNotification && asset) {
       selected = (asset.get('id') === lightBoxSelectedId)
     }
-    const dimensions = this.getImageDimensions()
     let imageDomId = null
     if (postId && asset) {
       imageDomId = !isLightBoxImage ? `asset_${asset.get('id')}_${postId}` : `lightBoxAsset_${asset.get('id')}_${postId}`
@@ -442,7 +438,6 @@ class ImageRegion extends PureComponent {
         id={imageDomId}
         alt={content.get('alt') ? content.get('alt').replace('.gif', '') : null}
         className={`ImageAttachment${selected ? ' selected' : ''}`}
-        height={(isNotification || isLightBoxImage) ? 'auto' : dimensions.height}
         onLoadFailure={this.onLoadFailure}
         onLoadSuccess={this.onLoadSuccess}
         role="presentation"
@@ -450,7 +445,6 @@ class ImageRegion extends PureComponent {
         isPostDetail={isPostDetail}
         isGridMode={isGridMode}
         src={this.attachment.getIn(['optimized', 'url'])}
-        width={isNotification ? null : dimensions.width}
         style={isLightBoxImage ? { width: scaledImageWidth, height: scaledImageHeight } : null}
         onScreenDimensions={
           isPostBody && (isPostDetail || !isGridMode) ?
@@ -472,11 +466,11 @@ class ImageRegion extends PureComponent {
       postId,
     } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
+    const dimensions = this.getImageDimensions()
     let selected = false
     if (asset) {
       selected = (asset.get('id') === lightBoxSelectedId)
     }
-    const dimensions = this.getImageDimensions()
     let imageDomId = null
     if (postId && asset) {
       imageDomId = !isLightBoxImage ? `asset_${asset.get('id')}_${postId}` : `lightBoxAsset_${asset.get('id')}_${postId}`
