@@ -15,6 +15,6 @@ export const SHORTCUT_KEYS = {
   OMNIBAR: '2',
   SEARCH: 's',
   TOGGLE_LAYOUT: '=',
-  NEXT: ['right', 'k', ']', '6'],
-  PREV: ['left', 'j', '[', '4'],
+  NEXT: ['right', 'l', ']', '6'],
+  PREV: ['left', 'h', '[', '4'],
 }
