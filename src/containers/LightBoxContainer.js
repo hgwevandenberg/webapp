@@ -9,6 +9,7 @@ import {
 import {
   selectPostsAssetIds,
 } from '../selectors/light_box'
+import { scrollToPosition } from '../lib/jello'
 import { DismissButtonLGReverse } from '../components/buttons/Buttons'
 import PostContainer from './PostContainer'
 import CommentContainer from './CommentContainer'
@@ -312,6 +313,9 @@ function LightBoxWrapper(WrappedComponent) {
         postIdToSet: newPostIdToSet,
       })
 
+      // scroll the page to image
+      this.scrollToSelectedAsset(newAssetIdToSet, newPostIdToSet)
+
       // update pagination
       return this.setPagination(newAssetIdToSet, newPostIdToSet)
     }
@@ -341,6 +345,43 @@ function LightBoxWrapper(WrappedComponent) {
       })
     }
 
+    scrollToSelectedAsset(newAssetIdToSet, newPostIdToSet) {
+      const commentsStream = this.props.commentIds
+      const assetDomId = `asset_${newAssetIdToSet}_${newPostIdToSet}`
+
+      // grab elements from the dom
+      const postList = document.getElementsByClassName('PostList')
+      const postSideBar = document.getElementsByClassName('PostSideBar')
+      const assetInDom = document.getElementById(assetDomId)
+
+      // determine scroll offset of asset in dom
+      let assetInDomTopOffset = null
+      if (postSideBar.length) { // post detail view (scrolling inner-div needs different treatement)
+        if (commentsStream) {
+          assetInDomTopOffset = assetInDom.getBoundingClientRect().top + postSideBar[0].scrollTop
+        } else {
+          assetInDomTopOffset = assetInDom.getBoundingClientRect().top + postList[0].scrollTop
+        }
+      } else {
+        assetInDomTopOffset = assetInDom.getBoundingClientRect().top + window.scrollY
+      }
+
+      // adjust scroll offset for window height / nav bar
+      const windowHeight = window.innerHeight
+      const offsetPadding = (windowHeight / 10)
+      const scrollToOffset = (assetInDomTopOffset - offsetPadding)
+
+      // scroll to new position
+      if (postList.length && postSideBar.length) { // post detail view
+        let scrollElement = postList[0]
+        if (commentsStream) {
+          scrollElement = postSideBar[0]
+        }
+        return scrollToPosition(0, scrollToOffset, { el: scrollElement })
+      }
+      return scrollToPosition(0, scrollToOffset) // stream container view
+    }
+
     close() {
       const releaseKeys = true
       this.bindKeys(releaseKeys)
@@ -361,6 +402,27 @@ function LightBoxWrapper(WrappedComponent) {
         return this.close()
       }
       return null
+    }
+
+    handleImageClick(assetId, postId) {
+      const { open, assetIdToSet, postIdToSet } = this.state
+
+      if (open && (assetId === assetIdToSet) && (postId === postIdToSet)) {
+        return this.close()
+      }
+
+      // advance to new image
+      this.setState({
+        open: true,
+        assetIdToSet: assetId,
+        postIdToSet: postId,
+      })
+
+      // scroll the page to image
+      this.scrollToSelectedAsset(assetId, postId)
+
+      // update pagination
+      return this.setPagination(assetId, postId)
     }
 
     handleViewPortResize(isResize) {
@@ -407,23 +469,6 @@ function LightBoxWrapper(WrappedComponent) {
         Mousetrap.bind(SHORTCUT_KEYS.PREV, () => { this.advance('prev') })
         Mousetrap.bind(SHORTCUT_KEYS.NEXT, () => { this.advance('next') })
       }
-    }
-
-    handleImageClick(assetId, postId) {
-      const { open, assetIdToSet, postIdToSet } = this.state
-
-      if (open && (assetId === assetIdToSet) && (postId === postIdToSet)) {
-        return this.close()
-      }
-
-      this.setState({
-        open: true,
-        assetIdToSet: assetId,
-        postIdToSet: postId,
-      })
-
-      // update pagination
-      return this.setPagination(assetId, postId)
     }
 
     constructPostIdsArray() {
