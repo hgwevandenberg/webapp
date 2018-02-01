@@ -254,11 +254,11 @@ function LightBoxWrapper(WrappedComponent) {
           let nextIndex = existingItemIndex + 1
 
           if (existingItemIndex === 0) {
-            prevIndex = numberItems - 1
+            prevIndex = 0
           }
 
           if (existingItemIndex === (numberItems - 1)) {
-            nextIndex = 0
+            nextIndex = existingItemIndex
           }
 
           const prevItemAssetId = postAssetIdPairs[prevIndex][1]
