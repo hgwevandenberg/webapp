@@ -11,6 +11,7 @@ import {
 } from '../selectors/light_box'
 import { DismissButtonLGReverse } from '../components/buttons/Buttons'
 import PostContainer from './PostContainer'
+import CommentContainer from './CommentContainer'
 // import { RegionItems } from '../regions/RegionRenderables'
 import { css, select } from '../styles/jss'
 import * as s from '../styles/jso'
@@ -82,6 +83,38 @@ const imageRegionStyle = select(
   ),
 )
 
+const commentsLightBoxStyle = css(
+  { ...baseLightBoxStyle },
+  select(
+    '> .LightBoxMask',
+    select(
+      '> .LightBox',
+      select(
+        '> .LightBoxQueue',
+        select(
+          '> .Comment',
+          s.inline,
+          { padding: 0 },
+          select(
+            '> .CommentBody',
+            s.inline,
+            { padding: 0,
+              margin: 0,
+              border: 'none',
+              width: 'auto',
+            },
+            select(
+              '> div',
+              s.inline,
+              { ...imageRegionStyle },
+            ),
+          ),
+        ),
+      ),
+    ),
+  ),
+)
+
 const postsListLightBoxStyle = css(
   { ...baseLightBoxStyle },
   select(
@@ -91,27 +124,23 @@ const postsListLightBoxStyle = css(
       select(
         '> .LightBoxQueue',
         select(
-          '> .PostList',
+          '> .Post',
           s.inline,
+          { margin: 0,
+            padding: 0,
+          },
           select(
-            '> .Post',
+            '> .PostBody',
             s.inline,
-            { margin: 0,
-              padding: 0,
+            { padding: 0,
+              margin: 0,
+              border: 'none',
+              width: 'auto',
             },
             select(
-              '> .PostBody',
+              '> div',
               s.inline,
-              { padding: 0,
-                margin: 0,
-                border: 'none',
-                width: 'auto',
-              },
-              select(
-                '> div',
-                s.inline,
-                { ...imageRegionStyle },
-              ),
+              { ...imageRegionStyle },
             ),
           ),
         ),
@@ -127,12 +156,14 @@ function LightBoxWrapper(WrappedComponent) {
     static propTypes = {
       innerHeight: PropTypes.number,
       innerWidth: PropTypes.number,
+      commentIds: PropTypes.object, // for comment stream
       postAssetIdPairs: PropTypes.array, // post/asset id pairs
     }
 
     static defaultProps = {
       innerHeight: null,
       innerWidth: null,
+      commentIds: null,
       postAssetIdPairs: null,
     }
 
@@ -245,6 +276,16 @@ function LightBoxWrapper(WrappedComponent) {
         return null
       }
       return null
+    }
+
+    setLightBoxStyle() {
+      const { commentIds } = this.props
+
+      if (commentIds) {
+        return commentsLightBoxStyle
+      }
+
+      return postsListLightBoxStyle
     }
 
     advance(direction) {
@@ -385,13 +426,23 @@ function LightBoxWrapper(WrappedComponent) {
       return this.setPagination(assetId, postId)
     }
 
+    constructPostIdsArray() {
+      const { postAssetIdPairs } = this.props
+      const allPostIds = []
+
+      postAssetIdPairs.map(postAssedIdPair => allPostIds.push(postAssedIdPair[0]))
+
+      const postIds = Array.from(new Set(allPostIds))
+      return postIds
+    }
+
     render() {
       const { postAssetIdPairs } = this.props
 
       return (
         <div className="with-lightbox">
           {this.state.open &&
-            <div className={postsListLightBoxStyle}>
+            <div className={this.setLightBoxStyle()}>
               <div className="LightBoxMask" role="presentation" onClick={e => this.handleMaskClick(e)}>
                 <DismissButtonLGReverse
                   onClick={this.close}
@@ -401,18 +452,31 @@ function LightBoxWrapper(WrappedComponent) {
                     className="LightBoxQueue"
                     style={{ transform: `translateX(${this.state.queueOffsetX}px)` }}
                   >
-                    {postAssetIdPairs && postAssetIdPairs.map(postAssedIdPair =>
-                      (<article className="PostList" key={`postsAsList_${postAssedIdPair[0]}_${postAssedIdPair[1]}`}>
-                        <PostContainer
-                          postId={postAssedIdPair[0]}
-                          isPostHeaderHidden
-                          toggleLightBox={(assetId, postIdToSet) =>
-                            this.handleImageClick(assetId, postIdToSet)}
-                          isLightBox
-                          resizeLightBox={this.state.resize}
-                          lightBoxSelectedId={this.state.assetIdToSet}
-                        />
-                      </article>),
+                    {!this.props.commentIds &&
+                      postAssetIdPairs &&
+                      this.constructPostIdsArray().map(postId =>
+                      (<PostContainer
+                        key={`lightBoxPost_${postId}`}
+                        postId={postId}
+                        isPostHeaderHidden
+                        isLightBox
+                        lightBoxSelectedId={this.state.assetIdToSet}
+                        resizeLightBox={this.state.resize}
+                        toggleLightBox={(assetId, postIdToSet) =>
+                          this.handleImageClick(assetId, postIdToSet)}
+                      />),
+                    )}
+                    {this.props.commentIds &&
+                      postAssetIdPairs &&
+                      this.constructPostIdsArray().map(postId =>
+                      (<CommentContainer
+                        key={`lightBoxPost_${postId}`}
+                        commentId={postId}
+                        isLightBox
+                        lightBoxSelectedId={this.state.assetIdToSet}
+                        toggleLightBox={(assetId, postIdToSet) =>
+                          this.handleImageClick(assetId, postIdToSet)}
+                      />),
                     )}
                   </div>
                 </div>
