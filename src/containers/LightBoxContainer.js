@@ -10,10 +10,7 @@ import {
   selectPostsAssetIds,
 } from '../selectors/light_box'
 import { DismissButtonLGReverse } from '../components/buttons/Buttons'
-import CommentContainer from './CommentContainer'
 import PostContainer from './PostContainer'
-import ArtistInviteSubmissionContainer from './ArtistInviteSubmissionContainer'
-import { PostBody } from '../components/posts/PostRenderables'
 // import { RegionItems } from '../regions/RegionRenderables'
 import { css, select } from '../styles/jss'
 import * as s from '../styles/jso'
@@ -85,38 +82,6 @@ const imageRegionStyle = select(
   ),
 )
 
-const commentsLightBoxStyle = css(
-  { ...baseLightBoxStyle },
-  select(
-    '> .LightBoxMask',
-    select(
-      '> .LightBox',
-      select(
-        '> .LightBoxQueue',
-        select(
-          '> .Comment',
-          s.inline,
-          { padding: 0 },
-          select(
-            '> .CommentBody',
-            s.inline,
-            { padding: 0,
-              margin: 0,
-              border: 'none',
-              width: 'auto',
-            },
-            select(
-              '> div',
-              s.inline,
-              { ...imageRegionStyle },
-            ),
-          ),
-        ),
-      ),
-    ),
-  ),
-)
-
 const postsListLightBoxStyle = css(
   { ...baseLightBoxStyle },
   select(
@@ -155,33 +120,6 @@ const postsListLightBoxStyle = css(
   ),
 )
 
-const postsBodyLightBoxStyle = css(
-  { ...baseLightBoxStyle },
-  select(
-    '> .LightBoxMask',
-    select(
-      '> .LightBox',
-      select(
-        '> .LightBoxQueue',
-        select(
-          '> .PostBody',
-          s.inline,
-          { padding: 0,
-            margin: 0,
-            border: 'none',
-            width: 'auto',
-          },
-          select(
-            '> div',
-            s.inline,
-            { ...imageRegionStyle },
-          ),
-        ),
-      ),
-    ),
-  ),
-)
-
 // Wraps LightBox controls/state around a component
 // This function takes a component
 function LightBoxWrapper(WrappedComponent) {
@@ -189,55 +127,13 @@ function LightBoxWrapper(WrappedComponent) {
     static propTypes = {
       innerHeight: PropTypes.number,
       innerWidth: PropTypes.number,
-      postIds: PropTypes.object, // for posts list stream
-      commentIds: PropTypes.object, // for comment stream
-      submissionIds: PropTypes.object, // for artist invite list stream
-      postAssetIdPairs: PropTypes.array, // post/asset id pairs for navigation
-      // below for individual posts
-      content: PropTypes.object, // for individual posts
-      author: PropTypes.object,
-      columnWidth: PropTypes.number,
-      commentOffset: PropTypes.number,
-      contentWarning: PropTypes.string,
-      contentWidth: PropTypes.number,
-      detailPath: PropTypes.string,
-      isGridMode: PropTypes.bool,
-      isPostDetail: PropTypes.bool,
-      isPostHeaderHidden: PropTypes.bool,
-      isRepost: PropTypes.bool,
-      post: PropTypes.object,
-      postId: PropTypes.string,
-      repostContent: PropTypes.object,
-      showEditor: PropTypes.bool,
-      summary: PropTypes.object,
-      supportsNativeEditor: PropTypes.bool,
+      postAssetIdPairs: PropTypes.array, // post/asset id pairs
     }
 
     static defaultProps = {
       innerHeight: null,
       innerWidth: null,
-      postIds: null,
-      commentIds: null,
-      submissionIds: null,
       postAssetIdPairs: null,
-      // below for individual posts
-      content: null,
-      author: null,
-      columnWidth: null,
-      commentOffset: null,
-      contentWarning: null,
-      contentWidth: null,
-      detailPath: null,
-      isGridMode: false,
-      isPostDetail: false,
-      isPostHeaderHidden: false,
-      isRepost: false,
-      post: null,
-      postId: null,
-      repostContent: null,
-      showEditor: false,
-      summary: null,
-      supportsNativeEditor: false,
     }
 
     constructor(props) {
@@ -302,29 +198,6 @@ function LightBoxWrapper(WrappedComponent) {
     componentWillUnmount() {
       const releaseKeys = true
       this.bindKeys(releaseKeys)
-    }
-
-    setLightBoxStyle() {
-      const {
-        content,
-        commentIds,
-        postIds,
-        submissionIds,
-      } = this.props
-
-      if (commentIds) {
-        return commentsLightBoxStyle
-      }
-
-      if (postIds || submissionIds) {
-        return postsListLightBoxStyle
-      }
-
-      if (content) {
-        return postsBodyLightBoxStyle
-      }
-
-      return baseLightBoxStyle
     }
 
     setPagination(assetId, postId) {
@@ -513,35 +386,12 @@ function LightBoxWrapper(WrappedComponent) {
     }
 
     render() {
-      const {
-        commentIds,
-        postIds,
-        submissionIds,
-        author,
-        columnWidth,
-        commentOffset,
-        content,
-        contentWarning,
-        contentWidth,
-        detailPath,
-        innerHeight,
-        innerWidth,
-        isGridMode,
-        isPostDetail,
-        isRepost,
-        post,
-        postId,
-        repostContent,
-        showEditor,
-        summary,
-        supportsNativeEditor,
-        isPostHeaderHidden,
-      } = this.props
+      const { postAssetIdPairs } = this.props
 
       return (
         <div className="with-lightbox">
           {this.state.open &&
-            <div className={this.setLightBoxStyle()}>
+            <div className={postsListLightBoxStyle}>
               <div className="LightBoxMask" role="presentation" onClick={e => this.handleMaskClick(e)}>
                 <DismissButtonLGReverse
                   onClick={this.close}
@@ -551,69 +401,19 @@ function LightBoxWrapper(WrappedComponent) {
                     className="LightBoxQueue"
                     style={{ transform: `translateX(${this.state.queueOffsetX}px)` }}
                   >
-                    {content &&
-                      <PostBody
-                        author={author}
-                        columnWidth={columnWidth}
-                        commentOffset={commentOffset}
-                        content={content}
-                        contentWarning={contentWarning}
-                        contentWidth={contentWidth}
-                        detailPath={detailPath}
-                        innerHeight={innerHeight}
-                        innerWidth={innerWidth}
-                        isGridMode={isGridMode}
-                        isPostDetail={isPostDetail}
-                        isRepost={isRepost}
-                        isLightBox
-                        resizeLightBox={this.state.resize}
-                        toggleLightBox={(assetId, postIdToSet) =>
-                          this.handleImageClick(assetId, postIdToSet)}
-                        lightBoxSelectedId={this.state.assetIdToSet}
-                        post={post}
-                        postId={postId}
-                        repostContent={repostContent}
-                        showEditor={showEditor}
-                        summary={summary}
-                        supportsNativeEditor={supportsNativeEditor}
-                      />
-                    }
-                    {commentIds && commentIds.map(id =>
-                      (<CommentContainer
-                        toggleLightBox={(assetId, postIdToSet) =>
-                          this.handleImageClick(assetId, postIdToSet)}
-                        isLightBox
-                        resizeLightBox={this.state.resize}
-                        lightBoxSelectedId={this.state.assetIdToSet}
-                        commentId={id}
-                        key={`commentContainer_${id}`}
-                      />),
-                    )}
-                    {postIds && postIds.map(id =>
-                      (<article className="PostList" key={`postsAsList_${id}`}>
+                    {postAssetIdPairs && postAssetIdPairs.map(postAssedIdPair =>
+                      (<article className="PostList" key={`postsAsList_${postAssedIdPair[0]}_${postAssedIdPair[1]}`}>
                         <PostContainer
+                          postId={postAssedIdPair[0]}
+                          isPostHeaderHidden
                           toggleLightBox={(assetId, postIdToSet) =>
                             this.handleImageClick(assetId, postIdToSet)}
                           isLightBox
                           resizeLightBox={this.state.resize}
                           lightBoxSelectedId={this.state.assetIdToSet}
-                          postId={id}
-                          isPostHeaderHidden={isPostHeaderHidden}
                         />
                       </article>),
                     )}
-                    {submissionIds && submissionIds.map(id => (
-                      <article className="PostList" key={`postsAsList_${id}`}>
-                        <ArtistInviteSubmissionContainer
-                          toggleLightBox={(assetId, postIdToSet) =>
-                            this.handleImageClick(assetId, postIdToSet)}
-                          isLightBox
-                          resizeLightBox={this.state.resize}
-                          lightBoxSelectedId={this.state.assetIdToSet}
-                          submissionId={id}
-                        />
-                      </article>
-                    ))}
                   </div>
                 </div>
               </div>
