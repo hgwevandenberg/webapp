@@ -331,13 +331,13 @@ class ImageRegion extends PureComponent {
     } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
     let selected = false
-    if (!isNotification) {
+    if (!isNotification && asset) {
       selected = (asset.get('id') === lightBoxSelectedId)
     }
     const srcset = this.getImageSourceSet()
     const dimensions = this.getImageDimensions()
     let imageDomId = null
-    if (postId) {
+    if (postId && asset) {
       imageDomId = !isLightBoxImage ? `asset_${asset.get('id')}_${postId}` : `lightBoxAsset_${asset.get('id')}_${postId}`
     }
 
@@ -382,11 +382,11 @@ class ImageRegion extends PureComponent {
     const { scaledImageHeight, scaledImageWidth, width, height } = this.state
     const stateDimensions = width ? { width, height } : {}
     let selected = false
-    if (!isNotification) {
+    if (!isNotification && asset) {
       selected = (asset.get('id') === lightBoxSelectedId)
     }
     let imageDomId = null
-    if (postId) {
+    if (postId && asset) {
       imageDomId = !isLightBoxImage ? `asset_${asset.get('id')}_${postId}` : `lightBoxAsset_${asset.get('id')}_${postId}`
     }
     if (isNotification) {
@@ -429,12 +429,12 @@ class ImageRegion extends PureComponent {
     } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
     let selected = false
-    if (!isNotification) {
+    if (!isNotification && asset) {
       selected = (asset.get('id') === lightBoxSelectedId)
     }
     const dimensions = this.getImageDimensions()
     let imageDomId = null
-    if (postId) {
+    if (postId && asset) {
       imageDomId = !isLightBoxImage ? `asset_${asset.get('id')}_${postId}` : `lightBoxAsset_${asset.get('id')}_${postId}`
     }
     return (
@@ -472,10 +472,13 @@ class ImageRegion extends PureComponent {
       postId,
     } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
-    const selected = (asset.get('id') === lightBoxSelectedId)
+    let selected = false
+    if (asset) {
+      selected = (asset.get('id') === lightBoxSelectedId)
+    }
     const dimensions = this.getImageDimensions()
     let imageDomId = null
-    if (postId) {
+    if (postId && asset) {
       imageDomId = !isLightBoxImage ? `asset_${asset.get('id')}_${postId}` : `lightBoxAsset_${asset.get('id')}_${postId}`
     }
     return (
