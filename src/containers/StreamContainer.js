@@ -63,7 +63,7 @@ function buildNextPageAction(action, pagination) {
       type: ACTION_TYPES.V3.LOAD_NEXT_CONTENT,
       payload: {
         query: pagination.get('query'),
-        variables: { ...variables, before: next },
+        variables: variables.merge({ before: next }),
       },
       meta: {
         mappingType: meta.mappingType,

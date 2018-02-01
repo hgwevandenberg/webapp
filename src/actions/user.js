@@ -5,6 +5,7 @@ import * as api from '../networking/api'
 import * as StreamRenderables from '../components/streams/StreamRenderables'
 import * as StreamFilters from '../components/streams/StreamFilters'
 import { ErrorState } from '../components/errors/Errors'
+import userPostStreamQuery from '../queries/userPostStream'
 
 export function flagUser(username, kind) {
   return {
@@ -46,25 +47,7 @@ export function loadUserPostsV3(username) {
   return {
     type: ACTION_TYPES.V3.LOAD_STREAM,
     payload: {
-      query: `
-        query($username: String!, $before: String) {
-          userPostStream(username: $username, before: $before) {
-            next
-            isLastPage
-            posts {
-              id
-              token
-              author {
-                id
-                username
-              }
-              assets {
-                id
-              }
-            }
-          }
-        }
-      `,
+      query: userPostStreamQuery,
       variables: { username },
     },
     meta: {
