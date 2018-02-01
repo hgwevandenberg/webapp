@@ -330,7 +330,10 @@ class ImageRegion extends PureComponent {
       postId,
     } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
-    const selected = (asset.get('id') === lightBoxSelectedId)
+    let selected = false
+    if (!isNotification) {
+      selected = (asset.get('id') === lightBoxSelectedId)
+    }
     const srcset = this.getImageSourceSet()
     const dimensions = this.getImageDimensions()
     let imageDomId = null
@@ -378,7 +381,10 @@ class ImageRegion extends PureComponent {
     const attrs = { src: content.get('url') }
     const { scaledImageHeight, scaledImageWidth, width, height } = this.state
     const stateDimensions = width ? { width, height } : {}
-    const selected = (asset.get('id') === lightBoxSelectedId)
+    let selected = false
+    if (!isNotification) {
+      selected = (asset.get('id') === lightBoxSelectedId)
+    }
     let imageDomId = null
     if (postId) {
       imageDomId = !isLightBoxImage ? `asset_${asset.get('id')}_${postId}` : `lightBoxAsset_${asset.get('id')}_${postId}`
@@ -422,7 +428,10 @@ class ImageRegion extends PureComponent {
       postId,
     } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
-    const selected = (asset.get('id') === lightBoxSelectedId)
+    let selected = false
+    if (!isNotification) {
+      selected = (asset.get('id') === lightBoxSelectedId)
+    }
     const dimensions = this.getImageDimensions()
     let imageDomId = null
     if (postId) {
