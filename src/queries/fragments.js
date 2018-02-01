@@ -57,6 +57,7 @@ export const postSummary = `
     token
     createdAt
     summary { ...contentProps }
+    repostContent { ...contentProps }
     author { ...authorSummary }
     assets { id attachment { ...assetImageVersions } }
     postStats { lovesCount commentsCount viewsCount repostsCount }
