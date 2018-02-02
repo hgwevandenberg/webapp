@@ -45,7 +45,7 @@ export const contentProps = `
     linkUrl
     kind
     data
-    links { assetId }
+    links { assets }
   }
 `
 

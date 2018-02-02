@@ -1,4 +1,5 @@
 import Immutable from 'immutable'
+import { camelizeKeys } from 'humps'
 import * as ACTION_TYPES from '../constants/action_types'
 
 // Like .getIn but for regular JS objects
@@ -61,7 +62,7 @@ function parseCategory(state, category) {
 function parseUser(state, user) {
   if (!user) { return state }
 
-  const state1 = smartMergeDeepIn(state, ['user', user.id], Immutable.fromJS({
+  const state1 = smartMergeDeepIn(state, ['users', user.id], Immutable.fromJS({
     id: user.id,
     username: user.username,
     name: user.name,
@@ -85,10 +86,26 @@ function postLinks(post) {
   return links
 }
 
+function parseRegion(post, type) {
+  return (post[type] || []).map((region, index) => {
+    let data = null
+    if (typeof region.data === 'object') {
+      data = camelizeKeys(region.data)
+    } else {
+      data = region.data
+    }
+    return { ...region, data, id: `${post.id}-${index}` }
+  })
+}
+
 function parsePost(state, post) {
   if (!post) { return state }
 
-  const state1 = smartMergeDeepIn(state, ['posts', post.id], Immutable.fromJS({
+  const state1 = parseUser(state, post.author)
+  const state2 = parseList(state1, post.assets, parseAsset)
+  const state3 = parsePost(state2, post.repostedSource)
+
+  const state4 = smartMergeDeepIn(state3, ['posts', post.id], Immutable.fromJS({
     // ids
     id: post.id,
     authorId: deepGet(post, ['author', 'id']), // We don't use links for this
@@ -98,9 +115,9 @@ function parsePost(state, post) {
     createdAt: post.createdAt,
 
     // Content
-    summary: post.summary,
-    content: post.content,
-    repostContent: post.repostContent,
+    summary: parseRegion(post, 'summary'),
+    content: parseRegion(post, 'content'),
+    repostContent: parseRegion(post, 'repostContent'),
 
     // Stats
     lovesCount: deepGet(post, ['postStats', 'lovesCount']),
@@ -116,10 +133,6 @@ function parsePost(state, post) {
     // Links
     links: postLinks(post),
   }))
-
-  const state2 = parseUser(state1, post.author)
-  const state3 = parseList(state2, post.assets, parseAsset)
-  const state4 = parsePost(state3, post.repostedSource)
 
   return state4
 }
