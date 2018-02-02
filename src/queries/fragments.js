@@ -36,6 +36,7 @@ export const authorSummary = `
     username
     name
     avatar { ...avatarImageVersion }
+    currentUserState { relationshipPriority }
   }
 `
 

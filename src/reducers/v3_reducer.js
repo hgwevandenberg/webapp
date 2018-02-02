@@ -1,6 +1,8 @@
 import Immutable from 'immutable'
 import * as ACTION_TYPES from '../constants/action_types'
 
+// Like .getIn but for regular JS objects
+// Does not break if object is missing a key in the middle
 function deepGet(object, [head, ...tail], fallback = null) {
   const val = object[head]
   if (val === undefined || val === null) { return fallback }
@@ -8,12 +10,22 @@ function deepGet(object, [head, ...tail], fallback = null) {
   return deepGet(val, tail, fallback)
 }
 
-function smartDeepMerge(oldMap, newMap) {
+// Merge two Immutable maps while preferring data over nulls and never returning undefined.
+function smartMergeDeep(oldMap, newMap) {
   return oldMap.mergeDeepWith((oldVal, newVal) => {
+    if (oldVal === undefined && newVal === undefined) { return null }
     if (oldVal === null || oldVal === undefined) { return newVal }
     if (newVal === null || newVal === undefined) { return oldVal }
     return newVal
   }, newMap)
+}
+
+// Given state (immutable), a key path (array[string]), and map merge the map in.
+// If a value on either side is null or undefined it "loses" the merge - we always prefer data.
+function smartMergeDeepIn(state, keyPath, newMap) {
+  const oldMap = state.getIn(keyPath, Immutable.Map())
+  const mergedMap = smartMergeDeep(oldMap, newMap)
+  return state.setIn(keyPath, mergedMap)
 }
 
 function parseList(state, list, parser) {
@@ -33,7 +45,7 @@ function parsePagination(state, stream, pathname, query, variables) {
 
 function parseAsset(state, asset) {
   if (!asset) { return state }
-  return state.mergeDeepIn(['assets', asset.id], Immutable.fromJS({
+  return smartMergeDeepIn(state, ['assets', asset.id], Immutable.fromJS({
     id: asset.id,
     attachment: asset.attachment,
   }))
@@ -41,7 +53,7 @@ function parseAsset(state, asset) {
 
 function parseCategory(state, category) {
   if (!category) { return state }
-  return state.mergeDeepIn(['categories', category.id], Immutable.fromJS({
+  return smartMergeDeepIn(state, ['categories', category.id], Immutable.fromJS({
     id: category.id,
   }))
 }
@@ -49,18 +61,13 @@ function parseCategory(state, category) {
 function parseUser(state, user) {
   if (!user) { return state }
 
-  const newUser = Immutable.fromJS({
+  const state1 = smartMergeDeepIn(state, ['user', user.id], Immutable.fromJS({
     id: user.id,
     username: user.username,
     name: user.name,
     avatar: user.avatar,
-  })
-
-  const oldUser = state.getIn(['user', user.id], Immutable.Map())
-  const mergedUser = smartDeepMerge(oldUser, newUser)
-  const state1 = state.setIn(['user', user.id], mergedUser)
+  }))
   const state2 = parseList(state1, user.categories, parseCategory)
-
   return state2
 }
 
@@ -81,7 +88,7 @@ function postLinks(post) {
 function parsePost(state, post) {
   if (!post) { return state }
 
-  const newPost = Immutable.fromJS({
+  const state1 = smartMergeDeepIn(state, ['posts', post.id], Immutable.fromJS({
     // ids
     id: post.id,
     authorId: deepGet(post, ['author', 'id']), // We don't use links for this
@@ -93,7 +100,7 @@ function parsePost(state, post) {
     // Content
     summary: post.summary,
     content: post.content,
-    repost_content: post.repostContent,
+    repostContent: post.repostContent,
 
     // Stats
     lovesCount: deepGet(post, ['postStats', 'lovesCount']),
@@ -108,12 +115,8 @@ function parsePost(state, post) {
 
     // Links
     links: postLinks(post),
-  })
+  }))
 
-
-  const oldPost = state.getIn(['posts', post.id], Immutable.Map())
-  const mergedPost = smartDeepMerge(oldPost, newPost)
-  const state1 = state.setIn(['posts', post.id], mergedPost)
   const state2 = parseUser(state1, post.author)
   const state3 = parseList(state2, post.assets, parseAsset)
   const state4 = parsePost(state3, post.repostedSource)
