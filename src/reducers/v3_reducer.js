@@ -86,15 +86,22 @@ function postLinks(post) {
   return links
 }
 
-function parseRegion(post, type) {
+// Camelize data keys, inject assets objects into appropriate region
+function parseRegion(post, type, assetsById) {
   return (post[type] || []).map((region, index) => {
+    const id = `${post.id}-${index}`
+    const assetId = deepGet(region, ['links', 'assets'])
+    const asset = assetsById[assetId]
     let data = null
     if (typeof region.data === 'object') {
       data = camelizeKeys(region.data)
     } else {
       data = region.data
     }
-    return { ...region, data, id: `${post.id}-${index}` }
+    if (region.kind === 'image' && typeof assetId === 'string' && asset) {
+      return { ...region, data, id, asset }
+    }
+    return { ...region, data, id }
   })
 }
 
@@ -104,6 +111,10 @@ function parsePost(state, post) {
   const state1 = parseUser(state, post.author)
   const state2 = parseList(state1, post.assets, parseAsset)
   const state3 = parsePost(state2, post.repostedSource)
+
+  const assetsById = (post.assets || []).reduce((byId, asset) => (
+    { ...byId, [asset.id]: asset }
+  ), {})
 
   const state4 = smartMergeDeepIn(state3, ['posts', post.id], Immutable.fromJS({
     // ids
@@ -115,9 +126,9 @@ function parsePost(state, post) {
     createdAt: post.createdAt,
 
     // Content
-    summary: parseRegion(post, 'summary'),
-    content: parseRegion(post, 'content'),
-    repostContent: parseRegion(post, 'repostContent'),
+    summary: parseRegion(post, 'summary', assetsById),
+    content: parseRegion(post, 'content', assetsById),
+    repostContent: parseRegion(post, 'repostContent', assetsById),
 
     // Stats
     lovesCount: deepGet(post, ['postStats', 'lovesCount']),
