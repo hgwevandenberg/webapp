@@ -49,17 +49,24 @@ function parseCategory(state, category) {
 function parseUser(state, user) {
   if (!user) { return state }
 
-  const newUser = state.mergeDeepIn(['users', user.id], Immutable.fromJS({
+  // const newUser = state.mergeDeepIn(['users', user.id], Immutable.fromJS({
+  //   id: user.id,
+  //   username: user.username,
+  //   name: user.name,
+  //   avatar: user.avatar,
+
+  // }))
+
+  // const oldUser = state.getIn(['user', user.id], Immutable.Map())
+  // const mergedUser = smartDeepMerge(oldUser, newUser)
+  // const state1 = state.setIn(['user', user.id], mergedUser)
+  const state1 = state.mergeDeepIn(['users', user.id], Immutable.fromJS({
     id: user.id,
     username: user.username,
     name: user.name,
     avatar: user.avatar,
 
   }))
-
-  const oldUser = state.getIn(['user', user.id], Immutable.Map())
-  const mergedUser = smartDeepMerge(oldUser, newUser)
-  const state1 = state.setIn(['user', user.id], mergedUser)
   const state2 = parseList(state1, user.categories, parseCategory)
 
   return state2
@@ -68,14 +75,14 @@ function parseUser(state, user) {
 function postLinks(post) {
   const links = {}
   const authorId = deepGet(post, ['author', 'id'])
-  if (authorId) { links['author'] = { id: authorId, type: 'user' } }
+  if (authorId) { links.author = { id: authorId, type: 'user' } }
   console.log(authorId)
 
   const repostAuthorId = deepGet(post, ['repostedSource', 'author', 'id'])
-  if (repostAuthorId) { links['repostAuthor'] = { id: repostAuthorId, type: 'user' } }
+  if (repostAuthorId) { links.repostAuthor = { id: repostAuthorId, type: 'user' } }
 
   const repostId = deepGet(post, ['repostedSource', 'id'])
-  if (repostId) { links['repostedSource'] = { id: repostId, type: 'post' } }
+  if (repostId) { links.repostedSource = { id: repostId, type: 'post' } }
 
   console.log(links)
   return links
@@ -110,15 +117,13 @@ function parsePost(state, post) {
     reposted: deepGet(post, ['currentUserState', 'reposted']),
 
     // Links
-    links: postLinks(post)
+    links: postLinks(post),
   })
 
 
+  console.log(post.assets)
   const oldPost = state.getIn(['posts', post.id], Immutable.Map())
   const mergedPost = smartDeepMerge(oldPost, newPost)
-  console.log(newPost.toJS())
-  console.log(oldPost.toJS())
-  console.log(mergedPost.toJS())
   const state1 = state.setIn(['posts', post.id], mergedPost)
   const state2 = parseUser(state1, post.author)
   const state3 = parseList(state2, post.assets, parseAsset)
