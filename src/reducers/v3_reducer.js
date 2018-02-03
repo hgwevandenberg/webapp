@@ -59,6 +59,13 @@ function parseCategory(state, category) {
   }))
 }
 
+function parseArtistInviteSubmission(state, submission) {
+  if (!submission || !submission.id) { return state }
+  return smartMergeDeepIn(state, ['artistInviteSubmissions', submission.id], Immutable.fromJS({
+    id: submission.id,
+  }))
+}
+
 function parseUser(state, user) {
   if (!user) { return state }
 
@@ -111,12 +118,13 @@ function parsePost(state, post) {
   const state1 = parseUser(state, post.author)
   const state2 = parseList(state1, post.assets, parseAsset)
   const state3 = parsePost(state2, post.repostedSource)
+  const state4 = parseArtistInviteSubmission(state3, post.artistInviteSubmission)
 
   const assetsById = (post.assets || []).reduce((byId, asset) => (
     { ...byId, [asset.id]: asset }
   ), {})
 
-  const state4 = smartMergeDeepIn(state3, ['posts', post.id], Immutable.fromJS({
+  const state5 = smartMergeDeepIn(state4, ['posts', post.id], Immutable.fromJS({
     // ids
     id: post.id,
     authorId: deepGet(post, ['author', 'id']), // We don't use links for this
@@ -124,6 +132,8 @@ function parsePost(state, post) {
     // Properties
     token: post.token,
     createdAt: post.createdAt,
+    artistInviteId: post.artistInviteId,
+    artistInviteSubmission: post.artistInviteSubmission,
 
     // Content
     summary: parseRegion(post, 'summary', assetsById),
@@ -145,7 +155,7 @@ function parsePost(state, post) {
     links: postLinks(post),
   }))
 
-  return state4
+  return state5
 }
 
 function parseQueryType(state, stream, pathname, query, variables) {
