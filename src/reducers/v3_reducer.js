@@ -40,7 +40,7 @@ function parsePagination(state, stream, pathname, query, variables) {
     pagination: Immutable.fromJS({ next, query, variables, isLastPage }),
   }))
   return mergedState.updateIn(['pages', pathname, 'ids'], ids =>
-    (ids || Immutable.List()).concat(models.map(m => m.id)),
+    ((ids || Immutable.OrderedSet()).concat(models.map(m => m.id))),
   )
 }
 
@@ -132,7 +132,7 @@ function parsePost(state, post) {
     // Properties
     token: post.token,
     createdAt: post.createdAt,
-    artistInviteId: post.artistInviteId,
+    artistInviteId: deepGet(post, ['artistInviteSubmission', 'artistInvite']),
     artistInviteSubmission: post.artistInviteSubmission,
 
     // Content

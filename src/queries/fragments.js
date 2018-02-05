@@ -49,26 +49,28 @@ export const contentProps = `
   }
 `
 
-export const artistInviteSubmission = `
-  fragment artistInviteSubmission on ArtistInviteSubmission {
+export const artistInviteSubmissionSummary = `
+  fragment artistInviteSubmissionSummary on ArtistInviteSubmission {
     id
-    slug
-    title
     status
+    artistInvite {
+      id
+      slug
+      title
+    }
   }
 `
 
 export const postSummary = `
   ${contentProps}
   ${authorSummary}
-  ${artistInviteSubmission}
+  ${artistInviteSubmissionSummary}
   ${assetImageVersions}
   fragment postSummary on Post {
     id
     token
     createdAt
-    artistInviteId
-    artistInviteSubmission { ...artistInviteSubmission }
+    artistInviteSubmission { ...artistInviteSubmissionSummary }
     summary { ...contentProps }
     repostContent { ...contentProps }
     author { ...authorSummary }

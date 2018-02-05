@@ -20,14 +20,14 @@ export const requestTypes = [
 let unauthorizedActionQueue = []
 const runningFetches = {}
 
-function updateRunningFetches(serverResponse) {
+function updateRunningFetches(serverResponse, query) {
   if (!serverResponse) { return }
   const serverResponseUrl = serverResponse.url && serverResponse.url.length
         ? serverResponse.url
         : serverResponse.headers.get('X-Request-Url')
 
-  if (runningFetches[serverResponseUrl]) {
-    delete runningFetches[serverResponseUrl]
+  if (runningFetches[query]) {
+    delete runningFetches[query]
   } else {
     Object.keys(runningFetches).forEach((key) => {
       delete runningFetches[key]
@@ -132,7 +132,7 @@ export function* performRequest(action) {
   try {
     response = yield call(sagaFetch, V3_GRAPHQL_PATH, options)
   } catch (error) {
-    updateRunningFetches(error.response)
+    updateRunningFetches(error.response, query)
     yield fork(handleRequestError, error, action)
     return false
   }
@@ -142,7 +142,7 @@ export function* performRequest(action) {
 
   // TODO: Errors come back as 200s, we need to deal with that here.
 
-  updateRunningFetches(serverResponse)
+  updateRunningFetches(serverResponse, query)
 
   yield put({ meta, payload, type: SUCCESS })
   yield call(fireSuccessAction)
@@ -152,7 +152,12 @@ export function* performRequest(action) {
 export function* handleRequest(requestChannel) {
   while (true) {
     const action = yield take(requestChannel)
-    yield fork(performRequest, action)
+    const { payload: { query } } = action
+
+    if (!runningFetches[query]) {
+      runningFetches[query] = true
+      yield fork(performRequest, action)
+    }
   }
 }
 

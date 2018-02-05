@@ -19,6 +19,7 @@ import {
 } from '../components/viewport/ScrollComponent'
 import * as ACTION_TYPES from '../constants/action_types'
 import { runningFetches } from '../sagas/requester'
+import { runningFetches as v3RunningFetches } from '../sagas/v3_requester'
 import { selectIsLoggedIn } from '../selectors/authentication'
 import {
   selectColumnCount,
@@ -84,6 +85,18 @@ function buildNextPageAction(action, pagination) {
       resultKey: meta.resultKey,
     },
   }
+}
+
+function lastPage(action, stream, pagination) {
+  return (!action.payload.endpoint && !action.payload.query) ||
+    !pagination.get('next') ||
+    Number(pagination.get('totalPagesRemaining')) === 0 ||
+    pagination.get('isLastPage', false) === true ||
+    (stream.get('type') === ACTION_TYPES.LOAD_NEXT_CONTENT_SUCCESS && stream.getIn(['payload', 'serverStatus']) === 204)
+}
+
+function nextPageInFlight(pagination) {
+  return runningFetches[pagination.next] || v3RunningFetches[pagination.query]
 }
 
 class StreamContainer extends Component {
@@ -256,12 +269,8 @@ class StreamContainer extends Component {
     const { action } = this.state
     if (!action) { return }
     const pagination = result.get('pagination')
-    if ((!action.payload.endpoint && !action.payload.query) || !pagination.get('next') ||
-        Number(pagination.get('totalPagesRemaining')) === 0 ||
-        pagination.get('isLastPage', false) === true ||
-        (stream.get('type') === ACTION_TYPES.LOAD_NEXT_CONTENT_SUCCESS &&
-         stream.getIn(['payload', 'serverStatus']) === 204)) { return }
-    if (runningFetches[pagination[rel]]) { return }
+    if (lastPage(action, stream, pagination)) { return }
+    if (nextPageInFlight(pagination)) { return }
     this.setState({ hidePaginator: false })
     const infiniteAction = buildNextPageAction(action, pagination, rel)
     // this is used for updating the postId on a comment
