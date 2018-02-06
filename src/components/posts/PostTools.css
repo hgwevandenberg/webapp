@@ -100,18 +100,20 @@
 }
 
 .ArtistInviteSubmissionStatusTool .SVGIcon {
-  margin-top: -6px;
+  padding-left: 6px;
+  margin-top: -1px;
+  transform: scale(1.15);
+
+}
+
+.ArtistInviteSubmissionStatusTool .SVGIcon g path {
+  stroke-width: 0;
 }
 
 .ArtistInviteSubmissionStatusTool .ArtistInviteSubmissionSelectedIcon.SVGIcon {
   padding-left: 4px;
   margin-top: -7px;
   overflow: visible;
-  transform: scale(1.15);
-}
-
-.ArtistInviteSubmissionStatusTool .ArtistInviteSubmissionSelectedIcon.SVGIcon g path {
-  stroke-width: 0;
 }
 
 .ArtistInviteSubmissionStatusTool .Hint {
