@@ -253,13 +253,13 @@ class ImageRegion extends PureComponent {
     let imageWidth = null
 
     if (!this.props.resizeLightBoxImage) {
-      if (dimensions) {
+      if (measuredImageHeight && measuredImageWidth) {
+        imageHeight = measuredImageHeight
+        imageWidth = measuredImageWidth
+      }
+      if (dimensions && !(measuredImageHeight && measuredImageWidth)) {
         imageHeight = dimensions.height
         imageWidth = dimensions.width
-      } else {
-        const { width, height } = this.state
-        imageHeight = height
-        imageWidth = width
       }
     } else {
       imageHeight = scaledImageHeight
