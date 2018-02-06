@@ -3,6 +3,7 @@ import { createSelector } from 'reselect'
 import { selectPosts, selectPropsPostId, selectPropsPostIds } from './post'
 import { selectComments, selectPropsCommentIds } from './comment'
 import { selectArtistInviteSubmissions, selectPropsSubmissionIds } from './artist_invites'
+import { getTempAssetId } from './../components/regions/ImageRegion'
 
 /* eslint-disable import/prefer-default-export */
 
@@ -81,6 +82,15 @@ export const selectPostsAssetIds = createSelector(
         const assetId = region.getIn(['links', 'assets'])
         if (assetId) {
           return combinedPostsAssetIds.push([postId, assetId])
+        }
+
+        // brand new post
+        if (region.get('kind') === 'image') {
+          const url = region.getIn(['data', 'url'])
+          if (url) {
+            const tempAssetId = getTempAssetId(url)
+            return combinedPostsAssetIds.push([postId, tempAssetId])
+          }
         }
         return null
       })

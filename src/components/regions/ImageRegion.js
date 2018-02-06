@@ -63,6 +63,11 @@ const lightBoxImageStyle = css(
   ),
 )
 
+// export to re-use this wonky image url parser
+export function getTempAssetId(url) {
+  return url.split('uploads/')[1].split('/ello-')[1].split('.')[0].replace(/-/g, '_')
+}
+
 class ImageRegion extends PureComponent {
 
   static propTypes = {
@@ -170,6 +175,50 @@ class ImageRegion extends PureComponent {
     this.setState({ status: STATUS.FAILURE })
   }
 
+  getAssetId() {
+    const { content, asset } = this.props
+
+    let assetId = null
+
+    if (asset) {
+      assetId = asset.get('id')
+    }
+    // different treatment for brand new posts since `asset` does not exists in store yet
+    if (!asset && content) {
+      const url = content.get('url')
+      if (url) {
+        const tempAssetId = getTempAssetId(url)
+        assetId = tempAssetId
+      }
+    }
+    return assetId
+  }
+
+  getLightBoxSelected() {
+    const {
+      lightBoxSelectedId,
+      isNotification,
+    } = this.props
+    const assetId = this.getAssetId()
+
+    let selected = false
+    if (!isNotification) {
+      selected = (assetId === lightBoxSelectedId)
+    }
+    return selected
+  }
+
+  setImageDomId() {
+    const { isLightBoxImage, postId } = this.props
+    const assetId = this.getAssetId()
+
+    let imageDomId = null
+    if (postId && assetId) {
+      imageDomId = !isLightBoxImage ? `asset_${assetId}_${postId}` : `lightBoxAsset_${assetId}_${postId}`
+    }
+    return imageDomId
+  }
+
   getAttachmentMetadata() {
     if (!this.attachment || this.isBasicAttachment()) { return null }
     const optimized = this.attachment.get('optimized')
@@ -257,9 +306,8 @@ class ImageRegion extends PureComponent {
         imageHeight = dimensions.height
         imageWidth = dimensions.width
       } else {
-        const { width, height } = this.state
-        imageHeight = height
-        imageWidth = width
+        imageHeight = measuredImageHeight
+        imageWidth = measuredImageWidth
       }
     } else {
       imageHeight = scaledImageHeight
@@ -319,32 +367,22 @@ class ImageRegion extends PureComponent {
 
   renderImageAttachment() {
     const {
-      asset,
       content,
-      isNotification,
       isLightBoxImage,
       isPostBody,
       isPostDetail,
       isGridMode,
-      lightBoxSelectedId,
-      postId,
     } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
-    let selected = false
-    if (!isNotification && asset) {
-      selected = (asset.get('id') === lightBoxSelectedId)
-    }
+    const lightBoxSelected = this.getLightBoxSelected()
+    const imageDomId = this.setImageDomId()
     const srcset = this.getImageSourceSet()
-    let imageDomId = null
-    if (postId && asset) {
-      imageDomId = !isLightBoxImage ? `asset_${asset.get('id')}_${postId}` : `lightBoxAsset_${asset.get('id')}_${postId}`
-    }
 
     return (
       <ImageAsset
         id={imageDomId}
         alt={content.get('alt') ? content.get('alt').replace('.jpg', '') : null}
-        className={`ImageAttachment${selected ? ' selected' : ''}`}
+        className={`ImageAttachment${lightBoxSelected ? ' selected' : ''}`}
         onLoadFailure={this.onLoadFailure}
         onLoadSuccess={this.onLoadSuccess}
         role="presentation"
@@ -365,27 +403,19 @@ class ImageRegion extends PureComponent {
 
   renderLegacyImageAttachment() {
     const {
-      asset,
       content,
       isNotification,
       isLightBoxImage,
       isPostBody,
       isPostDetail,
       isGridMode,
-      lightBoxSelectedId,
-      postId,
     } = this.props
     const attrs = { src: content.get('url') }
     const { scaledImageHeight, scaledImageWidth, width, height } = this.state
     const stateDimensions = width ? { width, height } : {}
-    let selected = false
-    if (!isNotification && asset) {
-      selected = (asset.get('id') === lightBoxSelectedId)
-    }
-    let imageDomId = null
-    if (postId && asset) {
-      imageDomId = !isLightBoxImage ? `asset_${asset.get('id')}_${postId}` : `lightBoxAsset_${asset.get('id')}_${postId}`
-    }
+    const lightBoxSelected = this.getLightBoxSelected()
+    const imageDomId = this.setImageDomId()
+
     if (isNotification) {
       attrs.height = 'auto'
     }
@@ -393,7 +423,7 @@ class ImageRegion extends PureComponent {
       <ImageAsset
         id={imageDomId}
         alt={content.get('alt') ? content.get('alt').replace('.jpg', '') : null}
-        className={`ImageAttachment${selected ? ' selected' : ''}`}
+        className={`ImageAttachment${lightBoxSelected ? ' selected' : ''}`}
         onLoadFailure={this.onLoadFailure}
         onLoadSuccess={this.onLoadSuccess}
         role="presentation"
@@ -414,30 +444,20 @@ class ImageRegion extends PureComponent {
 
   renderGifAttachment() {
     const {
-      asset,
       content,
-      isNotification,
       isLightBoxImage,
       isPostBody,
       isPostDetail,
       isGridMode,
-      lightBoxSelectedId,
-      postId,
     } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
-    let selected = false
-    if (!isNotification && asset) {
-      selected = (asset.get('id') === lightBoxSelectedId)
-    }
-    let imageDomId = null
-    if (postId && asset) {
-      imageDomId = !isLightBoxImage ? `asset_${asset.get('id')}_${postId}` : `lightBoxAsset_${asset.get('id')}_${postId}`
-    }
+    const lightBoxSelected = this.getLightBoxSelected()
+    const imageDomId = this.setImageDomId()
     return (
       <ImageAsset
         id={imageDomId}
         alt={content.get('alt') ? content.get('alt').replace('.gif', '') : null}
-        className={`ImageAttachment${selected ? ' selected' : ''}`}
+        className={`ImageAttachment${lightBoxSelected ? ' selected' : ''}`}
         onLoadFailure={this.onLoadFailure}
         onLoadSuccess={this.onLoadSuccess}
         role="presentation"
@@ -457,28 +477,19 @@ class ImageRegion extends PureComponent {
 
   renderVideoAttachment() {
     const {
-      asset,
       isLightBoxImage,
       isPostBody,
       isPostDetail,
       isGridMode,
-      lightBoxSelectedId,
-      postId,
     } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
     const dimensions = this.getImageDimensions()
-    let selected = false
-    if (asset) {
-      selected = (asset.get('id') === lightBoxSelectedId)
-    }
-    let imageDomId = null
-    if (postId && asset) {
-      imageDomId = !isLightBoxImage ? `asset_${asset.get('id')}_${postId}` : `lightBoxAsset_${asset.get('id')}_${postId}`
-    }
+    const lightBoxSelected = this.getLightBoxSelected()
+    const imageDomId = this.setImageDomId()
     return (
       <VideoAsset
         id={imageDomId}
-        className={`ImageAttachment${selected ? ' selected' : ''}`}
+        className={`ImageAttachment${lightBoxSelected ? ' selected' : ''}`}
         height={dimensions.height}
         width={dimensions.width}
         isPostBody={isPostBody}
