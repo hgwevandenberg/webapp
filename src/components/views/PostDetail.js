@@ -149,7 +149,11 @@ export const PostDetail = (props) => {
     <MainView className={`PostDetail ${postDetailStyle}`}>
       <div className="PostDetails Posts asList">
         <article className={`PostList ${listStyle}`} id={`Post_${post.get('id')}`}>
-          <PostContainer type={shouldInlineComments ? null : 'PostDetailBody'} postId={post.get('id')} />
+          <PostContainer
+            isNarrowPostDetail={shouldInlineComments}
+            type={shouldInlineComments ? null : 'PostDetailBody'}
+            postId={post.get('id')}
+          />
           {shouldInlineComments && <CommentContent {...props} />}
           <StreamContainer
             action={loadRelatedPosts(`~${post.get('token')}`, columnCount > 2 ? columnCount - 1 : columnCount)}

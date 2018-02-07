@@ -616,6 +616,7 @@ export const Post = ({
   isMobile,
   isOwnOriginalPost,
   isOwnPost,
+  isNarrowPostDetail,
   isPostDetail,
   isPostHeaderHidden,
   isRelatedPost,
@@ -651,31 +652,56 @@ export const Post = ({
         status={submissionStatus}
       />
     }
-    <PostBody
-      {...{
-        author,
-        columnWidth,
-        commentOffset,
-        content,
-        contentWarning,
-        contentWidth,
-        detailPath,
-        innerHeight,
-        isGridMode,
-        isPostDetail,
-        isRepost,
-        isLightBox,
-        resizeLightBox,
-        toggleLightBox,
-        lightBoxSelectedId,
-        post,
-        postId,
-        repostContent,
-        showEditor,
-        summary,
-        supportsNativeEditor,
-      }}
-    />
+    {!isNarrowPostDetail &&
+      <PostBody
+        {...{
+          author,
+          columnWidth,
+          commentOffset,
+          content,
+          contentWarning,
+          contentWidth,
+          detailPath,
+          innerHeight,
+          isGridMode,
+          isPostDetail,
+          isRepost,
+          isLightBox,
+          resizeLightBox,
+          toggleLightBox,
+          lightBoxSelectedId,
+          post,
+          postId,
+          repostContent,
+          showEditor,
+          summary,
+          supportsNativeEditor,
+        }}
+      />
+    }
+    {isNarrowPostDetail && !isLightBox &&
+      <PostBodyWithLightBox
+        {...{
+          author,
+          columnWidth,
+          commentOffset,
+          content,
+          contentWarning,
+          contentWidth,
+          detailPath,
+          innerHeight,
+          isGridMode,
+          isPostDetail,
+          isRepost,
+          post,
+          postId,
+          repostContent,
+          showEditor,
+          summary,
+          supportsNativeEditor,
+        }}
+      />
+    }
     {!isLightBox &&
       <PostTools
         {...{
@@ -737,6 +763,7 @@ Post.propTypes = {
   isMobile: PropTypes.bool.isRequired,
   isOwnOriginalPost: PropTypes.bool.isRequired,
   isOwnPost: PropTypes.bool.isRequired,
+  isNarrowPostDetail: PropTypes.bool,
   isPostDetail: PropTypes.bool.isRequired,
   isPostHeaderHidden: PropTypes.bool,
   isRelatedPost: PropTypes.bool,
