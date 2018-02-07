@@ -266,8 +266,25 @@ class ImageRegion extends PureComponent {
       imageWidth = scaledImageWidth
     }
 
-    const innerHeightPadded = (window.innerHeight - 80)
-    const innerWidthPadded = (window.innerWidth - (80 * 3))
+    const viewportWidth = window.innerWidth
+
+    let padding = 80
+    let paddingMultiplier = 3
+    if (viewportWidth < 1360) {
+      padding = 60
+
+      if (viewportWidth < 960) {
+        padding = 40
+
+        if (viewportWidth < 640) {
+          padding = 20
+          paddingMultiplier = 4
+        }
+      }
+    }
+
+    const innerHeightPadded = (window.innerHeight - padding)
+    const innerWidthPadded = (viewportWidth - (padding * paddingMultiplier))
 
     const innerRatio = innerWidthPadded / innerHeightPadded
     const imageRatio = imageWidth / imageHeight
