@@ -99,24 +99,28 @@
   left: 10px;
 }
 
-.ArtistInviteSubmissionStatusTool .SVGIcon {
-  padding-left: 6px;
-  margin-top: -1px;
-  transform: scale(1.15);
-
+.ArtistInviteSubmissionStatusTool.PostTool a,
+.ArtistInviteSubmissionStatusTool.PostTool > a {
+  padding-right: 0 !important;
 }
 
-.ArtistInviteSubmissionStatusTool .SVGIcon g path {
+.ArtistInviteSubmissionStatusTool.PostTool .SVGIcon {
+  padding-left: 4px;
+  margin-top: -2px;
+  transform: scale(1);
+}
+
+.ArtistInviteSubmissionStatusTool.PostTool .SVGIcon g path {
   stroke-width: 0;
 }
 
-.ArtistInviteSubmissionStatusTool .ArtistInviteSubmissionSelectedIcon.SVGIcon {
-  padding-left: 4px;
-  margin-top: -7px;
+.ArtistInviteSubmissionStatusTool.PostTool .ArtistInviteSubmissionSelectedIcon.SVGIcon {
+  padding-left: 0;
+  margin-top: -4px;
   overflow: visible;
 }
 
-.ArtistInviteSubmissionStatusTool .Hint {
+.ArtistInviteSubmissionStatusTool.PostTool .Hint {
   left: -200px;
 }
 
