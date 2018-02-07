@@ -455,18 +455,23 @@ export class PostBody extends PureComponent {
         cells.push(<RegionItems {...regionProps} key={`RegionItems_${postId}`} />)
         if (content && content.size) {
           regionProps.content = content
-          cells.push(
-            <div className="PostBody RepostedBody" key={`RepostedBody_${postId}`}>
-              <Avatar
-                priority={author.get('relationshipPriority')}
-                sources={author.get('avatar')}
-                to={`/${author.get('username')}`}
-                userId={`${author.get('id')}`}
-                username={author.get('username')}
-              />
-              <RegionItems {...regionProps} />
-            </div>,
-          )
+          if (!isLightBox) {
+            cells.push(
+              <div className="PostBody RepostedBody" key={`RepostedBody_${postId}`}>
+                <Avatar
+                  priority={author.get('relationshipPriority')}
+                  sources={author.get('avatar')}
+                  to={`/${author.get('username')}`}
+                  userId={`${author.get('id')}`}
+                  username={author.get('username')}
+                />
+                <RegionItems {...regionProps} />
+              </div>,
+            )
+          }
+          if (isLightBox) {
+            cells.push(<RegionItems {...regionProps} key={`RepostedBody_${postId}`} />)
+          }
         }
       }
     } else {
