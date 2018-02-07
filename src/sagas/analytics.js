@@ -49,8 +49,15 @@ function* trackEvents() {
         break
       case ACTION_TYPES.COMMENT.CREATE_REQUEST: {
         const posts = yield select(selectPosts)
-        const artistInviteId = posts.get(get(action, 'payload.postId'), Immutable.Map()).get('artistInviteId')
-        yield put(trackEventAction('published_comment', artistInviteId ? { artistInviteId } : {}))
+        const postId = get(action, 'payload.postId')
+        const artGiveawayCategoryId = '48'
+        const artistInviteId = posts.get(postId, Immutable.Map()).get('artistInviteId')
+        const giveawayPost = posts
+          .get(postId, Immutable.Map())
+          .getIn(['links', 'categories'], Immutable.List())
+          .toJS()
+          .includes(artGiveawayCategoryId)
+        yield put(trackEventAction('published_comment', { artistInviteId, giveawayPost }))
         break
       }
       case ACTION_TYPES.COMMENT.DELETE_REQUEST:
