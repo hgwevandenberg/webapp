@@ -176,6 +176,10 @@ export const selectPostIsArtistInviteSubmission = createSelector(
   [selectPost], post => post && !!post.get('artistInviteId'),
 )
 
+export const selectPostArtistInviteSubmission = createSelector(
+  [selectPost], post => post && post.get('artistInviteSubmission'),
+)
+
 export const selectPostIsCommentsRequesting = createSelector(
   [selectStreamType, selectStreamMappingType, selectStreamPostIdOrToken,
     selectPostId, selectPostToken],
