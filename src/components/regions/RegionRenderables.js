@@ -2,7 +2,7 @@ import Immutable from 'immutable'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import EmbedRegion from '../regions/EmbedRegion'
-import ImageRegion from '../regions/ImageRegion'
+import ImageRegion, { getTempAssetId } from '../regions/ImageRegion'
 import TextRegion from '../regions/TextRegion'
 import { isIOS } from '../../lib/jello'
 
@@ -78,8 +78,17 @@ export class RegionItems extends PureComponent {
           }
           break
         case 'image': {
+          const regionContent = region.get('data')
           const asset = region.get('asset')
-          const assetId = asset ? asset.get('id') : null
+          let assetId = asset ? asset.get('id') : null
+
+          // different treatment for brand new posts since `asset` does not exists in store yet
+          if (!assetId) {
+            const url = regionContent.get('url')
+            if (url) {
+              assetId = getTempAssetId(url)
+            }
+          }
 
           cells.push(
             <ImageRegion
@@ -89,7 +98,7 @@ export class RegionItems extends PureComponent {
               buyLinkURL={region.get('linkUrl')}
               columnWidth={columnWidth}
               commentOffset={commentOffset}
-              content={region.get('data')}
+              content={regionContent}
               contentWidth={contentWidth}
               detailPath={detailPath}
               innerHeight={innerHeight}
