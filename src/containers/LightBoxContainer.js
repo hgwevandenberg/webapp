@@ -14,7 +14,7 @@ import { DismissButtonLGReverse } from '../components/buttons/Buttons'
 import PostContainer from './PostContainer'
 import CommentContainer from './CommentContainer'
 // import { RegionItems } from '../regions/RegionRenderables'
-import { css, select } from '../styles/jss'
+import { css, select, media } from '../styles/jss'
 import * as s from '../styles/jso'
 import { SHORTCUT_KEYS } from '../constants/application_types'
 
@@ -38,13 +38,14 @@ const baseLightBoxStyle = css(
       s.fullWidth,
       s.fullHeight,
       s.overflowHidden,
+      s.flex,
+      s.itemsCenter,
       select(
         '> .LightBoxQueue',
         s.transitionOpacity,
         s.relative,
         {
           width: 'auto',
-          height: '100%',
           whiteSpace: 'nowrap',
           opacity: 1,
         },
@@ -75,9 +76,26 @@ const imageRegionStyle = select(
     margin: 0,
     marginLeft: 40,
     marginRight: 40,
-    marginTop: 40,
     width: 'auto',
   },
+  media(
+    s.maxBreak4,
+    { marginLeft: 30,
+      marginRight: 30,
+    },
+  ),
+  media(
+    s.maxBreak3,
+    { marginLeft: 20,
+      marginRight: 20,
+    },
+  ),
+  media(
+    s.maxBreak2,
+    { marginLeft: 10,
+      marginRight: 10,
+    },
+  ),
   select(
     '> .ImgHolderLightBox',
     s.inline,
