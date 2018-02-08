@@ -215,7 +215,7 @@ function LightBoxWrapper(WrappedComponent) {
         this.bindKeys()
       }
 
-      const slideDelay = !prevState.open ? 5 : 0
+      const slideDelay = !prevState.open ? 200 : 0
       const transitionDelay = 200
 
       // advance lightbox queue to specific asset
