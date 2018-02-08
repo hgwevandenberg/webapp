@@ -491,13 +491,14 @@ function LightBoxWrapper(WrappedComponent) {
 
     constructPostIdsArray() {
       const { postAssetIdPairs } = this.props
-      const { assetIdToSet } = this.state
+      const { assetIdToSet, postIdToSet } = this.state
       const allPostIds = []
 
       // set the offset indices
       const assetsOffset = 6
       const indexOfSelected = postAssetIdPairs.findIndex(
-        postAssetIdPair => postAssetIdPair[1] === assetIdToSet)
+        postAssetIdPair =>
+        (postAssetIdPair[0] === postIdToSet && postAssetIdPair[1] === assetIdToSet))
       const indexLower = indexOfSelected > (assetsOffset - 1) ? (indexOfSelected - assetsOffset) : 0
       const indexHigher = indexOfSelected + assetsOffset
 
