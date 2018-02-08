@@ -491,10 +491,21 @@ function LightBoxWrapper(WrappedComponent) {
 
     constructPostIdsArray() {
       const { postAssetIdPairs } = this.props
+      const { assetIdToSet } = this.state
       const allPostIds = []
 
-      postAssetIdPairs.map(postAssedIdPair => allPostIds.push(postAssedIdPair[0]))
+      // set the offset indices
+      const assetsOffset = 6
+      const indexOfSelected = postAssetIdPairs.findIndex(
+        postAssetIdPair => postAssetIdPair[1] === assetIdToSet)
+      const indexLower = indexOfSelected > (assetsOffset - 1) ? (indexOfSelected - assetsOffset) : 0
+      const indexHigher = indexOfSelected + assetsOffset
 
+      // truncate the postAssetIdPairs array
+      const truncatedPostAssetIdPairs = postAssetIdPairs.slice(indexLower, indexHigher)
+      truncatedPostAssetIdPairs.map(postAssedIdPair => allPostIds.push(postAssedIdPair[0]))
+
+      // grab the unique postIds from the pairs array
       const postIds = Array.from(new Set(allPostIds))
       return postIds
     }
