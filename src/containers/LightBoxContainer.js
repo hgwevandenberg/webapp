@@ -54,7 +54,7 @@ const baseLightBoxStyle = css(
     select(
       '> .LightBox.loaded',
       select(
-        '> .LightBoxQueue',
+        '> .LightBoxQueue.transition',
         s.transitionTransform,
       ),
     ),
@@ -192,16 +192,21 @@ function LightBoxWrapper(WrappedComponent) {
         open: false,
         loading: true,
         loaded: false,
+        direction: null,
         assetIdToSet: null,
         assetIdToSetPrev: null,
         assetIdToSetNext: null,
         postIdToSet: null,
         postIdToSetPrev: null,
         postIdToSetNext: null,
+        queuePostIdsArray: null,
+        oldestQueuePostId: null,
+        newestQueuePostId: null,
         innerWidth: this.props.innerWidth,
         innerHeight: this.props.innerHeight,
         resize: false,
         queueOffsetX: 0,
+        showOffsetTransition: false,
       }
 
       this.handleImageClick = this.handleImageClick.bind(this)
@@ -215,17 +220,35 @@ function LightBoxWrapper(WrappedComponent) {
         this.bindKeys()
       }
 
-      const slideDelay = !prevState.open ? 200 : 0
+      // might need to shift the queue left/right if we've added/removed new posts
+      if (this.state.open && (prevState.oldestQueuePostId !== this.state.oldestQueuePostId)) {
+        const nextPrev = this.getSetPagination(this.state.assetIdToSet,
+          this.state.postIdToSet,
+          false)
+
+        // need to reset; new posts may have shifted queue
+        if (this.state.direction === 'next') {
+          this.slideQueue(nextPrev.assetIdToSetPrev, nextPrev.postIdToSetPrev)
+        } else {
+          setTimeout(() => {
+            this.slideQueue(nextPrev.assetIdToSetNext, nextPrev.postIdToSetNext)
+          }, 1) // small timeout allows DOM time to instantiate new post
+        }
+      }
+
+      const slideDelay = !prevState.open ? 200 : 100
       const transitionDelay = 200
 
-      // advance lightbox queue to specific asset
+      // update the DOM post Ids array and move the queue to the select item
       if (this.state.open && (prevState.assetIdToSet !== this.state.assetIdToSet)) {
+        this.constructPostIdsArray()
+
         setTimeout(() => {
           this.slideQueue()
         }, slideDelay)
       }
 
-      // remove loading close if lightbox was recently opened
+      // remove loading class if lightbox was recently opened
       if (this.state.open && !prevState.open) {
         setTimeout(() => {
           this.removeLoadingClass()
@@ -250,7 +273,7 @@ function LightBoxWrapper(WrappedComponent) {
       this.bindKeys(releaseKeys)
     }
 
-    setPagination(assetId, postId) {
+    getSetPagination(assetId, postId, updateState = true) {
       const { postAssetIdPairs } = this.props
 
       if (postAssetIdPairs) {
@@ -285,12 +308,21 @@ function LightBoxWrapper(WrappedComponent) {
           const prevItemPostId = postAssetIdPairs[prevIndex][0]
           const nextItemPostId = postAssetIdPairs[nextIndex][0]
 
-          return this.setState({
+          if (updateState) {
+            return this.setState({
+              assetIdToSetPrev: prevItemAssetId,
+              assetIdToSetNext: nextItemAssetId,
+              postIdToSetPrev: prevItemPostId,
+              postIdToSetNext: nextItemPostId,
+            })
+          }
+          const nextPrevSet = {
             assetIdToSetPrev: prevItemAssetId,
             assetIdToSetNext: nextItemAssetId,
             postIdToSetPrev: prevItemPostId,
             postIdToSetNext: nextItemPostId,
-          })
+          }
+          return nextPrevSet
         }
         return null
       }
@@ -327,6 +359,7 @@ function LightBoxWrapper(WrappedComponent) {
 
       // advance to new image
       this.setState({
+        direction,
         assetIdToSet: newAssetIdToSet,
         postIdToSet: newPostIdToSet,
       })
@@ -335,12 +368,15 @@ function LightBoxWrapper(WrappedComponent) {
       this.scrollToSelectedAsset(newAssetIdToSet, newPostIdToSet)
 
       // update pagination
-      return this.setPagination(newAssetIdToSet, newPostIdToSet)
+      return this.getSetPagination(newAssetIdToSet, newPostIdToSet)
     }
 
-    slideQueue() {
-      const assetId = this.state.assetIdToSet
-      const postId = this.state.postIdToSet
+    slideQueue(assetIdToReset = null, postIdToReset = null) {
+      const reset = (assetIdToReset !== null && postIdToReset !== null)
+
+      // either reset the queue position, or advance to new asset
+      const assetId = reset ? assetIdToReset : this.state.assetIdToSet
+      const postId = reset ? postIdToReset : this.state.postIdToSet
       const assetDomId = `lightBoxAsset_${assetId}_${postId}`
 
       // select the DOM elements
@@ -360,6 +396,7 @@ function LightBoxWrapper(WrappedComponent) {
       // update the box position
       return this.setState({
         queueOffsetX: newOffset,
+        showOffsetTransition: !reset,
       })
     }
 
@@ -423,15 +460,28 @@ function LightBoxWrapper(WrappedComponent) {
     }
 
     handleImageClick(assetId, postId) {
-      const { open, assetIdToSet, postIdToSet } = this.state
+      const {
+        open,
+        assetIdToSet,
+        assetIdToSetPrev,
+        postIdToSet,
+        postIdToSetPrev,
+      } = this.state
 
       if (open && (assetId === assetIdToSet) && (postId === postIdToSet)) {
         return this.close()
       }
 
+      // determine direction
+      let direction = 'next'
+      if (open && (assetId === assetIdToSetPrev) && (postId === postIdToSetPrev)) {
+        direction = 'prev'
+      }
+
       // advance to new image
       this.setState({
         open: true,
+        direction,
         assetIdToSet: assetId,
         postIdToSet: postId,
       })
@@ -440,7 +490,7 @@ function LightBoxWrapper(WrappedComponent) {
       this.scrollToSelectedAsset(assetId, postId)
 
       // update pagination
-      return this.setPagination(assetId, postId)
+      return this.getSetPagination(assetId, postId)
     }
 
     handleViewPortResize(isResize) {
@@ -455,7 +505,7 @@ function LightBoxWrapper(WrappedComponent) {
 
       // resize off
       setTimeout(() => {
-        this.slideQueue()
+        this.slideQueue(this.state.assetIdToSet, this.state.postIdToSet)
       }, 250)
 
       return this.setState({
@@ -508,6 +558,13 @@ function LightBoxWrapper(WrappedComponent) {
 
       // grab the unique postIds from the pairs array
       const postIds = Array.from(new Set(allPostIds))
+
+      this.setState({
+        queuePostIdsArray: postIds,
+        oldestQueuePostId: postIds[0],
+        newestQueuePostId: postIds.slice(-1)[0],
+      })
+
       return postIds
     }
 
@@ -524,12 +581,12 @@ function LightBoxWrapper(WrappedComponent) {
                 />
                 <div className={`LightBox ${this.state.loading ? 'loading' : ''}${this.state.loaded ? 'loaded' : ''}`}>
                   <div
-                    className="LightBoxQueue"
+                    className={`LightBoxQueue${this.state.showOffsetTransition ? ' transition' : ''}`}
                     style={{ transform: `translateX(${this.state.queueOffsetX}px)` }}
                   >
                     {!this.props.commentIds &&
                       postAssetIdPairs &&
-                      this.constructPostIdsArray().map(postId =>
+                      this.state.queuePostIdsArray.map(postId =>
                       (<PostContainer
                         key={`lightBoxPost_${postId}`}
                         postId={postId}
@@ -543,7 +600,7 @@ function LightBoxWrapper(WrappedComponent) {
                     )}
                     {this.props.commentIds &&
                       postAssetIdPairs &&
-                      this.constructPostIdsArray().map(postId =>
+                      this.state.queuePostIdsArray.map(postId =>
                       (<CommentContainer
                         key={`lightBoxPost_${postId}`}
                         commentId={postId}
