@@ -586,6 +586,7 @@ function LightBoxWrapper(WrappedComponent) {
                   >
                     {!this.props.commentIds &&
                       postAssetIdPairs &&
+                      this.state.queuePostIdsArray &&
                       this.state.queuePostIdsArray.map(postId =>
                       (<PostContainer
                         key={`lightBoxPost_${postId}`}
@@ -600,6 +601,7 @@ function LightBoxWrapper(WrappedComponent) {
                     )}
                     {this.props.commentIds &&
                       postAssetIdPairs &&
+                      this.state.queuePostIdsArray &&
                       this.state.queuePostIdsArray.map(postId =>
                       (<CommentContainer
                         key={`lightBoxPost_${postId}`}
