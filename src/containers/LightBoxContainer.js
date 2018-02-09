@@ -556,7 +556,7 @@ function LightBoxWrapper(WrappedComponent) {
 
       // truncate the postAssetIdPairs array
       const truncatedPostAssetIdPairs = postAssetIdPairs.slice(indexLower, indexHigher)
-      truncatedPostAssetIdPairs.map(postAssedIdPair => allPostIds.push(postAssedIdPair[0]))
+      truncatedPostAssetIdPairs.forEach(postAssedIdPair => allPostIds.push(postAssedIdPair[0]))
 
       // grab the unique postIds from the pairs array
       const postIds = Array.from(new Set(allPostIds))

@@ -49,18 +49,17 @@ export const selectPostsAssetIds = createSelector(
     // submissions have no post content, so we still use `posts` as `postsToMap`
     if (!postIds && propsSubmissionIds) {
       postIds = []
-      propsSubmissionIds.map((submissionId) => {
+      propsSubmissionIds.forEach((submissionId) => {
         const submission = submissions.get(submissionId, Immutable.Map())
         if (submission) {
-          return postIds.push(submission.getIn(['links', 'post', 'id']))
+          postIds.push(submission.getIn(['links', 'post', 'id']))
         }
-        return null
       })
     }
 
     // iterate posts in state and return associated assetIds as array
     const combinedPostsAssetIds = []
-    postIds.map((postId) => {
+    postIds.forEach((postId) => {
       const post = postsToMap.get(postId, Immutable.Map())
       const postContent = post.get('content')
       const postRepostContent = post.get('repostContent')
@@ -68,7 +67,7 @@ export const selectPostsAssetIds = createSelector(
       // accomodate reposts (if available)
       // retrieve repost `postId` + original post `assetId` pairing
       if (postRepostContent) {
-        postRepostContent.map((region) => {
+        postRepostContent.forEach((region) => {
           const assetId = region.getIn(['links', 'assets'])
           if (assetId) {
             return combinedPostsAssetIds.push([postId, assetId])
@@ -78,7 +77,7 @@ export const selectPostsAssetIds = createSelector(
       }
 
       // retrieve `postId` + `assetId` pairing
-      postContent.map((region) => {
+      postContent.forEach((region) => {
         const assetId = region.getIn(['links', 'assets'])
         if (assetId) {
           return combinedPostsAssetIds.push([postId, assetId])
