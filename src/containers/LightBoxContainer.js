@@ -240,7 +240,9 @@ function LightBoxWrapper(WrappedComponent) {
       const transitionDelay = 200
 
       // update the DOM post Ids array and move the queue to the select item
-      if (this.state.open && (prevState.assetIdToSet !== this.state.assetIdToSet)) {
+      if (this.state.open &&
+        ((prevState.assetIdToSet !== this.state.assetIdToSet) ||
+        (prevState.postIdToSet !== this.state.postIdToSet))) {
         this.constructPostIdsArray()
 
         setTimeout(() => {
