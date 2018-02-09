@@ -18,18 +18,17 @@ const STATUS = {
 }
 
 const imageRegionStyle = css(
-  s.flex,
-  s.justifyCenter,
-  s.itemsCenter,
+  s.inline,
+  s.center,
 )
 
 const streamImageStyle = css(
   s.inline,
   s.relative,
-  s.center,
   s.bgcF2,
   select(
     '> .ImgHolder',
+    s.inlineBlock,
     s.relative,
   ),
 )
