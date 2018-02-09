@@ -92,7 +92,7 @@ class CommentContainer extends Component {
     isLightBox: PropTypes.bool,
     resizeLightBox: PropTypes.bool,
     toggleLightBox: PropTypes.func.isRequired,
-    lightBoxSelectedId: PropTypes.string,
+    lightBoxSelectedIdPair: PropTypes.object,
     post: PropTypes.object.isRequired,
   }
 
@@ -101,7 +101,7 @@ class CommentContainer extends Component {
     isLightBox: false,
     resizeLightBox: false,
     toggleLightBox: null,
-    lightBoxSelectedId: null,
+    lightBoxSelectedIdPair: null,
   }
 
   static contextTypes = {
@@ -136,7 +136,7 @@ class CommentContainer extends Component {
     return !Immutable.is(nextProps.comment, this.props.comment) ||
       !Immutable.is(nextProps.post, this.props.post) ||
       [
-        'lightBoxSelectedId',
+        'lightBoxSelectedIdPair',
         'resizeLightBox',
         'isGridMode',
       ].some(prop =>
@@ -231,7 +231,7 @@ class CommentContainer extends Component {
       isLightBox,
       resizeLightBox,
       toggleLightBox,
-      lightBoxSelectedId,
+      lightBoxSelectedIdPair,
     } = this.props
     if (!comment || !comment.get('id') || !author || !author.get('id')) { return null }
     if (isEditing && commentBody && ElloAndroidInterface.supportsNativeEditor()) {
@@ -258,7 +258,7 @@ class CommentContainer extends Component {
             isLightBox={isLightBox}
             resizeLightBox={resizeLightBox}
             toggleLightBox={toggleLightBox}
-            lightBoxSelectedId={lightBoxSelectedId}
+            lightBoxSelectedIdPair={lightBoxSelectedIdPair}
           />
         }
         {!isEditing && !isLightBox &&

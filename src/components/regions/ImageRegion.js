@@ -85,7 +85,7 @@ class ImageRegion extends PureComponent {
     isNotification: PropTypes.bool,
     isLightBoxImage: PropTypes.bool,
     resizeLightBoxImage: PropTypes.bool,
-    lightBoxSelectedId: PropTypes.string,
+    lightBoxSelectedIdPair: PropTypes.object,
     shouldUseVideo: PropTypes.bool.isRequired,
     handleStaticImageRegionClick: PropTypes.func,
   }
@@ -104,7 +104,7 @@ class ImageRegion extends PureComponent {
     isGridMode: false,
     isLightBoxImage: false,
     resizeLightBoxImage: false,
-    lightBoxSelectedId: null,
+    lightBoxSelectedIdPair: null,
     handleStaticImageRegionClick: null,
   }
 
@@ -137,7 +137,7 @@ class ImageRegion extends PureComponent {
   shouldComponentUpdate(nextProps, nextState) {
     return !Immutable.is(nextProps.isLightBoxImage, this.props.isLightBoxImage) ||
       !Immutable.is(nextProps.asset, this.props.asset) ||
-      ['buyLinkURL', 'columnWidth', 'contentWidth', 'isGridMode', 'isLightBoxImage', 'resizeLightBoxImage', 'lightBoxSelectedId'].some(prop =>
+      ['buyLinkURL', 'columnWidth', 'contentWidth', 'isGridMode', 'isLightBoxImage', 'resizeLightBoxImage', 'lightBoxSelectedIdPair'].some(prop =>
         nextProps[prop] !== this.props[prop],
       ) ||
       ['measuredImageHeight', 'measuredImageWidth', 'scaledImageHeight', 'scaledImageWidth', 'status'].some(prop => nextState[prop] !== this.state[prop])
@@ -195,14 +195,16 @@ class ImageRegion extends PureComponent {
 
   getLightBoxSelected() {
     const {
-      lightBoxSelectedId,
+      postId,
+      lightBoxSelectedIdPair,
       isNotification,
     } = this.props
     const assetId = this.getAssetId()
 
     let selected = false
-    if (!isNotification) {
-      selected = (assetId === lightBoxSelectedId)
+    if (!isNotification && lightBoxSelectedIdPair) {
+      selected = ((assetId === lightBoxSelectedIdPair.assetIdToSet) &&
+        (postId === lightBoxSelectedIdPair.postIdToSet))
     }
     return selected
   }

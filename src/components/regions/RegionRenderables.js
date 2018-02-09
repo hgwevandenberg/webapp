@@ -27,7 +27,7 @@ export class RegionItems extends PureComponent {
     isLightBox: PropTypes.bool,
     resizeLightBox: PropTypes.bool,
     toggleLightBox: PropTypes.func,
-    lightBoxSelectedId: PropTypes.string,
+    lightBoxSelectedIdPair: PropTypes.object,
     postId: PropTypes.string,
   }
   static defaultProps = {
@@ -35,7 +35,7 @@ export class RegionItems extends PureComponent {
     isLightBox: false,
     resizeLightBox: false,
     toggleLightBox: null,
-    lightBoxSelectedId: null,
+    lightBoxSelectedIdPair: null,
     postId: null,
   }
 
@@ -53,7 +53,7 @@ export class RegionItems extends PureComponent {
       isLightBox,
       resizeLightBox,
       toggleLightBox,
-      lightBoxSelectedId,
+      lightBoxSelectedIdPair,
       postId,
     } = this.props
     // sometimes the content is null/undefined for some reason
@@ -107,7 +107,7 @@ export class RegionItems extends PureComponent {
               isPostDetail={isPostDetail}
               isLightBoxImage={isLightBox}
               resizeLightBoxImage={resizeLightBox}
-              lightBoxSelectedId={lightBoxSelectedId}
+              lightBoxSelectedIdPair={lightBoxSelectedIdPair}
               shouldUseVideo={!!(asset && asset.getIn(['attachment', 'video'], Immutable.Map()).size) && !isIOS() && !isPostDetail}
               handleStaticImageRegionClick={
                 event => handleStaticImageRegionClick(event, assetId, postId, toggleLightBox)

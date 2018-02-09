@@ -26,7 +26,7 @@ class ArtistInviteSubmissionContainer extends PureComponent {
     toggleLightBox: PropTypes.func,
     isLightBox: PropTypes.bool,
     resizeLightBox: PropTypes.bool,
-    lightBoxSelectedId: PropTypes.string,
+    lightBoxSelectedIdPair: PropTypes.object,
   }
 
   static defaultProps = {
@@ -35,7 +35,7 @@ class ArtistInviteSubmissionContainer extends PureComponent {
     toggleLightBox: null,
     isLightBox: false,
     resizeLightBox: false,
-    lightBoxSelectedId: null,
+    lightBoxSelectedIdPair: null,
   }
 
   static childContextTypes = {
@@ -61,7 +61,7 @@ class ArtistInviteSubmissionContainer extends PureComponent {
       toggleLightBox,
       isLightBox,
       resizeLightBox,
-      lightBoxSelectedId,
+      lightBoxSelectedIdPair,
     } = this.props
     return (
       <PostContainer
@@ -71,7 +71,7 @@ class ArtistInviteSubmissionContainer extends PureComponent {
         toggleLightBox={toggleLightBox}
         isLightBox={isLightBox}
         resizeLightBox={resizeLightBox}
-        lightBoxSelectedId={lightBoxSelectedId}
+        lightBoxSelectedIdPair={lightBoxSelectedIdPair}
       />
     )
   }

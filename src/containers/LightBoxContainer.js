@@ -570,6 +570,10 @@ function LightBoxWrapper(WrappedComponent) {
 
     render() {
       const { postAssetIdPairs } = this.props
+      const lightBoxSelectedIdPair = {
+        assetIdToSet: this.state.assetIdToSet,
+        postIdToSet: this.state.postIdToSet,
+      }
 
       return (
         <div className="with-lightbox">
@@ -593,7 +597,7 @@ function LightBoxWrapper(WrappedComponent) {
                         postId={postId}
                         isPostHeaderHidden
                         isLightBox
-                        lightBoxSelectedId={this.state.assetIdToSet}
+                        lightBoxSelectedIdPair={lightBoxSelectedIdPair}
                         resizeLightBox={this.state.resize}
                         toggleLightBox={(assetId, postIdToSet) =>
                           this.handleImageClick(assetId, postIdToSet)}
@@ -607,7 +611,7 @@ function LightBoxWrapper(WrappedComponent) {
                         key={`lightBoxPost_${postId}`}
                         commentId={postId}
                         isLightBox
-                        lightBoxSelectedId={this.state.assetIdToSet}
+                        lightBoxSelectedIdPair={lightBoxSelectedIdPair}
                         toggleLightBox={(assetId, postIdToSet) =>
                           this.handleImageClick(assetId, postIdToSet)}
                       />),

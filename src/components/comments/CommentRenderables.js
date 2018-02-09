@@ -52,11 +52,11 @@ export class CommentBody extends PureComponent {
     isLightBox: PropTypes.bool.isRequired,
     resizeLightBox: PropTypes.bool.isRequired,
     toggleLightBox: PropTypes.func.isRequired,
-    lightBoxSelectedId: PropTypes.string,
+    lightBoxSelectedIdPair: PropTypes.object,
   }
 
   static defaultProps = {
-    lightBoxSelectedId: null,
+    lightBoxSelectedIdPair: null,
   }
 
   render() {
@@ -73,7 +73,7 @@ export class CommentBody extends PureComponent {
       isLightBox,
       resizeLightBox,
       toggleLightBox,
-      lightBoxSelectedId,
+      lightBoxSelectedIdPair,
     } = this.props
     return (
       <div className="CommentBody" key={`CommentBody${commentId}`} >
@@ -91,7 +91,7 @@ export class CommentBody extends PureComponent {
           isLightBox={isLightBox}
           resizeLightBox={resizeLightBox}
           toggleLightBox={toggleLightBox}
-          lightBoxSelectedId={lightBoxSelectedId}
+          lightBoxSelectedIdPair={lightBoxSelectedIdPair}
         />
       </div>
     )
