@@ -25,11 +25,11 @@ const imageRegionStyle = css(
 const streamImageStyle = css(
   s.inline,
   s.relative,
-  s.bgcF2,
   select(
     '> .ImgHolder',
     s.inlineBlock,
     s.relative,
+    s.bgcF2,
   ),
 )
 
