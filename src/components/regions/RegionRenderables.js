@@ -39,6 +39,20 @@ export class RegionItems extends PureComponent {
     postId: null,
   }
 
+  getLightBoxSelected(assetId) {
+    const {
+      postId,
+      lightBoxSelectedIdPair,
+    } = this.props
+
+    let selected = false
+    if (lightBoxSelectedIdPair) {
+      selected = ((assetId === lightBoxSelectedIdPair.assetIdToSet) &&
+        (postId === lightBoxSelectedIdPair.postIdToSet))
+    }
+    return selected
+  }
+
   render() {
     const {
       columnWidth,
@@ -53,7 +67,6 @@ export class RegionItems extends PureComponent {
       isLightBox,
       resizeLightBox,
       toggleLightBox,
-      lightBoxSelectedIdPair,
       postId,
     } = this.props
     // sometimes the content is null/undefined for some reason
@@ -94,6 +107,7 @@ export class RegionItems extends PureComponent {
             <ImageRegion
               key={`ImageRegion_${regionKey}`}
               postId={postId}
+              assetId={assetId}
               asset={asset}
               buyLinkURL={region.get('linkUrl')}
               columnWidth={columnWidth}
@@ -106,8 +120,8 @@ export class RegionItems extends PureComponent {
               isGridMode={isGridMode}
               isPostDetail={isPostDetail}
               isLightBoxImage={isLightBox}
+              isLightBoxSelected={isLightBox ? this.getLightBoxSelected(assetId) : null}
               resizeLightBoxImage={resizeLightBox}
-              lightBoxSelectedIdPair={lightBoxSelectedIdPair}
               shouldUseVideo={!!(asset && asset.getIn(['attachment', 'video'], Immutable.Map()).size) && !isIOS() && !isPostDetail}
               handleStaticImageRegionClick={
                 event => handleStaticImageRegionClick(event, assetId, postId, toggleLightBox)
