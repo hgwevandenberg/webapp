@@ -390,7 +390,7 @@ function LightBoxWrapper(WrappedComponent) {
 
       // positioning calculations
       const desiredGap = ((viewportWidth - (assetDimensions.width)) / 2)
-      const imageOffsetToBox = assetDimensions.x - lightBoxDimensions.x
+      const imageOffsetToBox = assetDimensions.left - lightBoxDimensions.left
       const newOffset = desiredGap - imageOffsetToBox
 
       // update the box position
