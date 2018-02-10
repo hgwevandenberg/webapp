@@ -111,6 +111,18 @@ const artistInvitesStyle = css(
   ),
 )
 
+// posts list styling (shared between POSTS and ARTIST INVITES)
+
+const postListStyle = css(
+  s.maxSiteWidth,
+  s.mxAuto,
+  select('& .ImageRegion img', { height: 'auto' }),
+  media(
+    s.minBreak3,
+    select('& .PostBody > div', s.flex, s.flexColumn, s.justifyCenter, s.itemsCenter, s.pt20),
+  ),
+)
+
 // ARTIST INVITES
 export const artistInvites = artistInviteIds => (
   <div className={artistInvitesStyle}>
@@ -208,7 +220,7 @@ class ArtistInviteSubmissionsAsListSimple extends PureComponent { // eslint-disa
     } = this.props
 
     return (
-      <div className="Posts asList">
+      <div className={`Posts asList ${postListStyle}`}>
         {headerText &&
           <h2 className={postsAsListblackTitleStyle}>{headerText}</h2>
         }
@@ -257,16 +269,6 @@ export const postsAsGrid = (postIds, columnCount, isPostHeaderHidden) => {
     </div>
   )
 }
-
-const postListStyle = css(
-  s.maxSiteWidth,
-  s.mxAuto,
-  select('& .ImageRegion img', { height: 'auto' }),
-  media(
-    s.minBreak3,
-    select('& .PostBody > div', s.flex, s.flexColumn, s.justifyCenter, s.itemsCenter, s.pt20),
-  ),
-)
 
 class PostsAsListSimple extends PureComponent { // eslint-disable-line react/no-multi-comp
   static propTypes = {
