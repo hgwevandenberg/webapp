@@ -51,7 +51,6 @@ export function loadUserPostsV3(username) {
       variables: { username },
     },
     meta: {
-      mappingType: MAPPING_TYPES.POSTS,
       renderStream: {
         asList: StreamRenderables.postsAsList,
         asGrid: StreamRenderables.postsAsGrid,

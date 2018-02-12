@@ -22,10 +22,6 @@ const runningFetches = {}
 
 function updateRunningFetches(serverResponse, query) {
   if (!serverResponse) { return }
-  const serverResponseUrl = serverResponse.url && serverResponse.url.length
-        ? serverResponse.url
-        : serverResponse.headers.get('X-Request-Url')
-
   if (runningFetches[query]) {
     delete runningFetches[query]
   } else {
@@ -35,18 +31,30 @@ function updateRunningFetches(serverResponse, query) {
   }
 }
 
+function* fireSuccessAction(meta) {
+  if (meta && meta.successAction) {
+    if (typeof meta.successAction === 'function') {
+      yield call(meta.successAction)
+    } else {
+      yield put(meta.successAction)
+    }
+  }
+}
+
+function* fireFailureAction(meta) {
+  if (meta && meta.failureAction) {
+    if (typeof meta.failureAction === 'function') {
+      yield call(meta.failureAction)
+    } else {
+      yield put(meta.failureAction)
+    }
+  }
+}
+
+// HTTP Errors (401, 422, 500, 400, etc)
 export function* handleRequestError(error, action) {
   const { meta, payload, type } = action
   const FAILURE = `${type}_FAILURE`
-  function* fireFailureAction() {
-    if (meta && meta.failureAction) {
-      if (typeof meta.failureAction === 'function') {
-        yield call(meta.failureAction)
-      } else {
-        yield put(meta.failureAction)
-      }
-    }
-  }
 
   if (error.response) {
     const { status } = error.response
@@ -79,14 +87,27 @@ export function* handleRequestError(error, action) {
       payload.response = yield call(extractJSON, error.response)
     }
     yield put({ error, meta, payload, type: FAILURE })
-    yield call(fireFailureAction)
+    yield call(fireFailureAction, meta)
   } else {
     if (/Failed to fetch/.test(error)) {
       payload.serverStatus = 404
     }
     yield put({ error, meta, payload, type: FAILURE })
-    yield call(fireFailureAction)
+    yield call(fireFailureAction, meta)
   }
+  return false
+}
+
+function* handleGraphQLError(error, action) {
+  const { meta, payload, type } = action
+  const FAILURE = `${type}_FAILURE`
+  payload.response = error
+  if (/not found/i.test(error.message)) {
+    payload.serverStatus = 404
+  }
+
+  yield put({ error, meta, payload, type: FAILURE })
+  yield call(fireFailureAction, meta)
   return false
 }
 
@@ -117,35 +138,33 @@ export function* performRequest(action) {
 
   yield put({ type: REQUEST, payload, meta })
 
-  function* fireSuccessAction() {
-    if (meta && meta.successAction) {
-      if (typeof meta.successAction === 'function') {
-        yield call(meta.successAction)
-      } else {
-        yield put(meta.successAction)
-      }
-    }
-  }
 
   let response
 
   try {
     response = yield call(sagaFetch, V3_GRAPHQL_PATH, options)
+  // Http Errors
   } catch (error) {
     updateRunningFetches(error.response, query)
     yield fork(handleRequestError, error, action)
     return false
   }
 
+  // GraphQL Errors come back as 200s with error keys
   const { json, serverResponse } = response
-  payload.response = json
+  if (json.errors) {
+    const error = json.errors[0]
+    updateRunningFetches(error, query)
+    yield fork(handleGraphQLError, error, action)
+    return false
+  }
 
-  // TODO: Errors come back as 200s, we need to deal with that here.
+  payload.response = json
 
   updateRunningFetches(serverResponse, query)
 
   yield put({ meta, payload, type: SUCCESS })
-  yield call(fireSuccessAction)
+  yield call(fireSuccessAction, meta)
   return true
 }
 
