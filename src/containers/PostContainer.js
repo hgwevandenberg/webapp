@@ -25,6 +25,7 @@ import {
   PostDetailAsideBottom,
   PostDetailAsideTop,
   PostBody,
+  PostBodyWithLightBox,
   PostHeader,
   RepostHeader,
   UserModal,
@@ -159,6 +160,7 @@ class PostContainer extends Component {
     isMobile: PropTypes.bool.isRequired,
     isOwnOriginalPost: PropTypes.bool.isRequired,
     isOwnPost: PropTypes.bool.isRequired,
+    isNarrowPostDetail: PropTypes.bool,
     isPostDetail: PropTypes.bool.isRequired,
     isPostEmpty: PropTypes.bool.isRequired,
     isPostHeaderHidden: PropTypes.bool,
@@ -166,6 +168,10 @@ class PostContainer extends Component {
     isRepost: PropTypes.bool.isRequired,
     isReposting: PropTypes.bool.isRequired,
     isWatchingPost: PropTypes.bool.isRequired,
+    isLightBox: PropTypes.bool,
+    resizeLightBox: PropTypes.bool,
+    toggleLightBox: PropTypes.func,
+    lightBoxSelectedIdPair: PropTypes.object,
     pathname: PropTypes.string.isRequired,
     post: PropTypes.object.isRequired,
     postBody: PropTypes.object,
@@ -195,8 +201,13 @@ class PostContainer extends Component {
     categoryPath: null,
     content: null,
     contentWarning: null,
+    isNarrowPostDetail: false,
     isPostHeaderHidden: false,
     isRelatedPost: false,
+    isLightBox: false,
+    resizeLightBox: false,
+    toggleLightBox: null,
+    lightBoxSelectedIdPair: null,
     postBody: null,
     postCommentsCount: null,
     postCreatedAt: null,
@@ -261,7 +272,18 @@ class PostContainer extends Component {
     if (nextProps.isPostEmpty) { return false }
     return !Immutable.is(nextProps.post, this.props.post) ||
       !Immutable.is(nextProps.adminActions, this.props.adminActions) ||
-      ['columnWidth', 'contentWidth', 'innerHeight', 'innerWidth', 'isGridMode', 'isLoggedIn', 'isMobile', 'submissionStatus'].some(prop =>
+      [
+        'columnWidth',
+        'contentWidth',
+        'innerHeight',
+        'innerWidth',
+        'isGridMode',
+        'isLoggedIn',
+        'isMobile',
+        'submissionStatus',
+        'lightBoxSelectedIdPair',
+        'resizeLightBox',
+      ].some(prop =>
         nextProps[prop] !== this.props[prop],
       )
   }
@@ -423,6 +445,7 @@ class PostContainer extends Component {
       isMobile,
       isOwnOriginalPost,
       isOwnPost,
+      isNarrowPostDetail,
       isPostDetail,
       isPostEmpty,
       isPostHeaderHidden,
@@ -430,6 +453,10 @@ class PostContainer extends Component {
       isRepost,
       isReposting,
       isWatchingPost,
+      isLightBox,
+      resizeLightBox,
+      toggleLightBox,
+      lightBoxSelectedIdPair,
       post,
       postBody,
       postCommentsCount,
@@ -452,7 +479,7 @@ class PostContainer extends Component {
     if (isPostEmpty || !author || !author.get('id')) { return null }
     let postHeader
     const headerProps = { detailPath, postCreatedAt, postId }
-    if (isRepost) {
+    if (isRepost && !isLightBox) {
       postHeader = (
         <RepostHeader
           {...headerProps}
@@ -465,7 +492,7 @@ class PostContainer extends Component {
           repostedBy={author}
         />
       )
-    } else if (isPostHeaderHidden) {
+    } else if (isPostHeaderHidden || isLightBox) {
       postHeader = null
     } else if (isDiscoverRoot && categoryName && categoryPath) {
       postHeader = (
@@ -562,6 +589,32 @@ class PostContainer extends Component {
           />
         )
       case 'PostDetailBody':
+        if (isPostDetail) {
+          return (
+            <PostBodyWithLightBox
+              {...{
+                author,
+                columnWidth,
+                commentOffset,
+                content,
+                contentWarning,
+                contentWidth,
+                detailPath,
+                innerHeight,
+                innerWidth,
+                isGridMode,
+                isPostDetail,
+                isRepost,
+                post,
+                postId,
+                repostContent,
+                showEditor,
+                summary,
+                supportsNativeEditor,
+              }}
+            />
+          )
+        }
         return (
           <PostBody
             {...{
@@ -608,12 +661,17 @@ class PostContainer extends Component {
               isMobile,
               isOwnOriginalPost,
               isOwnPost,
+              isNarrowPostDetail,
               isPostDetail,
               isPostHeaderHidden,
               isRelatedPost,
               isRepost,
               isRepostAnimating,
               isWatchingPost,
+              isLightBox,
+              resizeLightBox,
+              toggleLightBox,
+              lightBoxSelectedIdPair,
               post,
               postCommentsCount,
               postCreatedAt,

@@ -1,5 +1,6 @@
 import Immutable from 'immutable'
-import React from 'react'
+import React, { PureComponent } from 'react'
+import PropTypes from 'prop-types'
 import ArtistInviteContainer from '../../containers/ArtistInviteContainer'
 import CategoryContainer from '../../containers/CategoryContainer'
 import CommentContainer from '../../containers/CommentContainer'
@@ -7,6 +8,7 @@ import NotificationContainer from '../../containers/NotificationContainer'
 import ArtistInviteSubmissionContainer from '../../containers/ArtistInviteSubmissionContainer'
 import PostContainer from '../../containers/PostContainer'
 import UserContainer from '../../containers/UserContainer'
+import withLightBoxContainer from '../../containers/LightBoxContainer'
 import { SlickCarousel } from '../../components/carousels/CarouselRenderables'
 import EditorialLayout from '../../components/editorials/EditorialLayout'
 import Preference from '../../components/forms/Preference'
@@ -21,7 +23,6 @@ import * as s from '../../styles/jso'
 // which contains ids required for their respective containers to
 // do their own lookup in the store to ensure they are up to date
 // CATEGORIES
-
 const categoriesStyle = css(
   s.flex,
   s.flexRow,
@@ -42,15 +43,45 @@ export const categoriesAsGrid = categoryIds =>
   </div>)
 
 // COMMENTS
-export const commentsAsList = commentIds =>
-  (<div className="Comments">
-    {commentIds.map(id =>
-      (<CommentContainer
-        commentId={id}
-        key={`commentContainer_${id}`}
-      />),
-    )}
-  </div>)
+class CommentsAsListSimple extends PureComponent { // eslint-disable-line react/no-multi-comp
+  static propTypes = {
+    toggleLightBox: PropTypes.func.isRequired,
+    commentIds: PropTypes.object,
+  }
+
+  static defaultProps = {
+    toggleLightBox: null,
+    commentIds: null,
+  }
+
+  render() {
+    const {
+      toggleLightBox,
+      commentIds,
+    } = this.props
+
+    return (
+      <div className="Comments">
+        {commentIds.map(id =>
+          (<CommentContainer
+            toggleLightBox={toggleLightBox}
+            commentId={id}
+            key={`commentContainer_${id}`}
+          />),
+        )}
+      </div>
+    )
+  }
+}
+
+// wrap comments in LightBox factory
+const CommentsAsList = withLightBoxContainer(CommentsAsListSimple)
+
+export const commentsAsList = commentIds => (
+  <CommentsAsList
+    commentIds={commentIds}
+  />
+)
 
 // EDITORIAL: chunk layouts into pages of 24 editorials
 export const editorials = editorialIds => (
@@ -77,6 +108,18 @@ const artistInvitesStyle = css(
     s.pt0,
     s.pr10,
     s.pl10,
+  ),
+)
+
+// posts list styling (shared between POSTS and ARTIST INVITES)
+
+const postListStyle = css(
+  s.maxSiteWidth,
+  s.mxAuto,
+  select('& .ImageRegion img', { height: 'auto' }),
+  media(
+    s.minBreak3,
+    select('& .PostBody > div', s.flex, s.flexColumn, s.justifyCenter, s.itemsCenter, s.pt20),
   ),
 )
 
@@ -156,19 +199,54 @@ export const artistInviteSubmissionsAsGrid = (submissionIds, columnCount, header
   )
 }
 
+class ArtistInviteSubmissionsAsListSimple extends PureComponent { // eslint-disable-line max-len, react/no-multi-comp
+  static propTypes = {
+    toggleLightBox: PropTypes.func.isRequired,
+    submissionIds: PropTypes.object.isRequired,
+    headerText: PropTypes.string.isRequired,
+  }
+
+  static defaultProps = {
+    toggleLightBox: null,
+    submissionIds: null,
+    headerText: null,
+  }
+
+  render() {
+    const {
+      toggleLightBox,
+      submissionIds,
+      headerText,
+    } = this.props
+
+    return (
+      <div className={`Posts asList ${postListStyle}`}>
+        {headerText &&
+          <h2 className={postsAsListblackTitleStyle}>{headerText}</h2>
+        }
+        {submissionIds.map(id => (
+          <article className={`PostList ArtistInviteSubmission ${postsAsListStyle}`} key={`postsAsList_${id}`}>
+            <ArtistInviteSubmissionContainer
+              toggleLightBox={toggleLightBox}
+              submissionId={id}
+            />
+          </article>
+        ))}
+      </div>
+    )
+  }
+}
+
+// wrap posts list in LightBox factory
+const ArtistInviteSubmissionsAsList = withLightBoxContainer(ArtistInviteSubmissionsAsListSimple)
+
 export const artistInviteSubmissionsAsList = (submissionIds, headerText) => {
   if (!submissionIds || submissionIds.size === 0) { return null }
   return (
-    <div className="Posts asList">
-      {headerText &&
-        <h2 className={postsAsListblackTitleStyle}>{headerText}</h2>
-      }
-      {submissionIds.map(id => (
-        <article className={`PostList ArtistInviteSubmission ${postsAsListStyle}`} key={`postsAsList_${id}`}>
-          <ArtistInviteSubmissionContainer submissionId={id} />
-        </article>
-      ))}
-    </div>
+    <ArtistInviteSubmissionsAsList
+      submissionIds={submissionIds}
+      headerText={headerText}
+    />
   )
 }
 
@@ -192,20 +270,50 @@ export const postsAsGrid = (postIds, columnCount, isPostHeaderHidden) => {
   )
 }
 
-const postListStyle = css(
-  s.maxSiteWidth,
-  s.mxAuto,
-  select('& .ImageRegion img', { height: 'auto' }),
-)
+class PostsAsListSimple extends PureComponent { // eslint-disable-line react/no-multi-comp
+  static propTypes = {
+    toggleLightBox: PropTypes.func.isRequired,
+    postIds: PropTypes.object.isRequired,
+    isPostHeaderHidden: PropTypes.bool.isRequired,
+  }
+
+  static defaultProps = {
+    toggleLightBox: null,
+    postIds: null,
+    isPostHeaderHidden: false,
+  }
+
+  render() {
+    const {
+      toggleLightBox,
+      postIds,
+      isPostHeaderHidden,
+    } = this.props
+
+    return (
+      <div className={`Posts asList ${postListStyle}`}>
+        {postIds.map(id =>
+          (<article className="PostList" key={`postsAsList_${id}`}>
+            <PostContainer
+              toggleLightBox={toggleLightBox}
+              postId={id}
+              isPostHeaderHidden={isPostHeaderHidden}
+            />
+          </article>),
+        )}
+      </div>
+    )
+  }
+}
+
+// wrap posts list in LightBox factory
+const PostsAsList = withLightBoxContainer(PostsAsListSimple)
 
 export const postsAsList = (postIds, columnCount, isPostHeaderHidden) => (
-  <div className={`Posts asList ${postListStyle}`}>
-    {postIds.map(id => (
-      <article className="PostList" key={`postsAsList_${id}`}>
-        <PostContainer postId={id} isPostHeaderHidden={isPostHeaderHidden} />
-      </article>
-    ))}
-  </div>
+  <PostsAsList
+    postIds={postIds}
+    isPostHeaderHidden={isPostHeaderHidden}
+  />
 )
 
 const relatedPostsTitleStyle = css(

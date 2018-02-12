@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import classNames from 'classnames'
+import withLightBoxContainer from '../../containers/LightBoxContainer'
 import Avatar from '../assets/Avatar'
 import {
   ArrowIcon,
@@ -416,6 +417,10 @@ export class PostBody extends PureComponent {
     isPostDetail: PropTypes.bool.isRequired,
     isPostBody: PropTypes.bool.isRequired,
     isRepost: PropTypes.bool.isRequired,
+    isLightBox: PropTypes.bool,
+    resizeLightBox: PropTypes.bool,
+    toggleLightBox: PropTypes.func,
+    lightBoxSelectedIdPair: PropTypes.object,
     post: PropTypes.object.isRequired,
     postId: PropTypes.string.isRequired,
     repostContent: PropTypes.object,
@@ -427,6 +432,8 @@ export class PostBody extends PureComponent {
     contentWarning: null,
     repostContent: null,
     isPostBody: true,
+    isLightBox: false,
+    resizeLightBox: false,
   }
   render() {
     const {
@@ -442,6 +449,10 @@ export class PostBody extends PureComponent {
       isPostDetail,
       isPostBody,
       isRepost,
+      isLightBox,
+      resizeLightBox,
+      toggleLightBox,
+      lightBoxSelectedIdPair,
       post,
       postId,
       repostContent,
@@ -460,6 +471,7 @@ export class PostBody extends PureComponent {
     }
 
     const regionProps = {
+      postId,
       columnWidth,
       commentOffset,
       contentWidth,
@@ -468,6 +480,10 @@ export class PostBody extends PureComponent {
       isGridMode,
       isPostDetail,
       isPostBody,
+      isLightBox,
+      resizeLightBox,
+      toggleLightBox,
+      lightBoxSelectedIdPair,
     }
     if (isRepost) {
       // this is weird, but the post summary is
@@ -480,18 +496,23 @@ export class PostBody extends PureComponent {
         cells.push(<RegionItems {...regionProps} key={`RegionItems_${postId}`} />)
         if (content && content.size) {
           regionProps.content = content
-          cells.push(
-            <div className="PostBody RepostedBody" key={`RepostedBody_${postId}`}>
-              <Avatar
-                priority={author.get('relationshipPriority')}
-                sources={author.get('avatar')}
-                to={`/${author.get('username')}`}
-                userId={`${author.get('id')}`}
-                username={author.get('username')}
-              />
-              <RegionItems {...regionProps} />
-            </div>,
-          )
+          if (!isLightBox) {
+            cells.push(
+              <div className="PostBody RepostedBody" key={`RepostedBody_${postId}`}>
+                <Avatar
+                  priority={author.get('relationshipPriority')}
+                  sources={author.get('avatar')}
+                  to={`/${author.get('username')}`}
+                  userId={`${author.get('id')}`}
+                  username={author.get('username')}
+                />
+                <RegionItems {...regionProps} />
+              </div>,
+            )
+          }
+          if (isLightBox) {
+            cells.push(<RegionItems {...regionProps} key={`RepostedBody_${postId}`} />)
+          }
         }
       }
     } else {
@@ -545,6 +566,9 @@ const launchCommentEditorButtonStyle = css(
     },
   ),
 )
+
+// wrap post in LightBox factory
+export const PostBodyWithLightBox = withLightBoxContainer(PostBody)
 
 export const LaunchNativeCommentEditorButton = ({ avatar, post }, { onLaunchNativeEditor }) =>
   <LaunchCommentEditorButton avatar={avatar} post={post} onLaunch={onLaunchNativeEditor} />
@@ -638,12 +662,17 @@ export const Post = ({
   isMobile,
   isOwnOriginalPost,
   isOwnPost,
+  isNarrowPostDetail,
   isPostDetail,
   isPostHeaderHidden,
   isRelatedPost,
   isRepost,
   isRepostAnimating,
   isWatchingPost,
+  isLightBox,
+  resizeLightBox,
+  toggleLightBox,
+  lightBoxSelectedIdPair,
   post,
   postCommentsCount,
   postCreatedAt,
@@ -663,63 +692,94 @@ export const Post = ({
 }) => (
   <div className={classNames('Post', { isPostHeaderHidden: isPostHeaderHidden && !isRepost })}>
     {postHeader}
-    {adminActions &&
+    {adminActions && !isLightBox &&
       <PostAdminActions
         actions={adminActions}
         status={submissionStatus}
       />
     }
-    <PostBody
-      {...{
-        author,
-        columnWidth,
-        commentOffset,
-        content,
-        contentWarning,
-        contentWidth,
-        detailPath,
-        innerHeight,
-        isGridMode,
-        isPostDetail,
-        isRepost,
-        post,
-        postId,
-        repostContent,
-        showEditor,
-        summary,
-        supportsNativeEditor,
-      }}
-    />
-    <PostTools
-      {...{
-        author,
-        detailPath,
-        isCommentsActive,
-        isCommentsRequesting,
-        isGridMode,
-        isLoggedIn,
-        isMobile,
-        isOwnOriginalPost,
-        isOwnPost,
-        isPostDetail,
-        isRelatedPost,
-        isRepostAnimating,
-        isWatchingPost,
-        postCreatedAt,
-        postCommentsCount,
-        postId,
-        postLoved,
-        postLovesCount,
-        postReposted,
-        postRepostsCount,
-        postViewsCountRounded,
-      }}
-    />
-    {isLoggedIn && showCommentEditor && supportsNativeEditor &&
+    {!isNarrowPostDetail &&
+      <PostBody
+        {...{
+          author,
+          columnWidth,
+          commentOffset,
+          content,
+          contentWarning,
+          contentWidth,
+          detailPath,
+          innerHeight,
+          isGridMode,
+          isPostDetail,
+          isRepost,
+          isLightBox,
+          resizeLightBox,
+          toggleLightBox,
+          lightBoxSelectedIdPair,
+          post,
+          postId,
+          repostContent,
+          showEditor,
+          summary,
+          supportsNativeEditor,
+        }}
+      />
+    }
+    {isNarrowPostDetail && !isLightBox &&
+      <PostBodyWithLightBox
+        {...{
+          author,
+          columnWidth,
+          commentOffset,
+          content,
+          contentWarning,
+          contentWidth,
+          detailPath,
+          innerHeight,
+          isGridMode,
+          isPostDetail,
+          isRepost,
+          post,
+          postId,
+          repostContent,
+          showEditor,
+          summary,
+          supportsNativeEditor,
+        }}
+      />
+    }
+    {!isLightBox &&
+      <PostTools
+        {...{
+          author,
+          detailPath,
+          isCommentsActive,
+          isCommentsRequesting,
+          isGridMode,
+          isLoggedIn,
+          isMobile,
+          isOwnOriginalPost,
+          isOwnPost,
+          isPostDetail,
+          isRelatedPost,
+          isRepostAnimating,
+          isWatchingPost,
+          postCreatedAt,
+          postCommentsCount,
+          postId,
+          postLoved,
+          postLovesCount,
+          postReposted,
+          postRepostsCount,
+          postViewsCountRounded,
+        }}
+      />
+    }
+    {isLoggedIn && showCommentEditor && supportsNativeEditor && !isLightBox &&
       <LaunchNativeCommentEditorButton avatar={avatar} post={post} />
     }
-    {showCommentEditor && !supportsNativeEditor && <Editor post={post} isComment />}
-    {showCommentEditor &&
+    {showCommentEditor && !supportsNativeEditor && !isLightBox && <Editor post={post} isComment />}
+    {showCommentEditor && !isLightBox &&
       <StreamContainer
         action={loadComments(postId)}
         className="TabListStreamContainer isFullWidth"
@@ -749,12 +809,17 @@ Post.propTypes = {
   isMobile: PropTypes.bool.isRequired,
   isOwnOriginalPost: PropTypes.bool.isRequired,
   isOwnPost: PropTypes.bool.isRequired,
+  isNarrowPostDetail: PropTypes.bool,
   isPostDetail: PropTypes.bool.isRequired,
   isPostHeaderHidden: PropTypes.bool,
   isRelatedPost: PropTypes.bool,
   isRepost: PropTypes.bool.isRequired,
   isRepostAnimating: PropTypes.bool.isRequired,
   isWatchingPost: PropTypes.bool.isRequired,
+  isLightBox: PropTypes.bool,
+  resizeLightBox: PropTypes.bool,
+  toggleLightBox: PropTypes.func,
+  lightBoxSelectedIdPair: PropTypes.object,
   post: PropTypes.object.isRequired,
   postCommentsCount: PropTypes.number,
   postCreatedAt: PropTypes.string,

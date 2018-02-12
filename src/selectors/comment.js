@@ -9,6 +9,7 @@ import { selectUsers } from './user'
 
 export const selectPropsCommentId = (state, props) =>
   get(props, 'commentId') || get(props, 'comment', Immutable.Map()).get('id')
+export const selectPropsCommentIds = (state, props) => get(props, 'commentIds')
 
 export const selectComments = state => state.json.get(COMMENTS, Immutable.Map())
 

@@ -1,82 +1,154 @@
 import Immutable from 'immutable'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import EmbedRegion from '../regions/EmbedRegion'
-import ImageRegion from '../regions/ImageRegion'
+import ImageRegion, { getTempAssetId } from '../regions/ImageRegion'
 import TextRegion from '../regions/TextRegion'
 import { isIOS } from '../../lib/jello'
 
-export function RegionItems(props) {
-  const { columnWidth, commentOffset, content, contentWidth,
-    detailPath, innerHeight, isComment, isGridMode, isPostDetail } = props
-  // sometimes the content is null/undefined for some reason
-  if (!content) { return null }
-  const cells = []
-  content.forEach((region) => {
-    const regionKey = region.get('id', JSON.stringify(region.get('data')))
-    switch (region.get('kind')) {
-      case 'text':
-        cells.push(
-          <TextRegion
-            content={region.get('data')}
-            detailPath={detailPath}
-            isComment={isComment}
-            isGridMode={isGridMode}
-            key={`TextRegion_${regionKey}`}
-          />,
-        )
-        break
-      case 'image': {
-        const asset = region.get('asset')
-        cells.push(
-          <ImageRegion
-            asset={asset}
-            buyLinkURL={region.get('linkUrl')}
-            columnWidth={columnWidth}
-            commentOffset={commentOffset}
-            content={region.get('data')}
-            contentWidth={contentWidth}
-            detailPath={detailPath}
-            innerHeight={innerHeight}
-            isComment={isComment}
-            isGridMode={isGridMode}
-            isPostDetail={isPostDetail}
-            key={`ImageRegion_${regionKey}`}
-            shouldUseVideo={!!(asset && asset.getIn(['attachment', 'video'], Immutable.Map()).size) && !isIOS() && !isPostDetail}
-          />,
-        )
-        break
-      }
-      case 'embed':
-        cells.push(
-          <EmbedRegion
-            detailPath={detailPath}
-            isComment={isComment}
-            key={`EmbedRegion_${regionKey}`}
-            region={region}
-          />,
-        )
-        break
-      default:
-        break
+function handleStaticImageRegionClick(event, assetId, postId, toggleLightBox) {
+  if (toggleLightBox) {
+    return toggleLightBox(assetId, postId)
+  }
+  return null
+}
+
+export class RegionItems extends PureComponent {
+  static propTypes = {
+    columnWidth: PropTypes.number.isRequired,
+    commentOffset: PropTypes.number.isRequired,
+    content: PropTypes.object.isRequired,
+    contentWidth: PropTypes.number.isRequired,
+    detailPath: PropTypes.string.isRequired,
+    innerHeight: PropTypes.number.isRequired,
+    isGridMode: PropTypes.bool.isRequired,
+    isPostDetail: PropTypes.bool.isRequired,
+    isComment: PropTypes.bool,
+    isLightBox: PropTypes.bool,
+    resizeLightBox: PropTypes.bool,
+    toggleLightBox: PropTypes.func,
+    lightBoxSelectedIdPair: PropTypes.object,
+    postId: PropTypes.string,
+  }
+  static defaultProps = {
+    isComment: false,
+    isLightBox: false,
+    resizeLightBox: false,
+    toggleLightBox: null,
+    lightBoxSelectedIdPair: null,
+    postId: null,
+  }
+
+  getLightBoxSelected(assetId) {
+    const {
+      postId,
+      lightBoxSelectedIdPair,
+    } = this.props
+
+    let selected = false
+    if (lightBoxSelectedIdPair) {
+      selected = ((assetId === lightBoxSelectedIdPair.assetIdToSet) &&
+        (postId === lightBoxSelectedIdPair.postIdToSet))
     }
-  })
-  // loop through cells to grab out image/text
-  return <div>{cells}</div>
-}
-RegionItems.propTypes = {
-  columnWidth: PropTypes.number.isRequired,
-  commentOffset: PropTypes.number.isRequired,
-  content: PropTypes.object.isRequired,
-  contentWidth: PropTypes.number.isRequired,
-  detailPath: PropTypes.string.isRequired,
-  innerHeight: PropTypes.number.isRequired,
-  isComment: PropTypes.bool,
-  isGridMode: PropTypes.bool.isRequired,
-  isPostDetail: PropTypes.bool.isRequired,
-}
-RegionItems.defaultProps = {
-  isComment: false,
+    return selected
+  }
+
+  render() {
+    const {
+      columnWidth,
+      commentOffset,
+      content,
+      contentWidth,
+      detailPath,
+      innerHeight,
+      isComment,
+      isGridMode,
+      isPostDetail,
+      isLightBox,
+      resizeLightBox,
+      toggleLightBox,
+      postId,
+    } = this.props
+    // sometimes the content is null/undefined for some reason
+    if (!content) { return null }
+
+    const cells = []
+    content.forEach((region) => {
+      const regionKey = region.get('id', JSON.stringify(region.get('data')))
+
+      switch (region.get('kind')) {
+        case 'text':
+          if (!isLightBox) {
+            cells.push(
+              <TextRegion
+                content={region.get('data')}
+                detailPath={detailPath}
+                isComment={isComment}
+                isGridMode={isGridMode}
+                key={`TextRegion_${regionKey}`}
+              />,
+            )
+          }
+          break
+        case 'image': {
+          const regionContent = region.get('data')
+          const asset = region.get('asset')
+          let assetId = asset ? asset.get('id') : null
+
+          // different treatment for brand new posts since `asset` does not exists in store yet
+          if (!assetId) {
+            const url = regionContent.get('url')
+            if (url) {
+              assetId = getTempAssetId(url)
+            }
+          }
+
+          cells.push(
+            <ImageRegion
+              key={`ImageRegion_${regionKey}`}
+              postId={postId}
+              assetId={assetId}
+              asset={asset}
+              buyLinkURL={region.get('linkUrl')}
+              columnWidth={columnWidth}
+              commentOffset={commentOffset}
+              content={regionContent}
+              contentWidth={contentWidth}
+              detailPath={detailPath}
+              innerHeight={innerHeight}
+              isComment={isComment}
+              isGridMode={isGridMode}
+              isPostDetail={isPostDetail}
+              isLightBoxImage={isLightBox}
+              isLightBoxSelected={isLightBox ? this.getLightBoxSelected(assetId) : null}
+              resizeLightBoxImage={resizeLightBox}
+              shouldUseVideo={!!(asset && asset.getIn(['attachment', 'video'], Immutable.Map()).size) && !isIOS() && !isPostDetail}
+              handleStaticImageRegionClick={
+                event => handleStaticImageRegionClick(event, assetId, postId, toggleLightBox)
+              }
+            />,
+          )
+          break
+        }
+        case 'embed':
+          if (!isLightBox) {
+            cells.push(
+              <EmbedRegion
+                detailPath={detailPath}
+                isComment={isComment}
+                key={`EmbedRegion_${regionKey}`}
+                region={region}
+              />,
+            )
+          }
+          break
+        default:
+          break
+      }
+    })
+    // loop through cells to grab out image/text
+    return <div>{cells}</div>
+  }
 }
 
 export function regionItemsForNotifications(content, detailPath) {
