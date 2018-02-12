@@ -2,7 +2,7 @@ import Immutable from 'immutable'
 import { createSelector } from 'reselect'
 import { camelize } from 'humps'
 import get from 'lodash/get'
-import { ARTIST_INVITES, ARTIST_INVITE_SUBMISSIONS } from '..//constants/mapping_types'
+import { ARTIST_INVITES, ARTIST_INVITE_SUBMISSIONS } from '../constants/mapping_types'
 
 const selectPropsArtistInviteId = (state, props) =>
   get(props, 'artistInviteId') || get(props, 'artistInvite', Immutable.Map()).get('id')
@@ -42,6 +42,7 @@ export const selectTitle = createSelector([selectArtistInvite], ai => ai.get('ti
 // Artist Invite Submissions
 const selectPropsSubmissionId = (state, props) =>
   get(props, 'submissionId') || get(props, 'submission', Immutable.Map()).get('id')
+export const selectPropsSubmissionIds = (state, props) => get(props, 'submissionIds')
 
 export const selectArtistInviteSubmissions = state =>
   state.json.get(camelize(ARTIST_INVITE_SUBMISSIONS), Immutable.Map())

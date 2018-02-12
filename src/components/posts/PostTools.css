@@ -99,6 +99,31 @@
   left: 10px;
 }
 
+.ArtistInviteSubmissionStatusTool.PostTool a,
+.ArtistInviteSubmissionStatusTool.PostTool > a {
+  padding-right: 0 !important;
+}
+
+.ArtistInviteSubmissionStatusTool.PostTool .SVGIcon {
+  padding-left: 4px;
+  margin-top: -2px;
+  transform: scale(1);
+}
+
+.ArtistInviteSubmissionStatusTool.PostTool .SVGIcon g path {
+  stroke-width: 0;
+}
+
+.ArtistInviteSubmissionStatusTool.PostTool .ArtistInviteSubmissionSelectedIcon.SVGIcon {
+  padding-left: 0;
+  margin-top: -4px;
+  overflow: visible;
+}
+
+.ArtistInviteSubmissionStatusTool.PostTool .Hint {
+  left: -200px;
+}
+
 /* This is actually in the PostContainer */
 .WatchTool.isPill {
   position: absolute;

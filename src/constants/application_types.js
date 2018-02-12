@@ -7,7 +7,7 @@ export const SHORTCUT_KEYS = {
   DT_GRID_CYCLE: 'g ~',
   DT_GRID_TOGGLE: 'g `',
   EDITORIAL: 'e',
-  ESC: 'esc',
+  ESC: ['esc', '5'], // 5 for numeric keypad + lightbox NEXT/PREV
   FOLLOWING: 'f',
   FULLSCREEN: 'g m',
   HELP: '?',
@@ -15,4 +15,6 @@ export const SHORTCUT_KEYS = {
   OMNIBAR: '2',
   SEARCH: 's',
   TOGGLE_LAYOUT: '=',
+  NEXT: ['right', 'l', ']', '6'],
+  PREV: ['left', 'h', '[', '4'],
 }
