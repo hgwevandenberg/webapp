@@ -18,7 +18,7 @@ const STATUS = {
 }
 
 const imageRegionStyle = css(
-  s.inline,
+  s.inlineBlock,
   s.center,
 )
 
