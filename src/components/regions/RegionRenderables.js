@@ -7,7 +7,9 @@ import TextRegion from '../regions/TextRegion'
 import { isIOS } from '../../lib/jello'
 
 function handleStaticImageRegionClick(event, assetId, postId, toggleLightBox) {
-  if (toggleLightBox) {
+  const buyButtonClick = event.target.classList.contains('ElloBuyButton')
+
+  if (!buyButtonClick && toggleLightBox) {
     return toggleLightBox(assetId, postId)
   }
   return null
