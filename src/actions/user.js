@@ -29,20 +29,6 @@ export function loadUserDetail(username) {
   }
 }
 
-export function loadUserPosts(username, type) {
-  return {
-    type: ACTION_TYPES.LOAD_STREAM,
-    payload: { endpoint: api.userResources(username, type) },
-    meta: {
-      mappingType: MAPPING_TYPES.POSTS,
-      renderStream: {
-        asList: StreamRenderables.postsAsList,
-        asGrid: StreamRenderables.postsAsGrid,
-      },
-    },
-  }
-}
-
 export function loadUserPostsV3(username) {
   return {
     type: ACTION_TYPES.V3.LOAD_STREAM,
