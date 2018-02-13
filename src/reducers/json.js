@@ -97,12 +97,18 @@ function normalizePostContentRegion(model, field, state) {
 }
 
 function normalizeModel(type, model, state) {
-  if (type !== MAPPING_TYPES.POSTS) { return model }
-  return model.merge({
-    content: normalizePostContentRegion(model, 'content', state),
-    summary: normalizePostContentRegion(model, 'summary', state),
-    repostContent: normalizePostContentRegion(model, 'repostContent', state),
-  })
+  if (type === MAPPING_TYPES.POSTS) {
+    return model.merge({
+      content: normalizePostContentRegion(model, 'content', state),
+      summary: normalizePostContentRegion(model, 'summary', state),
+      repostContent: normalizePostContentRegion(model, 'repostContent', state),
+    })
+  } else if (type === MAPPING_TYPES.COMMENTS) {
+    return model.merge({
+      content: normalizePostContentRegion(model, 'content', state),
+    })
+  }
+  return model
 }
 
 methods.mergeModel = (state, type, params) => {
