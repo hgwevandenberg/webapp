@@ -13,12 +13,12 @@ function deepGet(object, [head, ...tail], fallback = null) {
 
 // Merge two Immutable maps while preferring data over nulls and never returning undefined.
 function smartMergeDeep(oldMap, newMap) {
+  const filteredNewMap = newMap.filterNot(v => v === undefined || v === null)
   return oldMap.mergeDeepWith((oldVal, newVal) => {
     if (oldVal === undefined && newVal === undefined) { return null }
     if (oldVal === null || oldVal === undefined) { return newVal }
-    if (newVal === null || newVal === undefined) { return oldVal }
     return newVal
-  }, newMap)
+  }, filteredNewMap)
 }
 
 // Given state (immutable), a key path (array[string]), and map merge the map in.
@@ -70,10 +70,38 @@ function parseUser(state, user) {
   if (!user) { return state }
 
   const state1 = smartMergeDeepIn(state, ['users', user.id], Immutable.fromJS({
+
+    // Minumum properties
     id: user.id,
     username: user.username,
     name: user.name,
     avatar: user.avatar,
+
+    // Extended properties
+    coverImage: user.coverImage,
+    badges: user.badges,
+    externalLinksLink: user.externalLinksLink,
+    formattedShortBio: user.formattedShortBio,
+    location: user.location,
+
+    // Settings
+    isCollaboratable: deepGet(user, ['settings', 'isCollaboratable']),
+    isHireable: deepGet(user, ['settings', 'isHireable']),
+    hasCommentingEnabled: deepGet(user, ['settings', 'hasCommentingEnabled']),
+    hasLovesEnabled: deepGet(user, ['settings', 'hasLovesEnabled']),
+    hasRepostingEnabled: deepGet(user, ['settings', 'hasRepostingEnabled']),
+    hasSharingEnabled: deepGet(user, ['settings', 'hasSharingEnabled']),
+    postsAdultContent: deepGet(user, ['settings', 'postAdultContent']),
+
+    // userStats
+    followersCount: deepGet(user, ['userStats', 'followersCount']),
+    followingCount: deepGet(user, ['userStats', 'followingCount']),
+    postsCount: deepGet(user, ['userStats', 'postsCount']),
+    lovesCount: deepGet(user, ['userStats', 'lovesCount']),
+    totalViewsCount: deepGet(user, ['userStats', 'totalViewsCount']),
+
+    // currentUserState
+    relationshipPriority: deepGet(user, ['currentUserState', 'relationshipPriority']),
   }))
   const state2 = parseList(state1, user.categories, parseCategory)
   return state2

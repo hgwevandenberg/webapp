@@ -37,6 +37,13 @@ export const authorSummary = `
     name
     avatar { ...avatarImageVersion }
     currentUserState { relationshipPriority }
+    settings {
+      hasLovesEnabled
+      hasSharingEnabled
+      hasRepostingEnabled
+      hasCommentingEnabled
+      postsAdultContent
+    }
   }
 `
 
