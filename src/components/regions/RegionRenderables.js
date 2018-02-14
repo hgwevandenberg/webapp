@@ -98,11 +98,9 @@ export class RegionItems extends PureComponent {
           let assetId = asset ? asset.get('id') : null
 
           // different treatment for brand new posts since `asset` does not exists in store yet
-          console.log(`assetId: ${assetId}`)
           if (!assetId) {
             const url = regionContent.get('url')
             if (url) {
-              console.log(`url: ${url}`)
               assetId = getTempAssetId(url)
             }
           }
