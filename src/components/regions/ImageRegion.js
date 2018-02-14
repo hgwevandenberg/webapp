@@ -64,7 +64,10 @@ const lightBoxImageStyle = css(
 
 // export to re-use this wonky image url parser
 export function getTempAssetId(url) {
-  return url.split('uploads/')[1].split('/ello-')[1].split('.')[0].replace(/-/g, '_')
+  if (url.includes('/ello-')) {
+    return url.split('uploads/')[1].split('/ello-')[1].split('.')[0].replace(/-/g, '_')
+  }
+  return null
 }
 
 class ImageRegion extends PureComponent {
