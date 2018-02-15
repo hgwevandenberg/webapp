@@ -8,6 +8,8 @@ import { META } from '../constants/locales/en'
 import { selectAllCategoriesPage } from './pages'
 import { selectParamsType } from './params'
 import { selectCategoryData } from './promotions'
+import { selectSubscribedCategoryIds, selectId } from './profile'
+
 
 export function sortCategories(a, b) {
   if (a.get('order') < b.get('order')) {
@@ -105,24 +107,28 @@ export const selectCreatorTypeCategories = createSelector(
 )
 
 export const selectCategoryTabs = createSelector(
-  [selectCategories], (categories) => {
-    const { meta, primary, secondary } = categories
-    const tabs = []
-    if (!primary) { return tabs }
-    [meta, primary, secondary].filter(arr => arr).forEach((level) => {
-      level.forEach((category) => {
-        const tab = {
-          label: category.get('name'),
-          source: category.getIn(['tileImage', 'small', 'url']),
-          to: category.get('slug') === 'featured' ? '/discover' : `/discover/${category.get('slug')}`,
-        }
-        if (category.get('slug') === 'featured') {
-          tab.activePattern = /^\/(?:discover(\/featured|\/recommended)?)?$/
-        }
-        tabs.push(tab)
-      })
-    })
-    return tabs
+  [selectCategoryCollection, selectId, selectSubscribedCategoryIds], (categories, profileId, subscribedIds) => {
+    if (!categories) { return [] }
+
+    subscribedIds = Immutable.List(['2','5'])
+    const promoIds = categories.filter((cat) => cat.get('level') === 'promo').keySeq()
+    let navIds = promoIds
+
+    if (profileId) {
+      navIds = navIds.concat(subscribedIds)
+    } else {
+      const primaryIds = categories.filter((cat) => cat.get('level') === 'primary').keySeq()
+      navIds = navIds.concat(primaryIds)
+    }
+    console.log({navIds})
+
+    return navIds.map(id => {
+      return {
+        label: categories.getIn([id, 'name']),
+        to: `/discover/${categories.getIn([id, 'slug'])}`,
+        source: categories.getIn([id, 'tileImage', 'small', 'url']),
+      }
+    }).toArray()
   },
 )
 

@@ -62,6 +62,10 @@ function parseCategory(state, category) {
   if (!category) { return state }
   return smartMergeDeepIn(state, ['categories', category.id], Immutable.fromJS({
     id: category.id,
+    slug: category.slug,
+    name: category.name,
+    level: category.level,
+    tileImage: category.tileImage,
   }))
 }
 
@@ -204,6 +208,10 @@ function parseStream(state, { payload: { response: { data }, pathname, query, va
   )
 }
 
+function parseNav(state, { payload: { response: { data: { categoryNav } } } }) {
+  return parseList(state, categoryNav, parseCategory)
+}
+
 // Dispatch different graphql response types for parsing (reducing)
 export default function (state, action) {
   const { type } = action
@@ -211,6 +219,8 @@ export default function (state, action) {
     case ACTION_TYPES.V3.LOAD_STREAM_SUCCESS:
     case ACTION_TYPES.V3.LOAD_NEXT_CONTENT_SUCCESS:
       return parseStream(state, action)
+    case ACTION_TYPES.V3.LOAD_NAV_CATEGORIES_SUCCESS:
+      return parseNav(state, action)
     default:
       return state
   }
