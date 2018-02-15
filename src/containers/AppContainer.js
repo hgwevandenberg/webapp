@@ -6,7 +6,7 @@ import { push } from 'react-router-redux'
 import classNames from 'classnames'
 import { trackEvent, trackInitialPage } from '../actions/analytics'
 import { loadBadges } from '../actions/badges'
-import { getCategories, getPagePromotionals } from '../actions/discover'
+import { getNavCategories, getPagePromotionals } from '../actions/discover'
 import { setSignupModalLaunched } from '../actions/gui'
 import { openModal } from '../actions/modals'
 import { loadAnnouncements, loadNotifications } from '../actions/notifications'
@@ -111,7 +111,7 @@ class AppContainer extends Component {
     } else {
       dispatch(fetchAuthenticationPromos())
     }
-    dispatch(getCategories())
+    dispatch(getNavCategories())
     dispatch(getPagePromotionals())
     dispatch(loadBadges())
     ElloAndroidInterface.initialize(dispatch, isStaff)
@@ -121,13 +121,13 @@ class AppContainer extends Component {
     const { dispatch } = nextProps
     if (!this.props.isLoggedIn && nextProps.isLoggedIn) {
       dispatch(loadProfile())
-      dispatch(getCategories())
+      dispatch(getNavCategories())
       dispatch(getPagePromotionals())
       dispatch(loadBadges())
       dispatch(loadAnnouncements())
     } else if (this.props.isLoggedIn && !nextProps.isLoggedIn) {
       dispatch(fetchAuthenticationPromos())
-      dispatch(getCategories())
+      dispatch(getNavCategories())
       dispatch(getPagePromotionals())
       dispatch(loadBadges())
     }

@@ -6,9 +6,9 @@ export const imageVersionProps = `
   }
 `
 
-export const avatarImageVersion = `
+export const tshirtImageVersions = `
   ${imageVersionProps}
-  fragment avatarImageVersion on TshirtImageVersions {
+  fragment tshirtImageVersions on TshirtImageVersions {
     small { ...imageVersionProps }
     regular { ...imageVersionProps }
     large { ...imageVersionProps }
@@ -16,9 +16,9 @@ export const avatarImageVersion = `
   }
 `
 
-export const assetImageVersions = `
+export const responsiveImageVersions = `
   ${imageVersionProps}
-  fragment assetImageVersions on ResponsiveImageVersions {
+  fragment responsiveImageVersions on ResponsiveImageVersions {
     xhdpi { ...imageVersionProps }
     hdpi { ...imageVersionProps }
     mdpi { ...imageVersionProps }
@@ -30,12 +30,12 @@ export const assetImageVersions = `
 `
 
 export const authorSummary = `
-  ${avatarImageVersion}
+  ${tshirtImageVersions}
   fragment authorSummary on User {
     id
     username
     name
-    avatar { ...avatarImageVersion }
+    avatar { ...tshirtImageVersions }
     currentUserState { relationshipPriority }
     settings {
       hasLovesEnabled
@@ -72,7 +72,7 @@ export const postSummary = `
   ${contentProps}
   ${authorSummary}
   ${artistInviteSubmissionSummary}
-  ${assetImageVersions}
+  ${responsiveImageVersions}
   fragment postSummary on Post {
     id
     token
@@ -82,7 +82,7 @@ export const postSummary = `
     content { ...contentProps }
     repostContent { ...contentProps }
     author { ...authorSummary }
-    assets { id attachment { ...assetImageVersions } }
+    assets { id attachment { ...responsiveImageVersions } }
     postStats { lovesCount commentsCount viewsCount repostsCount }
     currentUserState { watching loved reposted }
   }

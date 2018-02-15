@@ -5,21 +5,14 @@ import {
   bindDiscoverKey,
   getCategories,
   loadCategoryPosts,
-  // loadCommunities,
   loadDiscoverPosts,
-  // loadFeaturedUsers,
 } from '../actions/discover'
 import { Discover } from '../components/views/Discover'
 import { selectParamsType } from '../selectors/params'
 import { selectPropsPathname } from '../selectors/routing'
 
-// TODO: Move to a selector
 export function getStreamAction(type) {
   switch (type) {
-    // case 'communities':
-    //   return loadCommunities()
-    // case 'featured-users':
-    //   return loadFeaturedUsers()
     case 'featured':
     case 'recommended':
       return loadCategoryPosts()

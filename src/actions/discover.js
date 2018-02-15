@@ -3,6 +3,7 @@ import * as MAPPING_TYPES from '../constants/mapping_types'
 import * as api from '../networking/api'
 import * as StreamFilters from '../components/streams/StreamFilters'
 import * as StreamRenderables from '../components/streams/StreamRenderables'
+import navCategoriesQuery from '../queries/navCategories'
 
 export function getCategories() {
   return {
@@ -16,6 +17,22 @@ export function getCategories() {
       },
       resultFilter: StreamFilters.sortedCategories,
       resultKey: 'all-categories',
+    },
+  }
+}
+
+export function getNavCategories() {
+  return {
+    type: ACTION_TYPES.V3.LOAD_NAV_CATEGORIES,
+    payload: {
+      query: navCategoriesQuery,
+      variables: {},
+    },
+    meta: {
+      renderStream: {
+        asList: StreamRenderables.categoriesAsGrid,
+        asGrid: StreamRenderables.categoriesAsGrid,
+      },
     },
   }
 }

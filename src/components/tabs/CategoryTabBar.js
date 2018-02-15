@@ -33,11 +33,42 @@ type TabBarProps = {
   tabs: Array<CategoryTabProps>,
 }
 
+const AllCategoryTab = ({ pathname }) => {
+  const isActive = pathname === "/discover" ||
+    pathname === "/discover/trending" ||
+    pathname === "/discover/recent"
+  return (
+    <Link
+      className={classNames('CategoryTab', { isActive })}
+      to="/discover"
+    >
+      <span className="CategoryTabLabel">All</span>
+    </Link>
+  )
+}
+
+const SubscribedCategoryTab = ({ pathname }) => {
+  const isActive = pathname === "/discover/subscribed" ||
+    pathname === "/discover/subscribed/trending" ||
+    pathname === "/discover/subscribed/recent"
+  return (
+    <Link
+      className={classNames('CategoryTab', { isActive })}
+      to="/discover/subscribed"
+    >
+      <span className="CategoryTabLabel">Subscribed</span>
+    </Link>
+  )
+}
+
 export const CategoryTabBar = (props: TabBarProps) => {
-  const { pathname, tabs } = props
+  const { pathname, tabs, subscribed } = props
   return (
     <div className="CategoryTabBar">
       <nav className="CategoryTabs">
+        <AllCategoryTab pathname={pathname} />
+        {subscribed && <SubscribedCategoryTab pathname={pathname} />}
+
         {tabs.map(tab =>
           (<CategoryTab
             isActive={(tab.activePattern ? tab.activePattern.test(pathname) : tab.to === pathname)}
