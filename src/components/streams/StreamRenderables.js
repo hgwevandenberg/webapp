@@ -252,9 +252,13 @@ export const artistInviteSubmissionsAsList = (submissionIds, headerText) => {
 
 // POSTS
 export const postsAsGrid = (postIds, columnCount, isPostHeaderHidden) => {
+  const postIdsAsList = postIds.toList()
+
   const columns = []
   for (let i = 0; i < columnCount; i += 1) { columns.push([]) }
-  postIds.forEach((value, index) => columns[index % columnCount].push(postIds.get(index)))
+  postIdsAsList.forEach((value, index) =>
+    columns[index % columnCount].push(postIdsAsList.get(index)),
+  )
   return (
     <div className="Posts asGrid">
       {columns.map((columnPostIds, i) =>
