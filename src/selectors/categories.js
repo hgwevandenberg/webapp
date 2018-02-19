@@ -110,7 +110,6 @@ export const selectCategoryTabs = createSelector(
   [selectCategoryCollection, selectId, selectSubscribedCategoryIds], (categories, profileId, subscribedIds) => {
     if (!categories) { return [] }
 
-    subscribedIds = Immutable.List(['2','5'])
     const promoIds = categories.filter((cat) => cat.get('level') === 'promo').keySeq()
     let navIds = promoIds
 
@@ -120,7 +119,6 @@ export const selectCategoryTabs = createSelector(
       const primaryIds = categories.filter((cat) => cat.get('level') === 'primary').keySeq()
       navIds = navIds.concat(primaryIds)
     }
-    console.log({navIds})
 
     return navIds.map(id => {
       return {

@@ -69,6 +69,22 @@ function parseCategory(state, category) {
   }))
 }
 
+function parsePageHeader(state, pageHeader) {
+  if (!pageHeader) { return state }
+  const state1 = parseUser(state, pageHeader.user, parseUser)
+  return smartMergeDeepIn(state1, ['pageHeaders', pageHeader.id], Immutable.fromJS({
+    id: pageHeader.id,
+    kind: pageHeader.kind,
+    slug: pageHeader.slug,
+    postToken: pageHeader.postToken,
+    header: pageHeader.header,
+    subheader: pageHeader.subheader,
+    ctaLink: pageHeader.ctaLink,
+    image: pageHeader.image,
+    userId: deepGet(pageHeader, ['user', 'id']),
+  }))
+}
+
 function parseArtistInviteSubmission(state, submission) {
   if (!submission || !submission.id) { return state }
   return smartMergeDeepIn(state, ['artistInviteSubmissions', submission.id], Immutable.fromJS({
@@ -212,6 +228,10 @@ function parseNav(state, { payload: { response: { data: { categoryNav } } } }) {
   return parseList(state, categoryNav, parseCategory)
 }
 
+function parsePageHeaders(state, { payload: { response: { data: { pageHeaders } } } }) {
+  return parseList(state, pageHeaders, parsePageHeader)
+}
+
 // Dispatch different graphql response types for parsing (reducing)
 export default function (state, action) {
   const { type } = action
@@ -221,6 +241,8 @@ export default function (state, action) {
       return parseStream(state, action)
     case ACTION_TYPES.V3.LOAD_NAV_CATEGORIES_SUCCESS:
       return parseNav(state, action)
+    case ACTION_TYPES.V3.LOAD_PAGE_HEADERS_SUCCESS:
+      return parsePageHeaders(state, action)
     default:
       return state
   }
