@@ -30,13 +30,19 @@ const CategoryTab = (props: TabProps) => {
 
 type TabBarProps = {
   pathname: string,
+  subscribed: boolean,
   tabs: Array<CategoryTabProps>,
 }
 
-const AllCategoryTab = ({ pathname }) => {
-  const isActive = pathname === "/discover" ||
-    pathname === "/discover/trending" ||
-    pathname === "/discover/recent"
+type GlobalTabProps = {
+  pathname: string,
+}
+
+const AllCategoryTab = (props: GlobalTabProps) => {
+  const { pathname } = props
+  const isActive = pathname === '/discover' ||
+    pathname === '/discover/trending' ||
+    pathname === '/discover/recent'
   return (
     <Link
       className={classNames('CategoryTab', { isActive })}
@@ -47,10 +53,11 @@ const AllCategoryTab = ({ pathname }) => {
   )
 }
 
-const SubscribedCategoryTab = ({ pathname }) => {
-  const isActive = pathname === "/discover/subscribed" ||
-    pathname === "/discover/subscribed/trending" ||
-    pathname === "/discover/subscribed/recent"
+const SubscribedCategoryTab = (props: GlobalTabProps) => {
+  const { pathname } = props
+  const isActive = pathname === '/discover/subscribed' ||
+    pathname === '/discover/subscribed/trending' ||
+    pathname === '/discover/subscribed/recent'
   return (
     <Link
       className={classNames('CategoryTab', { isActive })}

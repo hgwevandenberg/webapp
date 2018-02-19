@@ -3,10 +3,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import HeroPageHeaderContainer from './HeroPageHeaderContainer'
-
-// TODO EXPORT TO ACTIONS
-import * as ACTION_TYPES from '../constants/action_types'
+import * as ACTION_TYPES from '../constants/action_types' // TODO EXPORT TO ACTIONS
 import getPageHeadersQuery from '../queries/getPageHeaders'
+import { selectPathname } from '../selectors/routing' // TODO EXPORT TO SELECTORS
+
 export function getPageHeaders({ kind, slug }) {
   return {
     type: ACTION_TYPES.V3.LOAD_PAGE_HEADERS,
@@ -17,9 +17,6 @@ export function getPageHeaders({ kind, slug }) {
   }
 }
 // END ACTIONS EXPORT
-
-// TODO EXPORT TO SELECTORS
-import { selectPathname } from '../selectors/routing'
 
 function selectPageHeaderKind(state) {
   const pathname = selectPathname(state)
@@ -45,26 +42,26 @@ function selectPageHeaderSlug(state) {
   return /\/discover\/(.*)/i.exec(pathname)[1]
 }
 
-function selectPageHeaders(state, {pageHeaderKind, pageHeaderSlug}) {
-  return state.json.get('pageHeaders', Immutable.Map()).valueSeq().filter(header => {
-    return (header.get('kind') === pageHeaderKind &&
-      (!pageHeaderSlug || pageHeaderSlug === header.get('slug')))
-  })
+function selectPageHeaders(state, { pageHeaderKind, pageHeaderSlug }) {
+  return state.json.get('pageHeaders', Immutable.Map()).valueSeq().filter(header =>
+    (header.get('kind') === pageHeaderKind &&
+      (!pageHeaderSlug || pageHeaderSlug === header.get('slug'))))
 }
 // END SELECTOR EXTRACTION
 
-function mapStateToProps(state, props) {
+function mapStateToProps(state) {
   const pageHeaderKind = selectPageHeaderKind(state)
   const pageHeaderSlug = selectPageHeaderSlug(state)
   return {
     pageHeaderKind,
     pageHeaderSlug,
-    pageHeaders: selectPageHeaders(state, {pageHeaderKind, pageHeaderSlug}),
+    pageHeaders: selectPageHeaders(state, { pageHeaderKind, pageHeaderSlug }),
   }
 }
 
 class HeroDispatchContainer extends Component {
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     pageHeaders: PropTypes.object.isRequired,
     pageHeaderKind: PropTypes.string,
     pageHeaderSlug: PropTypes.string,
@@ -75,10 +72,10 @@ class HeroDispatchContainer extends Component {
     pageHeaderSlug: null,
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate() {
     const { dispatch, pageHeaderKind: kind, pageHeaderSlug: slug, pageHeaders } = this.props
     if (kind && pageHeaders.isEmpty()) {
-      dispatch(getPageHeaders({kind, slug}))
+      dispatch(getPageHeaders({ kind, slug }))
     }
   }
 
@@ -86,8 +83,8 @@ class HeroDispatchContainer extends Component {
     const { pageHeaderKind, pageHeaders } = this.props
     if (!pageHeaders || pageHeaders.isEmpty()) { return null }
     switch (pageHeaderKind) {
-      case "CATEGORY":
-      case "GENERIC":
+      case 'CATEGORY':
+      case 'GENERIC':
         return <HeroPageHeaderContainer pageHeaders={pageHeaders} />
       default:
         return null
