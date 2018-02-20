@@ -13,6 +13,7 @@ import {
 } from '../selectors/gui'
 import { selectIsLoggedIn } from '../selectors/authentication'
 import { selectRandomPageHeader } from '../selectors/page_headers'
+import { trackPostViews } from '../actions/posts'
 
 function mapStateToProps(state) {
   const pageHeader = selectRandomPageHeader(state)
@@ -30,6 +31,14 @@ class HeroPageHeaderContainer extends Component { //eslint-disable-line
     dpi: PropTypes.string.isRequired,
     isMobile: PropTypes.bool.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
+    dispatch: PropTypes.func.isRequired,
+  }
+
+  componentDidUpdate() {
+    const { dispatch, pageHeader } = this.props
+    if (pageHeader && pageHeader.get('postToken')) {
+      dispatch(trackPostViews([], [pageHeader.get('postToken')], 'promo'))
+    }
   }
 
   render() {
