@@ -5,6 +5,7 @@ import { selectUser } from '../selectors/user'
 import {
   Hero,
   HeroPromotionCategory,
+  HeroPromotionPage,
 } from '../components/heros/HeroRenderables'
 import {
   selectDPI,
@@ -34,7 +35,6 @@ class HeroPageHeaderContainer extends Component { //eslint-disable-line
     const { pageHeader, user, dpi, isMobile, isLoggedIn } = this.props
     switch (pageHeader.get('kind')) {
       case 'CATEGORY':
-      case 'GENERIC':
         return (
           <Hero>
             {[
@@ -51,7 +51,28 @@ class HeroPageHeaderContainer extends Component { //eslint-disable-line
                 dpi={dpi}
                 isMobile={isMobile}
                 isLoggedIn={isLoggedIn}
-              />]}
+              />,
+            ]}
+          </Hero>
+        )
+      case 'GENERIC':
+        return (
+          <Hero>
+            {[
+              <HeroPromotionPage
+                key="HeroPromotionPage"
+                header={pageHeader.get('header', '')}
+                subheader={pageHeader.get('subheader', '')}
+                ctaCaption={pageHeader.getIn(['ctaLink', 'text'])}
+                ctaHref={pageHeader.getIn(['ctaLink', 'url'])}
+                sources={pageHeader.get('image')}
+                creditSources={user.get('avatar', null)}
+                creditUsername={user.get('username', null)}
+                dpi={dpi}
+                isMobile={isMobile}
+                isLoggedIn={isLoggedIn}
+              />,
+            ]}
           </Hero>
         )
       default:
