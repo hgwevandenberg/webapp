@@ -12,9 +12,10 @@ import {
   selectIsMobile,
 } from '../selectors/gui'
 import { selectIsLoggedIn } from '../selectors/authentication'
+import { selectRandomPageHeader } from '../selectors/page_headers'
 
-function mapStateToProps(state, { pageHeaders }) {
-  const pageHeader = pageHeaders.get(Math.floor(Math.random() * pageHeaders.count()))
+function mapStateToProps(state) {
+  const pageHeader = selectRandomPageHeader(state)
   const user = selectUser(state, { userId: pageHeader.get('userId') })
   const dpi = selectDPI(state)
   const isMobile = selectIsMobile(state)
