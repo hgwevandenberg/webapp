@@ -10,6 +10,7 @@ export default `
       slug
       header
       subheader
+      postToken
       ctaLink { text url }
       image { ...responsiveImageVersions }
       user {
