@@ -69,22 +69,6 @@ function parseCategory(state, category) {
   }))
 }
 
-function parsePageHeader(state, pageHeader) {
-  if (!pageHeader) { return state }
-  const state1 = parseUser(state, pageHeader.user, parseUser)
-  return smartMergeDeepIn(state1, ['pageHeaders', pageHeader.id], Immutable.fromJS({
-    id: pageHeader.id,
-    kind: pageHeader.kind,
-    slug: pageHeader.slug,
-    postToken: pageHeader.postToken,
-    header: pageHeader.header,
-    subheader: pageHeader.subheader,
-    ctaLink: pageHeader.ctaLink,
-    image: pageHeader.image,
-    userId: deepGet(pageHeader, ['user', 'id']),
-  }))
-}
-
 function parseArtistInviteSubmission(state, submission) {
   if (!submission || !submission.id) { return state }
   return smartMergeDeepIn(state, ['artistInviteSubmissions', submission.id], Immutable.fromJS({
@@ -131,6 +115,22 @@ function parseUser(state, user) {
   }))
   const state2 = parseList(state1, user.categories, parseCategory)
   return state2
+}
+
+function parsePageHeader(state, pageHeader) {
+  if (!pageHeader) { return state }
+  const state1 = parseUser(state, pageHeader.user)
+  return smartMergeDeepIn(state1, ['pageHeaders', pageHeader.id], Immutable.fromJS({
+    id: pageHeader.id,
+    kind: pageHeader.kind,
+    slug: pageHeader.slug,
+    postToken: pageHeader.postToken,
+    header: pageHeader.header,
+    subheader: pageHeader.subheader,
+    ctaLink: pageHeader.ctaLink,
+    image: pageHeader.image,
+    userId: deepGet(pageHeader, ['user', 'id']),
+  }))
 }
 
 function postLinks(post) {
