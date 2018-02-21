@@ -1,9 +1,9 @@
+import { Map } from 'immutable'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { selectUser } from '../selectors/user'
 import {
-  Hero,
   HeroPromotionCategory,
   HeroPromotionPage,
 } from '../components/heros/HeroRenderables'
@@ -17,7 +17,7 @@ import { trackPostViews } from '../actions/posts'
 
 function mapStateToProps(state) {
   const pageHeader = selectRandomPageHeader(state)
-  const user = selectUser(state, { userId: pageHeader.get('userId') })
+  const user = pageHeader ? selectUser(state, { userId: pageHeader.get('userId') }) : Map()
   const dpi = selectDPI(state)
   const isMobile = selectIsMobile(state)
   const isLoggedIn = selectIsLoggedIn(state)
@@ -26,12 +26,17 @@ function mapStateToProps(state) {
 
 class HeroPageHeaderContainer extends Component { //eslint-disable-line
   static propTypes = {
-    pageHeader: PropTypes.object.isRequired,
-    user: PropTypes.object.isRequired,
+    pageHeader: PropTypes.object,
+    user: PropTypes.object,
     dpi: PropTypes.string.isRequired,
     isMobile: PropTypes.bool.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
+  }
+
+  static defaultProps = {
+    pageHeader: null,
+    user: null,
   }
 
   componentDidUpdate() {
@@ -43,47 +48,38 @@ class HeroPageHeaderContainer extends Component { //eslint-disable-line
 
   render() {
     const { pageHeader, user, dpi, isMobile, isLoggedIn } = this.props
+    if (!pageHeader) { return null }
     switch (pageHeader.get('kind')) {
       case 'CATEGORY':
         return (
-          <Hero>
-            {[
-              <HeroPromotionCategory
-                key="HeroPromotionCategory"
-                name={pageHeader.get('header', '')}
-                description={pageHeader.get('subheader', '')}
-                ctaCaption={pageHeader.getIn(['ctaLink', 'text'])}
-                ctaHref={pageHeader.getIn(['ctaLink', 'url'])}
-                sources={pageHeader.get('image')}
-                creditSources={user.get('avatar', null)}
-                creditUsername={user.get('username', null)}
-                creditLabel="Posted by"
-                dpi={dpi}
-                isMobile={isMobile}
-                isLoggedIn={isLoggedIn}
-              />,
-            ]}
-          </Hero>
+          <HeroPromotionCategory
+            name={pageHeader.get('header', '')}
+            description={pageHeader.get('subheader', '')}
+            ctaCaption={pageHeader.getIn(['ctaLink', 'text'])}
+            ctaHref={pageHeader.getIn(['ctaLink', 'url'])}
+            sources={pageHeader.get('image')}
+            creditSources={user.get('avatar', null)}
+            creditUsername={user.get('username', null)}
+            creditLabel="Posted by"
+            dpi={dpi}
+            isMobile={isMobile}
+            isLoggedIn={isLoggedIn}
+          />
         )
       case 'GENERIC':
         return (
-          <Hero>
-            {[
-              <HeroPromotionPage
-                key="HeroPromotionPage"
-                header={pageHeader.get('header', '')}
-                subheader={pageHeader.get('subheader', '')}
-                ctaCaption={pageHeader.getIn(['ctaLink', 'text'])}
-                ctaHref={pageHeader.getIn(['ctaLink', 'url'])}
-                sources={pageHeader.get('image')}
-                creditSources={user.get('avatar', null)}
-                creditUsername={user.get('username', null)}
-                dpi={dpi}
-                isMobile={isMobile}
-                isLoggedIn={isLoggedIn}
-              />,
-            ]}
-          </Hero>
+          <HeroPromotionPage
+            header={pageHeader.get('header', '')}
+            subheader={pageHeader.get('subheader', '')}
+            ctaCaption={pageHeader.getIn(['ctaLink', 'text'])}
+            ctaHref={pageHeader.getIn(['ctaLink', 'url'])}
+            sources={pageHeader.get('image')}
+            creditSources={user.get('avatar', null)}
+            creditUsername={user.get('username', null)}
+            dpi={dpi}
+            isMobile={isMobile}
+            isLoggedIn={isLoggedIn}
+          />
         )
       default:
         return null

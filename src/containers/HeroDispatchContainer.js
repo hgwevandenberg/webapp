@@ -9,6 +9,7 @@ import {
   selectPageHeaderSlug,
   selectPageHeaderKind,
 } from '../selectors/page_headers'
+import { Hero } from '../components/heros/HeroRenderables'
 import { selectViewNameFromRoute } from '../selectors/routing'
 
 function mapStateToProps(state, props) {
@@ -50,19 +51,29 @@ class HeroDispatchContainer extends Component {
     }
   }
 
-  render() {
-    const { pageHeaderKind, pageHeaders, isUserProfile, params } = this.props
-    if (!isUserProfile && (!pageHeaders || pageHeaders.isEmpty())) { return null }
+
+  pageHeaderComponent() {
+    const { pageHeaderKind, isUserProfile, params } = this.props
     switch (pageHeaderKind) {
       case 'CATEGORY':
       case 'GENERIC':
-        return <HeroPageHeaderContainer />
+        return <HeroPageHeaderContainer key="HeroPageHeaderContainer" />
       default:
         if (isUserProfile) {
-          return <HeroProfileContainer params={params} />
+          return <HeroProfileContainer params={params} key="HeroProfileContainer" />
         }
         return null
     }
+  }
+
+  render() {
+    return (
+      <Hero>
+        {[
+          this.pageHeaderComponent(),
+        ]}
+      </Hero>
+    )
   }
 }
 

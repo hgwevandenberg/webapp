@@ -12,7 +12,6 @@ import {
 } from '../selectors/user'
 import { selectViewsAdultContent } from '../selectors/profile'
 import { selectDPI } from '../selectors/gui'
-import { Hero } from '../components/heros/HeroRenderables'
 import {
   HeroShareUserButton,
   HeroScrollToContentButton,
@@ -75,22 +74,17 @@ class HeroProfileContainer extends Component { //eslint-disable-line
     const { userId, dpi, coverImage, useGif } = this.props
     if (!userId) { return null }
     return (
-      <Hero>
-        {[
-          <div className={profileStyle} key="HeroProfile">
-            <h1>Hello</h1>
-            <BackgroundImage
-              className="inHeroProfile hasOverlay6"
-              dpi={dpi}
-              sources={coverImage}
-              useGif={useGif}
-            />
-            <UserContainer userId={userId} type="profile" />
-            <HeroShareUserButton />
-            <HeroScrollToContentButton />
-          </div>,
-        ]}
-      </Hero>
+      <div className={profileStyle}>
+        <BackgroundImage
+          className="inHeroProfile hasOverlay6"
+          dpi={dpi}
+          sources={coverImage}
+          useGif={useGif}
+        />
+        <UserContainer userId={userId} type="profile" />
+        <HeroShareUserButton />
+        <HeroScrollToContentButton />
+      </div>
     )
   }
 }
