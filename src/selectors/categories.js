@@ -7,9 +7,8 @@ import { CATEGORIES } from '../constants/mapping_types'
 import { META } from '../constants/locales/en'
 import { selectAllCategoriesPage } from './pages'
 import { selectParamsType } from './params'
-import { selectCategoryData } from './promotions'
+import { selectPathname } from './routing'
 import { selectSubscribedCategoryIds, selectId } from './profile'
-
 
 export function sortCategories(a, b) {
   if (a.get('order') < b.get('order')) {
@@ -146,13 +145,19 @@ export const selectCategoryPageTitle = createSelector(
   },
 )
 
+export const selectCategoryForPath = createSelector(
+  [selectPathname, selectAllCategoriesAsArray], (pathname, categories) => {
+    const slug = pathname.replace('/discover/', '')
+    return categories.find(category => category.get('slug') === slug) || Immutable.Map()
+  },
+)
+
 export const selectDiscoverMetaData = createSelector(
-  [selectParamsType, selectCategoryData, selectCategoryPageTitle],
-  (type, categoryData, pageTitle) => {
+  [selectParamsType, selectCategoryForPath, selectCategoryPageTitle],
+  (type, category, pageTitle) => {
     const titlePrefix = pageTitle ? `${pageTitle} | ` : ''
     const title = `${titlePrefix}Ello`
-    const { category, promotionals } = categoryData
-    const image = promotionals.getIn([0, 'image', 'hdpi', 'url'], META.IMAGE)
+    const image = category.getIn(['tileImage', 'large', 'url'], META.IMAGE)
     let description = ''
     switch (type) {
       case undefined:
