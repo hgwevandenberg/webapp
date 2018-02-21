@@ -52,6 +52,12 @@ function parseAsset(state, asset) {
   }))
 }
 
+function reduceAssets(assets) {
+  return (assets || []).reduce((byId, asset) => (
+      { ...byId, [asset.id]: asset }
+    ), {})
+}
+
 function parseCategory(state, category) {
   if (!category) { return state }
   return smartMergeDeepIn(state, ['categories', category.id], Immutable.fromJS({
@@ -148,9 +154,8 @@ function parsePost(state, post) {
   const state3 = parsePost(state2, post.repostedSource)
   const state4 = parseArtistInviteSubmission(state3, post.artistInviteSubmission)
 
-  const assetsById = (post.assets || []).reduce((byId, asset) => (
-    { ...byId, [asset.id]: asset }
-  ), {})
+  const assetsById = reduceAssets(post.assets)
+  const repostAssetsById = post.repostedSource ? reduceAssets(post.repostedSource.assets) : null
 
   const state5 = smartMergeDeepIn(state4, ['posts', post.id], Immutable.fromJS({
     // ids
@@ -166,7 +171,7 @@ function parsePost(state, post) {
     // Content
     summary: parseRegion(post, 'summary', assetsById),
     content: parseRegion(post, 'content', assetsById),
-    repostContent: parseRegion(post, 'repostContent', assetsById),
+    repostContent: parseRegion(post, 'repostContent', repostAssetsById),
 
     // Stats
     lovesCount: deepGet(post, ['postStats', 'lovesCount']),
