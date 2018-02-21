@@ -79,6 +79,7 @@ export const postSummary = `
     createdAt
     artistInviteSubmission { ...artistInviteSubmissionSummary }
     summary { ...contentProps }
+    content { ...contentProps }
     repostContent { ...contentProps }
     author { ...authorSummary }
     assets { id attachment { ...assetImageVersions } }
