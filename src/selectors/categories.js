@@ -107,26 +107,25 @@ export const selectCreatorTypeCategories = createSelector(
 )
 
 export const selectCategoryTabs = createSelector(
-  [selectCategoryCollection, selectId, selectSubscribedCategoryIds], (categories, profileId, subscribedIds) => {
+  [selectCategoryCollection, selectId, selectSubscribedCategoryIds],
+  (categories, profileId, subscribedIds) => {
     if (!categories) { return [] }
 
-    const promoIds = categories.filter((cat) => cat.get('level') === 'promo').keySeq()
+    const promoIds = categories.filter(cat => cat.get('level') === 'promo').keySeq()
     let navIds = promoIds
 
     if (profileId) {
       navIds = navIds.concat(subscribedIds)
     } else {
-      const primaryIds = categories.filter((cat) => cat.get('level') === 'primary').keySeq()
+      const primaryIds = categories.filter(cat => cat.get('level') === 'primary').keySeq()
       navIds = navIds.concat(primaryIds)
     }
 
-    return navIds.map(id => {
-      return {
-        label: categories.getIn([id, 'name']),
-        to: `/discover/${categories.getIn([id, 'slug'])}`,
-        source: categories.getIn([id, 'tileImage', 'small', 'url']),
-      }
-    }).toArray()
+    return navIds.map(id => ({
+      label: categories.getIn([id, 'name']),
+      to: `/discover/${categories.getIn([id, 'slug'])}`,
+      source: categories.getIn([id, 'tileImage', 'small', 'url']),
+    })).toArray()
   },
 )
 
