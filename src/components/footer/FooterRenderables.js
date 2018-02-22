@@ -19,6 +19,8 @@ const baseStyle = css(
   modifier('isPaginatoring', { transform: 'translate3d(0, 100%, 0) !important' }),
   select('.isNavbarHidden ~ &', { transform: 'translate3d(0, 100%, 0)' }),
   select('.no-touch .isNavbarHidden ~ &:hover', { transform: 'none' }),
+  select('&.hide', { transform: 'translate3d(0, 100%, 0)' }),
+  select('&.hide:hover', { transform: 'none' }),
   select('.isAuthenticationView ~ &', s.displayNone),
   select('.isOnboardingView ~ &', s.displayNone),
   media('(max-width: 23.375em)', s.hv40, s.lh40), // 374 and below
@@ -32,6 +34,11 @@ const baseStyle = css(
     select('.isOmnibarActive .Omnibar.isFullScreen ~ &', s.displayNone),
     select(
       '.no-touch .isNavbarHidden ~ &::before',
+      s.absolute,
+      { top: -15, right: 0, left: 0, height: 15, content: '""', backgroundColor: 'rgba(0, 0, 0, 0)' },
+    ),
+    select(
+      '&.hide::before',
       s.absolute,
       { top: -15, right: 0, left: 0, height: 15, content: '""', backgroundColor: 'rgba(0, 0, 0, 0)' },
     ),
@@ -86,6 +93,7 @@ type FooterPropTypes = {
   formMessage: string,
   formStatus: string,
   isEditorial: boolean,
+  isPostDetail: boolean,
   isFormDisabled: boolean,
   isGridMode: boolean,
   isLayoutToolHidden: boolean,
@@ -105,6 +113,7 @@ export const Footer = ({
   formMessage,
   formStatus,
   isEditorial,
+  isPostDetail,
   isGridMode,
   isLayoutToolHidden,
   isLoggedIn,
@@ -117,7 +126,7 @@ export const Footer = ({
   onClickToggleLayoutMode,
 }: FooterContextTypes) =>
   (<footer
-    className={classNames(`Footer ${baseStyle}`, { isPaginatoring })}
+    className={classNames(`Footer${isPostDetail ? ' hide' : ''} ${baseStyle}`, { isPaginatoring })}
     role="contentinfo"
   >
     <div className={wrapperStyle}>

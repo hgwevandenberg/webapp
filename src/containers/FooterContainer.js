@@ -19,7 +19,11 @@ import {
 } from '../selectors/gui'
 import { selectIsModalActive } from '../selectors/modal'
 import { selectAvailability } from '../selectors/profile'
-import { selectPathname, selectViewNameFromRoute } from '../selectors/routing'
+import {
+  selectPathname,
+  selectViewNameFromRoute,
+  selectIsPostDetail,
+} from '../selectors/routing'
 import { selectStreamType } from '../selectors/stream'
 import type { Availability } from '../types/flowtypes'
 
@@ -30,6 +34,7 @@ type Props = {
   dispatch: () => void,
   formActionPath: string,
   isEditorial: boolean,
+  isPostDetail: boolean,
   isGridMode: boolean,
   isLayoutToolHidden: boolean,
   isLoggedIn: boolean,
@@ -51,6 +56,7 @@ function mapStateToProps(state, props) {
   const streamType = selectStreamType(state)
   const pathname = selectPathname(state)
   const isEditorial = selectViewNameFromRoute(state, props) === 'editorial'
+  const isPostDetail = selectIsPostDetail(state, props)
   let isLayoutToolHidden = selectIsLayoutToolHidden(state, props)
   // hide the layout tool on the editorial homepage
   if (isEditorial) { isLayoutToolHidden = true }
@@ -58,6 +64,7 @@ function mapStateToProps(state, props) {
     availability: selectAvailability(state),
     formActionPath: checkAvailability().payload.endpoint.path,
     isEditorial,
+    isPostDetail,
     isGridMode: selectIsGridMode(state),
     isLayoutToolHidden,
     isLoggedIn: selectIsLoggedIn(state),
@@ -116,7 +123,7 @@ class FooterContainer extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     const { isLoggedIn } = this.props
     return !is(nextProps.availability, this.props.availability) ||
-      ['isGridMode', 'isLayoutToolHidden', 'isLoggedIn', 'isMobile', 'isPaginatoring'].some(prop =>
+      ['isGridMode', 'isPostDetail', 'isLayoutToolHidden', 'isLoggedIn', 'isMobile', 'isPaginatoring'].some(prop =>
         nextProps[prop] !== this.props[prop],
       ) ||
       (!isLoggedIn && ['emailStatus', 'formMessage', 'formStatus', 'isFormDisabled', 'isFormFocused'].some(prop =>
@@ -220,6 +227,7 @@ class FooterContainer extends Component {
       formMessage: this.state.formMessage,
       formStatus: this.state.formStatus,
       isEditorial: this.props.isEditorial,
+      isPostDetail: this.props.isPostDetail,
       isFormDisabled: this.state.isFormDisabled,
       isFormFocused: this.state.isFormFocused,
       isGridMode: this.props.isGridMode,
