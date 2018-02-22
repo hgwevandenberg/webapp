@@ -153,8 +153,9 @@ const promotionCategoryStyle = css({ ...promotionStyle }, media(s.maxBreak2, s.f
 
 
 export const HeroPromotionCategory = (props) => {
-  const { creditLabel, creditSources, creditUsername, description, dpi, name, sources } = props
-  const { ctaCaption, ctaHref, isLoggedIn, isMobile } = props
+  const { creditLabel, creditSources, creditUsername, creditTrackingLabel } = props
+  const { description, dpi, name, sources } = props
+  const { ctaCaption, ctaHref, ctaTrackingLabel, isLoggedIn, isMobile } = props
   return (
     <div className={promotionCategoryStyle}>
       <BackgroundImage className="hasOverlay4" dpi={dpi} sources={sources} />
@@ -164,17 +165,28 @@ export const HeroPromotionCategory = (props) => {
         </h1>
         <p className={categoryCopyStyle}>{description}</p>
         {!isMobile &&
-          <HeroPromotionCTA caption={ctaCaption} isLoggedIn={isLoggedIn} to={ctaHref} />
+          <HeroPromotionCTA
+            caption={ctaCaption}
+            isLoggedIn={isLoggedIn}
+            to={ctaHref}
+            label={ctaTrackingLabel}
+          />
         }
       </div>
       { isMobile &&
         <div className={`HeroPromotionMobileActions ${mobileActionStyle}`}>
-          <HeroPromotionCTA caption={ctaCaption} isLoggedIn={isLoggedIn} to={ctaHref} />
+          <HeroPromotionCTA
+            caption={ctaCaption}
+            isLoggedIn={isLoggedIn}
+            to={ctaHref}
+            label={ctaTrackingLabel}
+          />
           {creditUsername &&
             <HeroPromotionCredits
               label={creditLabel}
               sources={creditSources}
               username={creditUsername}
+              trackingLabel={creditTrackingLabel}
             />
           }
         </div>
@@ -184,6 +196,7 @@ export const HeroPromotionCategory = (props) => {
           label={creditLabel}
           sources={creditSources}
           username={creditUsername}
+          trackingLabel={creditTrackingLabel}
         />
       }
     </div>
@@ -194,8 +207,10 @@ HeroPromotionCategory.propTypes = {
   creditLabel: PropTypes.string.isRequired,
   creditSources: PropTypes.object,
   creditUsername: PropTypes.string,
+  creditTrackingLabel: PropTypes.string.isRequired,
   ctaCaption: PropTypes.string,
   ctaHref: PropTypes.string,
+  ctaTrackingLabel: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   dpi: PropTypes.string.isRequired,
   isLoggedIn: PropTypes.bool.isRequired,
@@ -225,10 +240,19 @@ export const HeroPromotionPage = (props) => {
       <div className={captionStyle}>
         <h1 className={promotionHeadingStyle}>{header}</h1>
         <h2 className={promotionSubheadingStyle}>{subheader}</h2>
-        <HeroPromotionCTA caption={ctaCaption} isLoggedIn={isLoggedIn} to={ctaHref} />
+        <HeroPromotionCTA
+          caption={ctaCaption}
+          isLoggedIn={isLoggedIn}
+          to={ctaHref}
+          trackingLabel="general"
+        />
       </div>
       {creditUsername &&
-        <HeroPromotionCredits sources={creditSources} username={creditUsername} />
+        <HeroPromotionCredits
+          sources={creditSources}
+          username={creditUsername}
+          trackingLabel="general"
+        />
       }
     </div>
   )

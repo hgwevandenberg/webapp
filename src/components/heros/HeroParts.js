@@ -69,12 +69,17 @@ const creditsByStyle = media(s.maxBreak2,
   parent('.HeroPromotionMobileActions > .HeroPromotionCredits', s.inline),
 )
 
-export const HeroPromotionCredits = ({ label, sources, username }, { onClickTrackCredits }) =>
-  (<Link className={`HeroPromotionCredits ${creditsStyle}`} onClick={onClickTrackCredits} to={`/${username}`}>
-    <span className={creditsByStyle}>{label}</span>
-    <span className={creditsAuthorStyle}>@{username}</span>
-    <Avatar className="inHeroPromotionCredits" sources={sources} username={username} />
-  </Link>)
+export const HeroPromotionCredits = ({ label, sources, username, trackingLabel }, context) => {
+  const { onClickTrackCredits } = context
+  const track = () => onClickTrackCredits(trackingLabel)
+  return (
+    <Link className={`HeroPromotionCredits ${creditsStyle}`} onClick={track} to={`/${username}`}>
+      <span className={creditsByStyle}>{label}</span>
+      <span className={creditsAuthorStyle}>@{username}</span>
+      <Avatar className="inHeroPromotionCredits" sources={sources} username={username} />
+    </Link>
+  )
+}
 
 HeroPromotionCredits.contextTypes = {
   onClickTrackCredits: PropTypes.func.isRequired,
@@ -84,6 +89,7 @@ HeroPromotionCredits.propTypes = {
   label: PropTypes.string,
   sources: PropTypes.object,
   username: PropTypes.string,
+  trackingLabel: PropTypes.string,
 }
 
 // -------------------------------------
@@ -101,18 +107,20 @@ const ctaStyle = css(
 
 const ctaTextStyle = css({ borderBottom: '1px solid' })
 
-export const HeroPromotionCTA = ({ caption, isLoggedIn, to }, { onClickTrackCTA }) => {
+export const HeroPromotionCTA = ({ caption, isLoggedIn, to, trackingLabel }, context) => {
+  const { onClickTrackCTA } = context
+  const track = () => onClickTrackCTA(trackingLabel)
   if (caption && to) {
     const re = new RegExp(ENV.AUTH_DOMAIN.replace('https://', ''))
     if (re.test(to)) {
       return (
-        <Link className={ctaStyle} onClick={onClickTrackCTA} to={to}>
+        <Link className={ctaStyle} onClick={track} to={to}>
           <span className={ctaTextStyle}>{caption}</span>
         </Link>
       )
     }
     return (
-      <a className={ctaStyle} href={to} onClick={onClickTrackCTA} rel="noopener noreferrer" target="_blank">
+      <a className={ctaStyle} href={to} onClick={track} rel="noopener noreferrer" target="_blank">
         <span className={ctaTextStyle}>{caption}</span>
       </a>
     )
@@ -128,6 +136,7 @@ HeroPromotionCTA.propTypes = {
   caption: PropTypes.string,
   isLoggedIn: PropTypes.bool,
   to: PropTypes.string,
+  trackingLabel: PropTypes.string,
 }
 
 // -------------------------------------

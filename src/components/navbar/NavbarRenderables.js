@@ -259,7 +259,7 @@ export const NavbarLoggedIn = ({
         <NotificationsContainer isModal /> : null
       }
     </div>
-    {categoryTabs && <CategoryTabBar pathname={pathname} tabs={categoryTabs} />}
+    {categoryTabs && <CategoryTabBar pathname={pathname} tabs={categoryTabs} subscribed />}
   </nav>)
 
 NavbarLoggedIn.propTypes = {

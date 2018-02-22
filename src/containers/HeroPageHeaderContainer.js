@@ -57,10 +57,12 @@ class HeroPageHeaderContainer extends Component { //eslint-disable-line
             description={pageHeader.get('subheader', '')}
             ctaCaption={pageHeader.getIn(['ctaLink', 'text'])}
             ctaHref={pageHeader.getIn(['ctaLink', 'url'])}
+            ctaTrackingLabel={pageHeader.get('slug')}
             sources={pageHeader.get('image')}
             creditSources={user.get('avatar', null)}
             creditUsername={user.get('username', null)}
             creditLabel="Posted by"
+            creditTrackingLabel={pageHeader.get('slug')}
             dpi={dpi}
             isMobile={isMobile}
             isLoggedIn={isLoggedIn}
