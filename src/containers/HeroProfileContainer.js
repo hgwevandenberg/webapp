@@ -12,15 +12,8 @@ import {
 } from '../selectors/user'
 import { selectViewsAdultContent } from '../selectors/profile'
 import { selectDPI } from '../selectors/gui'
-import {
-  HeroShareUserButton,
-  HeroScrollToContentButton,
-} from '../components/heros/HeroParts'
-import UserContainer from './UserContainer'
-import BackgroundImage from '../components/assets/BackgroundImage'
+import { HeroProfile } from '../components/heros/HeroRenderables'
 import ShareDialog from '../components/dialogs/ShareDialog'
-import { css, media } from '../styles/jss'
-import * as s from '../styles/jso'
 
 function mapStateToProps(state, props) {
   const userId = selectUserId(state, props)
@@ -33,12 +26,7 @@ function mapStateToProps(state, props) {
   return { userId, dpi, coverImage, useGif, username }
 }
 
-const profileStyle = css(
-  s.relative, s.flex, s.overflowHidden,
-  media(s.minBreak2, { height: 'calc(100vh - 80px)', minHeight: 540 }),
-)
-
-class HeroProfileContainer extends Component { //eslint-disable-line
+class HeroProfileContainer extends Component {
   static propTypes = {
     userId: PropTypes.string,
     username: PropTypes.string,
@@ -74,17 +62,12 @@ class HeroProfileContainer extends Component { //eslint-disable-line
     const { userId, dpi, coverImage, useGif } = this.props
     if (!userId) { return null }
     return (
-      <div className={profileStyle}>
-        <BackgroundImage
-          className="inHeroProfile hasOverlay6"
-          dpi={dpi}
-          sources={coverImage}
-          useGif={useGif}
-        />
-        <UserContainer userId={userId} type="profile" />
-        <HeroShareUserButton />
-        <HeroScrollToContentButton />
-      </div>
+      <HeroProfile
+        dpi={dpi}
+        sources={coverImage}
+        useGif={useGif}
+        userId={userId}
+      />
     )
   }
 }
