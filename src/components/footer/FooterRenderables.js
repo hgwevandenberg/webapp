@@ -9,49 +9,75 @@ import * as s from '../../styles/jso'
 
 const baseStyle = css(
   s.fixed,
-  { right: 0, bottom: 0, left: 0 },
+  { right: 0, bottom: -54, left: 0, height: 69 },
   s.zFooter,
-  s.px10,
-  { height: 54, lineHeight: 54 },
   s.colorA,
-  s.bgcE5,
-  { transition: 'transform 150ms ease' },
-  modifier('isPaginatoring', { transform: 'translate3d(0, 100%, 0) !important' }),
-  select('.isNavbarHidden ~ &', { transform: 'translate3d(0, 100%, 0)' }),
-  select('.no-touch .isNavbarHidden ~ &:hover', { transform: 'none' }),
-  select('&.hide', { transform: 'translate3d(0, 100%, 0)' }),
-  select('&.hide:hover', { transform: 'none' }),
+  modifier('isPaginatoring', select('.footer-content', { transform: 'translate3d(0, -100%, 0)' })),
+  select('.isNavbarHidden ~ &:hover .footer-content',
+    {
+      transitionDelay: '350ms',
+      transform: 'translate3d(0, -100%, 0)',
+    }),
+  select('&.hide:hover .footer-content',
+    {
+      transitionDelay: '350ms',
+      transform: 'translate3d(0, -100%, 0)',
+    }),
   select('.isAuthenticationView ~ &', s.displayNone),
   select('.isOnboardingView ~ &', s.displayNone),
-  media('(max-width: 23.375em)', s.hv40, s.lh40), // 374 and below
+  media('(max-width: 23.375em)', { bottom: -40, height: 55 }), // 374 and below
   media(s.maxBreak2,
     parent('.isEditorFocused', s.displayNone),
     parent('.isOmnibarActive', s.displayNone),
     select('.isProfileMenuActive ~ &', s.displayNone),
   ),
   media(s.minBreak2,
-    s.px20,
     select('.isOmnibarActive .Omnibar.isFullScreen ~ &', s.displayNone),
-    select(
-      '.no-touch .isNavbarHidden ~ &::before',
-      s.absolute,
-      { top: -15, right: 0, left: 0, height: 15, content: '""', backgroundColor: 'rgba(0, 0, 0, 0)' },
-    ),
-    select(
-      '&.hide::before',
-      s.absolute,
-      { top: -15, right: 0, left: 0, height: 15, content: '""', backgroundColor: 'rgba(0, 0, 0, 0)' },
-    ),
+  ),
+  media(s.minBreak4),
+)
+
+const grabberStyle = css(
+  s.relative,
+  s.block,
+  s.fullWidth,
+  { height: 0, margin: 0, padding: 0, overflow: 'hidden' },
+  select(
+    '&:hover',
+    { cursor: 'pointer' },
+  ),
+  select(
+    '.no-touch .isNavbarHidden ~ .Footer &',
+    { height: 15, marginTop: 0 },
+  ),
+  select(
+    '.Footer.hide &',
+    { height: 15, marginTop: 0 },
+  ),
+)
+
+const wrapperStyle = css(
+  s.relative,
+  s.px10,
+  s.fullWidth,
+  s.bgcE5,
+  { transition: 'transform 150ms ease', transform: 'translate3d(0, calc(-100% + 15px), 0)' },
+  { height: 54, margin: 0 },
+  select('.isNavbarHidden ~ .Footer &', { transform: 'translate3d(0, 0, 0)' }),
+  select('.Footer.hide &', { transform: 'translate3d(0, 0, 0)' }),
+  media(s.minBreak2,
+    s.px20,
   ),
   media(s.minBreak4, s.px40),
 )
 
-const wrapperStyle = css(
-  s.maxSiteWidth,
-  s.mxAuto,
-  s.fullWidth,
+const containerStyle = css(
+  s.relative,
   s.flex,
-  s.justifySpaceBetween,
+  s.itemsCenter,
+  s.maxSiteWidth,
+  s.fullWidth,
+  { margin: '0 auto', height: 54 },
 )
 
 const linksStyle = css(
@@ -62,10 +88,10 @@ const linksStyle = css(
 )
 
 const toolsStyle = css(
-  s.relative,
+  s.absolute,
   s.flex,
-  s.justifySpaceBetween,
-  s.rightAlign,
+  s.itemsCenter,
+  { right: 0, top: 0, height: '100%' },
   before(
     s.absolute,
     s.zIndex2,
@@ -73,6 +99,11 @@ const toolsStyle = css(
     { background: 'linear-gradient(to right, rgba(229, 229, 229, 0) 0%, rgba(229, 229, 229, 1) 90%)' },
   ),
   media(s.minBreak4, before(s.displayNone)),
+  media('(max-width: 23.375em)', // 374 and below
+    s.relative,
+    s.nowrap,
+    { right: 'auto' },
+  ),
 )
 
 const rssStyle = css(
@@ -129,49 +160,52 @@ export const Footer = ({
     className={classNames(`Footer${isPostDetail ? ' hide' : ''} ${baseStyle}`, { isPaginatoring })}
     role="contentinfo"
   >
-    <div className={wrapperStyle}>
-      <div className={linksStyle}>
-        { links.map(link =>
-          (<FooterLink
-            href={link.to}
-            label={link.label}
-            key={`FooterLink_${link.label}`}
-          />),
-        )}
-      </div>
-      <div className={`FooterTools ${toolsStyle}`}>
-        { !isLoggedIn &&
-          <FooterForm
-            {...{
-              formActionPath,
-              formMessage,
-              formStatus,
-              isDisabled: isFormDisabled,
-              isMobile,
-            }}
-          />
-        }
-        { isEditorial &&
-          <a className={rssStyle} href="/feeds/editorials">
-            <RSSIcon />
-          </a>
-        }
-        { (isLoggedIn || (!isLoggedIn && !isMobile)) && // TODO: move to FooterContainer
-          <FooterTool
-            className="TopTool"
-            icon={<ChevronIcon />}
-            label="Top"
-            onClick={onClickScrollToTop}
-          />
-        }
-        {!isLayoutToolHidden && (isLoggedIn || (!isLoggedIn && !isMobile)) &&
-          <FooterTool
-            className="LayoutTool"
-            icon={isGridMode ? <ListIcon /> : <GridIcon />}
-            label={isGridMode ? 'List View' : 'Grid View'}
-            onClick={onClickToggleLayoutMode}
-          />
-        }
+    <div className={`grabber ${grabberStyle}`} />
+    <div className={`footer-content ${wrapperStyle}`}>
+      <div className={`footer-container ${containerStyle}`}>
+        <div className={linksStyle}>
+          { links.map(link =>
+            (<FooterLink
+              href={link.to}
+              label={link.label}
+              key={`FooterLink_${link.label}`}
+            />),
+          )}
+        </div>
+        <div className={`FooterTools ${toolsStyle}`}>
+          { !isLoggedIn &&
+            <FooterForm
+              {...{
+                formActionPath,
+                formMessage,
+                formStatus,
+                isDisabled: isFormDisabled,
+                isMobile,
+              }}
+            />
+          }
+          { isEditorial &&
+            <a className={rssStyle} href="/feeds/editorials">
+              <RSSIcon />
+            </a>
+          }
+          { (isLoggedIn || (!isLoggedIn && !isMobile)) && // TODO: move to FooterContainer
+            <FooterTool
+              className="TopTool"
+              icon={<ChevronIcon />}
+              label="Top"
+              onClick={onClickScrollToTop}
+            />
+          }
+          {!isLayoutToolHidden && (isLoggedIn || (!isLoggedIn && !isMobile)) &&
+            <FooterTool
+              className="LayoutTool"
+              icon={isGridMode ? <ListIcon /> : <GridIcon />}
+              label={isGridMode ? 'List View' : 'Grid View'}
+              onClick={onClickToggleLayoutMode}
+            />
+          }
+        </div>
       </div>
     </div>
   </footer>)
