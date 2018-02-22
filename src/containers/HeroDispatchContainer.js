@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import HeroPageHeaderContainer from './HeroPageHeaderContainer'
 import HeroProfileContainer from './HeroProfileContainer'
+import HeroBroadcastContainer from './HeroBroadcastContainer'
 import { loadPageHeaders } from '../actions/page_headers'
 import {
   selectPageHeaders,
@@ -69,9 +70,8 @@ class HeroDispatchContainer extends Component {
   render() {
     return (
       <Hero>
-        {[
-          this.pageHeaderComponent(),
-        ]}
+        {this.pageHeaderComponent()}
+        <HeroBroadcastContainer key="HeroBroadcastContainer" />
       </Hero>
     )
   }
