@@ -13,7 +13,11 @@ const baseStyle = css(
   s.zFooter,
   s.colorA,
   modifier('isPaginatoring', select('.footer-content', { transform: 'translate3d(0, -100%, 0)' })),
-  select('&:hover .footer-content', { transform: 'translate3d(0, -100%, 0)' }),
+  select('.isNavbarHidden ~ &:hover .footer-content',
+    {
+      transitionDelay: '350ms',
+      transform: 'translate3d(0, -100%, 0)',
+    }),
   select('.isAuthenticationView ~ &', s.displayNone),
   select('.isOnboardingView ~ &', s.displayNone),
   media('(max-width: 23.375em)', s.hv40, s.lh40), // 374 and below

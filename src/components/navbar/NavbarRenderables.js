@@ -42,7 +42,7 @@ const navbarStyle = css(
   media(s.minBreak2,
     s.p20,
     { borderBottom: '1px solid #f2f2f2' },
-    select('.no-touch .isNavbarHidden ~ &:hover', s.bgcWhite, s.transformNone, { transitionDelay: '0s' }),
+    select('.no-touch .isNavbarHidden ~ &:hover', s.bgcWhite, s.transformNone, { transitionDelay: '350ms' }),
     select('.no-touch .isNavbarHidden ~ .Discover + &:hover', { transitionDelay: '1.5s' }),
     select('.no-touch .isNavbarHidden ~ &::after',
       s.absolute,
