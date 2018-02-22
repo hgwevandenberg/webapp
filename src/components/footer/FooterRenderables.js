@@ -18,6 +18,11 @@ const baseStyle = css(
       transitionDelay: '350ms',
       transform: 'translate3d(0, -100%, 0)',
     }),
+  select('&.hide:hover .footer-content',
+    {
+      transitionDelay: '350ms',
+      transform: 'translate3d(0, -100%, 0)',
+    }),
   select('.isAuthenticationView ~ &', s.displayNone),
   select('.isOnboardingView ~ &', s.displayNone),
   media('(max-width: 23.375em)', { bottom: -40, height: 55 }), // 374 and below
@@ -45,6 +50,10 @@ const grabberStyle = css(
     '.no-touch .isNavbarHidden ~ .Footer &',
     { height: 15, marginTop: 0 },
   ),
+  select(
+    '.Footer.hide &',
+    { height: 15, marginTop: 0 },
+  ),
 )
 
 const wrapperStyle = css(
@@ -55,6 +64,7 @@ const wrapperStyle = css(
   { transition: 'transform 150ms ease', transform: 'translate3d(0, calc(-100% + 15px), 0)' },
   { height: 54, margin: 0 },
   select('.isNavbarHidden ~ .Footer &', { transform: 'translate3d(0, 0, 0)' }),
+  select('.Footer.hide &', { transform: 'translate3d(0, 0, 0)' }),
   media(s.minBreak2,
     s.px20,
   ),
@@ -114,6 +124,7 @@ type FooterPropTypes = {
   formMessage: string,
   formStatus: string,
   isEditorial: boolean,
+  isPostDetail: boolean,
   isFormDisabled: boolean,
   isGridMode: boolean,
   isLayoutToolHidden: boolean,
@@ -133,6 +144,7 @@ export const Footer = ({
   formMessage,
   formStatus,
   isEditorial,
+  isPostDetail,
   isGridMode,
   isLayoutToolHidden,
   isLoggedIn,
@@ -145,7 +157,7 @@ export const Footer = ({
   onClickToggleLayoutMode,
 }: FooterContextTypes) =>
   (<footer
-    className={classNames(`Footer ${baseStyle}`, { isPaginatoring })}
+    className={classNames(`Footer${isPostDetail ? ' hide' : ''} ${baseStyle}`, { isPaginatoring })}
     role="contentinfo"
   >
     <div className={`grabber ${grabberStyle}`} />
