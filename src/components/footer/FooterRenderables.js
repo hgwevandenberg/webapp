@@ -9,16 +9,11 @@ import * as s from '../../styles/jso'
 
 const baseStyle = css(
   s.fixed,
-  { right: 0, bottom: 0, left: 0 },
+  { right: 0, bottom: -54, left: 0, height: 69 },
   s.zFooter,
-  s.px10,
-  { height: 54, lineHeight: 54 },
   s.colorA,
-  s.bgcE5,
-  { transition: 'transform 150ms ease' },
-  modifier('isPaginatoring', { transform: 'translate3d(0, 100%, 0) !important' }),
-  select('.isNavbarHidden ~ &', { transform: 'translate3d(0, 100%, 0)' }),
-  select('.no-touch .isNavbarHidden ~ &:hover', { transform: 'none' }),
+  modifier('isPaginatoring', select('.footer-content', { transform: 'translate3d(0, -100%, 0)' })),
+  select('&:hover .footer-content', { transform: 'translate3d(0, -100%, 0)' }),
   select('.isAuthenticationView ~ &', s.displayNone),
   select('.isOnboardingView ~ &', s.displayNone),
   media('(max-width: 23.375em)', s.hv40, s.lh40), // 374 and below
@@ -28,44 +23,62 @@ const baseStyle = css(
     select('.isProfileMenuActive ~ &', s.displayNone),
   ),
   media(s.minBreak2,
-    s.px20,
     select('.isOmnibarActive .Omnibar.isFullScreen ~ &', s.displayNone),
-    select(
-      '.no-touch .isNavbarHidden ~ &::before',
-      s.absolute,
-      { top: -15, right: 0, left: 0, height: 15, content: '""', backgroundColor: 'rgba(0, 0, 0, 0)' },
-    ),
   ),
-  media(s.minBreak4, s.px40),
+  media(s.minBreak4),
+)
+
+const grabberStyle = css(
+  s.relative,
+  s.block,
+  s.fullWidth,
+  { height: 0, margin: 0, padding: 0, overflow: 'hidden' },
+  select(
+    '&:hover',
+    { cursor: 'pointer' },
+  ),
+  select(
+    '.no-touch .isNavbarHidden ~ .Footer &',
+    { height: 15, marginTop: 0 },
+  ),
 )
 
 const wrapperStyle = css(
-  s.maxSiteWidth,
-  s.mxAuto,
-  s.fullWidth,
+  s.relative,
   s.flex,
-  s.justifySpaceBetween,
+  s.px10,
+  s.itemsCenter,
+  s.maxSiteWidth,
+  s.fullWidth,
+  s.bgcE5,
+  { transition: 'transform 150ms ease', transform: 'translate3d(0, calc(-100% + 15px), 0)' },
+  { height: 54, margin: 0 },
+  select('.isNavbarHidden ~ .Footer &', { transform: 'translate3d(0, 0, 0)' }),
+  media(s.minBreak2,
+    s.px20,
+  ),
+  media(s.minBreak4, s.px40),
 )
 
 const linksStyle = css(
   s.relative,
   s.nowrap,
-  { flex: 1 },
   { WebkitOverflowScrolling: 'touch', overflowX: 'auto', overflowY: 'hidden' },
 )
 
 const toolsStyle = css(
-  s.relative,
-  s.flex,
-  s.justifySpaceBetween,
-  s.rightAlign,
+  s.absolute,
+  { right: 10 },
   before(
     s.absolute,
     s.zIndex2,
     { top: 0, bottom: 0, left: -20, width: 20, content: '""' },
     { background: 'linear-gradient(to right, rgba(229, 229, 229, 0) 0%, rgba(229, 229, 229, 1) 90%)' },
   ),
-  media(s.minBreak4, before(s.displayNone)),
+  media(s.minBreak2,
+    { right: 20 },
+  ),
+  media(s.minBreak4, { right: 40 }, before(s.displayNone)),
 )
 
 const rssStyle = css(
@@ -120,7 +133,8 @@ export const Footer = ({
     className={classNames(`Footer ${baseStyle}`, { isPaginatoring })}
     role="contentinfo"
   >
-    <div className={wrapperStyle}>
+    <div className={`grabber ${grabberStyle}`}></div>
+    <div className={`footer-content ${wrapperStyle}`}>
       <div className={linksStyle}>
         { links.map(link =>
           (<FooterLink
