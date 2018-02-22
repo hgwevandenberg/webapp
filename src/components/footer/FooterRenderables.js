@@ -79,7 +79,9 @@ const linksStyle = css(
 
 const toolsStyle = css(
   s.absolute,
-  { right: 0 },
+  s.flex,
+  s.itemsCenter,
+  { right: 0, top: 0, height: '100%' },
   before(
     s.absolute,
     s.zIndex2,
