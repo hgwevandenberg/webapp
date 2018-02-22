@@ -146,7 +146,7 @@ export const Footer = ({
     className={classNames(`Footer ${baseStyle}`, { isPaginatoring })}
     role="contentinfo"
   >
-    <div className={`grabber ${grabberStyle}`}></div>
+    <div className={`grabber ${grabberStyle}`} />
     <div className={`footer-content ${wrapperStyle}`}>
       <div className={`footer-container ${containerStyle}`}>
         <div className={linksStyle}>
