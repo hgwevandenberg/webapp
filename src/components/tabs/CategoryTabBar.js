@@ -17,7 +17,7 @@ const CategoryTab = ({ isActive, label, source, to }) => (
   </Link>
 )
 CategoryTab.propTypes = {
-  isActive: PropTypes.boolean.isRequired,
+  isActive: PropTypes.bool.isRequired,
   label: PropTypes.string.isRequired,
   source: PropTypes.string.isRequired,
   to: PropTypes.string.isRequired,
@@ -86,7 +86,7 @@ export const CategoryTabBar = ({ pathname, tabs, subscribed }) => (
 )
 CategoryTabBar.propTypes = {
   pathname: PropTypes.string.isRequired,
-  subscribed: PropTypes.boolean.isRequired,
+  subscribed: PropTypes.bool.isRequired,
   tabs: PropTypes.array.isRequired,
 }
 

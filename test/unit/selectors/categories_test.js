@@ -4,7 +4,6 @@ import {
   selectCategoryName,
   selectCategoryPageTitle,
   selectCategorySlug,
-  selectCategoryTabs,
   selectCategoryTileImageUrl,
   selectCreatorTypeCategories,
   selectOnboardingCategories,
@@ -132,31 +131,6 @@ describe('categories selectors', () => {
       const cats = selectCategories(state)
       expect(selectCreatorTypeCategories(state)).to.deep.equal(cats.secondary)
       expect(selectCreatorTypeCategories(state)).not.to.contain(cats.primary[0])
-    })
-  })
-
-  context('#selectCategoryTabs', () => {
-    it('returns the correct stream action for featured and recommended', () => {
-      const tabs = selectCategoryTabs(state)
-      // meta
-      expect(tabs[0]).to.have.property('label', 'Featured')
-      expect(tabs[0]).to.have.property('to', '/discover')
-      expect(tabs[1]).to.have.property('label', 'Trending')
-      expect(tabs[1]).to.have.property('to', '/discover/trending')
-      expect(tabs[2]).to.have.property('label', 'Recent')
-      expect(tabs[2]).to.have.property('to', '/discover/recent')
-      // primary
-      expect(tabs[3]).to.have.property('label', 'Metal')
-      expect(tabs[3]).to.have.property('to', '/discover/metal')
-      expect(tabs[4]).to.have.property('label', 'Art')
-      expect(tabs[4]).to.have.property('to', '/discover/art')
-      // secondary
-      expect(tabs[5]).to.have.property('label', 'Collage')
-      expect(tabs[5]).to.have.property('to', '/discover/collage')
-      expect(tabs[6]).to.have.property('label', 'Interviews')
-      expect(tabs[6]).to.have.property('to', '/discover/interviews')
-      // tertiary
-      expect(tabs[7]).to.be.undefined
     })
   })
 
