@@ -20,7 +20,7 @@ const baseStyle = css(
     }),
   select('.isAuthenticationView ~ &', s.displayNone),
   select('.isOnboardingView ~ &', s.displayNone),
-  media('(max-width: 23.375em)', s.hv40, s.lh40), // 374 and below
+  media('(max-width: 23.375em)', { bottom: -40, height: 55 }), // 374 and below
   media(s.maxBreak2,
     parent('.isEditorFocused', s.displayNone),
     parent('.isOmnibarActive', s.displayNone),
@@ -73,6 +73,7 @@ const containerStyle = css(
 const linksStyle = css(
   s.relative,
   s.nowrap,
+  { flex: 1 },
   { WebkitOverflowScrolling: 'touch', overflowX: 'auto', overflowY: 'hidden' },
 )
 
@@ -86,6 +87,11 @@ const toolsStyle = css(
     { background: 'linear-gradient(to right, rgba(229, 229, 229, 0) 0%, rgba(229, 229, 229, 1) 90%)' },
   ),
   media(s.minBreak4, before(s.displayNone)),
+  media('(max-width: 23.375em)', // 374 and below
+    s.relative,
+    s.nowrap,
+    { right: 'auto' },
+  ),
 )
 
 const rssStyle = css(
