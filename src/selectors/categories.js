@@ -7,7 +7,8 @@ import { CATEGORIES } from '../constants/mapping_types'
 import { META } from '../constants/locales/en'
 import { selectParamsType } from './params'
 import { selectPathname } from './routing'
-import { selectSubscribedCategoryIds, selectId } from './profile'
+import { selectSubscribedCategoryIds } from './profile'
+import { selectIsLoggedIn } from './authentication'
 
 export const selectPropsCategoryId = (state, props) => get(props, 'categoryId')
 
@@ -23,6 +24,10 @@ export const selectCategory = createSelector(
 export const selectCategoryName = createSelector([selectCategory], category => category.get('name'))
 export const selectCategorySlug = createSelector([selectCategory], category => category.get('slug'))
 export const selectCategoryTileImageUrl = createSelector([selectCategory], category => category.getIn(['tileImage', 'large', 'url']))
+export const selectCategoryIsSubscribed = createSelector(
+  [selectCategory, selectIsLoggedIn, selectSubscribedCategoryIds],
+  (category, isLoggedIn, subscribedIds) => (
+    category && isLoggedIn && subscribedIds.includes(category.get('id'))))
 
 export const selectAllCategoriesAsArray = createSelector([selectCategoryCollection],
   categories => (categories || Immutable.Map()).valueSeq())
@@ -67,14 +72,14 @@ export const selectCreatorTypeCategories = createSelector(
     categories.filter(category => category.get('isCreatorType')).toArray())
 
 export const selectCategoryTabs = createSelector(
-  [selectCategoryCollection, selectId, selectSubscribedCategoryIds],
-  (categories, profileId, subscribedIds) => {
+  [selectCategoryCollection, selectIsLoggedIn, selectSubscribedCategoryIds],
+  (categories, isLoggedIn, subscribedIds) => {
     if (!categories) { return [] }
 
     const promoIds = categories.filter(cat => cat.get('level') === 'promo').keySeq()
     let navIds = promoIds
 
-    if (profileId) {
+    if (isLoggedIn) {
       navIds = navIds.concat(subscribedIds)
     } else {
       const primaryIds = categories.filter(cat => cat.get('level') === 'primary').keySeq()

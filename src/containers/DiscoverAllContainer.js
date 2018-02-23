@@ -41,7 +41,6 @@ class DiscoverAllContainer extends PureComponent {
   render() {
     const { categoryIds } = this.props
     if (!categoryIds) { return null }
-    // TODO: Extract a grid component out?
     return (
       <MainView className="Discover">
         <div className={categoriesStyle}>

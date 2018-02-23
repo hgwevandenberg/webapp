@@ -36,7 +36,7 @@ function mapStateToProps(state, props) {
   const pageResult = selectPage(state)
   const hasLoadMoreButton = !!(pageResult && pageResult.get('morePostIds'))
   const viewName = selectViewNameFromRoute(state)
-  const categoryTabs = viewName === 'discoverAll' ? selectCategoryTabs(state) : null
+  const categoryTabs = viewName === 'discover' ? selectCategoryTabs(state) : null
   const isUnread = selectIsNotificationsUnread(state) || !selectAnnouncementHasBeenViewed(state)
   const isGridMode = selectIsGridMode(state)
   const deviceSize = selectDeviceSize(state)
