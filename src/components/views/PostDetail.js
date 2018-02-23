@@ -85,9 +85,8 @@ const relatedPostsStyle = css(
 
 const asideStyle = css(
   s.absolute,
-  s.fullHeight,
   s.overflowScrollWebY,
-  { width: 360, borderLeft: '1px solid #f2f2f2', top: 0, right: 0 },
+  { height: '100vh', paddingBottom: 80, width: 360, borderLeft: '1px solid #f2f2f2', top: 0, right: 0 },
   select('& .CommentContent', s.m20),
   select('.PostDetails & .TabListStreamContainer', s.px0),
   select('& .UserProfileCard',
