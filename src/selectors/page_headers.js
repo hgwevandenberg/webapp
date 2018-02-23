@@ -11,6 +11,8 @@ export const selectPageHeaderKind = createSelector([selectPathname], (pathname) 
     return 'EDITORIAL'
   } else if (pathname === '/artist-invites') {
     return 'ARTIST_INVITE'
+  } else if (pathname === '/discover/all') {
+    return null
   } else if (pathname === '/discover') {
     return 'GENERIC'
   } else if (/\/discover\/(all|subscribed|featured|trending).*/i.test(pathname)) {

@@ -40,7 +40,10 @@ export const selectViewNameFromRoute = createSelector(
     if (/^\/find\b|^\/search\b/.test(pathname)) {
       return 'search'
     }
-    if (/^\/discover\b|^\/explore\b/.test(pathname)) {
+    if (/^\/discover\/all\b/.test(pathname)) {
+      return 'discoverAll'
+    }
+    if (/^\/discover\b/.test(pathname)) {
       return 'discover'
     }
     if (/^\/invitations\b/.test(pathname)) {

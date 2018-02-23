@@ -26,7 +26,6 @@ import {
 } from '../selectors/gui'
 import { selectAnnouncementHasBeenViewed } from '../selectors/notifications'
 import { selectPage } from '../selectors/pages'
-import { selectParamsType } from '../selectors/params'
 import { selectAvatar, selectUsername, selectIsBrand } from '../selectors/profile'
 import { selectPathname, selectViewNameFromRoute } from '../selectors/routing'
 
@@ -35,10 +34,9 @@ function mapStateToProps(state, props) {
   const isLoggedIn = selectIsLoggedIn(state)
   const pathname = selectPathname(state)
   const pageResult = selectPage(state)
-  const paramsType = selectParamsType(state, props)
   const hasLoadMoreButton = !!(pageResult && pageResult.get('morePostIds'))
   const viewName = selectViewNameFromRoute(state)
-  const categoryTabs = viewName === 'discover' && paramsType !== 'all' ? selectCategoryTabs(state) : null
+  const categoryTabs = viewName === 'discoverAll' ? selectCategoryTabs(state) : null
   const isUnread = selectIsNotificationsUnread(state) || !selectAnnouncementHasBeenViewed(state)
   const isGridMode = selectIsGridMode(state)
   const deviceSize = selectDeviceSize(state)
