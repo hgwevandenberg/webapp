@@ -5,22 +5,11 @@ import startCase from 'lodash/startCase'
 import trunc from 'trunc-html'
 import { CATEGORIES } from '../constants/mapping_types'
 import { META } from '../constants/locales/en'
-import { selectAllCategoriesPage } from './pages'
 import { selectParamsType } from './params'
 import { selectPathname } from './routing'
 import { selectSubscribedCategoryIds, selectId } from './profile'
 
-export function sortCategories(a, b) {
-  if (a.get('order') < b.get('order')) {
-    return -1
-  } else if (a.get('order') > b.get('order')) {
-    return 1
-  }
-  return 0
-}
-
-export const selectPropsCategoryId = (state, props) =>
-  get(props, 'categoryId')
+export const selectPropsCategoryId = (state, props) => get(props, 'categoryId')
 
 // state.json.categories.xxx
 export const selectCategoryCollection = state => state.json.get(CATEGORIES)
@@ -35,75 +24,47 @@ export const selectCategoryName = createSelector([selectCategory], category => c
 export const selectCategorySlug = createSelector([selectCategory], category => category.get('slug'))
 export const selectCategoryTileImageUrl = createSelector([selectCategory], category => category.getIn(['tileImage', 'large', 'url']))
 
-export const selectAllCategoriesAsArray = createSelector(
-  [selectCategoryCollection, selectAllCategoriesPage],
-  (categories, allCategoryPage) => {
-    if (!categories || !allCategoryPage) { return Immutable.List() }
-    return allCategoryPage.get('ids').map(key => categories.get(key))
-  },
-)
+export const selectAllCategoriesAsArray = createSelector([selectCategoryCollection],
+  categories => (categories || Immutable.Map()).valueSeq())
 
-// Memoized selectors
-export const selectCategories = createSelector(
-  [selectAllCategoriesAsArray], (allCats) => {
-    const cats = {}
-    // add cats to the correct arrays
-    allCats.forEach((cat) => {
-      const level = cat.get('level') ? cat.get('level') : 'other'
-      if (!cats[level]) {
-        cats[level] = []
-      }
-      cats[level].push(cat)
-    })
-    // sort arrays
-    Object.keys(cats).forEach((level) => {
-      cats[level].sort(sortCategories)
-    })
-    return cats
-  },
-)
+const levelEnum = {
+  promoted: 10,
+  primary: 20,
+  secondary: 30,
+  tertiary: 40,
+}
 
-export const selectAdminCategories = createSelector(
-  [selectCategoryCollection], (allCats) => {
-    const cats = {}
-    const defaultCats = allCats || Immutable.Map()
-    // add cats to the correct arrays
-    defaultCats.map((cat) => {
-      const level = cat.get('level') ? cat.get('level') : 'other'
-      if (!cats[level]) {
-        cats[level] = []
-      }
-      cats[level].push(cat)
-      return cat
-    })
-    // sort arrays
-    Object.keys(cats).forEach((level) => {
-      cats[level].sort(sortCategories)
-    })
-    return cats
-  },
-)
+function sortCategoriesByLevelAndOrder(a, b) {
+  const levelA = levelEnum[a.get('level')]
+  const levelB = levelEnum[b.get('level')]
+  const orderA = a.get('order')
+  const orderB = b.get('order')
 
-export const selectOnboardingCategories = createSelector(
-  [selectCategories], (categories) => {
-    let cats = [];
-    ['primary', 'secondary', 'tertiary'].forEach((level) => {
-      const levelArr = categories[level]
-      if (levelArr) { cats = cats.concat(levelArr) }
-    })
-    return cats
-  },
-)
+  if (levelA > levelB) {
+    return 1
+  } else if (levelB > levelA) {
+    return -1
+  } else if (orderA > orderB) {
+    return 1
+  } else if (orderB > orderA) {
+    return -1
+  }
+  return 0
+}
+
+export const selectOrderedCategories = createSelector(
+  [selectAllCategoriesAsArray], categories => categories.sort(sortCategoriesByLevelAndOrder))
+
+export const selectOrderedCategoryIds = createSelector(
+  [selectOrderedCategories], cats => cats.map(cat => cat.get('id')))
 
 export const selectOnboardingCategoriesFiltered = createSelector(
-  [selectOnboardingCategories], categories =>
-    categories.filter(category => category.get('allowInOnboarding')),
-)
+  [selectOrderedCategories], categories =>
+    categories.filter(category => category.get('allowInOnboarding')).toArray())
 
 export const selectCreatorTypeCategories = createSelector(
-  [selectOnboardingCategories], categories =>
-    categories.filter(category => category.get('isCreatorType')),
-)
+  [selectOrderedCategories], categories =>
+    categories.filter(category => category.get('isCreatorType')).toArray())
 
 export const selectCategoryTabs = createSelector(
   [selectCategoryCollection, selectId, selectSubscribedCategoryIds],

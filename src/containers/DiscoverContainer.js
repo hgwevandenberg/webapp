@@ -1,9 +1,8 @@
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import {
   bindDiscoverKey,
-  getCategories,
   loadCategoryPosts,
   loadDiscoverPosts,
 } from '../actions/discover'
@@ -19,8 +18,6 @@ export function getStreamAction(type) {
     case 'recent':
     case 'trending':
       return loadDiscoverPosts(type)
-    case 'all':
-      return getCategories()
     default:
       return loadCategoryPosts(type)
   }
@@ -33,7 +30,7 @@ function mapStateToProps(state, props) {
   }
 }
 
-class DiscoverContainer extends PureComponent {
+class DiscoverContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     paramsType: PropTypes.string.isRequired,
@@ -60,7 +57,6 @@ class DiscoverContainer extends PureComponent {
     const { paramsType } = this.props
     return (
       <Discover
-        inAllCategories={paramsType === 'all'}
         key={`discover_${paramsType}`}
         streamAction={getStreamAction(paramsType)}
       />

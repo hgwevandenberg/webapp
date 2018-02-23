@@ -2,7 +2,6 @@ import Immutable from 'immutable'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import ArtistInviteContainer from '../../containers/ArtistInviteContainer'
-import CategoryContainer from '../../containers/CategoryContainer'
 import CommentContainer from '../../containers/CommentContainer'
 import NotificationContainer from '../../containers/NotificationContainer'
 import ArtistInviteSubmissionContainer from '../../containers/ArtistInviteSubmissionContainer'
@@ -18,29 +17,6 @@ import { preferenceToggleChanged } from '../../helpers/junk_drawer'
 import { isElloAndroid } from '../../lib/jello'
 import { css, media, parent, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
-
-// categories/comments/posts/users all get passed an Immutable.List
-// which contains ids required for their respective containers to
-// do their own lookup in the store to ensure they are up to date
-// CATEGORIES
-const categoriesStyle = css(
-  s.flex,
-  s.flexRow,
-  s.flexWrap,
-  s.mt10,
-  { marginLeft: -20 },
-  media(s.minBreak4, s.mt20, { marginLeft: -40 }),
-)
-
-export const categoriesAsGrid = categoryIds =>
-  (<div className={categoriesStyle}>
-    {categoryIds.map(id =>
-      (<CategoryContainer
-        categoryId={id}
-        key={`categoryGrid_${id}`}
-      />),
-    )}
-  </div>)
 
 // COMMENTS
 class CommentsAsListSimple extends PureComponent { // eslint-disable-line react/no-multi-comp

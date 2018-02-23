@@ -1,7 +1,6 @@
 import {
   loadCategoryPosts,
   loadDiscoverPosts,
-  getCategories,
 } from '../../../src/actions/discover'
 import { getStreamAction } from '../../../src/containers/DiscoverContainer'
 
@@ -22,12 +21,6 @@ describe('DiscoverContainer', () => {
       const realTrendingAction = loadDiscoverPosts('trending')
       const trendingAction = getStreamAction('trending')
       expect(trendingAction).to.deep.equal(realTrendingAction)
-    })
-
-    it('returns the correct stream action for all', () => {
-      const realAction = getCategories()
-      const testAction = getStreamAction('all')
-      expect(testAction).to.deep.equal(realAction)
     })
   })
 })

@@ -1,38 +1,26 @@
 import * as ACTION_TYPES from '../constants/action_types'
 import * as MAPPING_TYPES from '../constants/mapping_types'
 import * as api from '../networking/api'
-import * as StreamFilters from '../components/streams/StreamFilters'
 import * as StreamRenderables from '../components/streams/StreamRenderables'
 import navCategoriesQuery from '../queries/navCategories'
+import allCategoriesQuery from '../queries/allCategories'
 
 export function getCategories() {
   return {
-    type: ACTION_TYPES.LOAD_STREAM,
-    payload: { endpoint: api.categories() },
-    meta: {
-      mappingType: MAPPING_TYPES.CATEGORIES,
-      renderStream: {
-        asList: StreamRenderables.categoriesAsGrid,
-        asGrid: StreamRenderables.categoriesAsGrid,
-      },
-      resultFilter: StreamFilters.sortedCategories,
-      resultKey: 'all-categories',
+    type: ACTION_TYPES.V3.LOAD_CATEGORIES,
+    payload: {
+      query: allCategoriesQuery,
+      variables: {},
     },
   }
 }
 
 export function getNavCategories() {
   return {
-    type: ACTION_TYPES.V3.LOAD_NAV_CATEGORIES,
+    type: ACTION_TYPES.V3.LOAD_CATEGORIES,
     payload: {
       query: navCategoriesQuery,
       variables: {},
-    },
-    meta: {
-      renderStream: {
-        asList: StreamRenderables.categoriesAsGrid,
-        asGrid: StreamRenderables.categoriesAsGrid,
-      },
     },
   }
 }

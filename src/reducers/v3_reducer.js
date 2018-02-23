@@ -65,6 +65,9 @@ function parseCategory(state, category) {
     slug: category.slug,
     name: category.name,
     level: category.level,
+    order: category.order,
+    allowInOnboarding: category.allowInOnboarding,
+    isCreatorType: category.isCreatorType,
     tileImage: category.tileImage,
   }))
 }
@@ -224,8 +227,8 @@ function parseStream(state, { payload: { response: { data }, pathname, query, va
   )
 }
 
-function parseNav(state, { payload: { response: { data: { categoryNav } } } }) {
-  return parseList(state, categoryNav, parseCategory)
+function parseCategoryQueries(state, { payload: { response: { data } } }) {
+  return parseList(state, data.categoryNav || data.allCategories, parseCategory)
 }
 
 function parsePageHeaders(state, { payload: { response: { data: { pageHeaders } } } }) {
@@ -239,8 +242,8 @@ export default function (state, action) {
     case ACTION_TYPES.V3.LOAD_STREAM_SUCCESS:
     case ACTION_TYPES.V3.LOAD_NEXT_CONTENT_SUCCESS:
       return parseStream(state, action)
-    case ACTION_TYPES.V3.LOAD_NAV_CATEGORIES_SUCCESS:
-      return parseNav(state, action)
+    case ACTION_TYPES.V3.LOAD_CATEGORIES_SUCCESS:
+      return parseCategoryQueries(state, action)
     case ACTION_TYPES.V3.LOAD_PAGE_HEADERS_SUCCESS:
       return parsePageHeaders(state, action)
     default:
