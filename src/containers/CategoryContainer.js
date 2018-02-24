@@ -31,12 +31,16 @@ class CategoryContainer extends Component {
   static propTypes = {
     name: PropTypes.string.isRequired,
     slug: PropTypes.string.isRequired,
-    tileImageUrl: PropTypes.string.isRequired,
+    tileImageUrl: PropTypes.string,
     isLoggedIn: PropTypes.bool.isRequired,
     isSubscribed: PropTypes.bool.isRequired,
     categoryId: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired,
     subscribedIds: PropTypes.object.isRequired,
+  }
+
+  static defaultProps = {
+    tileImageUrl: null,
   }
 
   subscribe = (e) => {

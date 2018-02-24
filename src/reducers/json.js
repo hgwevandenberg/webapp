@@ -82,14 +82,6 @@ methods.removePageId = (state, pageName, id) => {
   return state
 }
 
-methods.updateFollowedCategoryIds = (state0, { payload: { body } }) => {
-  const followedIds = body.followed_category_ids.map(id => parseInt(id, 10))
-  console.log({followedIds})
-  state2 = state0.setIn(['profile', 'followedCategoryIds'], followedIds)
-  console.log(state2.getIn['profile', 'followedCategoryIds'])
-  return state2
-}
-
 function normalizePostContentRegion(model, field, state) {
   return model.get(field, Immutable.List()).map((region, index) => {
     const id = `${model.get('id')}-${index}`
@@ -432,8 +424,6 @@ export default function json(state = initialState, action = { type: '' }) {
     case ACTION_TYPES.PROFILE.SAVE_SUCCESS:
       state = methods.parseLinked(get(action, 'payload.response.linked'), state)
       return methods.updateCurrentUser(state, action)
-    case ACTION_TYPES.PROFILE.FOLLOW_CATEGORIES_SUCCESS:
-      return methods.updateFollowedCategoryIds(state, action)
     case ACTION_TYPES.PROFILE.TMP_AVATAR_CREATED:
     case ACTION_TYPES.PROFILE.TMP_COVER_CREATED:
       return methods.updateCurrentUserTmpAsset(state, action)
