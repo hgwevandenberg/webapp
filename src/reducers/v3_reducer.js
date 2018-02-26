@@ -123,7 +123,8 @@ function parseUser(state, user) {
 function parsePageHeader(state, pageHeader) {
   if (!pageHeader) { return state }
   const state1 = parseUser(state, pageHeader.user)
-  return smartMergeDeepIn(state1, ['pageHeaders', pageHeader.id], Immutable.fromJS({
+  const state2 = parseCategory(state1, pageHeader.category)
+  return smartMergeDeepIn(state2, ['pageHeaders', pageHeader.id], Immutable.fromJS({
     id: pageHeader.id,
     kind: pageHeader.kind,
     slug: pageHeader.slug,
@@ -133,6 +134,7 @@ function parsePageHeader(state, pageHeader) {
     ctaLink: pageHeader.ctaLink,
     image: pageHeader.image,
     userId: deepGet(pageHeader, ['user', 'id']),
+    categoryId: deepGet(pageHeader, ['category', 'id']),
   }))
 }
 

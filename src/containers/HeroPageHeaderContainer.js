@@ -12,31 +12,41 @@ import {
   selectIsMobile,
 } from '../selectors/gui'
 import { selectIsLoggedIn } from '../selectors/authentication'
+import { selectSubscribedCategoryIds } from '../selectors/profile'
 import { selectRandomPageHeader } from '../selectors/page_headers'
 import { trackPostViews } from '../actions/posts'
+import { followCategories } from '../actions/profile'
 
-function mapStateToProps(state) {
+function mapStateToProps(state, props) {
   const pageHeader = selectRandomPageHeader(state)
   const user = pageHeader ? selectUser(state, { userId: pageHeader.get('userId') }) : Map()
   const dpi = selectDPI(state)
   const isMobile = selectIsMobile(state)
   const isLoggedIn = selectIsLoggedIn(state)
-  return { pageHeader, user, dpi, isMobile, isLoggedIn }
+  const categoryId = pageHeader ? pageHeader.get('categoryId') : null
+  const subscribedIds = selectSubscribedCategoryIds(state, props)
+  const isSubscribed = !!categoryId && !!isLoggedIn && subscribedIds.includes(categoryId)
+  return { pageHeader, user, dpi, isMobile, isLoggedIn, isSubscribed, subscribedIds, categoryId }
 }
 
-class HeroPageHeaderContainer extends Component { //eslint-disable-line
+class HeroPageHeaderContainer extends Component {
   static propTypes = {
     pageHeader: PropTypes.object,
     user: PropTypes.object,
     dpi: PropTypes.string.isRequired,
     isMobile: PropTypes.bool.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
+    isSubscribed: PropTypes.bool.isRequired,
+    subscribedIds: PropTypes.object,
+    categoryId: PropTypes.string,
     dispatch: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
     pageHeader: null,
     user: null,
+    subscribedIds: null,
+    categoryId: null,
   }
 
   componentDidUpdate() {
@@ -46,8 +56,26 @@ class HeroPageHeaderContainer extends Component { //eslint-disable-line
     }
   }
 
+  subscribe = (e) => {
+    const { isLoggedIn, categoryId, dispatch, subscribedIds } = this.props
+    e.preventDefault()
+    if (!isLoggedIn) {
+      // RegistrationRequestDialog
+    } else {
+      const catIds = subscribedIds.push(categoryId)
+      dispatch(followCategories(catIds))
+    }
+  }
+
+  unsubscribe = (e) => {
+    const { categoryId, dispatch, subscribedIds } = this.props
+    e.preventDefault()
+    const catIds = subscribedIds.filter(id => id !== categoryId)
+    dispatch(followCategories(catIds))
+  }
+
   render() {
-    const { pageHeader, user, dpi, isMobile, isLoggedIn } = this.props
+    const { pageHeader, user, dpi, isMobile, isLoggedIn, isSubscribed } = this.props
     if (!pageHeader) { return null }
     switch (pageHeader.get('kind')) {
       case 'CATEGORY':
@@ -66,6 +94,9 @@ class HeroPageHeaderContainer extends Component { //eslint-disable-line
             dpi={dpi}
             isMobile={isMobile}
             isLoggedIn={isLoggedIn}
+            isSubscribed={isSubscribed}
+            subscribe={this.subscribe}
+            unsubscribe={this.unsubscribe}
           />
         )
       case 'GENERIC':

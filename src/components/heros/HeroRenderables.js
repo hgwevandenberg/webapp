@@ -3,6 +3,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import BackgroundImage from '../assets/BackgroundImage'
 import {
+  CategorySubscribedIcon,
+  CategorySubscribeLink,
+} from '../categories/CategoryRenderables'
+import {
   HeroAppStores,
   HeroPromotionCredits,
   HeroPromotionCTA,
@@ -155,15 +159,22 @@ const promotionCategoryStyle = css({ ...promotionStyle }, media(s.maxBreak2, s.f
 export const HeroPromotionCategory = (props) => {
   const { creditLabel, creditSources, creditUsername, creditTrackingLabel } = props
   const { description, dpi, name, sources } = props
-  const { ctaCaption, ctaHref, ctaTrackingLabel, isLoggedIn, isMobile } = props
+  const { ctaCaption, ctaHref, ctaTrackingLabel, isLoggedIn, isMobile, isSubscribed } = props
+  const { subscribe, unsubscribe } = props
   return (
     <div className={promotionCategoryStyle}>
       <BackgroundImage className="hasOverlay4" dpi={dpi} sources={sources} />
       <div className={categoryCaptionStyle}>
         <h1 className={categoryHeadingStyle}>
+          <CategorySubscribedIcon isSubscribed={isSubscribed} />
           <span className={categoryHeadingTextStyle}>{name}</span>
         </h1>
         <p className={categoryCopyStyle}>{description}</p>
+        <CategorySubscribeLink
+          subscribe={subscribe}
+          unsubscribe={unsubscribe}
+          isSubscribed={isSubscribed}
+        />
         {!isMobile &&
           <HeroPromotionCTA
             caption={ctaCaption}
@@ -217,6 +228,9 @@ HeroPromotionCategory.propTypes = {
   isMobile: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
   sources: PropTypes.object,
+  subscribe: PropTypes.func.isRequired,
+  unsubscribe: PropTypes.func.isRequired,
+  isSubscribed: PropTypes.bool.isRequired,
 }
 HeroPromotionCategory.defaultProps = {
   creditSources: null,

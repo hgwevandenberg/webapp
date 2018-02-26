@@ -13,6 +13,7 @@ export default `
       postToken
       ctaLink { text url }
       image { ...responsiveImageVersions }
+      category { id }
       user {
         id
         username

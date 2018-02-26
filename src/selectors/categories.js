@@ -1,4 +1,4 @@
-import Immutable from 'immutable'
+import { Map, OrderedSet, List } from 'immutable'
 import { createSelector } from 'reselect'
 import get from 'lodash/get'
 import startCase from 'lodash/startCase'
@@ -18,7 +18,7 @@ export const selectCategoryCollection = state => state.json.get(CATEGORIES)
 // Requires `categoryId` to be found in props
 export const selectCategory = createSelector(
   [selectPropsCategoryId, selectCategoryCollection], (id, categories) =>
-    categories.get(id, Immutable.Map()),
+    categories.get(id, Map()),
 )
 
 export const selectCategoryName = createSelector([selectCategory], category => category.get('name'))
@@ -30,7 +30,7 @@ export const selectCategoryIsSubscribed = createSelector(
     category && isLoggedIn && subscribedIds.includes(category.get('id'))))
 
 export const selectAllCategoriesAsArray = createSelector([selectCategoryCollection],
-  categories => (categories || Immutable.Map()).valueSeq())
+  categories => (categories || Map()).valueSeq())
 
 const levelEnum = {
   promoted: 10,
@@ -76,7 +76,7 @@ export const selectCategoryTabs = createSelector(
   (categories, isLoggedIn, subscribedIds) => {
     if (!categories) { return [] }
 
-    const promoIds = categories.filter(cat => cat.get('level') === 'promo').keySeq()
+    const promoIds = OrderedSet(categories.filter(cat => cat.get('level') === 'promo').keySeq())
     let navIds = promoIds
 
     if (isLoggedIn) {
@@ -86,11 +86,16 @@ export const selectCategoryTabs = createSelector(
       navIds = navIds.concat(primaryIds)
     }
 
-    return navIds.map(id => ({
-      label: categories.getIn([id, 'name']),
-      to: `/discover/${categories.getIn([id, 'slug'])}`,
-      source: categories.getIn([id, 'tileImage', 'small', 'url']),
-    })).toArray()
+    return navIds.reduce((ids, id) => {
+      const label = categories.getIn([id, 'name'])
+      const slug = categories.getIn([id, 'slug'])
+      if (!slug || !label) { return ids }
+      return ids.push({
+        label,
+        to: `/discover/${slug}`,
+        source: categories.getIn([id, 'tileImage', 'small', 'url']),
+      })
+    }, List()).toArray()
   },
 )
 
@@ -114,7 +119,7 @@ export const selectCategoryPageTitle = createSelector(
 export const selectCategoryForPath = createSelector(
   [selectPathname, selectAllCategoriesAsArray], (pathname, categories) => {
     const slug = pathname.replace('/discover/', '')
-    return categories.find(category => category.get('slug') === slug) || Immutable.Map()
+    return categories.find(category => category.get('slug') === slug) || Map()
   },
 )
 
