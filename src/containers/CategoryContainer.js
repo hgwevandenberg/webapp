@@ -43,11 +43,16 @@ class CategoryContainer extends Component {
     tileImageUrl: null,
   }
 
+  static contextTypes = {
+    onClickOpenRegistrationRequestDialog: PropTypes.func.isRequired,
+  }
+
   subscribe = (e) => {
     const { isLoggedIn, categoryId, dispatch, subscribedIds } = this.props
     e.preventDefault()
     if (!isLoggedIn) {
-      // RegistrationRequestDialog
+      const { onClickOpenRegistrationRequestDialog } = this.context
+      onClickOpenRegistrationRequestDialog('subscribe-from-page-header')
     } else {
       const catIds = subscribedIds.push(categoryId)
       dispatch(followCategories(catIds))
