@@ -6,6 +6,7 @@ import { selectUser } from '../selectors/user'
 import {
   HeroPromotionCategory,
   HeroPromotionPage,
+  HeroPromotionAuth,
 } from '../components/heros/HeroRenderables'
 import {
   selectDPI,
@@ -117,6 +118,15 @@ class HeroPageHeaderContainer extends Component {
             dpi={dpi}
             isMobile={isMobile}
             isLoggedIn={isLoggedIn}
+          />
+        )
+      case 'AUTHENTICATION':
+        return (
+          <HeroPromotionAuth
+            dpi={dpi}
+            sources={pageHeader.get('image')}
+            creditSources={user.get('avatar', null)}
+            creditUsername={user.get('username', null)}
           />
         )
       default:

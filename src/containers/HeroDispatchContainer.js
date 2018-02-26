@@ -58,6 +58,7 @@ class HeroDispatchContainer extends Component {
     switch (pageHeaderKind) {
       case 'CATEGORY':
       case 'GENERIC':
+      case 'AUTHENTICATION':
         return <HeroPageHeaderContainer key="HeroPageHeaderContainer" />
       default:
         if (isUserProfile) {

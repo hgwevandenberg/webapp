@@ -19,6 +19,8 @@ export const selectPageHeaderKind = createSelector([selectPathname], (pathname) 
     return 'GENERIC'
   } else if (/\/discover\/.*/i.test(pathname)) {
     return 'CATEGORY'
+  } else if (/\/(enter|join|forgot-password|auth\/reset-my-password).*/i.test(pathname)) {
+    return 'AUTHENTICATION'
   }
   return null
 })
