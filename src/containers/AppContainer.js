@@ -1,3 +1,4 @@
+import { Map } from 'immutable'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
@@ -12,7 +13,7 @@ import { openModal } from '../actions/modals'
 import { loadAnnouncements, loadNotifications } from '../actions/notifications'
 import { lovePost, unlovePost } from '../actions/posts'
 import { loadProfile } from '../actions/profile'
-// import { fetchAuthenticationPromos } from '../actions/promotions'
+import { loadPageHeaders } from '../actions/page_headers'
 import DevTools from '../components/devtools/DevTools'
 import RegistrationRequestDialog from '../components/dialogs/RegistrationRequestDialog'
 import ShareDialog from '../components/dialogs/ShareDialog'
@@ -34,10 +35,14 @@ import { selectIsLoggedIn } from '../selectors/authentication'
 import { selectIsGridMode } from '../selectors/gui'
 import { selectIsStaff, selectShowCreatorTypeModal } from '../selectors/profile'
 import { selectIsAuthenticationView } from '../selectors/routing'
+import { selectRandomAuthPageHeader } from '../selectors/page_headers'
+import { selectUser } from '../selectors/user'
 
 function mapStateToProps(state) {
+  const authPromo = selectRandomAuthPageHeader(state)
   return {
-    // authPromo: selectRandomAuthPromotion(state),
+    authPromo,
+    authPromoUser: authPromo ? selectUser(state, { userId: authPromo.get('userId') }) : Map(),
     isAuthenticationView: selectIsAuthenticationView(state),
     isLoggedIn: selectIsLoggedIn(state),
     isStaff: selectIsStaff(state),
@@ -50,6 +55,7 @@ class AppContainer extends Component {
 
   static propTypes = {
     authPromo: PropTypes.object,
+    authPromoUser: PropTypes.object,
     children: PropTypes.node.isRequired,
     dispatch: PropTypes.func.isRequired,
     isAuthenticationView: PropTypes.bool.isRequired,
@@ -62,6 +68,7 @@ class AppContainer extends Component {
 
   static defaultProps = {
     authPromo: null,
+    authPromoUser: null,
   }
 
   static childContextTypes = {
@@ -97,7 +104,7 @@ class AppContainer extends Component {
       dispatch(loadNotifications({ category: 'all' }))
       dispatch(loadAnnouncements())
     } else {
-      // dispatch(fetchAuthenticationPromos())
+      dispatch(loadPageHeaders({ kind: 'AUTHENTICATION' }))
     }
     dispatch(getNavCategories())
     dispatch(loadBadges())
@@ -112,7 +119,7 @@ class AppContainer extends Component {
       dispatch(loadBadges())
       dispatch(loadAnnouncements())
     } else if (this.props.isLoggedIn && !nextProps.isLoggedIn) {
-      // dispatch(fetchAuthenticationPromos())
+      dispatch(loadPageHeaders({ kind: 'AUTHENTICATION' }))
       dispatch(getNavCategories())
       dispatch(loadBadges())
     }
@@ -136,10 +143,10 @@ class AppContainer extends Component {
   // TODO: Rename this to openRegistrationRequestDialog since it's a method
   // call and not coming directly from an event.
   onClickOpenRegistrationRequestDialog = (trackPostfix = 'modal') => {
-    const { authPromo, dispatch, isAuthenticationView } = this.props
+    const { authPromo, authPromoUser, dispatch, isAuthenticationView } = this.props
     if (isAuthenticationView || !authPromo) { return }
     dispatch(openModal(
-      <RegistrationRequestDialog promotional={authPromo} />,
+      <RegistrationRequestDialog pageHeader={authPromo} user={authPromoUser} />,
       'asDecapitated',
       'RegistrationRequestDialog',
       `open-registration-request-${trackPostfix}`,

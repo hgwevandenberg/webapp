@@ -19,7 +19,7 @@ import {
 } from '../components/viewport/ScrollComponent'
 import * as ACTION_TYPES from '../constants/action_types'
 import { runningFetches } from '../sagas/requester'
-import { runningFetches as v3RunningFetches } from '../sagas/v3_requester'
+import { v3IsRunning } from '../sagas/v3_requester'
 import { selectIsLoggedIn } from '../selectors/authentication'
 import {
   selectColumnCount,
@@ -96,7 +96,7 @@ function lastPage(action, stream, pagination) {
 }
 
 function nextPageInFlight(pagination) {
-  return runningFetches[pagination.next] || v3RunningFetches[pagination.query]
+  return runningFetches[pagination.next] || v3IsRunning(pagination)
 }
 
 class StreamContainer extends Component {

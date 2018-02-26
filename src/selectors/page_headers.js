@@ -35,6 +35,14 @@ export const selectPageHeaders = createSelector(
     pageHeaders.filter(header =>
       (header.get('kind') === kind && (!slug || slug === header.get('slug'))))))
 
+export const selectAuthPageHeaders = createSelector(
+  [allPageHeadersAsArray], pageHeaders => (
+    pageHeaders.filter(header =>
+      (header.get('kind') === 'AUTHENTICATION'))))
+
 
 export const selectRandomPageHeader = createSelector([selectPageHeaders], pageHeaders =>
+  pageHeaders.get(Math.floor(Math.random() * pageHeaders.count())))
+
+export const selectRandomAuthPageHeader = createSelector([selectAuthPageHeaders], pageHeaders =>
   pageHeaders.get(Math.floor(Math.random() * pageHeaders.count())))
