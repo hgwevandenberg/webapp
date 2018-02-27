@@ -55,6 +55,10 @@ const postDetailStyle = css(
       modifier('.FlagTool', s.block, s.opacity1, s.pointerAuto),
     ),
   ),
+  media(
+    s.maxBreak2,
+    select('&.PostDetail.MainView', { paddingBottom: 0 }), // select override because of legacy css
+  ),
 )
 
 const listStyle = css(
