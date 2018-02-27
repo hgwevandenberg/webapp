@@ -1,4 +1,3 @@
-
 export const imageVersionProps = `
   fragment imageVersionProps on Image {
     url
@@ -7,7 +6,6 @@ export const imageVersionProps = `
 `
 
 export const tshirtImageVersions = `
-  ${imageVersionProps}
   fragment tshirtImageVersions on TshirtImageVersions {
     small { ...imageVersionProps }
     regular { ...imageVersionProps }
@@ -17,7 +15,6 @@ export const tshirtImageVersions = `
 `
 
 export const responsiveImageVersions = `
-  ${imageVersionProps}
   fragment responsiveImageVersions on ResponsiveImageVersions {
     xhdpi { ...imageVersionProps }
     hdpi { ...imageVersionProps }
@@ -30,7 +27,6 @@ export const responsiveImageVersions = `
 `
 
 export const authorSummary = `
-  ${tshirtImageVersions}
   fragment authorSummary on User {
     id
     username
@@ -60,19 +56,11 @@ export const artistInviteSubmissionSummary = `
   fragment artistInviteSubmissionSummary on ArtistInviteSubmission {
     id
     status
-    artistInvite {
-      id
-      slug
-      title
-    }
+    artistInvite { id slug title }
   }
 `
 
 export const postSummary = `
-  ${contentProps}
-  ${authorSummary}
-  ${artistInviteSubmissionSummary}
-  ${responsiveImageVersions}
   fragment postSummary on Post {
     id
     token
@@ -86,4 +74,23 @@ export const postSummary = `
     postStats { lovesCount commentsCount viewsCount repostsCount }
     currentUserState { watching loved reposted }
   }
+`
+
+export const postStream = `
+  fragment postStream on PostStream {
+    next
+    isLastPage
+    posts { ...postSummary repostedSource { ...postSummary } }
+  }
+`
+
+export const postStreamAllFragments = `
+  ${imageVersionProps}
+  ${responsiveImageVersions}
+  ${tshirtImageVersions}
+  ${contentProps}
+  ${authorSummary}
+  ${artistInviteSubmissionSummary}
+  ${postSummary}
+  ${postStream}
 `

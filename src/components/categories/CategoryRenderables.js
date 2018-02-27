@@ -33,7 +33,7 @@ CategorySubscribeLink.propTypes = {
   unsubscribe: PropTypes.func.isRequired,
 }
 
-export function DiscoverSubNav({ stream }) {
+export function CategorySubNav({ stream }) {
   if (stream === 'global') {
     return (
       <ul>
@@ -50,6 +50,6 @@ export function DiscoverSubNav({ stream }) {
     </ul>
   )
 }
-DiscoverSubNav.propTypes = {
+CategorySubNav.propTypes = {
   stream: PropTypes.string.isRequired,
 }

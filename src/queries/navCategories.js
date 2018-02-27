@@ -1,6 +1,7 @@
-import { tshirtImageVersions } from './fragments'
+import { tshirtImageVersions, imageVersionProps } from './fragments'
 
 export default `
+  ${imageVersionProps}
   ${tshirtImageVersions}
   {
     categoryNav {

@@ -7,9 +7,12 @@ import { MainView } from '../views/MainView'
 export const Discover = ({ streamAction, kind, stream }) => (
   <MainView className="Discover">
     <CategorySubNav stream={stream} kind={kind} />
+    <StreamContainer
+      action={streamAction}
+      paginatorText="Load More"
+    />
   </MainView>
 )
-
 
 Discover.propTypes = {
   streamAction: PropTypes.object.isRequired,
@@ -18,8 +21,3 @@ Discover.propTypes = {
 }
 
 export default Discover
-
-      /* <StreamContainer
-      //   action={streamAction}
-      //   paginatorText="Load More"
-      // /> */

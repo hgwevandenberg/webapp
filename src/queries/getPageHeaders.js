@@ -1,6 +1,7 @@
-import { responsiveImageVersions, tshirtImageVersions } from './fragments'
+import { responsiveImageVersions, tshirtImageVersions, imageVersionProps } from './fragments'
 
 export default `
+  ${imageVersionProps}
   ${responsiveImageVersions}
   ${tshirtImageVersions}
   query($kind: PageHeaderKind!, $slug: String) {
@@ -14,11 +15,7 @@ export default `
       ctaLink { text url }
       image { ...responsiveImageVersions }
       category { id }
-      user {
-        id
-        username
-        avatar { ...tshirtImageVersions }
-      }
+      user { id username avatar { ...tshirtImageVersions } }
     }
   }
 `
