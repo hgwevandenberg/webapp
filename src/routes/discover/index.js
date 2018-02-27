@@ -9,19 +9,9 @@ const discoverAll = () => ({
 })
 
 const discover = () => ({
-  path: 'discover(/:type)(/trending)',
+  path: 'discover(/:stream)(/:kind)',
   getComponents(location, cb) {
     cb(null, DiscoverContainer)
-  },
-  onEnter(nextState, replace) {
-    const type = nextState.params.type || 'featured'
-    const rootPath = '/discover'
-
-    // redirect back to root path if type is unrecognized
-    // or, if a logged out user is visiting /discover, redirect to /
-    if (!type) {
-      replace({ state: nextState, pathname: rootPath })
-    }
   },
 })
 

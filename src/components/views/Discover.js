@@ -1,21 +1,25 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import StreamContainer from '../../containers/StreamContainer'
+import { CategorySubNav } from '../categories/CategoryRenderables'
 import { MainView } from '../views/MainView'
 
-export const Discover = ({
-  streamAction,
-  }) =>
-    (<MainView className="Discover">
-      <StreamContainer
-        action={streamAction}
-        paginatorText="Load More"
-      />
-    </MainView>)
+export const Discover = ({ streamAction, kind, stream }) => (
+  <MainView className="Discover">
+    <CategorySubNav stream={stream} kind={kind} />
+  </MainView>
+)
+
 
 Discover.propTypes = {
   streamAction: PropTypes.object.isRequired,
+  stream: PropTypes.string.isRequired,
+  kind: PropTypes.string.isRequired,
 }
 
 export default Discover
 
+      /* <StreamContainer
+      //   action={streamAction}
+      //   paginatorText="Load More"
+      // /> */

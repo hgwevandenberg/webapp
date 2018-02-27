@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router'
 import {
   CheckCircleIcon,
 } from '../assets/Icons'
@@ -30,4 +31,25 @@ CategorySubscribeLink.propTypes = {
   isSubscribed: PropTypes.bool.isRequired,
   subscribe: PropTypes.func.isRequired,
   unsubscribe: PropTypes.func.isRequired,
+}
+
+export function DiscoverSubNav({ stream }) {
+  if (stream === 'global') {
+    return (
+      <ul>
+        <li><Link to="/discover">Featured</Link></li>
+        <li><Link to="/discover/trending">Trending</Link></li>
+        <li><Link to="/discover/recent">Recent</Link></li>
+      </ul>
+    )
+  }
+  return (
+    <ul>
+      <li><Link to={`/discover/${stream}`}>Featured</Link></li>
+      <li><Link to={`/discover/${stream}/trending`}>Trending</Link></li>
+    </ul>
+  )
+}
+DiscoverSubNav.propTypes = {
+  stream: PropTypes.string.isRequired,
 }

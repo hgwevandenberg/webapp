@@ -28,6 +28,18 @@ export const selectQueryTerms = state => state.routing.getIn(['location', 'terms
 export const selectQueryPreview = state => state.routing.getIn(['location', 'preview'])
 export const selectSubmissionType = state => state.routing.getIn(['location', 'submissionType'])
 
+// props.routing for discover streams
+export function selectDiscoverStream(state, { params: { stream } }) {
+  if (!stream || stream === 'recent' || stream === 'trending') { return 'global' }
+  return stream
+}
+export function selectDiscoverStreamKind(state, { params: { stream, kind } }) {
+  if (!kind && !stream) { return 'featured' }
+  if (stream === 'recent' || stream === 'trending') { return stream }
+  if (!kind) { return 'featured' }
+  return kind
+}
+
 // Memoized selectors
 export const selectViewNameFromRoute = createSelector(
   [selectPathname, selectParamsUsername], (pathname, username) => {

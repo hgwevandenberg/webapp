@@ -15,7 +15,7 @@ export const selectPageHeaderKind = createSelector([selectPathname], (pathname) 
     return null
   } else if (pathname === '/discover') {
     return 'GENERIC'
-  } else if (/\/discover\/(all|subscribed|featured|trending).*/i.test(pathname)) {
+  } else if (/\/discover\/(subscribed|featured|trending|recent).*/i.test(pathname)) {
     return 'GENERIC'
   } else if (/\/discover\/.*/i.test(pathname)) {
     return 'CATEGORY'
@@ -27,8 +27,8 @@ export const selectPageHeaderKind = createSelector([selectPathname], (pathname) 
 
 export const selectPageHeaderSlug = createSelector([selectPathname], (pathname) => {
   if (!/\/discover\/.*/i.test(pathname)) { return null }
-  if (/\/discover\/(all|subscribed|featured|trending).*/i.test(pathname)) { return null }
-  return /\/discover\/(.*)/i.exec(pathname)[1]
+  if (/\/discover\/(all|subscribed|featured|trending|recent).*/i.test(pathname)) { return null }
+  return /\/discover\/([a-z0-9\-_]*)(\/.*)?/i.exec(pathname)[1]
 })
 
 export const selectPageHeaders = createSelector(

@@ -7,8 +7,11 @@ import {
   loadDiscoverPosts,
 } from '../actions/discover'
 import { Discover } from '../components/views/Discover'
-import { selectParamsType } from '../selectors/params'
-import { selectPropsPathname } from '../selectors/routing'
+import {
+  selectPropsPathname,
+  selectDiscoverStream,
+  selectDiscoverStreamKind,
+} from '../selectors/routing'
 
 export function getStreamAction(type) {
   switch (type) {
@@ -25,7 +28,8 @@ export function getStreamAction(type) {
 
 function mapStateToProps(state, props) {
   return {
-    paramsType: selectParamsType(state, props),
+    stream: selectDiscoverStream(state, props),
+    kind: selectDiscoverStreamKind(state, props),
     pathname: selectPropsPathname(state, props),
   }
 }
@@ -33,32 +37,30 @@ function mapStateToProps(state, props) {
 class DiscoverContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    paramsType: PropTypes.string.isRequired,
-    pathname: PropTypes.string.isRequired,
-  }
-
-  static defaultProps = {
-    paramsType: 'featured',
+    stream: PropTypes.string.isRequired,
+    kind: PropTypes.string.isRequired,
   }
 
   componentWillMount() {
-    const { dispatch, paramsType } = this.props
-    dispatch(bindDiscoverKey(paramsType))
+    // const { dispatch, paramsType } = this.props
+    // dispatch(bindDiscoverKey(paramsType))
   }
 
   componentDidUpdate(prevProps) {
-    const { dispatch, paramsType, pathname } = this.props
-    if (prevProps.pathname !== pathname) {
-      dispatch(bindDiscoverKey(paramsType))
-    }
+    // const { dispatch, paramsType, pathname } = this.props
+    // if (prevProps.pathname !== pathname) {
+    //   dispatch(bindDiscoverKey(paramsType))
+    // }
   }
 
   render() {
-    const { paramsType } = this.props
+    const { stream, kind } = this.props
     return (
       <Discover
-        key={`discover_${paramsType}`}
-        streamAction={getStreamAction(paramsType)}
+        stream={stream}
+        kind={kind}
+        key={`discover_${stream}`}
+        streamAction={getStreamAction(stream)}
       />
     )
   }
