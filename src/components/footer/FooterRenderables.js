@@ -105,6 +105,7 @@ const toolsStyle = css(
     s.relative,
     s.nowrap,
     { right: 'auto' },
+    select('> .LayoutTool', { display: 'none' }),
   ),
 )
 
