@@ -26,7 +26,7 @@ const initialState = Immutable.Map({
 })
 
 function updateFollowedCategoryIds(state, { payload: { body } }) {
-  const followedIds = body.followed_category_ids.map(id => parseInt(id, 10))
+  const followedIds = body.followed_category_ids
   return state.set('followedCategoryIds', followedIds)
 }
 
