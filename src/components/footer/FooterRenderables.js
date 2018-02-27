@@ -26,12 +26,17 @@ const baseStyle = css(
   select('.isAuthenticationView ~ &', s.displayNone),
   select('.isOnboardingView ~ &', s.displayNone),
   media(s.maxBreak2,
-    { bottom: -40, height: 55 },
-  ),
-  media(s.maxBreak2,
+    { bottom: -40, height: 54 },
     parent('.isEditorFocused', s.displayNone),
     parent('.isOmnibarActive', s.displayNone),
     select('.isProfileMenuActive ~ &', s.displayNone),
+    select('&.hide',
+      s.relative,
+      { bottom: 'auto' },
+      select('.footer-content', {
+        transform: 'none',
+      }),
+    ),
   ),
   media(s.minBreak2,
     select('.isOmnibarActive .Omnibar.isFullScreen ~ &', s.displayNone),
@@ -49,12 +54,15 @@ const grabberStyle = css(
     { cursor: 'pointer' },
   ),
   select(
-    '.no-touch .isNavbarHidden ~ .Footer &',
+    '.isNavbarHidden ~ .Footer &',
     { height: 15, marginTop: 0 },
   ),
   select(
     '.Footer.hide &',
     { height: 15, marginTop: 0 },
+    media(s.maxBreak2,
+      { display: 'none' },
+    ),
   ),
 )
 
