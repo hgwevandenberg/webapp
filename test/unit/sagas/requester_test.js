@@ -1,7 +1,5 @@
-import { channel } from 'redux-saga'
 import { clearAuthToken, refreshAuthenticationToken } from '../../../src/actions/authentication'
 import {
-  handleRequest,
   handleRequestError,
   performRequest,
 } from '../../../src/sagas/requester'

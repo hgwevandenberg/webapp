@@ -55,7 +55,7 @@ class CategoryContainer extends Component {
       onClickOpenRegistrationRequestDialog('subscribe-from-page-header')
     } else {
       const catIds = subscribedIds.push(categoryId)
-      dispatch(followCategories(catIds))
+      dispatch(followCategories(catIds, true))
     }
   }
 
@@ -63,7 +63,7 @@ class CategoryContainer extends Component {
     const { categoryId, dispatch, subscribedIds } = this.props
     e.preventDefault()
     const catIds = subscribedIds.filter(id => id !== categoryId)
-    dispatch(followCategories(catIds))
+    dispatch(followCategories(catIds, true))
   }
 
   render() {
