@@ -4,6 +4,7 @@ import * as ACTION_TYPES from '../constants/action_types'
 
 // Like .getIn but for regular JS objects
 // Does not break if object is missing a key in the middle
+// TODO: Immutable 4.x has a functional getIn that works on both Maps and objects.
 function deepGet(object, [head, ...tail], fallback = null) {
   const val = object[head]
   if (val === undefined || val === null) { return fallback }
@@ -39,9 +40,20 @@ function parsePagination(state, stream, pathname, query, variables) {
   const mergedState = state.mergeDeepIn(['pages', pathname], Immutable.fromJS({
     pagination: Immutable.fromJS({ next, query, variables, isLastPage }),
   }))
-  return mergedState.updateIn(['pages', pathname, 'ids'], ids =>
-    ((ids || Immutable.OrderedSet()).concat(models.map(m => m.id))),
-  )
+  return mergedState.updateIn(['pages', pathname, 'ids'], (existingPageIds) => {
+    const newPageIds = Immutable.OrderedSet(models.map(m => m.id))
+    // If we don't have any existingPageIds just return the new ids.
+    if (!existingPageIds || existingPageIds.count() === 0) {
+      return newPageIds
+    }
+    // If we have a before value in the query this is not the first page, so append to ordered set.
+    if (variables.before || (variables.get && variables.get('before'))) {
+      return existingPageIds.concat(newPageIds)
+    }
+    // If we don't have a before value this is either the first page or re-requesting the first
+    // page. In that case we need to prepend to the ordered set.
+    return newPageIds.concat(existingPageIds)
+  })
 }
 
 function parseAsset(state, asset) {
