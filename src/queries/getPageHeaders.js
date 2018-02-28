@@ -1,8 +1,8 @@
-import { responsiveImageVersions, tshirtImageVersions, imageVersionProps } from './fragments'
+import { pageHeaderImageVersions, tshirtImageVersions, imageVersionProps } from './fragments'
 
 export default `
   ${imageVersionProps}
-  ${responsiveImageVersions}
+  ${pageHeaderImageVersions}
   ${tshirtImageVersions}
   query($kind: PageHeaderKind!, $slug: String) {
     pageHeaders(kind: $kind, slug: $slug) {
@@ -13,7 +13,7 @@ export default `
       subheader
       postToken
       ctaLink { text url }
-      image { ...responsiveImageVersions }
+      image { ...pageHeaderImageVersions }
       category { id }
       user { id username avatar { ...tshirtImageVersions } }
     }

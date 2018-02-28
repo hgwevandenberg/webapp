@@ -26,6 +26,15 @@ export const responsiveImageVersions = `
   }
 `
 
+export const pageHeaderImageVersions = `
+  fragment pageHeaderImageVersions on ResponsiveImageVersions {
+    xhdpi { ...imageVersionProps }
+    hdpi { ...imageVersionProps }
+    optimized { ...imageVersionProps }
+    video { ...imageVersionProps }
+  }
+`
+
 export const authorSummary = `
   fragment authorSummary on User {
     id
