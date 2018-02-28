@@ -80,6 +80,12 @@
   background: #e5e5e5;
 }
 
+.editor-block.readonly img {
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 10px;
+}
+
 .DragBlock {
   position: absolute;
   right: 0;
