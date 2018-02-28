@@ -55,6 +55,10 @@ const postDetailStyle = css(
       modifier('.FlagTool', s.block, s.opacity1, s.pointerAuto),
     ),
   ),
+  media(
+    s.maxBreak2,
+    select('&.PostDetail.MainView', { paddingBottom: 0 }), // select override because of legacy css
+  ),
 )
 
 const listStyle = css(
@@ -62,7 +66,7 @@ const listStyle = css(
   media(
     s.minBreak3,
     s.overflowScrollWebY,
-    { height: 'calc(100vh - 80px)', paddingBottom: 80 },
+    { height: '100vh', paddingBottom: 40 },
     s.px20,
   ),
   media(
@@ -85,9 +89,8 @@ const relatedPostsStyle = css(
 
 const asideStyle = css(
   s.absolute,
-  s.fullHeight,
   s.overflowScrollWebY,
-  { width: 360, borderLeft: '1px solid #f2f2f2', top: 0, right: 0, paddingBottom: 80 },
+  { height: '100vh', paddingBottom: 80, width: 360, borderLeft: '1px solid #f2f2f2', top: 0, right: 0 },
   select('& .CommentContent', s.m20),
   select('.PostDetails & .TabListStreamContainer', s.px0),
   select('& .UserProfileCard',
