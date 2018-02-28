@@ -25,11 +25,18 @@ const baseStyle = css(
     }),
   select('.isAuthenticationView ~ &', s.displayNone),
   select('.isOnboardingView ~ &', s.displayNone),
-  media('(max-width: 23.375em)', { bottom: -40, height: 55 }), // 374 and below
   media(s.maxBreak2,
+    { bottom: -40, height: 54 },
     parent('.isEditorFocused', s.displayNone),
     parent('.isOmnibarActive', s.displayNone),
     select('.isProfileMenuActive ~ &', s.displayNone),
+    select('&.hide',
+      s.relative,
+      { bottom: 'auto' },
+      select('.footer-content', {
+        transform: 'none',
+      }),
+    ),
   ),
   media(s.minBreak2,
     select('.isOmnibarActive .Omnibar.isFullScreen ~ &', s.displayNone),
@@ -47,12 +54,15 @@ const grabberStyle = css(
     { cursor: 'pointer' },
   ),
   select(
-    '.no-touch .isNavbarHidden ~ .Footer &',
+    '.isNavbarHidden ~ .Footer &',
     { height: 15, marginTop: 0 },
   ),
   select(
     '.Footer.hide &',
     { height: 15, marginTop: 0 },
+    media(s.maxBreak2,
+      { display: 'none' },
+    ),
   ),
 )
 
@@ -99,10 +109,11 @@ const toolsStyle = css(
     { background: 'linear-gradient(to right, rgba(229, 229, 229, 0) 0%, rgba(229, 229, 229, 1) 90%)' },
   ),
   media(s.minBreak4, before(s.displayNone)),
-  media('(max-width: 23.375em)', // 374 and below
+  media(s.maxBreak2,
     s.relative,
     s.nowrap,
     { right: 'auto' },
+    select('> .LayoutTool', { display: 'none' }),
   ),
 )
 
