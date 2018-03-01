@@ -41,34 +41,34 @@ export function getNavCategories() {
   }
 }
 
-export function loadGlobalPostStream(kind) {
+export function loadGlobalPostStream(kind, before) {
   return {
     type: ACTION_TYPES.V3.LOAD_STREAM,
     payload: {
       query: globalPostStreamQuery,
-      variables: { kind: KINDS[kind] },
+      variables: { kind: KINDS[kind], before },
     },
     meta: postStreamMeta,
   }
 }
 
-export function loadSubscribedPostStream(kind) {
+export function loadSubscribedPostStream(kind, before) {
   return {
     type: ACTION_TYPES.V3.LOAD_STREAM,
     payload: {
       query: subscribedPostStreamQuery,
-      variables: { kind: KINDS[kind] },
+      variables: { kind: KINDS[kind], before },
     },
     meta: postStreamMeta,
   }
 }
 
-export function loadCategoryPostStream(slug, kind) {
+export function loadCategoryPostStream(slug, kind, before) {
   return {
     type: ACTION_TYPES.V3.LOAD_STREAM,
     payload: {
       query: categoryPostStreamQuery,
-      variables: { kind: KINDS[kind], slug },
+      variables: { kind: KINDS[kind], slug, before },
     },
     meta: postStreamMeta,
   }
