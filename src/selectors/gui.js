@@ -81,10 +81,8 @@ export const selectContentWidth = createSelector(
 // Primarily used for background images in Heros
 export const selectDPI = createSelector(
   [selectInnerWidth], (innerWidth) => {
-    if (innerWidth < 750) {
+    if (innerWidth < 1920) {
       return 'hdpi'
-    } else if (innerWidth >= 750 && innerWidth < 1920) {
-      return 'xhdpi'
     }
     return 'optimized'
   },
