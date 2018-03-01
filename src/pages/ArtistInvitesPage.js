@@ -12,7 +12,7 @@ import { selectQueryPreview } from '../selectors/routing'
 import { selectRandomArtistInvitePromotion } from '../selectors/promotions'
 import { selectJson } from '../selectors/store'
 import { css } from '../styles/jss'
-import { selectDPI } from '../selectors/gui'
+import { selectHeroDPI } from '../selectors/gui'
 
 const streamStyle = css({
   paddingLeft: '0 !important',
@@ -20,7 +20,7 @@ const streamStyle = css({
 })
 
 const mapStateToProps = state => ({
-  dpi: selectDPI(state),
+  dpi: selectHeroDPI(state),
   isPreview: selectQueryPreview(state) === 'true',
   json: selectJson(state),
   randomPromotion: selectRandomArtistInvitePromotion(state),

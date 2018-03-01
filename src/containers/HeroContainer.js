@@ -26,7 +26,7 @@ import { DISCOVER, FOLLOWING } from '../constants/locales/en'
 import { getLinkObject } from '../helpers/json_helper'
 import { selectIsLoggedIn } from '../selectors/authentication'
 import {
-  selectDPI,
+  selectHeroDPI,
   selectLastDiscoverBeaconVersion,
   selectLastFollowingBeaconVersion,
   selectIsMobile,
@@ -92,7 +92,7 @@ function mapStateToProps(state, props) {
   return {
     broadcast: selectBroadcast(state),
     categoryData,
-    dpi: selectDPI(state),
+    dpi: selectHeroDPI(state),
     isAuthentication,
     isCategoryPromotion,
     isLoggedIn: selectIsLoggedIn(state),
