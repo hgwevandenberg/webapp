@@ -22,7 +22,7 @@ export function getSource(props) {
     return ''
   } else if (sources.getIn(['tmp', 'url'])) {
     return sources.getIn(['tmp', 'url'])
-  } else if (useGif && isGif(sources.getIn(['video', 'url']))) {
+  } else if (useGif && isGif(sources.getIn(['original', 'url'])) && sources.hasIn(['video', 'url'])) {
     return sources.getIn(['video', 'url'])
   } else if (useGif && isGif(sources.getIn(['original', 'url']))) {
     return sources.getIn(['original', 'url'])
