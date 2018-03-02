@@ -347,7 +347,7 @@ class StreamContainer extends Component {
     const pagination = result.get('pagination')
     const isLastPage = pagination.get('isLastPage', false)
     let nextPagePath = null
-    if (!isLastPage) {
+    if (!isLastPage && resultPath.includes('/discover')) {
       nextPagePath = `${resultPath}?before=${pagination.get('next')}`
     }
     return (
