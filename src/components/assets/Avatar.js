@@ -4,6 +4,7 @@ import { Link } from 'react-router'
 import classNames from 'classnames'
 import { getSource } from './BackgroundImage'
 import ImageAsset from './ImageAsset'
+import VideoAsset from './VideoAsset'
 import { before, css, media, modifier, parent, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
@@ -93,6 +94,15 @@ const imageStyle = css(
   parent('.PostHeader .isRequesting > ', s.opacity1),
 )
 
+const videoStyle = css(
+  s.absolute,
+  s.flood,
+  s.fullWidth,
+  s.fullHeight,
+  { borderRadius: '50%', transition: 'opacity 0.4s', objectFit: 'cover' },
+  modifier('[src=""]', s.displayNone),
+)
+
 export default class Avatar extends PureComponent {
   static propTypes = {
     alt: PropTypes.string,
@@ -150,12 +160,39 @@ export default class Avatar extends PureComponent {
       'data-username': username,
       draggable: (username && username.length > 1) || (priority && priority.length),
     }
+    const src = getSource({ ...this.props, dpi: this.props.size })
+    const isVideo = !!src && src.substr(-3) === 'mp4'
     const imageProps = {
       alt: alt || username,
       className: `${imageStyle}`,
-      src: getSource({ ...this.props, dpi: this.props.size }),
+      src,
       onLoadFailure: this.onLoadFailure,
       onLoadSuccess: this.onLoadSuccess,
+    }
+    const videoProps = {
+      src,
+      className: `${videoStyle}`,
+    }
+
+    if (isVideo) {
+      if (to) {
+        return (
+          <Link {...wrapperProps} to={to} >
+            <VideoAsset {...videoProps} />
+          </Link>
+        )
+      } else if (onClick) {
+        return (
+          <button {...wrapperProps} onClick={onClick} >
+            <VideoAsset {...videoProps} />
+          </button>
+        )
+      }
+      return (
+        <span {...wrapperProps} >
+          <VideoAsset {...videoProps} />
+        </span>
+      )
     }
 
     if (to) {
