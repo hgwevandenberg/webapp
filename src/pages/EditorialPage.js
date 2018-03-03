@@ -12,7 +12,7 @@ import { media } from '../styles/jss'
 import { maxBreak2 } from '../styles/jso'
 import { selectQueryPreview } from '../selectors/routing'
 import { selectRandomEditorialPromotion } from '../selectors/promotions'
-import { selectDPI } from '../selectors/gui'
+import { selectHeroDPI } from '../selectors/gui'
 import { selectJson } from '../selectors/store'
 
 const streamStyle = media(maxBreak2, {
@@ -21,7 +21,7 @@ const streamStyle = media(maxBreak2, {
 })
 
 const mapStateToProps = state => ({
-  dpi: selectDPI(state),
+  dpi: selectHeroDPI(state),
   isPreview: selectQueryPreview(state) === 'true',
   json: selectJson(state),
   randomPromotion: selectRandomEditorialPromotion(state),

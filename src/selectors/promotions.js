@@ -34,12 +34,12 @@ export const selectIsCategoryPromotion = createSelector(
 
 export const selectLoggedInPagePromotions = createSelector(
   [selectPagePromotionals], promos =>
-    promos.filter(value => value.get('isLoggedIn') && !value.get('isArtistInvite') && !value.get('isEditorial')),
+    promos.filter(value => value.get('isLoggedIn') && !value.get('isArtistInvite') && !value.get('isEditorial') && !value.get('isAuthentication')),
 )
 
 export const selectLoggedOutPagePromotions = createSelector(
   [selectPagePromotionals], promos =>
-    promos.filter(value => !value.get('isLoggedIn') && !value.get('isArtistInvite') && !value.get('isEditorial')),
+    promos.filter(value => !value.get('isLoggedIn') && !value.get('isArtistInvite') && !value.get('isEditorial') && !value.get('isAuthentication')),
 )
 
 export const selectArtistInvitePagePromotions = createSelector(
