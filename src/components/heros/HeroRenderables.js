@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import BackgroundImage from '../assets/BackgroundImage'
 import {
   CategorySubscribedIcon,
-  CategorySubscribeLink,
+  CategorySubscribeButton,
 } from '../categories/CategoryRenderables'
 import {
   HeroAppStores,
@@ -170,7 +170,7 @@ export const HeroPromotionCategory = (props) => {
           <span className={categoryHeadingTextStyle}>{name}</span>
         </h1>
         <p className={categoryCopyStyle}>{description}</p>
-        <CategorySubscribeLink
+        <CategorySubscribeButton
           subscribe={subscribe}
           unsubscribe={unsubscribe}
           isSubscribed={isSubscribed}

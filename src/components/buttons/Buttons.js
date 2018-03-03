@@ -80,25 +80,6 @@ export const categoryLinkTextStyle = css(
     select('& .CheckIconSM', { top: 5 }),
 )
 
-export const CategoryLink = ({ children, imageUrl, to }) => (
-  <Link
-    className={categoryLinkStyle}
-    to={to}
-    style={imageUrl ? { backgroundImage: `url("${imageUrl}")` } : null}
-  >
-    <span className={categoryLinkTextStyle}>{children}</span>
-  </Link>
-)
-CategoryLink.propTypes = {
-  children: PropTypes.node.isRequired,
-  imageUrl: PropTypes.string,
-  to: PropTypes.string.isRequired,
-}
-
-CategoryLink.defaultProps = {
-  imageUrl: null,
-}
-
 // -------------------------------------
 
 const dismissButtonStyle = css(

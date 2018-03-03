@@ -15,12 +15,12 @@ function mapStateToProps(state, props) {
 }
 
 const categoriesStyle = css(
+  s.resetList,
   s.flex,
   s.flexRow,
   s.flexWrap,
-  s.mt10,
-  { marginLeft: -20 },
-  media(s.minBreak4, s.mt20, { marginLeft: -40 }),
+  s.pl20,
+  s.pr20,
 )
 
 class DiscoverAllContainer extends PureComponent {
@@ -43,9 +43,9 @@ class DiscoverAllContainer extends PureComponent {
     if (!categoryIds) { return null }
     return (
       <MainView className="Discover">
-        <div className={categoriesStyle}>
+        <ul className={categoriesStyle}>
           {categoryIds.map(id => <CategoryContainer categoryId={id} key={`category-grid-${id}`} />)}
-        </div>
+        </ul>
       </MainView>
     )
   }

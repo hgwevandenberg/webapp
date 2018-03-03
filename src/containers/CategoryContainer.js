@@ -1,11 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { CategoryLink } from '../components/buttons/Buttons'
-import {
-  CategorySubscribedIcon,
-  CategorySubscribeLink,
-} from '../components/categories/CategoryRenderables'
+import { CategoryCard } from '../components/categories/CategoryRenderables'
 import {
   selectCategoryName,
   selectCategorySlug,
@@ -69,15 +65,14 @@ class CategoryContainer extends Component {
   render() {
     const { name, slug, tileImageUrl, isSubscribed } = this.props
     return (
-      <CategoryLink imageUrl={tileImageUrl} to={`/discover/${slug}`} >
-        <CategorySubscribedIcon isSubscribed={isSubscribed} />
-        {name}
-        <CategorySubscribeLink
-          subscribe={this.subscribe}
-          unsubscribe={this.unsubscribe}
-          isSubscribed={isSubscribed}
-        />
-      </CategoryLink>
+      <CategoryCard
+        name={name}
+        imageUrl={tileImageUrl}
+        to={`/discover/${slug}`}
+        isSubscribed={isSubscribed}
+        subscribe={this.subscribe}
+        unsubscribe={this.unsubscribe}
+      />
     )
   }
 }
