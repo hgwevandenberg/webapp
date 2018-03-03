@@ -10,6 +10,20 @@
   color: #aaa;
 }
 
+.PostDetail .PostHeader,
+.PostDetail .RepostHeader {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.PostDetail .PostHeaderLeft {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  overflow: hidden;
+}
+
 .PostHeaderAuthor,
 .CategoryHeaderAuthor,
 .ArtistInviteSubmissionHeaderAuthor,
@@ -42,6 +56,10 @@
   max-width: calc(100% - 80px);
 }
 
+.PostDetail .PostHeaderAuthor {
+  width: 100%;
+}
+
 .PostDetail .isOwnPost .PostHeaderAuthor,
 .PostDetail .isOwnPost .RepostHeaderAuthor {
   max-width: calc(100% - 120px);
@@ -55,12 +73,15 @@
   margin-left: 10px;
 }
 
-.PostHeaderLink {
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  vertical-align: middle;
+.PostDetail .PostHeader .RelationshipContainer,
+.PostDetail .RepostHeader .RelationshipContainer {
+  margin-top: -2px;
+  margin-right: 2px;
+  margin-left: 0;
+}
+
+.PostHeaderLinkAvatar {
+  left: 20px;
 }
 
 .PostHeaderAuthor {
@@ -68,7 +89,49 @@
   line-height: 60px;
 }
 
-.PostDetail .PostHeader > .PostHeaderAuthor {
+.PostDetail .PostHeaderLinks {
+  flex: none;
+  width: calc(100% - 40px);
+  padding-left: 10px;
+}
+
+.FullNameLink,
+.UserNameLink {
+  width: 100%;
+  padding-right: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.FullNameLink .DraggableUsername,
+.UserNameLink .DraggableUsername {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.PostDetail .RepostHeader .UserNameLink.RepostAuthor {
+  width: calc(100% - 20px);
+}
+
+/* stylelint-disable selector-max-specificity, selector-max-compound-selectors */
+.PostDetail .RepostHeader .UserNameLink.RepostAuthor .PostHeaderAuthorUsername {
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: -8px;
+}
+/* stylelint-enable selector-max-specificity, selector-max-compound-selectors */
+
+.PostDetail .RepostHeader .RelationshipContainer {
+  position: absolute;
+  margin: -1px 0 0 4px;
+}
+
+.PostDetail .PostHeader > .PostHeaderAuthor,
+.PostDetail .RepostHeader > .PostHeaderAuthor {
   line-height: 45px;
 }
 
@@ -81,7 +144,6 @@
 
 .CategoryHeaderCategory,
 .ArtistInviteSubmissionHeaderInvite,
-.PostDetailHeaderUsername,
 .RepostHeaderReposter {
   max-width: calc(100% - 120px);
   margin-top: -12px;
@@ -106,6 +168,10 @@
   vertical-align: middle;
 }
 
+.PostDetail .PostHeaderAuthorName {
+  margin-right: 0;
+}
+
 .no-touch .PostHeaderLink:hover {
   color: #535353;
 }
@@ -122,6 +188,14 @@
 
 .PostDetailAsideTop .PostHeaderTools {
   right: 20px;
+}
+
+.PostDetail .PostHeaderTools {
+  position: relative;
+  top: auto;
+  right: auto;
+  display: block;
+  flex: none;
 }
 
 .PostHeaderTools > a,
@@ -182,13 +256,32 @@
     height: 80px;
   }
 
+  .PostHeaderTools {
+    top: 30px;
+  }
+
+  .PostHeaderLinks {
+    padding-left: 60px;
+  }
+
+  .PostDetail .PostHeaderLinks {
+    padding-left: 20px;
+  }
+
   .PostHeaderAuthor {
     padding-left: 60px;
     line-height: 80px;
   }
 
-  .PostDetail .PostHeader > .PostHeaderAuthor {
+  .PostDetail .PostHeader .PostHeaderAuthor,
+  .PostDetail .RepostHeader .PostHeaderAuthor {
     line-height: 60px;
+  }
+
+  .PostDetail .PostHeaderAuthorName {
+    padding-top: 1px;
+    margin-right: 0;
+    margin-bottom: -1px;
   }
 
   .CategoryHeaderAuthor,
@@ -205,10 +298,6 @@
     margin-top: -20px;
     margin-left: 60px;
     line-height: 20px;
-  }
-
-  .PostHeaderTools {
-    top: 30px;
   }
 
   .RepostHeader.inUserDetail > .CategoryHeaderAuthor,
@@ -228,6 +317,10 @@
 @media (--break-3) {
   .Posts.asList .PostHeaderTimeAgoLink {
     display: none;
+  }
+
+  .PostHeaderLinks {
+    padding-left: 60px;
   }
 }
 
@@ -259,6 +352,24 @@
   .Posts.asGrid .RepostHeaderAuthor,
   .Posts.asGrid .RepostHeaderReposter {
     max-width: 100%;
+  }
+
+  .PostHeaderLinks {
+    max-width: calc(100% - 110px);
+    padding-top: 2px;
+    line-height: 16px;
+  }
+
+  .PostDetail .PostHeaderLinks {
+    width: calc(100% - 30px);
+    max-width: 100%;
+    padding-left: 10px;
+    line-height: 18px;
+  }
+
+  .FullNameLink,
+  .UserNameLink {
+    line-height: 14px;
   }
 }
 

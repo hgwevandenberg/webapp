@@ -56,9 +56,11 @@ const baseStyle = css(
   parent('.OnboardingAvatarPicker ', s.absolute, { top: 0, right: 0, left: 0 }, s.zIndex1, s.my0, s.mxAuto),
   parent('.SettingsAvatarPicker ', s.absolute, { top: 0, right: 0, left: 0 }, s.zIndex1),
   parent('.PostHeader ', s.absolute, { top: 15, left: 0 }),
+  parent('.PostDetail .PostHeader ', s.relative, { top: 'auto', left: 'auto' }),
   parent('.CategoryHeader ', s.absolute, { top: 15, left: 0 }),
   parent('.ArtistInviteSubmissionHeader ', s.absolute, { top: 15, left: 0 }),
   parent('.RepostHeader ', s.absolute, { top: 15, left: 0 }),
+  parent('.PostDetail .RepostHeader ', s.relative, { top: 'auto', left: 'auto' }),
   parent('.RepostHeader.inUserDetail ', { left: 25 }),
   parent('.UserInviteeHeader ', { marginTop: -1 }),
   media(
