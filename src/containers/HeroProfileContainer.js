@@ -11,14 +11,14 @@ import {
   selectUserUsername,
 } from '../selectors/user'
 import { selectViewsAdultContent } from '../selectors/profile'
-import { selectDPI } from '../selectors/gui'
+import { selectHeroDPI } from '../selectors/gui'
 import { HeroProfile } from '../components/heros/HeroRenderables'
 import ShareDialog from '../components/dialogs/ShareDialog'
 
 function mapStateToProps(state, props) {
   const userId = selectUserId(state, props)
   const username = selectUserUsername(state, props)
-  const dpi = selectDPI(state)
+  const dpi = selectHeroDPI(state)
   const coverImage = selectUserCoverImage(state, props)
   const useGif = selectViewsAdultContent(state) ||
     !selectUserPostsAdultContent(state, props) ||

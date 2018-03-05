@@ -9,7 +9,7 @@ import {
   HeroPromotionAuth,
 } from '../components/heros/HeroRenderables'
 import {
-  selectDPI,
+  selectHeroDPI,
   selectIsMobile,
 } from '../selectors/gui'
 import { selectIsLoggedIn } from '../selectors/authentication'
@@ -21,7 +21,7 @@ import { followCategories } from '../actions/profile'
 function mapStateToProps(state, props) {
   const pageHeader = selectRandomPageHeader(state)
   const user = pageHeader ? selectUser(state, { userId: pageHeader.get('userId') }) : Map()
-  const dpi = selectDPI(state)
+  const dpi = selectHeroDPI(state)
   const isMobile = selectIsMobile(state)
   const isLoggedIn = selectIsLoggedIn(state)
   const categoryId = pageHeader ? pageHeader.get('categoryId') : null

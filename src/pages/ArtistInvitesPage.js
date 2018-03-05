@@ -11,7 +11,7 @@ import { selectQueryPreview } from '../selectors/routing'
 import { selectRandomPageHeader } from '../selectors/page_headers'
 import { selectUser } from '../selectors/user'
 import { css } from '../styles/jss'
-import { selectDPI } from '../selectors/gui'
+import { selectHeroDPI } from '../selectors/gui'
 
 const streamStyle = css({
   paddingLeft: '0 !important',
@@ -22,7 +22,7 @@ function mapStateToProps(state) {
   const pageHeader = selectRandomPageHeader(state)
   const user = pageHeader ? selectUser(state, { userId: pageHeader.get('userId') }) : null
   return {
-    dpi: selectDPI(state),
+    dpi: selectHeroDPI(state),
     isPreview: selectQueryPreview(state) === 'true',
     user,
     pageHeader,
