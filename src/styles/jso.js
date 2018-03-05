@@ -1,6 +1,6 @@
 // @flow
 // JavaScript Style Objects (jso)
-import { css, select, media, after } from './jss'
+import { css, media, after } from './jss'
 
 // TODO: Note web vs native properties
 // TODO: Should web only props live in cso?

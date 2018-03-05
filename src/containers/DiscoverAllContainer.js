@@ -21,6 +21,14 @@ const categoriesStyle = css(
   s.flexWrap,
   s.pl20,
   s.pr20,
+  media(s.maxBreak4,
+    s.pl10,
+    s.pr10,
+  ),
+  media(s.maxBreak2,
+    s.pl5,
+    s.pr5,
+  ),
 )
 
 class DiscoverAllContainer extends PureComponent {

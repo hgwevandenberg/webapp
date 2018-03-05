@@ -4,7 +4,7 @@ import { Link } from 'react-router'
 import {
   CheckCircleIcon,
 } from '../assets/Icons'
-import { after, before, css, hover, media, modifier, parent, select } from '../../styles/jss'
+import { before, css, hover, media, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
 export function CategorySubscribedIcon({ isSubscribed }) {
@@ -18,31 +18,35 @@ CategorySubscribedIcon.propTypes = {
 const categorySubscribeButtonStyle = css(
   s.bgcA,
   s.colorWhite,
-  { 
+  {
     padding: '5px 15px 5px 6px',
     borderRadius: 100,
     transition: `background-color 0.2s ${s.ease}`,
   },
-  hover({ backgroundColor: '#16a905'}),
-  select('&.subscribed', s.bgcGreen),
+  hover(s.bgcGreen),
+  select('&.subscribed',
+    s.bgcGreen,
+    hover({ backgroundColor: '#16a905' }),
+  ),
   select('& .text',
     s.fontSize12,
     s.inlineBlock,
     s.pl10,
     { paddingTop: 4 },
   ),
-  select('& .CheckCircleIcon', s.inlineBlock, { marginTop: -2 })
+  select('& .CheckCircleIcon', s.inlineBlock, { marginTop: -2 }),
 )
 
 export function CategorySubscribeButton({ isSubscribed, subscribe, unsubscribe }) {
   return (
     <button
       className={`${categorySubscribeButtonStyle} subscribe-button${!isSubscribed ? ' subscribed' : ''}`}
-      onClick={!isSubscribed ? subscribe : unsubscribe}>
-        <CheckCircleIcon />
-        <span className="text">
-          {!isSubscribed ? 'Subscribe' : 'Subscribed'}
-        </span>
+      onClick={!isSubscribed ? subscribe : unsubscribe}
+    >
+      <CheckCircleIcon />
+      <span className="text">
+        {!isSubscribed ? 'Subscribe' : 'Subscribed'}
+      </span>
     </button>
   )
 }
@@ -89,6 +93,10 @@ const categoryCardLinkStyle = css(
     { content: '""', backgroundColor: 'rgba(0, 0, 0, 0.7)' },
   ),
   hover(before({ backgroundColor: 'rgba(0, 0, 0, 0.3)' })),
+
+  media('(max-width: 26.25em)', // 420 / 16 = 26.25em
+    s.block,
+  ),
 )
 
 const CategoryCardLink = ({ children, imageUrl, to }) => (
@@ -118,17 +126,48 @@ const categoryCardTitleStyle = css(
   s.fontSize32,
   s.center,
   s.zIndex3,
-  { width: 'calc(100% - 60px)'},
+  { width: 'calc(100% - 100px)' },
+
+  media(s.maxBreak2,
+    s.fontSize18,
+  ),
+  media('(max-width: 26.25em)', // 420 / 16 = 26.25em
+    s.fontSize16,
+    { width: 'calc(100% - 50px)' },
+  ),
+
   select('& .CheckCircleIcon',
     s.absolute,
-    { marginLeft: -32, marginTop: 11, width: 40, transform: 'scale(1.6)' },
+    {
+      marginLeft: -32,
+      marginTop: 11,
+      width: 40,
+      transform: 'scale(1.6)',
+    },
     select('& .svg-stroke-bevel', s.strokeGreen),
-    select('& circle', s.strokeGreen)
+    select('& circle', s.strokeGreen),
+
+    media(s.maxBreak2,
+      {
+        marginLeft: -24,
+        marginTop: 2,
+        width: 28,
+        transform: 'none',
+      },
+    ),
+    media('(max-width: 26.25em)', // 420 / 16 = 26.25em
+      {
+        marginLeft: -22,
+        marginTop: 0,
+        width: 26,
+        transform: 'scale(0.86)',
+      },
+    ),
   ),
 )
 
 const CategoryCardTitle = ({ name, isSubscribed }) => (
-  <span className={categoryCardTitleStyle}>
+  <span className={`${categoryCardTitleStyle} title-holder`}>
     <CategorySubscribedIcon isSubscribed={isSubscribed} />
     <span className="text">{name}</span>
   </span>
@@ -148,22 +187,55 @@ const categoryCardStyle = css(
   {
     margin: '0 20px 40px 20px',
     width: 'calc(25% - 40px)',
-    paddingBottom: 'calc(25% - 40px)'
+    paddingBottom: 'calc(25% - 40px)',
   },
+
+  media(s.maxBreak4,
+    {
+      margin: '0 10px 20px 10px',
+      width: 'calc(33.3333333% - 20px)',
+      paddingBottom: 'calc(33.3333333% - 20px)',
+    },
+  ),
+  media(s.maxBreak3,
+    {
+      width: 'calc(50% - 20px)',
+      paddingBottom: 'calc(50% - 20px)',
+    },
+  ),
+  media(s.maxBreak2,
+    {
+      margin: '0 5px 10px 5px',
+      width: 'calc(50% - 10px)',
+      paddingBottom: 'calc(50% - 10px)',
+    },
+  ),
+
   select('& .button-holder',
     s.absolute,
     s.flex,
     s.justifyCenter,
     s.fullWidth,
     s.zIndex3,
-    { bottom: 40 }
-  )
+    { bottom: 40 },
+
+    media(s.maxBreak2,
+      { bottom: 20 },
+    ),
+  ),
+  select('& .title-holder',
+    media('(max-width: 26.25em)', // 420 / 16 = 26.25em
+      // s.absolute,
+      { top: 20 },
+    ),
+  ),
 )
 
 export const CategoryCard = ({ name, imageUrl, to, isSubscribed, subscribe, unsubscribe }) => (
   <li className={categoryCardStyle}>
     <CategoryCardLink imageUrl={imageUrl} to={to}>
       <CategoryCardTitle
+        className="title-holder"
         name={name}
         isSubscribed={isSubscribed}
       />
