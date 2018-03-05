@@ -17,6 +17,7 @@ export const selectPropsLocationKey = (state, props) => get(props, 'location.key
 export const selectPropsPathname = (state, props) => get(props, 'location.pathname')
 export const selectPropsQueryTerms = (state, props) => get(props, 'location.query.terms')
 export const selectPropsQueryType = (state, props) => get(props, 'location.query.type')
+export const selectPropsQueryBefore = (state, props) => get(props, 'location.query.before')
 
 // state.routing.xxx
 export const selectLocation = state => state.routing.get('location')

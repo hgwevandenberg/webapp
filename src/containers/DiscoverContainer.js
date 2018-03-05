@@ -12,16 +12,17 @@ import {
   selectPropsPathname,
   selectDiscoverStream,
   selectDiscoverStreamKind,
+  selectPropsQueryBefore,
 } from '../selectors/routing'
 
-export function getStreamAction(stream, kind) {
+export function getStreamAction(stream, kind, before) {
   switch (stream) {
     case 'global':
-      return loadGlobalPostStream(kind)
+      return loadGlobalPostStream(kind, before)
     case 'subscribed':
-      return loadSubscribedPostStream(kind)
+      return loadSubscribedPostStream(kind, before)
     default:
-      return loadCategoryPostStream(stream, kind)
+      return loadCategoryPostStream(stream, kind, before)
   }
 }
 
@@ -30,6 +31,7 @@ function mapStateToProps(state, props) {
     stream: selectDiscoverStream(state, props),
     kind: selectDiscoverStreamKind(state, props),
     pathname: selectPropsPathname(state, props),
+    before: selectPropsQueryBefore(state, props),
   }
 }
 
@@ -39,6 +41,11 @@ class DiscoverContainer extends Component {
     stream: PropTypes.string.isRequired,
     kind: PropTypes.string.isRequired,
     pathname: PropTypes.string.isRequired,
+    before: PropTypes.string,
+  }
+
+  static defaultProps = {
+    before: null,
   }
 
   componentWillMount() {
@@ -54,13 +61,13 @@ class DiscoverContainer extends Component {
   }
 
   render() {
-    const { stream, kind } = this.props
+    const { stream, kind, before } = this.props
     return (
       <Discover
         stream={stream}
         kind={kind}
         key={`discover_${stream}_${kind}`}
-        streamAction={getStreamAction(stream, kind)}
+        streamAction={getStreamAction(stream, kind, before)}
       />
     )
   }
