@@ -24,6 +24,7 @@ const categoryTabStyle = css(
   s.bgcBlack,
   s.transitionColor,
   {
+    minWidth: 100,
     whiteSpace: 'normal',
     backgroundSize: 'cover',
   },
@@ -73,15 +74,34 @@ const categoryTabStyle = css(
   // mini
   select('&.mini',
     {
-      width: 120,
+      width: 100,
     },
+    media(s.minBreak2,
+      {
+        width: 120,
+      },
+    ),
   ),
   select('&.mini.all', {
     background: 'linear-gradient(50deg, #ff00ff, #1925ff)',
   }),
   select('&.mini.subscribed', {
-    background: 'linear-gradient(45deg, #6E00FF, #0054FF, #007BF1, #00BEFF)',
+    background: 'linear-gradient(45deg, #6e00ff, #0054ff, #007bf1, #00beff)',
   }),
+
+  // zero state
+  select('&.zero-state',
+    {
+      width: 'calc(100% - 200px)',
+      minWidth: '50%',
+      background: 'linear-gradient(85deg, #fd00d2, #6200ff, #0038ff, #0083fc, #00d8c6, #00ff70, #00ff36)',
+    },
+    media(s.minBreak2,
+      {
+        width: 'calc(100% - 240px)',
+      },
+    ),
+  ),
 
   media(s.minBreak2,
     {
@@ -148,7 +168,7 @@ SubscribedCategoryTab.propTypes = {
 
 const SubscribedZeroStateTab = () => (
   <Link
-    className={categoryTabStyle}
+    className={`zero-state ${categoryTabStyle}`}
     to="/discover/all"
   >
     <span className="text-label">Find and subscribe to a community</span>
@@ -253,7 +273,6 @@ const categoryTabBarToolsStyle = css(
   ),
   media(s.minBreak4,
     s.absolute,
-    s.pr40,
     {
       top: 0,
       right: 0,
@@ -267,6 +286,7 @@ const categoryTabBarToolsStyle = css(
     s.fullHeight,
     s.flexColumn,
     s.justifyCenter,
+    s.center,
   ),
 )
 
