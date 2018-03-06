@@ -57,11 +57,21 @@ SubscribedCategoryTab.propTypes = {
   pathname: PropTypes.string.isRequired,
 }
 
+const SubscribedZeroStateTab = () => (
+  <Link
+    className="CategoryTab"
+    to="/discover/all"
+  >
+    <span className="CategoryTabLabel">Find and subscribe to a community</span>
+  </Link>
+)
+
 export const CategoryTabBar = ({ pathname, tabs, subscribed }) => (
   <div className="CategoryTabBar">
     <nav className="CategoryTabs">
       <AllCategoryTab pathname={pathname} />
       {subscribed && <SubscribedCategoryTab pathname={pathname} />}
+      {subscribed && tabs.length < 1 && <SubscribedZeroStateTab />}
 
       {tabs.map(tab =>
         (<CategoryTab
@@ -79,7 +89,7 @@ export const CategoryTabBar = ({ pathname, tabs, subscribed }) => (
         className="CategoryUtilTab"
         to="/discover/all"
       >
-        <span>See All</span>
+        <span>Edit</span>
       </Link>
     </div>
   </div>
