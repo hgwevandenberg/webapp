@@ -29,7 +29,7 @@ const postDetailStyle = css(
     ),
     select('& .PostTools',
       s.flex, s.justifySpaceBetween, s.itemsCenter, s.p0, { maxWidth: 310 },
-      media(s.minBreak3, s.px10, { maxWidth: 640 }),
+      media(s.minBreak3, s.pr10, { paddingLeft: 15, maxWidth: 640 }),
       select('& .ShyTool',
         s.absolute,
         s.pointerAuto,
