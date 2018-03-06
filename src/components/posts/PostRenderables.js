@@ -137,6 +137,7 @@ export class PostDetailHeader extends PureComponent {
     inUserDetail: PropTypes.bool.isRequired,
     isArtistInviteSubmission: PropTypes.bool.isRequired,
     isOwnPost: PropTypes.bool.isRequired,
+    isRepost: PropTypes.bool.isRequired,
     postCreatedAt: PropTypes.string.isRequired,
     postId: PropTypes.string.isRequired,
   }
@@ -156,11 +157,10 @@ export class PostDetailHeader extends PureComponent {
       inUserDetail,
       isArtistInviteSubmission,
       isOwnPost,
+      isRepost,
       postCreatedAt,
       postId,
     } = this.props
-
-    const isRepost = repostedBy || null
 
     return (
       <header
@@ -253,36 +253,38 @@ export class PostDetailHeader extends PureComponent {
 export class PostHeader extends PureComponent {
   static propTypes = {
     author: PropTypes.object.isRequired,
-    artistInviteSubmission: PropTypes.object,
+    repostedBy: PropTypes.object.isRequired,
     detailPath: PropTypes.string.isRequired,
+    inUserDetail: PropTypes.bool.isRequired,
     isOwnPost: PropTypes.bool.isRequired,
-    isArtistInviteSubmission: PropTypes.bool.isRequired,
-    isPostDetail: PropTypes.bool.isRequired,
+    isRepost: PropTypes.bool.isRequired,
     postCreatedAt: PropTypes.string.isRequired,
     postId: PropTypes.string.isRequired,
   }
 
   static defaultProps = {
-    artistInviteSubmission: null,
+    repostedBy: null,
+    inUserDetail: null,
   }
 
   render() {
     const {
       author,
-      artistInviteSubmission,
+      repostedBy,
       detailPath,
-      isArtistInviteSubmission,
+      inUserDetail,
       isOwnPost,
-      isPostDetail,
+      isRepost,
       postCreatedAt,
       postId,
     } = this.props
+
     return (
       <header
-        className={classNames('PostHeader', { isOwnPost })}
+        className={classNames('PostHeader', isRepost ? 'RepostHeader' : '', { inUserDetail, isOwnPost })}
         key={`PostHeader_${postId}`}
       >
-        <div className="PostHeaderAuthor">
+        <div className={`PostHeaderAuthor ${isRepost ? 'RepostHeaderAuthor' : ''}`}>
           <Link className="PostHeaderLink" to={`/${author.get('username')}`}>
             <Avatar
               priority={author.get('relationshipPriority')}
@@ -297,49 +299,29 @@ export class PostHeader extends PureComponent {
               data-username={author.get('username')}
               draggable
             >
-              {isPostDetail && author.get('name') ?
-                <span>
-                  <span className="PostHeaderAuthorName">{author.get('name')}</span>
-                </span>
-                :
-                `@${author.get('username')}`
-              }
+              {`@${author.get('username')}`}
             </span>
           </Link>
         </div>
         <RelationshipContainer className="isInHeader" user={author} />
-        {isPostDetail && author.get('name') &&
-          <div className="PostDetailHeaderUsername">
-            <Link className="PostHeaderLink" to={`/${author.get('username')}`}>
+        {isRepost &&
+          <div className="RepostHeaderReposter">
+            <Link className="PostHeaderLink" to={`/${repostedBy.get('username')}`}>
+              <RepostIcon />
               <span
-                className="DraggableUsername PostHeaderAuthorUsername"
-                data-priority={author.get('relationshipPriority') || 'inactive'}
-                data-userid={author.get('id')}
-                data-username={author.get('username')}
+                className="DraggableUsername"
+                data-priority={repostedBy.get('relationshipPriority') || 'inactive'}
+                data-userid={repostedBy.get('id')}
+                data-username={repostedBy.get('username')}
                 draggable
               >
-                {`@${author.get('username')}`}
+                {` by @${repostedBy.get('username')}`}
               </span>
             </Link>
           </div>
         }
         <div className="PostHeaderTools">
           <PostHeaderTimeAgoLink to={detailPath} createdAt={postCreatedAt} />
-          {isPostDetail && isOwnPost &&
-            <span>
-              <EditTool />
-              <DeleteTool />
-            </span>
-          }
-          {isPostDetail && isArtistInviteSubmission &&
-            <span>
-              <ArtistInviteSubmissionStatusTool
-                status={artistInviteSubmission.get('status')}
-                slug={artistInviteSubmission.get('slug')}
-                title={artistInviteSubmission.get('title')}
-              />
-            </span>
-          }
         </div>
       </header>
     )
@@ -431,94 +413,6 @@ export class CategoryHeader extends PureComponent {
         </div>
         <div className="PostHeaderTools">
           <PostHeaderTimeAgoLink to={detailPath} createdAt={postCreatedAt} />
-        </div>
-      </header>
-    )
-  }
-}
-
-export class RepostHeader extends PureComponent {
-  static propTypes = {
-    artistInviteSubmission: PropTypes.object,
-    detailPath: PropTypes.string.isRequired,
-    inUserDetail: PropTypes.bool.isRequired,
-    isArtistInviteSubmission: PropTypes.bool.isRequired,
-    isOwnPost: PropTypes.bool.isRequired,
-    isPostDetail: PropTypes.bool.isRequired,
-    postCreatedAt: PropTypes.string.isRequired,
-    postId: PropTypes.string.isRequired,
-    repostAuthor: PropTypes.object.isRequired,
-    repostedBy: PropTypes.object.isRequired,
-  }
-  static defaultProps = {
-    artistInviteSubmission: null,
-  }
-  render() {
-    const {
-      artistInviteSubmission,
-      detailPath,
-      inUserDetail,
-      isArtistInviteSubmission,
-      isOwnPost,
-      isPostDetail,
-      postCreatedAt,
-      postId,
-      repostAuthor,
-      repostedBy,
-    } = this.props
-    return (
-      <header className={classNames('RepostHeader', { inUserDetail, isOwnPost })} key={`RepostHeader_${postId}`}>
-        <div className="RepostHeaderAuthor">
-          <Link className="PostHeaderLink" to={`/${repostAuthor.get('username')}`}>
-            <Avatar
-              priority={repostAuthor.get('relationshipPriority')}
-              sources={repostAuthor.get('avatar')}
-              userId={`${repostAuthor.get('id')}`}
-              username={repostAuthor.get('username')}
-            />
-            <span
-              className="DraggableUsername"
-              data-priority={repostAuthor.get('relationshipPriority') || 'inactive'}
-              data-userid={repostAuthor.get('id')}
-              data-username={repostAuthor.get('username')}
-              draggable
-            >
-              {`@${repostAuthor.get('username')}`}
-            </span>
-          </Link>
-        </div>
-        <RelationshipContainer className="isInHeader" user={repostAuthor} />
-        <div className="RepostHeaderReposter">
-          <Link className="PostHeaderLink" to={`/${repostedBy.get('username')}`}>
-            <RepostIcon />
-            <span
-              className="DraggableUsername"
-              data-priority={repostedBy.get('relationshipPriority') || 'inactive'}
-              data-userid={repostedBy.get('id')}
-              data-username={repostedBy.get('username')}
-              draggable
-            >
-              {` by @${repostedBy.get('username')}`}
-            </span>
-          </Link>
-        </div>
-        <div className="PostHeaderTools">
-          <PostHeaderTimeAgoLink to={detailPath} createdAt={postCreatedAt} />
-          {isPostDetail && isOwnPost &&
-            <span>
-              <EditTool />
-              <DeleteTool />
-            </span>
-          }
-          {isPostDetail && isArtistInviteSubmission &&
-            <span>
-              <ArtistInviteSubmissionStatusTool
-                status={artistInviteSubmission.get('status')}
-                slug={artistInviteSubmission.get('slug')}
-                title={artistInviteSubmission.get('title')}
-              />
-            </span>
-          }
         </div>
       </header>
     )

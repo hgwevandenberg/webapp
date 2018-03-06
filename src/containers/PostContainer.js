@@ -28,7 +28,6 @@ import {
   PostBodyWithLightBox,
   PostHeader,
   PostDetailHeader,
-  RepostHeader,
   UserModal,
 } from '../components/posts/PostRenderables'
 import { isElloAndroid } from '../lib/jello'
@@ -480,20 +479,7 @@ class PostContainer extends Component {
     if (isPostEmpty || !author || !author.get('id')) { return null }
     let postHeader
     const headerProps = { detailPath, postCreatedAt, postId }
-    if (isRepost && !isLightBox && !isPostDetail) {
-      postHeader = (
-        <RepostHeader
-          {...headerProps}
-          artistInviteSubmission={artistInviteSubmission}
-          inUserDetail={isPostHeaderHidden}
-          isArtistInviteSubmission={isArtistInviteSubmission}
-          isOwnPost={isOwnPost}
-          isPostDetail={isPostDetail}
-          repostAuthor={repostAuthor}
-          repostedBy={author}
-        />
-      )
-    } else if (isPostHeaderHidden || isLightBox) {
+    if (!isRepost && (isPostHeaderHidden || isLightBox)) {
       postHeader = null
     } else if (isDiscoverRoot && categoryName && categoryPath) {
       postHeader = (
@@ -520,6 +506,7 @@ class PostContainer extends Component {
           artistInviteSubmission={artistInviteSubmission}
           inUserDetail={repostAuthor ? isPostHeaderHidden : null}
           isArtistInviteSubmission={isArtistInviteSubmission}
+          isRepost={isRepost}
           isOwnPost={isOwnPost}
         />
       )
@@ -527,11 +514,13 @@ class PostContainer extends Component {
       postHeader = (
         <PostHeader
           {...headerProps}
+          author={repostAuthor || author}
+          repostedBy={repostAuthor ? author : null}
           artistInviteSubmission={artistInviteSubmission}
-          author={author}
+          inUserDetail={repostAuthor ? isPostHeaderHidden : null}
           isArtistInviteSubmission={isArtistInviteSubmission}
+          isRepost={isRepost}
           isOwnPost={isOwnPost}
-          isPostDetail={isPostDetail}
         />
       )
     }
