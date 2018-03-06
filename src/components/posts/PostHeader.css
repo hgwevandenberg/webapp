@@ -10,8 +10,7 @@
   color: #aaa;
 }
 
-.PostDetail .PostHeader,
-.PostDetail .RepostHeader {
+.PostDetail .PostHeader {
   position: relative;
   display: flex;
   align-items: center;
@@ -60,8 +59,7 @@
   width: 100%;
 }
 
-.PostDetail .isOwnPost .PostHeaderAuthor,
-.PostDetail .isOwnPost .RepostHeaderAuthor {
+.PostDetail .isOwnPost .PostHeaderAuthor {
   max-width: calc(100% - 120px);
 }
 
@@ -73,8 +71,7 @@
   margin-left: 10px;
 }
 
-.PostDetail .PostHeader .RelationshipContainer,
-.PostDetail .RepostHeader .RelationshipContainer {
+.PostDetail .PostHeader .RelationshipContainer {
   margin-top: -2px;
   margin-right: 2px;
   margin-left: 0;
@@ -130,8 +127,7 @@
   margin: -1px 0 0 4px;
 }
 
-.PostDetail .PostHeader > .PostHeaderAuthor,
-.PostDetail .RepostHeader > .PostHeaderAuthor {
+.PostDetail .PostHeader > .PostHeaderAuthor {
   line-height: 45px;
 }
 
@@ -273,8 +269,7 @@
     line-height: 80px;
   }
 
-  .PostDetail .PostHeader .PostHeaderAuthor,
-  .PostDetail .RepostHeader .PostHeaderAuthor {
+  .PostDetail .PostHeader .PostHeaderAuthor {
     line-height: 60px;
   }
 
