@@ -32,7 +32,7 @@ class EditorialPage extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     dpi: PropTypes.string.isRequired,
-    isPreview: PropTypes.boolean,
+    isPreview: PropTypes.bool,
     json: PropTypes.object,
     randomPromotion: PropTypes.object,
   }
