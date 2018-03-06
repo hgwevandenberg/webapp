@@ -45,11 +45,6 @@ const categoryTabStyle = css(
     },
   ),
 
-  // hover / active state
-  select('&.isActive', before({ backgroundColor: 'rgba(0, 0, 0, 0.8)', })),
-  select('&:active', before({ backgroundColor: 'rgba(0, 0, 0, 0.8)', })),
-  select('.no-touch &:hover', before({ backgroundColor: 'rgba(0, 0, 0, 0.8)', })),
-
   // text label
   select('& .text-label',
     s.relative,
@@ -61,6 +56,19 @@ const categoryTabStyle = css(
     s.zIndex2,
   ),
 
+  // hover / active states
+  select('&.isActive',
+    select('& .text-label', s.sansBold, { textDecoration: 'underline' }),
+    before({ backgroundColor: 'rgba(0, 0, 0, 0.8)', }),
+  ),
+  select('&:active',
+    select('& .text-label', s.sansBold, { textDecoration: 'underline' }),
+    before({ backgroundColor: 'rgba(0, 0, 0, 0.8)', }),
+  ),
+  select('.no-touch &:hover',
+    before({ backgroundColor: 'rgba(0, 0, 0, 0.8)', }),
+  ),
+
   media(s.minBreak2,
     {
       width: 120,
@@ -69,7 +77,7 @@ const categoryTabStyle = css(
   media(s.minBreak4,
     s.fullWidth,
     {
-      minWwidth: 120,
+      minWidth: 120,
     },
   ),
 )
