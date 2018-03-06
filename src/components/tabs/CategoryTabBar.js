@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import classNames from 'classnames'
-import { before, css, hover, media, select } from '../../styles/jss'
+import { before, css, media, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
 const backgroundStyles = source => ({
@@ -61,14 +61,14 @@ const categoryTabStyle = css(
   // hover / active states
   select('&.isActive',
     select('& .text-label', s.sansBold, { textDecoration: 'underline' }),
-    before({ backgroundColor: 'rgba(0, 0, 0, 0.8)', }),
+    before({ backgroundColor: 'rgba(0, 0, 0, 0.8)' }),
   ),
   select('&:active',
     select('& .text-label', s.sansBold, { textDecoration: 'underline' }),
-    before({ backgroundColor: 'rgba(0, 0, 0, 0.8)', }),
+    before({ backgroundColor: 'rgba(0, 0, 0, 0.8)' }),
   ),
   select('.no-touch &:hover',
-    before({ backgroundColor: 'rgba(0, 0, 0, 0.8)', }),
+    before({ backgroundColor: 'rgba(0, 0, 0, 0.8)' }),
   ),
 
   // mini
@@ -255,7 +255,7 @@ const categoryTabBarToolsStyle = css(
       content: '""',
       top: 0,
       left: -20,
-      background: 'linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 90%)'
+      background: 'linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 90%)',
     },
   ),
 
