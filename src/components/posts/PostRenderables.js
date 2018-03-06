@@ -131,10 +131,10 @@ PostHeaderTimeAgoLink.propTypes = {
 export class PostDetailHeader extends PureComponent {
   static propTypes = {
     author: PropTypes.object.isRequired,
-    repostedBy: PropTypes.object.isRequired,
+    repostedBy: PropTypes.object,
     artistInviteSubmission: PropTypes.object,
     detailPath: PropTypes.string.isRequired,
-    inUserDetail: PropTypes.bool.isRequired,
+    inUserDetail: PropTypes.bool,
     isArtistInviteSubmission: PropTypes.bool.isRequired,
     isOwnPost: PropTypes.bool.isRequired,
     isRepost: PropTypes.bool.isRequired,
