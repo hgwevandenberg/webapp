@@ -79,9 +79,18 @@ export const postSummary = `
     content { ...contentProps }
     repostContent { ...contentProps }
     author { ...authorSummary }
+    categories { ...categorySummary }
     assets { id attachment { ...responsiveImageVersions } }
     postStats { lovesCount commentsCount viewsCount repostsCount }
     currentUserState { watching loved reposted }
+  }
+`
+
+export const categorySummary = `
+  fragment categorySummary on Category {
+    id
+    slug
+    name
   }
 `
 
@@ -99,6 +108,7 @@ export const postStreamAllFragments = `
   ${tshirtImageVersions}
   ${contentProps}
   ${authorSummary}
+  ${categorySummary}
   ${artistInviteSubmissionSummary}
   ${postSummary}
   ${postStream}

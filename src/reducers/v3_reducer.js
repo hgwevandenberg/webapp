@@ -161,6 +161,11 @@ function postLinks(post) {
   const repostId = deepGet(post, ['repostedSource', 'id'])
   if (repostId) { links.repostedSource = { id: repostId, type: 'post' } }
 
+  const categories = deepGet(post, ['categories'])
+  if (categories && !!categories.length) {
+    links.categories = categories.map(cat => cat.id)
+  }
+
   return links
 }
 
@@ -190,11 +195,12 @@ function parsePost(state, post) {
   const state2 = parseList(state1, post.assets, parseAsset)
   const state3 = parsePost(state2, post.repostedSource)
   const state4 = parseArtistInviteSubmission(state3, post.artistInviteSubmission)
+  const state5 = parseList(state4, post.categories, parseCategory)
 
   const assetsById = reduceAssets(post.assets)
   const repostAssetsById = post.repostedSource ? reduceAssets(post.repostedSource.assets) : null
 
-  const state5 = smartMergeDeepIn(state4, ['posts', post.id], Immutable.fromJS({
+  const state6 = smartMergeDeepIn(state5, ['posts', post.id], Immutable.fromJS({
     // ids
     id: post.id,
     authorId: deepGet(post, ['author', 'id']), // We don't use links for this
@@ -225,7 +231,7 @@ function parsePost(state, post) {
     links: postLinks(post),
   }))
 
-  return state5
+  return state6
 }
 
 function parseQueryType(state, stream, pathname, query, variables) {
