@@ -481,7 +481,7 @@ class PostContainer extends Component {
     const headerProps = { detailPath, postCreatedAt, postId }
     if (!isRepost && (isPostHeaderHidden || isLightBox)) {
       postHeader = null
-    } else if (isDiscoverRoot && categoryName && categoryPath) {
+    } else if (!isRepost && isDiscoverRoot && categoryName && categoryPath) {
       postHeader = (
         <CategoryHeader
           {...headerProps}
@@ -490,7 +490,7 @@ class PostContainer extends Component {
           categoryPath={categoryPath}
         />
       )
-    } else if (isDiscoverRoot && isArtistInviteSubmission) {
+    } else if (!isRepost && isDiscoverRoot && isArtistInviteSubmission) {
       postHeader = (
         <ArtistInviteSubmissionHeader
           {...headerProps}
