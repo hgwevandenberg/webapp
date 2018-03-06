@@ -97,6 +97,15 @@ export const selectIsPostDetail = createSelector(
   [selectViewNameFromRoute], viewName => viewName === 'postDetail',
 )
 
-export const selectIsDiscoverRoot = createSelector(
-  [selectPathname], pathname => /^\/(?:discover(\/featured|\/recommended)?)?$/.test(pathname),
+export const selectIsGlobalRoot = createSelector(
+  [selectPathname], pathname => /^\/(?:discover(\/featured|\/recommended|\/trending|\/recent)?)?$/.test(pathname),
+)
+
+export const selectIsSubscribedRoot = createSelector(
+  [selectPathname], pathname => /^\/(?:discover\/subscribed(\/trending)?)?$/.test(pathname),
+)
+
+export const selectShowCategoryHeader = createSelector(
+  [selectIsGlobalRoot, selectIsSubscribedRoot], (isGlobalRoot, isSubscribedRoot) =>
+    isGlobalRoot || isSubscribedRoot,
 )

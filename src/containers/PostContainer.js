@@ -77,7 +77,7 @@ import {
 } from '../selectors/post'
 import { selectAvatar } from '../selectors/profile'
 import {
-  selectIsDiscoverRoot,
+  selectShowCategoryHeader,
   selectIsPostDetail,
   selectPathname,
   selectPreviousPath,
@@ -102,7 +102,7 @@ export function makeMapStateToProps() {
       isArtistInviteSubmission: selectPostIsArtistInviteSubmission(state, props),
       artistInviteSubmission: selectPostArtistInviteSubmission(state, props),
       isCommentsRequesting: selectPostIsCommentsRequesting(state, props),
-      isDiscoverRoot: selectIsDiscoverRoot(state, props),
+      showCategoryHeader: selectShowCategoryHeader(state, props),
       isGridMode: selectPostIsGridMode(state, props),
       isLoggedIn: selectIsLoggedIn(state),
       isMobile: selectIsMobile(state),
@@ -154,7 +154,7 @@ class PostContainer extends Component {
     artistInviteSubmission: PropTypes.object,
     isArtistInviteSubmission: PropTypes.bool.isRequired,
     isCommentsRequesting: PropTypes.bool.isRequired,
-    isDiscoverRoot: PropTypes.bool.isRequired,
+    showCategoryHeader: PropTypes.bool.isRequired,
     isGridMode: PropTypes.bool.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
@@ -439,7 +439,7 @@ class PostContainer extends Component {
       innerWidth,
       isArtistInviteSubmission,
       isCommentsRequesting,
-      isDiscoverRoot,
+      showCategoryHeader,
       isGridMode,
       isLoggedIn,
       isMobile,
@@ -481,7 +481,7 @@ class PostContainer extends Component {
     const headerProps = { detailPath, postCreatedAt, postId }
     if (!isRepost && (isPostHeaderHidden || isLightBox)) {
       postHeader = null
-    } else if (isDiscoverRoot && categoryName && categoryPath) {
+    } else if (showCategoryHeader && categoryName && categoryPath) {
       postHeader = (
         <CategoryHeader
           {...headerProps}
@@ -490,7 +490,7 @@ class PostContainer extends Component {
           categoryPath={categoryPath}
         />
       )
-    } else if (isDiscoverRoot && isArtistInviteSubmission) {
+    } else if (showCategoryHeader && isArtistInviteSubmission) {
       postHeader = (
         <ArtistInviteSubmissionHeader
           {...headerProps}
