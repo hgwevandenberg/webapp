@@ -35,7 +35,7 @@ const categoryTabStyle = css(
     s.transitionBgColor,
     {
       content: '""',
-      backgroundColor: 'rgba(0, 0, 0, 0.6)',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
   ),
 
@@ -53,6 +53,7 @@ const categoryTabStyle = css(
     s.itemsCenter,
     s.fullWidth,
     s.fullHeight,
+    s.center,
     s.zIndex2,
   ),
 
@@ -68,6 +69,19 @@ const categoryTabStyle = css(
   select('.no-touch &:hover',
     before({ backgroundColor: 'rgba(0, 0, 0, 0.8)', }),
   ),
+
+  // mini
+  select('&.mini',
+    {
+      width: 120,
+    },
+  ),
+  select('&.mini.all', {
+    background: 'linear-gradient(50deg, #ff00ff, #1925ff)',
+  }),
+  select('&.mini.subscribed', {
+    background: 'linear-gradient(45deg, #6E00FF, #0054FF, #007BF1, #00BEFF)',
+  }),
 
   media(s.minBreak2,
     {
@@ -104,7 +118,7 @@ const AllCategoryTab = ({ pathname }) => {
     pathname === '/discover/recent'
   return (
     <Link
-      className={classNames({ isActive }, `${categoryTabStyle}`)}
+      className={classNames('mini all', { isActive }, `${categoryTabStyle}`)}
       to="/discover"
     >
       <span className="text-label">All</span>
@@ -121,7 +135,7 @@ const SubscribedCategoryTab = ({ pathname }) => {
     pathname === '/discover/subscribed/recent'
   return (
     <Link
-      className={classNames({ isActive }, `${categoryTabStyle}`)}
+      className={classNames('mini subscribed', { isActive }, `${categoryTabStyle}`)}
       to="/discover/subscribed"
     >
       <span className="text-label">Subscribed</span>
