@@ -42,17 +42,17 @@ const creditsStyle = css(
   ),
   media(s.minBreak4, { right: 40 }, parent('.HeroHeader', { right: 60 })),
   media(s.maxBreak2,
-    parent('.HeroPromotionMobileActions >', {
-      position: 'static',
-      width: '60%',
-      paddingLeft: 5,
-      overflow: 'hidden',
-      textAlign: 'right',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap',
-      alignSelf: 'flex-end',
-      verticalAlign: 'middle',
-    }),
+    parent('.HeroPromotionMobileActions >', 
+      s.flex,
+      s.justifyEnd,
+      s.itemsCenter,
+      s.fullWidth,
+      s.pl10,
+      {
+        whiteSpace: 'nowrap',
+        maxWidth: '100%',
+      }
+    ),
   ),
 )
 
@@ -61,12 +61,17 @@ const creditsAuthorStyle = css(
   s.ml10,
   { marginRight: 15, lineHeight: 1.2, borderBottom: '1px solid' },
   media(s.maxBreak2,
-    parent('.HeroPromotionMobileActions > .HeroPromotionCredits', s.inline),
+    parent('.HeroPromotionMobileActions > .HeroPromotionCredits',
+      s.relative,
+      s.inlineBlock,
+      s.truncate,
+      { maxWidth: 'calc(100% - 136px)' }
+    ),
   ),
 )
 
 const creditsByStyle = media(s.maxBreak2,
-  parent('.HeroPromotionMobileActions > .HeroPromotionCredits', s.inline),
+  parent('.HeroPromotionMobileActions > .HeroPromotionCredits', s.inlineBlock),
 )
 
 export const HeroPromotionCredits = ({ label, sources, username, trackingLabel }, context) => {

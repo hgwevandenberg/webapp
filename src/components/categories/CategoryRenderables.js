@@ -7,9 +7,43 @@ import {
 import { before, css, hover, media, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
+const categoryCheckStyle = css(
+  s.absolute,
+  s.inlineBlock,
+  {
+    marginLeft: -44,
+    marginTop: -6,
+    width: 40,
+    transform: 'scale(1.6)',
+  },
+  select('& .svg-stroke-bevel', s.strokeGreen),
+  select('& circle', s.strokeGreen),
+
+  media(s.maxBreak2,
+    {
+      marginLeft: -28,
+      marginTop: -2,
+      width: 28,
+      transform: 'none',
+    },
+  ),
+  media('(max-width: 26.25em)', // 420 / 16 = 26.25em
+    {
+      marginLeft: -25,
+      marginTop: -2,
+      width: 26,
+      transform: 'scale(0.86)',
+    },
+  ),
+)
+
 export function CategorySubscribedIcon({ isSubscribed }) {
   if (!isSubscribed) { return null }
-  return <CheckCircleIcon />
+  return (
+    <span className={`category-check ${categoryCheckStyle}`}>
+      <CheckCircleIcon />
+    </span>
+  )
 }
 CategorySubscribedIcon.propTypes = {
   isSubscribed: PropTypes.bool.isRequired,
@@ -136,32 +170,10 @@ const categoryCardTitleStyle = css(
     { width: 'calc(100% - 50px)' },
   ),
 
-  select('& .CheckCircleIcon',
-    s.absolute,
-    {
-      marginLeft: -32,
-      marginTop: 11,
-      width: 40,
-      transform: 'scale(1.6)',
-    },
-    select('& .svg-stroke-bevel', s.strokeGreen),
-    select('& circle', s.strokeGreen),
-
+  select('& .category-check',
+    { marginTop: -6 },
     media(s.maxBreak2,
-      {
-        marginLeft: -24,
-        marginTop: 2,
-        width: 28,
-        transform: 'none',
-      },
-    ),
-    media('(max-width: 26.25em)', // 420 / 16 = 26.25em
-      {
-        marginLeft: -22,
-        marginTop: 0,
-        width: 26,
-        transform: 'scale(0.86)',
-      },
+      { marginTop: -2 },
     ),
   ),
 )

@@ -28,7 +28,7 @@ const heroStyle = css(
   select('.isDiscoverView ~ &', { paddingTop: '160px !important' }),
   media(s.maxBreak2,
     parent('.isLoggedOut', { paddingTop: 80 }),
-    select('.isDiscoverView ~ &', { paddingTop: '120px !important' }),
+    select('.isDiscoverView ~ &', { paddingTop: '150px !important' }),
     select('.isLogged .isDiscoverView ~ &', { paddingTop: '120px !important' }),
     select('.isProfileMenuActive ~ &', s.displayNone),
   ),
@@ -138,22 +138,62 @@ const captionStyle = css(
 )
 
 const categoryCaptionStyle = css(
-  s.relative, s.py20, s.fontSize14,
-  { maxWidth: 500 },
+  s.relative,
+  s.py20,
+  s.fontSize14,
   s.mxAuto,
-  media(s.maxBreak2, s.px10, { minHeight: 200 }),
-  media(s.minBreak4, s.px0),
+  { maxWidth: 500 },
+
+  media(s.maxBreak2,
+    s.px10,
+    { minHeight: 200 }
+  ),
+  media(s.minBreak4,
+    s.px0,
+  ),
 )
 
 const categoryHeadingStyle = css(
-  s.sansBlack, s.fontSize18, { lineHeight: 1.5 }, s.center,
-  media(s.minBreak2, s.fontSize24),
-)
-const categoryHeadingTextStyle = css(s.inlineBlock, s.borderBottom)
-const mobileActionStyle = css(s.relative, s.fullWidth, s.px10, s.pb10, s.fontSize14, s.selfEnd)
-const categoryCopyStyle = css(s.mt40)
+  s.sansBlack,
+  s.center,
 
-const promotionCategoryStyle = css({ ...promotionStyle }, media(s.maxBreak2, s.flexColumn))
+  select('& .category-check',
+    { marginTop: 2 },
+    media(s.maxBreak2,
+      { marginTop: -2 },
+    ),
+  ),
+
+  select('& .text',
+    s.inlineBlock,
+    s.fontSize18,
+    {
+      lineHeight: 1,
+      borderBottom: '2px solid'
+    },
+
+    media(s.minBreak2,
+      s.fontSize32,
+    ),
+  ),
+)
+
+const mobileActionStyle = css(s.relative, s.fullWidth, s.px10, s.pb10, s.fontSize14, s.selfEnd)
+const categoryCopyStyle = css(s.mt20)
+const subscribeHolderStyle = css(
+  s.flex,
+  s.fullWidth,
+  s.justifyCenter,
+  s.mt30,
+  media(s.maxBreak2,
+    s.mt20,
+  ),
+)
+
+const promotionCategoryStyle = css(
+  { ...promotionStyle },
+  media(s.maxBreak2, s.flexColumn),
+)
 
 
 export const HeroPromotionCategory = (props) => {
@@ -167,14 +207,16 @@ export const HeroPromotionCategory = (props) => {
       <div className={categoryCaptionStyle}>
         <h1 className={categoryHeadingStyle}>
           <CategorySubscribedIcon isSubscribed={isSubscribed} />
-          <span className={categoryHeadingTextStyle}>{name}</span>
+          <span className="text">{name}</span>
         </h1>
         <p className={categoryCopyStyle}>{description}</p>
-        <CategorySubscribeButton
-          subscribe={subscribe}
-          unsubscribe={unsubscribe}
-          isSubscribed={isSubscribed}
-        />
+        <span className={subscribeHolderStyle}>
+          <CategorySubscribeButton
+            subscribe={subscribe}
+            unsubscribe={unsubscribe}
+            isSubscribed={isSubscribed}
+          />
+        </span>
         {!isMobile &&
           <HeroPromotionCTA
             caption={ctaCaption}
