@@ -90,19 +90,56 @@ CategorySubscribeButton.propTypes = {
   unsubscribe: PropTypes.func.isRequired,
 }
 
+const categorySubNavStyle = css(
+  s.relative,
+  s.fullWidth,
+  s.pt20,
+  s.pb0,
+  s.center,
+  s.resetList,
+
+  media(s.minBreak2,
+    s.pt40,
+    s.pb20,
+  ),
+
+  select('& li',
+    s.inlineBlock,
+    {
+      marginRight: 15,
+      marginLeft: 15,
+    },
+    select('& a',
+      s.fontSize16,
+      s.colorA,
+      {
+        border: 'none',
+      },
+      select('&.selected',
+        s.colorBlack,
+        s.borderBottom,
+      ),
+
+      media(s.minBreak2,
+        s.fontSize18,
+      ),
+    )
+  ),
+)
+
 export function CategorySubNav({ stream }) {
   if (stream === 'global') {
     return (
-      <ul>
-        <li><Link to="/discover">Featured</Link></li>
+      <ul className={categorySubNavStyle}>
+        <li><Link to="/discover" className="selected">Featured</Link></li>
         <li><Link to="/discover/trending">Trending</Link></li>
         <li><Link to="/discover/recent">Recent</Link></li>
       </ul>
     )
   }
   return (
-    <ul>
-      <li><Link to={`/discover/${stream}`}>Featured</Link></li>
+    <ul className={categorySubNavStyle}>
+      <li><Link to={`/discover/${stream}`} className="selected">Featured</Link></li>
       <li><Link to={`/discover/${stream}/trending`}>Trending</Link></li>
     </ul>
   )
