@@ -285,6 +285,25 @@ const categoryCardStyle = css(
     },
   ),
 
+  media(s.minBreak5,
+    {
+      width: 'calc(20% - 40px)',
+      paddingBottom: 'calc(20% - 40px)',
+    },
+  ),
+  media(s.minBreak6,
+    {
+      width: 'calc(16.666666667% - 40px)',
+      paddingBottom: 'calc(16.666666667% - 40px)',
+    },
+  ),
+  media(s.minBreak7,
+    {
+      width: 'calc(14.28571429% - 40px)',
+      paddingBottom: 'calc(14.28571429% - 40px)',
+    },
+  ),
+
   select('& .button-holder',
     s.absolute,
     s.flex,
