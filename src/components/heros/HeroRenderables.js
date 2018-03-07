@@ -146,7 +146,7 @@ const categoryCaptionStyle = css(
 
   media(s.maxBreak2,
     s.px10,
-    { minHeight: 200 }
+    { minHeight: 200 },
   ),
   media(s.minBreak4,
     s.px0,
@@ -169,7 +169,7 @@ const categoryHeadingStyle = css(
     s.fontSize18,
     {
       lineHeight: 1,
-      borderBottom: '2px solid'
+      borderBottom: '2px solid',
     },
 
     media(s.minBreak2,

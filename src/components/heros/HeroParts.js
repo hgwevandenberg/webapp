@@ -42,7 +42,7 @@ const creditsStyle = css(
   ),
   media(s.minBreak4, { right: 40 }, parent('.HeroHeader', { right: 60 })),
   media(s.maxBreak2,
-    parent('.HeroPromotionMobileActions >', 
+    parent('.HeroPromotionMobileActions >',
       s.flex,
       s.justifyEnd,
       s.itemsCenter,
@@ -51,7 +51,7 @@ const creditsStyle = css(
       {
         whiteSpace: 'nowrap',
         maxWidth: '100%',
-      }
+      },
     ),
   ),
 )
@@ -65,7 +65,7 @@ const creditsAuthorStyle = css(
       s.relative,
       s.inlineBlock,
       s.truncate,
-      { maxWidth: 'calc(100% - 136px)' }
+      { maxWidth: 'calc(100% - 136px)' },
     ),
   ),
 )

@@ -123,7 +123,7 @@ const categorySubNavStyle = css(
       media(s.minBreak2,
         s.fontSize18,
       ),
-    )
+    ),
   ),
 )
 
