@@ -4,7 +4,7 @@ import { Link } from 'react-router'
 import Avatar from '../assets/Avatar'
 import { ChevronCircleIcon, ShareIcon } from '../assets/Icons'
 import { AppleStore, GooglePlayStore } from '../assets/Sprites'
-import { css, hover, media, parent } from '../../styles/jss'
+import { css, hover, media, parent, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 import * as ENV from '../../../env'
 
@@ -34,7 +34,6 @@ const creditsStyle = css(
   hover(s.colorC),
   parent('.isCreditsHidden', s.pointerNone, s.opacity0),
   parent('.AuthenticationFormDialog.inModal', { right: 20 }),
-  parent('.HeroHeader', { right: 20 }),
   media(s.minBreak2,
     { right: 20, bottom: 20 },
     parent('.HeroHeader', { right: 40 }),
@@ -42,17 +41,16 @@ const creditsStyle = css(
   ),
   media(s.minBreak4, { right: 40 }, parent('.HeroHeader', { right: 60 })),
   media(s.maxBreak2,
-    parent('.HeroPromotionMobileActions >',
-      s.flex,
-      s.justifyEnd,
-      s.itemsCenter,
-      s.fullWidth,
-      s.pl10,
-      {
-        whiteSpace: 'nowrap',
-        maxWidth: '100%',
-      },
-    ),
+    s.flex,
+    s.justifyEnd,
+    s.itemsCenter,
+    s.fullWidth,
+    s.pl10,
+    {
+      whiteSpace: 'nowrap',
+      maxWidth: '100%',
+    },
+    select('& .inHeroPromotionCredits', { flex: 'none' }),
   ),
 )
 
@@ -61,17 +59,22 @@ const creditsAuthorStyle = css(
   s.ml10,
   { marginRight: 15, lineHeight: 1.2, borderBottom: '1px solid' },
   media(s.maxBreak2,
-    parent('.HeroPromotionMobileActions > .HeroPromotionCredits',
+    parent('.HeroPromotionCredits',
       s.relative,
       s.inlineBlock,
       s.truncate,
-      { maxWidth: 'calc(100% - 136px)' },
+      { maxWidth: 'calc(100% - 60px)' },
+    ),
+    select('&.with-label',
+      parent('.HeroPromotionCredits',
+        { maxWidth: 'calc(100% - 136px)' },
+      ),
     ),
   ),
 )
 
 const creditsByStyle = media(s.maxBreak2,
-  parent('.HeroPromotionMobileActions > .HeroPromotionCredits', s.inlineBlock),
+  parent('.HeroPromotionCredits', s.inlineBlock),
 )
 
 export const HeroPromotionCredits = ({ label, sources, username, trackingLabel }, context) => {
@@ -79,8 +82,8 @@ export const HeroPromotionCredits = ({ label, sources, username, trackingLabel }
   const track = () => onClickTrackCredits(trackingLabel)
   return (
     <Link className={`HeroPromotionCredits ${creditsStyle}`} onClick={track} to={`/${username}`}>
-      <span className={creditsByStyle}>{label}</span>
-      <span className={creditsAuthorStyle}>@{username}</span>
+      {label &&<span className={creditsByStyle}>{label}</span>}
+      <span className={`${creditsAuthorStyle}${label ? ' with-label' : ''}`}>@{username}</span>
       <Avatar className="inHeroPromotionCredits" sources={sources} username={username} />
     </Link>
   )
