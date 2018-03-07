@@ -105,12 +105,6 @@ const categoryTabStyle = css(
 
   media(s.minBreak2,
     {
-      width: 120,
-    },
-  ),
-  media(s.minBreak4,
-    s.fullWidth,
-    {
       minWidth: 120,
     },
   ),
@@ -214,7 +208,7 @@ const categoryTabBarStyle = css(
 // nav tag that holds all of the tabs style
 const categoryTabsHolderStyle = css(
   s.relative,
-  s.inlineBlock,
+  s.flex,
   s.fullHeight,
   s.overflowScrollWebX,
   s.nowrap,
@@ -228,14 +222,11 @@ const categoryTabsHolderStyle = css(
       width: 'calc(100% - 90px)',
     },
   ),
-  media(s.minBreak4,
-    s.flex,
-  ),
 )
 
 // tab bar tools style
 const categoryTabBarToolsStyle = css(
-  s.relative,
+  s.absolute,
   s.inlineBlock,
   s.fullHeight,
   s.pr10,
@@ -244,6 +235,8 @@ const categoryTabBarToolsStyle = css(
   s.bgcBlack,
   {
     width: 70,
+    top: 0,
+    right: 0,
   },
 
   before(
@@ -270,13 +263,6 @@ const categoryTabBarToolsStyle = css(
         left: -30,
       },
     ),
-  ),
-  media(s.minBreak4,
-    s.absolute,
-    {
-      top: 0,
-      right: 0,
-    },
   ),
 
   // style Edit link
