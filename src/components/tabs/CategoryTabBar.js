@@ -82,9 +82,19 @@ const categoryTabStyle = css(
       },
     ),
   ),
-  select('&.mini.all', {
-    background: 'linear-gradient(50deg, #ff00ff, #1925ff)',
-  }),
+  select('&.mini.all',
+    {
+      width: 50,
+      minWidth: 50,
+      background: 'linear-gradient(50deg, #ff00ff, #1925ff)',
+    },
+    media(s.minBreak2,
+      {
+        width: 60,
+        minWidth: 60,
+      },
+    ),
+  ),
   select('&.mini.subscribed', {
     background: 'linear-gradient(45deg, #6e00ff, #0054ff, #007bf1, #00beff)',
   }),
