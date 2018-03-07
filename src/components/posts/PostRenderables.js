@@ -253,9 +253,9 @@ export class PostDetailHeader extends PureComponent {
 export class PostHeader extends PureComponent {
   static propTypes = {
     author: PropTypes.object.isRequired,
-    repostedBy: PropTypes.object.isRequired,
+    repostedBy: PropTypes.object,
     detailPath: PropTypes.string.isRequired,
-    inUserDetail: PropTypes.bool.isRequired,
+    inUserDetail: PropTypes.bool,
     isOwnPost: PropTypes.bool.isRequired,
     isRepost: PropTypes.bool.isRequired,
     postCreatedAt: PropTypes.string.isRequired,

@@ -516,7 +516,6 @@ class PostContainer extends Component {
           {...headerProps}
           author={repostAuthor || author}
           repostedBy={repostAuthor ? author : null}
-          artistInviteSubmission={artistInviteSubmission}
           inUserDetail={repostAuthor ? isPostHeaderHidden : null}
           isArtistInviteSubmission={isArtistInviteSubmission}
           isRepost={isRepost}
