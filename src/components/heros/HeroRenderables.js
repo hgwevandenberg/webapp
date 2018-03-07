@@ -284,7 +284,7 @@ HeroPromotionCategory.defaultProps = {
 
 // -------------------------------------
 
-const promotionHeadingStyle = css(s.sansBlack, s.fontSize18, media(s.minBreak2, s.fontSize48))
+const promotionHeadingStyle = css(s.fontSize18, media(s.minBreak2, s.fontSize48))
 const promotionSubheadingStyle = css(s.fontSize14, media(s.minBreak2, s.fontSize28))
 
 export const HeroPromotionPage = (props) => {
