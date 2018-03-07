@@ -295,7 +295,7 @@ export const CategoryTabBar = ({ pathname, tabs, subscribed }) => (
 
       {tabs.map(tab =>
         (<CategoryTab
-          isActive={(tab.activePattern ? tab.activePattern.test(pathname) : tab.to === pathname.replace('/trending',''))}
+          isActive={(tab.activePattern ? tab.activePattern.test(pathname) : tab.to === pathname.replace('/trending', ''))}
           key={`CategoryTab_${tab.to}`}
           label={tab.label}
           source={tab.source}

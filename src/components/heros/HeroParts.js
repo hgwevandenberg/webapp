@@ -82,7 +82,7 @@ export const HeroPromotionCredits = ({ label, sources, username, trackingLabel }
   const track = () => onClickTrackCredits(trackingLabel)
   return (
     <Link className={`HeroPromotionCredits ${creditsStyle}`} onClick={track} to={`/${username}`}>
-      {label &&<span className={creditsByStyle}>{label}</span>}
+      {label && <span className={creditsByStyle}>{label}</span>}
       <span className={`${creditsAuthorStyle}${label ? ' with-label' : ''}`}>@{username}</span>
       <Avatar className="inHeroPromotionCredits" sources={sources} username={username} />
     </Link>
