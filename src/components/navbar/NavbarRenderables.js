@@ -208,7 +208,7 @@ export const NavbarLoggedIn = ({
           icon={<SparklesIcon />}
           label="Discover"
           pathname={pathname}
-          to="/discover"
+          to="/discover/subscribed"
         />
         <NavbarLink
           className="LabelOnly"
