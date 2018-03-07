@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
+import classNames from 'classnames'
 import {
   CheckCircleIcon,
 } from '../assets/Icons'
@@ -127,25 +128,49 @@ const categorySubNavStyle = css(
   ),
 )
 
-export function CategorySubNav({ stream }) {
+export function CategorySubNav({ stream, kind }) {
   if (stream === 'global') {
     return (
       <ul className={categorySubNavStyle}>
-        <li><Link to="/discover" className="selected">Featured</Link></li>
-        <li><Link to="/discover/trending">Trending</Link></li>
-        <li><Link to="/discover/recent">Recent</Link></li>
+        <li>
+          <Link to="/discover" className={classNames({ selected: kind === 'featured' })}>
+            Featured
+          </Link>
+        </li>
+        <li>
+          <Link to="/discover/trending" className={classNames({ selected: kind === 'trending' })}>
+            Trending
+          </Link>
+        </li>
+        <li>
+          <Link to="/discover/recent" className={classNames({ selected: kind === 'recent' })}>
+            Recent
+          </Link>
+        </li>
       </ul>
     )
   }
   return (
     <ul className={categorySubNavStyle}>
-      <li><Link to={`/discover/${stream}`} className="selected">Featured</Link></li>
-      <li><Link to={`/discover/${stream}/trending`}>Trending</Link></li>
+      <li>
+        <Link to={`/discover/${stream}`} className={classNames({ selected: kind === 'featured' })}>
+          Featured
+        </Link>
+      </li>
+      <li>
+        <Link
+          to={`/discover/${stream}/trending`}
+          className={classNames({ selected: kind === 'trending' })}
+        >
+          Trending
+        </Link>
+      </li>
     </ul>
   )
 }
 CategorySubNav.propTypes = {
   stream: PropTypes.string.isRequired,
+  kind: PropTypes.string.isRequired,
 }
 
 const categoryCardLinkStyle = css(
