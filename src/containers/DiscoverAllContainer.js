@@ -6,7 +6,7 @@ import { selectOrderedCategoryIds } from '../selectors/categories'
 import CategoryContainer from './CategoryContainer'
 import { CategoryAllFooter } from '../components/categories/CategoryRenderables'
 import { MainView } from '../components/views/MainView'
-import { css, media } from '../styles/jss'
+import { css, media, select } from '../styles/jss'
 import * as s from '../styles/jso'
 
 function mapStateToProps(state, props) {
@@ -17,12 +17,14 @@ function mapStateToProps(state, props) {
 
 const categoriesStyle = css(
   s.resetList,
-  s.flex,
-  s.flexRow,
-  s.flexWrap,
+  s.relative,
+  s.block,
+  s.fullWidth,
   s.pl20,
   s.pr20,
   { paddingBottom: 80 },
+  s.clearFix,
+
   media(s.maxBreak4,
     s.pl10,
     s.pr10,
@@ -31,6 +33,10 @@ const categoriesStyle = css(
     s.pl5,
     s.pr5,
     { paddingBottom: 0 },
+  ),
+
+  select('& li',
+    { float: 'left' },
   ),
 )
 
