@@ -237,6 +237,12 @@ const roundedRectLinkStyle = css(
     border: 'none',
     width: 'auto',
   },
+  media(s.maxBreak2,
+    s.hv30,
+    s.lh30,
+    s.pr10,
+    s.pl10,
+  ),
 )
 
 export const RoundedRectLink = ({ children, className, to, ...rest }) => (

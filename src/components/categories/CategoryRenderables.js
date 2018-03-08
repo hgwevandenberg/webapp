@@ -368,8 +368,11 @@ const categoryAllFooterStyle = css(
   {
     bottom: 0,
     left: 0,
-    height: 80,
+    height: 50,
   },
+  media(s.minBreak2,
+    { height: 80 },
+  ),
 )
 
 export const CategoryAllFooter = () => (
