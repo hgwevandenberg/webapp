@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import {
   CheckCircleIcon,
 } from '../assets/Icons'
+import { RoundedRectLink } from '../buttons/Buttons'
 import { before, css, hover, media, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
@@ -354,3 +355,33 @@ CategoryCard.propTypes = {
 CategoryCard.defaultProps = {
   imageUrl: null,
 }
+
+// footer for /discover/all style
+const categoryAllFooterStyle = css(
+  s.fixed,
+  s.flex,
+  s.fullWidth,
+  s.itemsCenter,
+  s.justifyCenter,
+  s.bgcF2,
+  s.zIndex4,
+  {
+    bottom: 0,
+    left: 0,
+    height: 80,
+  }
+)
+
+export const CategoryAllFooter = () => (
+  <footer className={categoryAllFooterStyle}>
+    <p>
+      <RoundedRectLink
+        to="/discover/subscribed"
+        className=""
+      >
+        View Subscriptions
+      </RoundedRectLink>
+    </p>
+  </footer>
+)
+

@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { getCategories } from '../actions/discover'
 import { selectOrderedCategoryIds } from '../selectors/categories'
 import CategoryContainer from './CategoryContainer'
+import { CategoryAllFooter } from '../components/categories/CategoryRenderables'
 import { MainView } from '../components/views/MainView'
 import { css, media } from '../styles/jss'
 import * as s from '../styles/jso'
@@ -54,6 +55,7 @@ class DiscoverAllContainer extends PureComponent {
         <ul className={categoriesStyle}>
           {categoryIds.map(id => <CategoryContainer categoryId={id} key={`category-grid-${id}`} />)}
         </ul>
+        <CategoryAllFooter />
       </MainView>
     )
   }

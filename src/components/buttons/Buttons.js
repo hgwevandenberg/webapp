@@ -224,3 +224,31 @@ RoundedRect.defaultProps = {
   className: null,
 }
 
+const roundedRectLinkStyle = css(
+  { ...roundedRectStyle },
+  s.inlineBlock,
+  s.fontSize14,
+  s.bgcBlack,
+  s.colorWhite,
+  s.center,
+  s.pr20,
+  s.pl20,
+  {
+    border: 'none',
+    width: 'auto',
+  }
+)
+
+export const RoundedRectLink = ({ children, className, to, ...rest }) => (
+  <Link className={`RoundedRect ${roundedRectLinkStyle} ${className}`} to={to} {...rest}>
+    {children}
+  </Link>
+)
+RoundedRectLink.propTypes = {
+  children: PropTypes.node.isRequired,
+  className: PropTypes.string,
+  to: PropTypes.string.isRequired,
+}
+RoundedRectLink.defaultProps = {
+  className: null,
+}
