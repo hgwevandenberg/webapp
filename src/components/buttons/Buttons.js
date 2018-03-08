@@ -237,6 +237,7 @@ const roundedRectLinkStyle = css(
     border: 'none',
     width: 'auto',
   },
+  hover(s.colorWhite, s.bgc6),
   media(s.maxBreak2,
     s.hv30,
     s.lh30,
