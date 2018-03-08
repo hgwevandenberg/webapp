@@ -22,6 +22,7 @@ const categoriesStyle = css(
   s.flexWrap,
   s.pl20,
   s.pr20,
+  { paddingBottom: 80 },
   media(s.maxBreak4,
     s.pl10,
     s.pr10,
@@ -29,6 +30,7 @@ const categoriesStyle = css(
   media(s.maxBreak2,
     s.pl5,
     s.pr5,
+    { paddingBottom: 0 },
   ),
 )
 
