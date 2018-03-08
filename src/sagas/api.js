@@ -62,7 +62,7 @@ export function* fetchCredentials() {
 
   const refreshToken = yield select(selectValidRefreshToken)
   if (refreshToken) {
-    return yield call(useRefreshToken, [refreshToken])
+    return yield call(useRefreshToken, refreshToken)
   }
 
   const publicToken = yield select(selectUnexpiredPublicToken)
