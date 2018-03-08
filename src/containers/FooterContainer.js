@@ -35,6 +35,7 @@ type Props = {
   formActionPath: string,
   isEditorial: boolean,
   isPostDetail: boolean,
+  isDiscoverAll: boolean,
   isGridMode: boolean,
   isLayoutToolHidden: boolean,
   isLoggedIn: boolean,
@@ -57,6 +58,7 @@ function mapStateToProps(state, props) {
   const pathname = selectPathname(state)
   const isEditorial = selectViewNameFromRoute(state, props) === 'editorial'
   const isPostDetail = selectIsPostDetail(state, props)
+  const isDiscoverAll = selectViewNameFromRoute(state, props) === 'discoverAll'
   let isLayoutToolHidden = selectIsLayoutToolHidden(state, props)
   // hide the layout tool on the editorial homepage
   if (isEditorial) { isLayoutToolHidden = true }
@@ -65,6 +67,7 @@ function mapStateToProps(state, props) {
     formActionPath: checkAvailability().payload.endpoint.path,
     isEditorial,
     isPostDetail,
+    isDiscoverAll,
     isGridMode: selectIsGridMode(state),
     isLayoutToolHidden,
     isLoggedIn: selectIsLoggedIn(state),
@@ -123,7 +126,7 @@ class FooterContainer extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     const { isLoggedIn } = this.props
     return !is(nextProps.availability, this.props.availability) ||
-      ['isGridMode', 'isPostDetail', 'isLayoutToolHidden', 'isLoggedIn', 'isMobile', 'isPaginatoring'].some(prop =>
+      ['isGridMode', 'isPostDetail', 'isDiscoverAll', 'isLayoutToolHidden', 'isLoggedIn', 'isMobile', 'isPaginatoring'].some(prop =>
         nextProps[prop] !== this.props[prop],
       ) ||
       (!isLoggedIn && ['emailStatus', 'formMessage', 'formStatus', 'isFormDisabled', 'isFormFocused'].some(prop =>
@@ -228,6 +231,7 @@ class FooterContainer extends Component {
       formStatus: this.state.formStatus,
       isEditorial: this.props.isEditorial,
       isPostDetail: this.props.isPostDetail,
+      isDiscoverAll: this.props.isDiscoverAll,
       isFormDisabled: this.state.isFormDisabled,
       isFormFocused: this.state.isFormFocused,
       isGridMode: this.props.isGridMode,
