@@ -51,17 +51,17 @@ CategorySubscribedIcon.propTypes = {
 }
 
 const categorySubscribeButtonStyle = css(
-  s.bgcA,
+  s.bgcGreen,
   s.colorWhite,
   {
     padding: '5px 15px 5px 6px',
     borderRadius: 100,
     transition: `background-color 0.2s ${s.ease}`,
   },
-  hover(s.bgcGreen),
+  hover({ backgroundColor: '#16a905' }),
   select('&.subscribed',
-    s.bgcGreen,
-    hover({ backgroundColor: '#16a905' }),
+    s.bgcA,
+    hover(s.bgcBlack),
   ),
   select('& .text',
     s.fontSize12,
@@ -75,7 +75,7 @@ const categorySubscribeButtonStyle = css(
 export function CategorySubscribeButton({ isSubscribed, subscribe, unsubscribe }) {
   return (
     <button
-      className={`${categorySubscribeButtonStyle} subscribe-button${!isSubscribed ? ' subscribed' : ''}`}
+      className={`${categorySubscribeButtonStyle} subscribe-button${isSubscribed ? ' subscribed' : ''}`}
       onClick={!isSubscribed ? subscribe : unsubscribe}
     >
       <CheckCircleIcon />
