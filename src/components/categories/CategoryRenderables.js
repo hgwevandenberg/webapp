@@ -117,13 +117,43 @@ const categorySubNavStyle = css(
       {
         border: 'none',
       },
-      select('&.selected',
-        s.colorBlack,
-        s.borderBottom,
-      ),
 
       media(s.minBreak2,
         s.fontSize18,
+      ),
+    ),
+
+    select('&.selected',
+      select('& a',
+        s.colorBlack,
+        s.borderBottom,
+      ),
+    ),
+  ),
+
+  // style mobile-specific version
+  media(s.maxBreak2,
+    s.pr10,
+    s.pl10,
+
+    select('& li',
+      s.relative,
+      s.inlineBlock,
+      s.m0,
+      s.center,
+      s.borderBottom,
+      {
+        width: '50%',
+        borderColor: '#aaa',
+      },
+      select('& a',
+        { borderWidth: '0' },
+      ),
+      select('&.selected',
+        { borderColor: '#000' },
+        select('& a',
+          { borderWidth: '0' },
+        ),
       ),
     ),
   ),
@@ -132,19 +162,19 @@ const categorySubNavStyle = css(
 export function CategorySubNav({ stream, kind }) {
   if (stream === 'global') {
     return (
-      <ul className={categorySubNavStyle}>
-        <li>
-          <Link to="/discover" className={classNames({ selected: kind === 'featured' })}>
+      <ul className={`category-sub-nav ${categorySubNavStyle}`}>
+        <li className={classNames({ selected: kind === 'featured' })}>
+          <Link to="/discover">
             Featured
           </Link>
         </li>
-        <li>
-          <Link to="/discover/trending" className={classNames({ selected: kind === 'trending' })}>
+        <li className={classNames({ selected: kind === 'trending' })}>
+          <Link to="/discover/trending">
             Trending
           </Link>
         </li>
-        <li>
-          <Link to="/discover/recent" className={classNames({ selected: kind === 'recent' })}>
+        <li className={classNames({ selected: kind === 'recent' })}>
+          <Link to="/discover/recent">
             Recent
           </Link>
         </li>
@@ -152,17 +182,14 @@ export function CategorySubNav({ stream, kind }) {
     )
   }
   return (
-    <ul className={categorySubNavStyle}>
-      <li>
-        <Link to={`/discover/${stream}`} className={classNames({ selected: kind === 'featured' })}>
+    <ul className={`category-sub-nav ${categorySubNavStyle}`}>
+      <li className={classNames({ selected: kind === 'featured' })}>
+        <Link to={`/discover/${stream}`}>
           Featured
         </Link>
       </li>
-      <li>
-        <Link
-          to={`/discover/${stream}/trending`}
-          className={classNames({ selected: kind === 'trending' })}
-        >
+      <li className={classNames({ selected: kind === 'trending' })}>
+        <Link to={`/discover/${stream}/trending`}>
           Trending
         </Link>
       </li>
