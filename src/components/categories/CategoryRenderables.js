@@ -156,13 +156,16 @@ const categorySubNavStyle = css(
         ),
       ),
     ),
+    select('&.global li',
+      { width: '33.3333333%' },
+    ),
   ),
 )
 
 export function CategorySubNav({ stream, kind }) {
   if (stream === 'global') {
     return (
-      <ul className={`category-sub-nav ${categorySubNavStyle}`}>
+      <ul className={`category-sub-nav global ${categorySubNavStyle}`}>
         <li className={classNames({ selected: kind === 'featured' })}>
           <Link to="/discover">
             Featured
