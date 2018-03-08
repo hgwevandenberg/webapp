@@ -369,7 +369,7 @@ const categoryAllFooterStyle = css(
     bottom: 0,
     left: 0,
     height: 80,
-  }
+  },
 )
 
 export const CategoryAllFooter = () => (

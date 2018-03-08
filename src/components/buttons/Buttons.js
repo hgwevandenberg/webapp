@@ -236,7 +236,7 @@ const roundedRectLinkStyle = css(
   {
     border: 'none',
     width: 'auto',
-  }
+  },
 )
 
 export const RoundedRectLink = ({ children, className, to, ...rest }) => (
