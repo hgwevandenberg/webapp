@@ -190,43 +190,87 @@ const subscribeHolderStyle = css(
   ),
 )
 
+const subscribeHolderMobileStyle = css(
+  s.relative,
+  s.fullWidth,
+
+  select('& .subscribe-button',
+    s.fullWidth,
+    s.pt10,
+    s.pb10,
+    {
+      borderRadius: 0,
+    },
+    select('& .CheckCircleIcon',
+      s.displayNone,
+    ),
+    select('& .text',
+      s.m0,
+      s.fontSize14,
+    ),
+  ),
+)
+
 const promotionCategoryStyle = css(
   { ...promotionStyle },
   media(s.maxBreak2, s.flexColumn),
 )
-
 
 export const HeroPromotionCategory = (props) => {
   const { creditLabel, creditSources, creditUsername, creditTrackingLabel } = props
   const { description, dpi, name, sources } = props
   const { ctaCaption, ctaHref, ctaTrackingLabel, isLoggedIn, isMobile, isSubscribed } = props
   const { subscribe, unsubscribe } = props
-  return (
-    <div className={promotionCategoryStyle}>
-      <BackgroundImage className="hasOverlay4" dpi={dpi} sources={sources} />
-      <div className={categoryCaptionStyle}>
-        <h1 className={categoryHeadingStyle}>
-          <CategorySubscribedIcon isSubscribed={isSubscribed} />
-          <span className="text">{name}</span>
-        </h1>
-        <p className={categoryCopyStyle}>{description}</p>
-        <span className={subscribeHolderStyle}>
-          <CategorySubscribeButton
-            subscribe={subscribe}
-            unsubscribe={unsubscribe}
-            isSubscribed={isSubscribed}
-          />
-        </span>
-        {!isMobile &&
+
+  // desktop version
+  if (!isMobile) {
+    return (
+      <div className={promotionCategoryStyle}>
+        <BackgroundImage className="hasOverlay4" dpi={dpi} sources={sources} />
+        <div className={categoryCaptionStyle}>
+          <h1 className={categoryHeadingStyle}>
+            <CategorySubscribedIcon isSubscribed={isSubscribed} />
+            <span className="text">{name}</span>
+          </h1>
+          <p className={categoryCopyStyle}>{description}</p>
+          <span className={subscribeHolderStyle}>
+            <CategorySubscribeButton
+              subscribe={subscribe}
+              unsubscribe={unsubscribe}
+              isSubscribed={isSubscribed}
+            />
+          </span>
           <HeroPromotionCTA
             caption={ctaCaption}
             isLoggedIn={isLoggedIn}
             to={ctaHref}
             label={ctaTrackingLabel}
           />
+        </div>
+        {creditUsername &&
+          <HeroPromotionCredits
+            label={creditLabel}
+            sources={creditSources}
+            username={creditUsername}
+            trackingLabel={creditTrackingLabel}
+          />
         }
       </div>
-      { isMobile &&
+    )
+  }
+
+  // mobile version
+  return (
+    <div>
+      <div className={promotionCategoryStyle}>
+        <BackgroundImage className="hasOverlay4" dpi={dpi} sources={sources} />
+        <div className={categoryCaptionStyle}>
+          <h1 className={categoryHeadingStyle}>
+            <CategorySubscribedIcon isSubscribed={isSubscribed} />
+            <span className="text">{name}</span>
+          </h1>
+          <p className={categoryCopyStyle}>{description}</p>
+        </div>
         <div className={`HeroPromotionMobileActions ${mobileActionStyle}`}>
           <HeroPromotionCTA
             caption={ctaCaption}
@@ -243,15 +287,14 @@ export const HeroPromotionCategory = (props) => {
             />
           }
         </div>
-      }
-      {!isMobile && creditUsername &&
-        <HeroPromotionCredits
-          label={creditLabel}
-          sources={creditSources}
-          username={creditUsername}
-          trackingLabel={creditTrackingLabel}
+      </div>
+      <span className={subscribeHolderMobileStyle}>
+        <CategorySubscribeButton
+          subscribe={subscribe}
+          unsubscribe={unsubscribe}
+          isSubscribed={isSubscribed}
         />
-      }
+      </span>
     </div>
   )
 }
