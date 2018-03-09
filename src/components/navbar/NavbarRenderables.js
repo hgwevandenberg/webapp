@@ -134,7 +134,14 @@ export const NavbarLoggedOut = ({
         to="/join"
       />
     </div>
-    {categoryTabs && <CategoryTabBar pathname={pathname} tabs={categoryTabs} subscribed={false} />}
+    {categoryTabs &&
+      <CategoryTabBar
+        pathname={pathname}
+        tabs={categoryTabs}
+        subscribed={false}
+        deviceSize={deviceSize}
+      />
+    }
   </nav>)
 
 NavbarLoggedOut.propTypes = {
@@ -259,7 +266,14 @@ export const NavbarLoggedIn = ({
         <NotificationsContainer isModal /> : null
       }
     </div>
-    {categoryTabs && <CategoryTabBar pathname={pathname} tabs={categoryTabs} subscribed />}
+    {categoryTabs &&
+      <CategoryTabBar
+        pathname={pathname}
+        tabs={categoryTabs}
+        subscribed
+        deviceSize={deviceSize}
+      />
+    }
   </nav>)
 
 NavbarLoggedIn.propTypes = {

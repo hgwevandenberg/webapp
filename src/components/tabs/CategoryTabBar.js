@@ -286,7 +286,23 @@ const categoryTabBarToolsStyle = css(
   ),
 )
 
-export const CategoryTabBar = ({ pathname, tabs, subscribed }) => (
+function isImageSizeLarge(deviceSize, tabsCount) {
+  let imageSizeLarge = false
+
+  if (deviceSize === 'mobile') {
+    if (tabsCount < 4) {
+      imageSizeLarge = true
+    }
+    return imageSizeLarge
+  }
+
+  if (tabsCount < 10) {
+    imageSizeLarge = true
+  }
+  return imageSizeLarge
+}
+
+export const CategoryTabBar = ({ pathname, tabs, subscribed, deviceSize }) => (
   <div className={categoryTabBarStyle}>
     <nav className={categoryTabsHolderStyle}>
       <AllCategoryTab pathname={pathname} />
@@ -298,7 +314,7 @@ export const CategoryTabBar = ({ pathname, tabs, subscribed }) => (
           isActive={(tab.activePattern ? tab.activePattern.test(pathname) : tab.to === pathname.replace('/trending', ''))}
           key={`CategoryTab_${tab.to}`}
           label={tab.label}
-          source={tabs.length < 10 ? tab.sources.large : tab.sources.small}
+          source={isImageSizeLarge(deviceSize, tabs.length) ? tab.sources.large : tab.sources.small}
           to={tab.to}
         />),
       )}
@@ -318,6 +334,7 @@ CategoryTabBar.propTypes = {
   pathname: PropTypes.string.isRequired,
   subscribed: PropTypes.bool.isRequired,
   tabs: PropTypes.array.isRequired,
+  deviceSize: PropTypes.bool.isRequired,
 }
 
 export default CategoryTabBar
