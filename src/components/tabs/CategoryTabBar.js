@@ -298,7 +298,7 @@ export const CategoryTabBar = ({ pathname, tabs, subscribed }) => (
           isActive={(tab.activePattern ? tab.activePattern.test(pathname) : tab.to === pathname.replace('/trending', ''))}
           key={`CategoryTab_${tab.to}`}
           label={tab.label}
-          source={tab.source}
+          source={tabs.length < 10 ? tab.sources.large : tab.sources.small}
           to={tab.to}
         />),
       )}
