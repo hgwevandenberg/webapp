@@ -15,15 +15,22 @@ const V3_GRAPHQL_PATH = '/api/v3/graphql'
 export const requestTypes = [
   ACTION_TYPES.V3.LOAD_STREAM,
   ACTION_TYPES.V3.LOAD_NEXT_CONTENT,
+  ACTION_TYPES.V3.LOAD_CATEGORIES,
+  ACTION_TYPES.V3.LOAD_PAGE_HEADERS,
 ]
 
 let unauthorizedActionQueue = []
 const runningFetches = {}
 
-function updateRunningFetches(serverResponse, query) {
+function getQueryKey({ query, variables }) {
+  return query + JSON.stringify(variables)
+}
+
+function updateRunningFetches(serverResponse, payload) {
+  const queryKey = getQueryKey(payload)
   if (!serverResponse) { return }
-  if (runningFetches[query]) {
-    delete runningFetches[query]
+  if (runningFetches[queryKey]) {
+    delete runningFetches[queryKey]
   } else {
     Object.keys(runningFetches).forEach((key) => {
       delete runningFetches[key]
@@ -145,7 +152,7 @@ export function* performRequest(action) {
     response = yield call(sagaFetch, V3_GRAPHQL_PATH, options)
   // Http Errors
   } catch (error) {
-    updateRunningFetches(error.response, query)
+    updateRunningFetches(error.response, payload)
     yield fork(handleRequestError, error, action)
     return false
   }
@@ -154,27 +161,31 @@ export function* performRequest(action) {
   const { json, serverResponse } = response
   if (json.errors) {
     const error = json.errors[0]
-    updateRunningFetches(error, query)
+    updateRunningFetches(error, payload)
     yield fork(handleGraphQLError, error, action)
     return false
   }
 
   payload.response = json
 
-  updateRunningFetches(serverResponse, query)
+  updateRunningFetches(serverResponse, payload)
 
   yield put({ meta, payload, type: SUCCESS })
   yield call(fireSuccessAction, meta)
   return true
 }
 
+export function v3IsRunning(payload) {
+  return !!runningFetches[getQueryKey(payload)]
+}
+
 export function* handleRequest(requestChannel) {
   while (true) {
     const action = yield take(requestChannel)
-    const { payload: { query } } = action
-
-    if (!runningFetches[query]) {
-      runningFetches[query] = true
+    const { payload } = action
+    const queryKey = getQueryKey(payload)
+    if (!v3IsRunning(payload)) {
+      runningFetches[queryKey] = true
       yield fork(performRequest, action)
     }
   }
@@ -201,6 +212,3 @@ export default function* requester() {
     fork(handleRequest, requestChannel),
   ])
 }
-
-export { runningFetches }
-

@@ -134,7 +134,14 @@ export const NavbarLoggedOut = ({
         to="/join"
       />
     </div>
-    {categoryTabs ? <CategoryTabBar pathname={pathname} tabs={categoryTabs} /> : null}
+    {categoryTabs &&
+      <CategoryTabBar
+        pathname={pathname}
+        tabs={categoryTabs}
+        subscribed={false}
+        deviceSize={deviceSize}
+      />
+    }
   </nav>)
 
 NavbarLoggedOut.propTypes = {
@@ -208,7 +215,7 @@ export const NavbarLoggedIn = ({
           icon={<SparklesIcon />}
           label="Discover"
           pathname={pathname}
-          to="/discover"
+          to="/discover/subscribed"
         />
         <NavbarLink
           className="LabelOnly"
@@ -259,7 +266,14 @@ export const NavbarLoggedIn = ({
         <NotificationsContainer isModal /> : null
       }
     </div>
-    {categoryTabs ? <CategoryTabBar pathname={pathname} tabs={categoryTabs} /> : null}
+    {categoryTabs &&
+      <CategoryTabBar
+        pathname={pathname}
+        tabs={categoryTabs}
+        subscribed
+        deviceSize={deviceSize}
+      />
+    }
   </nav>)
 
 NavbarLoggedIn.propTypes = {

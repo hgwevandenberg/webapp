@@ -4,6 +4,7 @@ import * as ACTION_TYPES from '../constants/action_types'
 
 // Like .getIn but for regular JS objects
 // Does not break if object is missing a key in the middle
+// TODO: Immutable 4.x has a functional getIn that works on both Maps and objects.
 function deepGet(object, [head, ...tail], fallback = null) {
   const val = object[head]
   if (val === undefined || val === null) { return fallback }
@@ -39,9 +40,20 @@ function parsePagination(state, stream, pathname, query, variables) {
   const mergedState = state.mergeDeepIn(['pages', pathname], Immutable.fromJS({
     pagination: Immutable.fromJS({ next, query, variables, isLastPage }),
   }))
-  return mergedState.updateIn(['pages', pathname, 'ids'], ids =>
-    ((ids || Immutable.OrderedSet()).concat(models.map(m => m.id))),
-  )
+  return mergedState.updateIn(['pages', pathname, 'ids'], (existingPageIds) => {
+    const newPageIds = Immutable.OrderedSet(models.map(m => m.id))
+    // If we don't have any existingPageIds just return the new ids.
+    if (!existingPageIds || existingPageIds.count() === 0) {
+      return newPageIds
+    }
+    // If we have a before value in the query this is not the first page, so append to ordered set.
+    if (variables.before || (variables.get && variables.get('before'))) {
+      return existingPageIds.concat(newPageIds)
+    }
+    // If we don't have a before value this is either the first page or re-requesting the first
+    // page. In that case we need to prepend to the ordered set.
+    return newPageIds.concat(existingPageIds)
+  })
 }
 
 function parseAsset(state, asset) {
@@ -62,6 +74,13 @@ function parseCategory(state, category) {
   if (!category) { return state }
   return smartMergeDeepIn(state, ['categories', category.id], Immutable.fromJS({
     id: category.id,
+    slug: category.slug,
+    name: category.name,
+    level: category.level,
+    order: category.order,
+    allowInOnboarding: category.allowInOnboarding,
+    isCreatorType: category.isCreatorType,
+    tileImage: category.tileImage,
   }))
 }
 
@@ -113,6 +132,24 @@ function parseUser(state, user) {
   return state2
 }
 
+function parsePageHeader(state, pageHeader) {
+  if (!pageHeader) { return state }
+  const state1 = parseUser(state, pageHeader.user)
+  const state2 = parseCategory(state1, pageHeader.category)
+  return smartMergeDeepIn(state2, ['pageHeaders', pageHeader.id], Immutable.fromJS({
+    id: pageHeader.id,
+    kind: pageHeader.kind,
+    slug: pageHeader.slug,
+    postToken: pageHeader.postToken,
+    header: pageHeader.header,
+    subheader: pageHeader.subheader,
+    ctaLink: pageHeader.ctaLink,
+    image: pageHeader.image,
+    userId: deepGet(pageHeader, ['user', 'id']),
+    categoryId: deepGet(pageHeader, ['category', 'id']),
+  }))
+}
+
 function postLinks(post) {
   const links = {}
   const authorId = deepGet(post, ['author', 'id'])
@@ -123,6 +160,11 @@ function postLinks(post) {
 
   const repostId = deepGet(post, ['repostedSource', 'id'])
   if (repostId) { links.repostedSource = { id: repostId, type: 'post' } }
+
+  const categories = deepGet(post, ['categories'])
+  if (categories && !!categories.length) {
+    links.categories = categories.map(cat => cat.id)
+  }
 
   return links
 }
@@ -153,11 +195,12 @@ function parsePost(state, post) {
   const state2 = parseList(state1, post.assets, parseAsset)
   const state3 = parsePost(state2, post.repostedSource)
   const state4 = parseArtistInviteSubmission(state3, post.artistInviteSubmission)
+  const state5 = parseList(state4, post.categories, parseCategory)
 
   const assetsById = reduceAssets(post.assets)
   const repostAssetsById = post.repostedSource ? reduceAssets(post.repostedSource.assets) : null
 
-  const state5 = smartMergeDeepIn(state4, ['posts', post.id], Immutable.fromJS({
+  const state6 = smartMergeDeepIn(state5, ['posts', post.id], Immutable.fromJS({
     // ids
     id: post.id,
     authorId: deepGet(post, ['author', 'id']), // We don't use links for this
@@ -188,7 +231,7 @@ function parsePost(state, post) {
     links: postLinks(post),
   }))
 
-  return state5
+  return state6
 }
 
 function parseQueryType(state, stream, pathname, query, variables) {
@@ -204,6 +247,14 @@ function parseStream(state, { payload: { response: { data }, pathname, query, va
   )
 }
 
+function parseCategoryQueries(state, { payload: { response: { data } } }) {
+  return parseList(state, data.categoryNav || data.allCategories, parseCategory)
+}
+
+function parsePageHeaders(state, { payload: { response: { data: { pageHeaders } } } }) {
+  return parseList(state, pageHeaders, parsePageHeader)
+}
+
 // Dispatch different graphql response types for parsing (reducing)
 export default function (state, action) {
   const { type } = action
@@ -211,6 +262,10 @@ export default function (state, action) {
     case ACTION_TYPES.V3.LOAD_STREAM_SUCCESS:
     case ACTION_TYPES.V3.LOAD_NEXT_CONTENT_SUCCESS:
       return parseStream(state, action)
+    case ACTION_TYPES.V3.LOAD_CATEGORIES_SUCCESS:
+      return parseCategoryQueries(state, action)
+    case ACTION_TYPES.V3.LOAD_PAGE_HEADERS_SUCCESS:
+      return parsePageHeaders(state, action)
     default:
       return state
   }

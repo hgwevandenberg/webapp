@@ -19,7 +19,7 @@ import {
 } from '../components/viewport/ScrollComponent'
 import * as ACTION_TYPES from '../constants/action_types'
 import { runningFetches } from '../sagas/requester'
-import { runningFetches as v3RunningFetches } from '../sagas/v3_requester'
+import { v3IsRunning } from '../sagas/v3_requester'
 import { selectIsLoggedIn } from '../selectors/authentication'
 import {
   selectColumnCount,
@@ -96,7 +96,7 @@ function lastPage(action, stream, pagination) {
 }
 
 function nextPageInFlight(pagination) {
-  return runningFetches[pagination.next] || v3RunningFetches[pagination.query]
+  return runningFetches[pagination.next] || v3IsRunning(pagination)
 }
 
 class StreamContainer extends Component {
@@ -321,7 +321,7 @@ class StreamContainer extends Component {
 
   render() {
     const { className, columnCount, hasShowMoreButton, isGridMode, isPostHeaderHidden,
-      paginatorCentered, paginatorText, paginatorTo, result, stream } = this.props
+      paginatorCentered, paginatorText, paginatorTo, result, stream, resultPath } = this.props
     const { action, hidePaginator, renderType } = this.state
     if (!action) { return null }
     if (!result.get('ids').size) {
@@ -346,6 +346,10 @@ class StreamContainer extends Component {
     const renderMethod = isGridMode ? 'asGrid' : 'asList'
     const pagination = result.get('pagination')
     const isLastPage = pagination.get('isLastPage', false)
+    let nextPagePath = null
+    if (!isLastPage && resultPath.includes('/discover')) {
+      nextPagePath = `${resultPath}?before=${pagination.get('next')}`
+    }
     return (
       <section className={classNames('StreamContainer', className)}>
         {meta.renderStream[renderMethod](result.get('ids'), columnCount, isPostHeaderHidden, meta.renderProps)}
@@ -362,6 +366,7 @@ class StreamContainer extends Component {
             messageText={paginatorText}
             to={paginatorTo}
             totalPages={Number(pagination.get('totalPages'))}
+            nextPagePath={nextPagePath}
             totalPagesRemaining={Number(pagination.get('totalPagesRemaining'))}
           />
         }

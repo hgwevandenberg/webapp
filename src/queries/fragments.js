@@ -1,4 +1,3 @@
-
 export const imageVersionProps = `
   fragment imageVersionProps on Image {
     url
@@ -6,9 +5,8 @@ export const imageVersionProps = `
   }
 `
 
-export const avatarImageVersion = `
-  ${imageVersionProps}
-  fragment avatarImageVersion on TshirtImageVersions {
+export const tshirtImageVersions = `
+  fragment tshirtImageVersions on TshirtImageVersions {
     small { ...imageVersionProps }
     regular { ...imageVersionProps }
     large { ...imageVersionProps }
@@ -16,9 +14,8 @@ export const avatarImageVersion = `
   }
 `
 
-export const assetImageVersions = `
-  ${imageVersionProps}
-  fragment assetImageVersions on ResponsiveImageVersions {
+export const responsiveImageVersions = `
+  fragment responsiveImageVersions on ResponsiveImageVersions {
     xhdpi { ...imageVersionProps }
     hdpi { ...imageVersionProps }
     mdpi { ...imageVersionProps }
@@ -29,13 +26,21 @@ export const assetImageVersions = `
   }
 `
 
+export const pageHeaderImageVersions = `
+  fragment pageHeaderImageVersions on ResponsiveImageVersions {
+    xhdpi { ...imageVersionProps }
+    hdpi { ...imageVersionProps }
+    optimized { ...imageVersionProps }
+    video { ...imageVersionProps }
+  }
+`
+
 export const authorSummary = `
-  ${avatarImageVersion}
   fragment authorSummary on User {
     id
     username
     name
-    avatar { ...avatarImageVersion }
+    avatar { ...tshirtImageVersions }
     currentUserState { relationshipPriority }
     settings {
       hasLovesEnabled
@@ -60,19 +65,11 @@ export const artistInviteSubmissionSummary = `
   fragment artistInviteSubmissionSummary on ArtistInviteSubmission {
     id
     status
-    artistInvite {
-      id
-      slug
-      title
-    }
+    artistInvite { id slug title }
   }
 `
 
 export const postSummary = `
-  ${contentProps}
-  ${authorSummary}
-  ${artistInviteSubmissionSummary}
-  ${assetImageVersions}
   fragment postSummary on Post {
     id
     token
@@ -82,8 +79,37 @@ export const postSummary = `
     content { ...contentProps }
     repostContent { ...contentProps }
     author { ...authorSummary }
-    assets { id attachment { ...assetImageVersions } }
+    categories { ...categorySummary }
+    assets { id attachment { ...responsiveImageVersions } }
     postStats { lovesCount commentsCount viewsCount repostsCount }
     currentUserState { watching loved reposted }
   }
+`
+
+export const categorySummary = `
+  fragment categorySummary on Category {
+    id
+    slug
+    name
+  }
+`
+
+export const postStream = `
+  fragment postStream on PostStream {
+    next
+    isLastPage
+    posts { ...postSummary repostedSource { ...postSummary } }
+  }
+`
+
+export const postStreamAllFragments = `
+  ${imageVersionProps}
+  ${responsiveImageVersions}
+  ${tshirtImageVersions}
+  ${contentProps}
+  ${authorSummary}
+  ${categorySummary}
+  ${artistInviteSubmissionSummary}
+  ${postSummary}
+  ${postStream}
 `

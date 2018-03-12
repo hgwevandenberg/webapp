@@ -136,6 +136,7 @@ type FooterPropTypes = {
   formStatus: string,
   isEditorial: boolean,
   isPostDetail: boolean,
+  isDiscoverAll: boolean,
   isFormDisabled: boolean,
   isGridMode: boolean,
   isLayoutToolHidden: boolean,
@@ -156,6 +157,7 @@ export const Footer = ({
   formStatus,
   isEditorial,
   isPostDetail,
+  isDiscoverAll,
   isGridMode,
   isLayoutToolHidden,
   isLoggedIn,
@@ -168,7 +170,7 @@ export const Footer = ({
   onClickToggleLayoutMode,
 }: FooterContextTypes) =>
   (<footer
-    className={classNames(`Footer${isPostDetail ? ' hide' : ''} ${baseStyle}`, { isPaginatoring })}
+    className={classNames(`Footer${isPostDetail || isDiscoverAll ? ' hide' : ''} ${baseStyle}`, { isPaginatoring })}
     role="contentinfo"
   >
     <div className={`grabber ${grabberStyle}`} />

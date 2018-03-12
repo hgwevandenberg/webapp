@@ -1,19 +1,8 @@
-
-import { postSummary } from './fragments'
+import { postStreamAllFragments } from './fragments'
 
 export default `
-  ${postSummary}
-
+  ${postStreamAllFragments}
   query($username: String!, $before: String) {
-    userPostStream(username: $username, before: $before) {
-      next
-      isLastPage
-      posts {
-        ...postSummary
-        repostedSource {
-          ...postSummary
-        }
-      }
-    }
+    userPostStream(username: $username, before: $before) { ...postStream }
   }
 `
