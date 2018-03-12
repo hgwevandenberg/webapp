@@ -313,7 +313,6 @@ export const CategoryTabBar = ({
     <nav className={categoryTabsHolderStyle}>
       <AllCategoryTab pathname={pathname} />
       {subscribed && <SubscribedCategoryTab pathname={pathname} />}
-      {subscribed && tabs.length < 1 && <SubscribedZeroStateTab />}
 
       {tabs.map(tab =>
         (<CategoryTab
@@ -324,6 +323,8 @@ export const CategoryTabBar = ({
           to={tab.to}
         />),
       )}
+
+      {subscribed && (tabs.length < 1 || !areCategoriesSubscribed) && <SubscribedZeroStateTab />}
     </nav>
     <div className={categoryTabBarToolsStyle}>
       <Link
