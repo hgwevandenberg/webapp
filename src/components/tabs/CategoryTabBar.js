@@ -302,12 +302,17 @@ function isImageSizeLarge(deviceSize, tabsCount) {
   return imageSizeLarge
 }
 
-export const CategoryTabBar = ({ pathname, tabs, subscribed, deviceSize }) => (
+export const CategoryTabBar = ({
+  pathname,
+  tabs,
+  subscribed,
+  areCategoriesSubscribed,
+  deviceSize,
+}) => (
   <div className={categoryTabBarStyle}>
     <nav className={categoryTabsHolderStyle}>
       <AllCategoryTab pathname={pathname} />
       {subscribed && <SubscribedCategoryTab pathname={pathname} />}
-      {subscribed && tabs.length < 1 && <SubscribedZeroStateTab />}
 
       {tabs.map(tab =>
         (<CategoryTab
@@ -318,6 +323,8 @@ export const CategoryTabBar = ({ pathname, tabs, subscribed, deviceSize }) => (
           to={tab.to}
         />),
       )}
+
+      {subscribed && (tabs.length < 1 || !areCategoriesSubscribed) && <SubscribedZeroStateTab />}
     </nav>
     <div className={categoryTabBarToolsStyle}>
       <Link
@@ -333,6 +340,7 @@ export const CategoryTabBar = ({ pathname, tabs, subscribed, deviceSize }) => (
 CategoryTabBar.propTypes = {
   pathname: PropTypes.string.isRequired,
   subscribed: PropTypes.bool.isRequired,
+  areCategoriesSubscribed: PropTypes.bool.isRequired,
   tabs: PropTypes.array.isRequired,
   deviceSize: PropTypes.bool.isRequired,
 }

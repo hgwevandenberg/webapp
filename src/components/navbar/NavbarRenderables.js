@@ -78,6 +78,7 @@ const linksStyle = css(
 
 export const NavbarLoggedOut = ({
   categoryTabs,
+  areCategoriesSubscribed,
   deviceSize,
   hasLoadMoreButton,
   onClickLoadMorePosts,
@@ -138,6 +139,7 @@ export const NavbarLoggedOut = ({
       <CategoryTabBar
         pathname={pathname}
         tabs={categoryTabs}
+        areCategoriesSubscribed={areCategoriesSubscribed}
         subscribed={false}
         deviceSize={deviceSize}
       />
@@ -146,6 +148,7 @@ export const NavbarLoggedOut = ({
 
 NavbarLoggedOut.propTypes = {
   categoryTabs: PropTypes.array,
+  areCategoriesSubscribed: PropTypes.bool,
   deviceSize: PropTypes.string.isRequired,
   hasLoadMoreButton: PropTypes.bool.isRequired,
   onClickLoadMorePosts: PropTypes.func.isRequired,
@@ -154,6 +157,7 @@ NavbarLoggedOut.propTypes = {
 }
 NavbarLoggedOut.defaultProps = {
   categoryTabs: null,
+  areCategoriesSubscribed: false,
 }
 NavbarLoggedOut.contextTypes = {
   onClickArtistInvites: PropTypes.func.isRequired,
@@ -165,6 +169,7 @@ export const NavbarLoggedIn = ({
   artistInvitesInProfileMenu,
   avatar,
   categoryTabs,
+  areCategoriesSubscribed,
   deviceSize,
   hasLoadMoreButton,
   isBrand,
@@ -270,6 +275,7 @@ export const NavbarLoggedIn = ({
       <CategoryTabBar
         pathname={pathname}
         tabs={categoryTabs}
+        areCategoriesSubscribed={areCategoriesSubscribed}
         subscribed
         deviceSize={deviceSize}
       />
@@ -280,6 +286,7 @@ NavbarLoggedIn.propTypes = {
   artistInvitesInProfileMenu: PropTypes.bool.isRequired,
   avatar: PropTypes.object,
   categoryTabs: PropTypes.array,
+  areCategoriesSubscribed: PropTypes.bool,
   deviceSize: PropTypes.string.isRequired,
   hasLoadMoreButton: PropTypes.bool.isRequired,
   isBrand: PropTypes.bool.isRequired,
@@ -306,6 +313,7 @@ NavbarLoggedIn.propTypes = {
 NavbarLoggedIn.defaultProps = {
   avatar: null,
   categoryTabs: null,
+  areCategoriesSubscribed: false,
   isGridMode: false,
   username: null,
 }

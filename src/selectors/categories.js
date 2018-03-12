@@ -89,11 +89,13 @@ export const selectCategoryTabs = createSelector(
     return navIds.reduce((ids, id) => {
       const label = categories.getIn([id, 'name'])
       const slug = categories.getIn([id, 'slug'])
+      const categoryLevel = categories.getIn([id, 'level'])
+
       if (!slug || !label) { return ids }
       return ids.push({
         label,
         to: `/discover/${slug}`,
-        source: categories.getIn([id, 'tileImage', 'small', 'url']),
+        promo: (categoryLevel === 'promo'),
         sources: {
           small: categories.getIn([id, 'tileImage', 'small', 'url']),
           large: categories.getIn([id, 'tileImage', 'large', 'url']),
@@ -102,6 +104,14 @@ export const selectCategoryTabs = createSelector(
     }, List()).toArray()
   },
 )
+
+// determine if any non-promo categories are subscribed to
+export const selectAreCategoriesSubscribed = createSelector(
+  [selectSubscribedCategoryIds],
+  (subscribedIds) => {
+    if (subscribedIds.size > 0) { return true }
+    return false
+  })
 
 export const selectCategoryPageTitle = createSelector(
   [selectParamsType, selectCategoryCollection], (paramsType, categories) => {
