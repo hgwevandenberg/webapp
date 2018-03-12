@@ -302,14 +302,19 @@ function isImageSizeLarge(deviceSize, tabsCount) {
   return imageSizeLarge
 }
 
-export const CategoryTabBar = ({ pathname, tabs, subscribed, deviceSize }) => (
+export const CategoryTabBar = ({
+  pathname,
+  tabs,
+  subscribed,
+  areCategoriesSubscribed,
+  deviceSize,
+}) => (
   <div className={categoryTabBarStyle}>
     <nav className={categoryTabsHolderStyle}>
       <AllCategoryTab pathname={pathname} />
       {subscribed && <SubscribedCategoryTab pathname={pathname} />}
       {subscribed && tabs.length < 1 && <SubscribedZeroStateTab />}
 
-      {tabs.map(tab => console.log(tab))}
       {tabs.map(tab =>
         (<CategoryTab
           isActive={(tab.activePattern ? tab.activePattern.test(pathname) : tab.to === pathname.replace('/trending', ''))}
@@ -334,6 +339,7 @@ export const CategoryTabBar = ({ pathname, tabs, subscribed, deviceSize }) => (
 CategoryTabBar.propTypes = {
   pathname: PropTypes.string.isRequired,
   subscribed: PropTypes.bool.isRequired,
+  areCategoriesSubscribed: PropTypes.bool.isRequired,
   tabs: PropTypes.array.isRequired,
   deviceSize: PropTypes.bool.isRequired,
 }

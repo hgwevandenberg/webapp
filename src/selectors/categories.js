@@ -105,6 +105,14 @@ export const selectCategoryTabs = createSelector(
   },
 )
 
+// determine if any non-promo categories are subscribed to
+export const selectAreCategoriesSubscribed = createSelector(
+  [selectSubscribedCategoryIds],
+  (subscribedIds) => {
+    if (subscribedIds.size > 0) { return true }
+    return false
+  })
+
 export const selectCategoryPageTitle = createSelector(
   [selectParamsType, selectCategoryCollection], (paramsType, categories) => {
     switch (paramsType) {
