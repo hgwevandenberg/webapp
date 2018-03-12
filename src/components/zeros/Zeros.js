@@ -13,8 +13,9 @@ const zeroStreamStyle = css(
   { maxWidth: 540, padding: '53px 10px' },
   s.bgcWhite,
   select('.Following.MainView & + .StreamContainer > &', s.displayNone),
-  select('a', { textDecoration: 'underlined' }),
 )
+
+const zeroStreamLink = css({ textDecoration: 'underline' })
 
 const headingStyle = css(s.fontSize18, media(s.minBreak2, s.fontSize24))
 const buttonStyle = css(s.mt20, s.fontSize14, s.colorA, s.transitionColor, hover(s.colorBlack))
@@ -50,7 +51,10 @@ export const ZeroFollowingStream = () =>
 export const ZeroSubscribedStream = () =>
   (<ZeroStream>
     Category posts you subscribe to live here.<br />
-    <Link to="/discover/all">You aren't subscribed to any categories, go choose some.</Link>
+    You aren't subscribed to any categories,
+    <Link to="/discover/all" className={zeroStreamLink}>
+      go choose some.
+    </Link>
   </ZeroStream>)
 
 // -------------------------------------
