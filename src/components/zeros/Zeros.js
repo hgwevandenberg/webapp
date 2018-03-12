@@ -51,7 +51,7 @@ export const ZeroFollowingStream = () =>
 export const ZeroSubscribedStream = () =>
   (<ZeroStream>
     Category posts you subscribe to live here.<br />
-    You aren't subscribed to any categories,
+    You aren&apos;t subscribed to any categories,
     <Link to="/discover/all" className={zeroStreamLink}>
       go choose some.
     </Link>
