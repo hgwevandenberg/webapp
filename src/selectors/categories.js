@@ -93,7 +93,6 @@ export const selectCategoryTabs = createSelector(
       return ids.push({
         label,
         to: `/discover/${slug}`,
-        source: categories.getIn([id, 'tileImage', 'small', 'url']),
         sources: {
           small: categories.getIn([id, 'tileImage', 'small', 'url']),
           large: categories.getIn([id, 'tileImage', 'large', 'url']),
