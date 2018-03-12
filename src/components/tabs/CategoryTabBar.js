@@ -309,6 +309,7 @@ export const CategoryTabBar = ({ pathname, tabs, subscribed, deviceSize }) => (
       {subscribed && <SubscribedCategoryTab pathname={pathname} />}
       {subscribed && tabs.length < 1 && <SubscribedZeroStateTab />}
 
+      {tabs.map(tab => console.log(tab))}
       {tabs.map(tab =>
         (<CategoryTab
           isActive={(tab.activePattern ? tab.activePattern.test(pathname) : tab.to === pathname.replace('/trending', ''))}

@@ -89,10 +89,13 @@ export const selectCategoryTabs = createSelector(
     return navIds.reduce((ids, id) => {
       const label = categories.getIn([id, 'name'])
       const slug = categories.getIn([id, 'slug'])
+      const categoryLevel = categories.getIn([id, 'level'])
+
       if (!slug || !label) { return ids }
       return ids.push({
         label,
         to: `/discover/${slug}`,
+        promo: (categoryLevel === 'promo'),
         sources: {
           small: categories.getIn([id, 'tileImage', 'small', 'url']),
           large: categories.getIn([id, 'tileImage', 'large', 'url']),
