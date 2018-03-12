@@ -175,7 +175,7 @@ const SubscribedZeroStateTab = () => (
     className={`zero-state ${categoryTabStyle}`}
     to="/discover/all"
   >
-    <span className="text-label">Find and subscribe to a community</span>
+    <span className="text-label">Find and subscribe to a category</span>
   </Link>
 )
 

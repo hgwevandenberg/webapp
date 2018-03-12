@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router'
 import RelationshipContainer from '../../containers/RelationshipContainer'
 import Editor from '../editor/Editor'
 import { css, hover, media, parent, select } from '../../styles/jss'
@@ -13,6 +14,8 @@ const zeroStreamStyle = css(
   s.bgcWhite,
   select('.Following.MainView & + .StreamContainer > &', s.displayNone),
 )
+
+const zeroStreamLink = css({ textDecoration: 'underline' })
 
 const headingStyle = css(s.fontSize18, media(s.minBreak2, s.fontSize24))
 const buttonStyle = css(s.mt20, s.fontSize14, s.colorA, s.transitionColor, hover(s.colorBlack))
@@ -45,6 +48,14 @@ export const ZeroFollowingStream = () =>
     Follow the creators and communities that inspire you.
   </ZeroStream>)
 
+export const ZeroSubscribedStream = () =>
+  (<ZeroStream>
+    Category posts you subscribe to live here.<br />
+    You aren&apos;t subscribed to any categories,
+    <Link to="/discover/all" className={zeroStreamLink}>
+      go choose some.
+    </Link>
+  </ZeroStream>)
 
 // -------------------------------------
 

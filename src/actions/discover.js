@@ -1,7 +1,9 @@
+import React from 'react'
 import * as ACTION_TYPES from '../constants/action_types'
 import * as StreamRenderables from '../components/streams/StreamRenderables'
 import navCategoriesQuery from '../queries/navCategories'
 import allCategoriesQuery from '../queries/allCategories'
+import { ZeroSubscribedStream } from '../components/zeros/Zeros'
 import {
   globalPostStreamQuery,
   subscribedPostStreamQuery,
@@ -59,7 +61,13 @@ export function loadSubscribedPostStream(kind, before) {
       query: subscribedPostStreamQuery,
       variables: { kind: KINDS[kind], before },
     },
-    meta: postStreamMeta,
+    meta: {
+      renderStream: {
+        asList: StreamRenderables.postsAsList,
+        asGrid: StreamRenderables.postsAsGrid,
+        asZero: <ZeroSubscribedStream />,
+      },
+    },
   }
 }
 
