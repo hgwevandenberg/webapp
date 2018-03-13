@@ -58,7 +58,7 @@ const categoryTabStyle = css(
     s.zIndex2,
     { paddingTop: 1 },
     select('& .text-label', s.relative,
-      before(s.absolute, s.inlineBlock, { content: '""', bottom: -2, width: 0, height: 2, backgroundColor: '#fff', transition: `width 0.2s ${s.ease}` }),
+      before(s.absolute, s.inlineBlock, s.bgcWhite, { content: '""', bottom: -2, width: 0, height: 2, transition: `width 0.2s ${s.ease}` }),
     ),
   ),
 

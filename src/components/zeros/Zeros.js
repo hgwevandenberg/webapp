@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import RelationshipContainer from '../../containers/RelationshipContainer'
 import Editor from '../editor/Editor'
-import { css, hover, media, parent, select } from '../../styles/jss'
+import { before, css, hover, media, parent, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
 const zeroStreamStyle = css(
@@ -15,7 +15,9 @@ const zeroStreamStyle = css(
   select('.Following.MainView & + .StreamContainer > &', s.displayNone),
 )
 
-const zeroStreamLink = css({ textDecoration: 'underline' })
+const zeroStreamLink = css(s.relative,
+  before(s.absolute, s.inlineBlock, s.fullWidth, s.bgcBlack, { content: '""', bottom: 6, height: 1 }),
+)
 
 const headingStyle = css(s.fontSize18, media(s.minBreak2, s.fontSize24))
 const buttonStyle = css(s.mt20, s.fontSize14, s.colorA, s.transitionColor, hover(s.colorBlack))
@@ -51,10 +53,10 @@ export const ZeroFollowingStream = () =>
 export const ZeroSubscribedStream = () =>
   (<ZeroStream>
     Category posts you subscribe to live here.<br />
-    You aren&apos;t subscribed to any categories,
+    You aren&rsquo;t subscribed to any categories,
     <Link to="/discover/all" className={zeroStreamLink}>
-      go choose some.
-    </Link>
+      go choose some
+    </Link>.
   </ZeroStream>)
 
 // -------------------------------------
