@@ -15,7 +15,6 @@ const categoryTabStyle = css(
   s.flex,
   s.justifyCenter,
   s.itemsCenter,
-  // s.inlineBlock,
   s.fullWidth,
   s.fullHeight,
   s.pt0,
