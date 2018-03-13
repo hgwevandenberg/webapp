@@ -136,7 +136,7 @@ export const NavbarLink = ({
     className,
     `${linkStyle}`,
     {
-      isActive: highlightingRules[to] ? pathname.match(highlightingRules[to]) : pathname.match(to),
+      isActive: highlightingRules[to] ? pathname.match(highlightingRules[to]) : pathname === to,
     },
   )
   return (
