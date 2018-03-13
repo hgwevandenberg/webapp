@@ -13,6 +13,9 @@ const zeroStreamStyle = css(
   { maxWidth: 540, padding: '53px 10px' },
   s.bgcWhite,
   select('.Following.MainView & + .StreamContainer > &', s.displayNone),
+  media(s.maxBreak2,
+    select('& br', s.displayNone),
+  ),
 )
 
 const zeroStreamLink = css(s.relative,
@@ -52,8 +55,8 @@ export const ZeroFollowingStream = () =>
 
 export const ZeroSubscribedStream = () =>
   (<ZeroStream>
-    Category posts you subscribe to live here.<br />
-    You aren&rsquo;t subscribed to any categories,
+    Category posts you subscribe to live here.&nbsp;<br />
+    You aren&rsquo;t subscribed to any categories,&nbsp;
     <Link to="/discover/all" className={zeroStreamLink}>
       go choose some
     </Link>.
