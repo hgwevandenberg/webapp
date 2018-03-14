@@ -28,6 +28,7 @@ export const selectCategoryIsSubscribed = createSelector(
   [selectCategory, selectIsLoggedIn, selectSubscribedCategoryIds],
   (category, isLoggedIn, subscribedIds) => (
     category && isLoggedIn && subscribedIds.includes(category.get('id'))))
+export const selectCategoryIsPromo = createSelector([selectCategory], category => category.get('level') === 'promo')
 
 export const selectAllCategoriesAsArray = createSelector([selectCategoryCollection],
   categories => (categories || Map()).valueSeq())

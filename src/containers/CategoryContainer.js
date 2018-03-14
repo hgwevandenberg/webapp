@@ -7,6 +7,7 @@ import {
   selectCategorySlug,
   selectCategoryTileImageUrl,
   selectCategoryIsSubscribed,
+  selectCategoryIsPromo,
 } from '../selectors/categories'
 import { selectSubscribedCategoryIds } from '../selectors/profile'
 import { selectIsLoggedIn } from '../selectors/authentication'
@@ -18,6 +19,7 @@ function mapStateToProps(state, props) {
     slug: selectCategorySlug(state, props),
     tileImageUrl: selectCategoryTileImageUrl(state, props),
     isSubscribed: selectCategoryIsSubscribed(state, props),
+    isPromo: selectCategoryIsPromo(state, props),
     isLoggedIn: selectIsLoggedIn(state, props),
     subscribedIds: selectSubscribedCategoryIds(state, props),
   }
@@ -30,6 +32,7 @@ class CategoryContainer extends Component {
     tileImageUrl: PropTypes.string,
     isLoggedIn: PropTypes.bool.isRequired,
     isSubscribed: PropTypes.bool.isRequired,
+    isPromo: PropTypes.bool.isRequired,
     categoryId: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired,
     subscribedIds: PropTypes.object.isRequired,
@@ -63,13 +66,14 @@ class CategoryContainer extends Component {
   }
 
   render() {
-    const { name, slug, tileImageUrl, isSubscribed } = this.props
+    const { name, slug, tileImageUrl, isSubscribed, isPromo } = this.props
     return (
       <CategoryCard
         name={name}
         imageUrl={tileImageUrl}
         to={`/discover/${slug}`}
         isSubscribed={isSubscribed}
+        isPromo={isPromo}
         subscribe={this.subscribe}
         unsubscribe={this.unsubscribe}
       />
