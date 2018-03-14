@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import classNames from 'classnames'
+import { BadgeFeaturedIcon } from '../assets/Icons'
 import { before, css, media, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
@@ -56,6 +57,13 @@ const categoryTabStyle = css(
     s.center,
     s.zIndex2,
     { paddingTop: 1 },
+  ),
+
+  // featured badge
+  select('& .featured-badge',
+    s.absolute,
+    s.zIndex2,
+    { top: 5, right: -10 },
   ),
 
   // hover / active states
@@ -124,12 +132,17 @@ const categoryTabStyle = css(
   ),
 )
 
-const CategoryTab = ({ isActive, label, source, to }) => (
+const CategoryTab = ({ isActive, label, source, promo, to }) => (
   <Link
     className={classNames({ isActive }, `${categoryTabStyle}`)}
     to={to}
     style={source ? backgroundStyles(source) : null}
   >
+    {promo &&
+      <span className="featured-badge">
+        <BadgeFeaturedIcon />
+      </span>
+    }
     <span className="text-label-holder">
       <span className="text-label">{label}</span>
     </span>
@@ -332,6 +345,7 @@ export const CategoryTabBar = ({
           key={`CategoryTab_${tab.to}`}
           label={tab.label}
           source={isImageSizeLarge(deviceSize, tabs.length) ? tab.sources.large : tab.sources.small}
+          promo={tab.promo}
           to={tab.to}
         />),
       )}
