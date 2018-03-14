@@ -64,6 +64,13 @@ const categoryTabStyle = css(
     s.absolute,
     s.zIndex2,
     { top: 5, right: -10 },
+
+    media(s.maxBreak2,
+      { top: -2, right: -12 },
+      select('& .BadgeFeaturedIcon',
+        { transform: 'scale(0.64)' },
+      ),
+    ),
   ),
 
   // hover / active states
@@ -151,8 +158,12 @@ const CategoryTab = ({ isActive, label, source, promo, to }) => (
 CategoryTab.propTypes = {
   isActive: PropTypes.bool.isRequired,
   label: PropTypes.string.isRequired,
-  source: PropTypes.string.isRequired,
+  source: PropTypes.string,
+  promo: PropTypes.bool.isRequired,
   to: PropTypes.string.isRequired,
+}
+CategoryTab.defaultProps = {
+  source: null,
 }
 
 const AllCategoryTab = ({ pathname }) => {
