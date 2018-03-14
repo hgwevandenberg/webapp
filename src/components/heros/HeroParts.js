@@ -33,6 +33,7 @@ const creditsStyle = css(
   { transition: 'color 0.2s ease, opacity 0.2s ease' },
   hover(s.colorC),
   parent('.isCreditsHidden', s.pointerNone, s.opacity0),
+  parent('.ArtistInvites', { right: 20 }),
   parent('.AuthenticationFormDialog.inModal', { right: 20 }),
   media(s.minBreak2,
     { right: 20, bottom: 20 },
