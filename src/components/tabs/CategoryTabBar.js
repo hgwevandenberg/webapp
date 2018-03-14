@@ -12,7 +12,9 @@ const backgroundStyles = source => ({
 // single tab style
 const categoryTabStyle = css(
   s.relative,
-  s.inlineBlock,
+  s.flex,
+  s.justifyCenter,
+  s.itemsCenter,
   s.fullWidth,
   s.fullHeight,
   s.pt0,
@@ -47,24 +49,26 @@ const categoryTabStyle = css(
   ),
 
   // text label
-  select('& .text-label',
+  select('& .text-label-holder',
     s.relative,
-    s.flex,
-    s.justifyCenter,
-    s.itemsCenter,
+    s.inlineBlock,
     s.fullWidth,
-    s.fullHeight,
     s.center,
     s.zIndex2,
+    { paddingTop: 1 },
   ),
 
   // hover / active states
   select('&.isActive',
-    select('& .text-label', s.sansBold, { textDecoration: 'underline' }),
+    select('& .text-label',
+      s.inline, { borderBottom: '2px solid #fff' },
+    ),
     before({ backgroundColor: 'rgba(0, 0, 0, 0.8)' }),
   ),
   select('&:active',
-    select('& .text-label', s.sansBold, { textDecoration: 'underline' }),
+    select('& .text-label',
+      s.inline, { borderBottom: '2px solid #fff' },
+    ),
     before({ backgroundColor: 'rgba(0, 0, 0, 0.8)' }),
   ),
   select('.no-touch &:hover',
@@ -126,7 +130,9 @@ const CategoryTab = ({ isActive, label, source, to }) => (
     to={to}
     style={source ? backgroundStyles(source) : null}
   >
-    <span className="text-label">{label}</span>
+    <span className="text-label-holder">
+      <span className="text-label">{label}</span>
+    </span>
   </Link>
 )
 CategoryTab.propTypes = {
@@ -145,7 +151,9 @@ const AllCategoryTab = ({ pathname }) => {
       className={classNames('mini all', { isActive }, `${categoryTabStyle}`)}
       to="/discover"
     >
-      <span className="text-label">All</span>
+      <span className="text-label-holder">
+        <span className="text-label">All</span>
+      </span>
     </Link>
   )
 }
@@ -162,7 +170,9 @@ const SubscribedCategoryTab = ({ pathname }) => {
       className={classNames('mini subscribed', { isActive }, `${categoryTabStyle}`)}
       to="/discover/subscribed"
     >
-      <span className="text-label">Subscribed</span>
+      <span className="text-label-holder">
+        <span className="text-label">Subscribed</span>
+      </span>
     </Link>
   )
 }
@@ -175,7 +185,9 @@ const SubscribedZeroStateTab = () => (
     className={`zero-state ${categoryTabStyle}`}
     to="/discover/all"
   >
-    <span className="text-label">Find and subscribe to a category</span>
+    <span className="text-label-holder">
+      <span className="text-label">Find and subscribe to a category</span>
+    </span>
   </Link>
 )
 
