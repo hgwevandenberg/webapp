@@ -341,6 +341,12 @@ const categoryCardStyle = css(
     s.absolute,
     s.zIndex2,
     { top: 10, right: -5 },
+    media(s.maxBreak2,
+      { top: 3, right: -7 },
+      select('& .BadgeFeaturedIcon',
+        { transform: 'scale(0.64)' },
+      ),
+    ),
   ),
 
   // subscribe button positioning
@@ -358,7 +364,6 @@ const categoryCardStyle = css(
   ),
   select('& .title-holder',
     media('(max-width: 26.25em)', // 420 / 16 = 26.25em
-      // s.absolute,
       { top: 20 },
     ),
   ),
