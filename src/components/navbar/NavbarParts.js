@@ -386,6 +386,7 @@ export const NavbarProfile = ({
   onClickAvatar,
   onLogOut,
   username,
+  innerWidth,
 }, { onClickArtistInvites }) => {
   if (avatar && username) {
     return (
@@ -397,6 +398,8 @@ export const NavbarProfile = ({
             <Link className={profileLinkStyle} onClick={onClickArtistInvites} to="/artist-invites">Artist Invites</Link>
           }
           <Link className={profileLinkStyle} to={`/${username}/loves`}>Loves</Link>
+          { innerWidth < 500 ? <Link className={profileLinkStyle} to="/elloartgiveaways">Giveaways</Link>
+              : null }
           <Link className={profileLinkStyle} to="/invitations">Invite</Link>
           <Link className={profileLinkStyle} to="/settings">Settings</Link>
           {isBrand &&
@@ -433,10 +436,12 @@ NavbarProfile.propTypes = {
   onClickAvatar: PropTypes.func.isRequired,
   onLogOut: PropTypes.func.isRequired,
   username: PropTypes.string,
+  innerWidth: PropTypes.string,
 }
 NavbarProfile.defaultProps = {
   avatar: null,
   username: null,
+  innerWidth: null,
 }
 NavbarProfile.contextTypes = {
   onClickArtistInvites: PropTypes.func.isRequired,

@@ -113,6 +113,13 @@ export const NavbarLoggedOut = ({
           to="/discover"
         />
         <NavbarLink
+          className="LabelOnly"
+          icon={<SparklesIcon />}
+          label="Giveaways"
+          pathname={pathname}
+          to="/elloartgiveaways"
+        />
+        <NavbarLink
           className="IconOnly"
           icon={<SearchIcon />}
           label="Search"
@@ -192,6 +199,7 @@ export const NavbarLoggedIn = ({
   onLogOut,
   pathname,
   username,
+  innerWidth,
 }, { onClickArtistInvites }) =>
   (<nav className={`Navbar ${navbarStyle}`}>
     <div className={`NavbarMain ${mainStyle}`}>
@@ -232,6 +240,13 @@ export const NavbarLoggedIn = ({
           pathname={pathname}
           to="/following"
         />
+        { innerWidth > 500
+            ? <NavbarLink
+              className="LabelOnly"
+              label="Giveaways"
+              pathname={pathname}
+              to="/elloartgiveaways"
+            /> : null }
         <NavbarLink
           className={classNames('IconOnly', { isNotificationsUnread })}
           icon={<BoltIcon />}
@@ -256,6 +271,7 @@ export const NavbarLoggedIn = ({
         onClickAvatar={onClickAvatar}
         onLogOut={onLogOut}
         username={username}
+        innerWidth={innerWidth}
       />
       {deviceSize === 'mobile' && !isLayoutToolHidden ?
         <NavbarLayoutTool
@@ -309,6 +325,7 @@ NavbarLoggedIn.propTypes = {
   onLogOut: PropTypes.func.isRequired,
   pathname: PropTypes.string.isRequired,
   username: PropTypes.string,
+  innerWidth: PropTypes.string,
 }
 NavbarLoggedIn.defaultProps = {
   avatar: null,
@@ -316,6 +333,7 @@ NavbarLoggedIn.defaultProps = {
   areCategoriesSubscribed: false,
   isGridMode: false,
   username: null,
+  innerWidth: null,
 }
 NavbarLoggedIn.contextTypes = {
   onClickArtistInvites: PropTypes.func.isRequired,
