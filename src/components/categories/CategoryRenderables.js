@@ -127,6 +127,7 @@ const categorySubNavStyle = css(
       select('& a',
         s.colorBlack,
         s.borderBottom,
+        { borderBottomWidth: 2 },
       ),
     ),
   ),
