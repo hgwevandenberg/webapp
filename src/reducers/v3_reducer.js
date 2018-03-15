@@ -57,9 +57,9 @@ function parsePagination(state, stream, pathname, query, variables) {
 }
 
 function resetSubscribedStreamPagination(state) {
-  return state.deleteIn(['pages', '/discover/subscribed']).
-    deleteIn(['pages', '/discover/subscribed/trending']).
-    deleteIn(['pages', '/discover/subscribed/recent'])
+  return state.deleteIn(['pages', '/discover/subscribed'])
+    .deleteIn(['pages', '/discover/subscribed/trending'])
+    .deleteIn(['pages', '/discover/subscribed/recent'])
 }
 
 function parseAsset(state, asset) {
