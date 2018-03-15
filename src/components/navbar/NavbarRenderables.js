@@ -114,7 +114,6 @@ export const NavbarLoggedOut = ({
         />
         <NavbarLink
           className="LabelOnly"
-          icon={<SparklesIcon />}
           label="Giveaways"
           pathname={pathname}
           to="/elloartgiveaways"
