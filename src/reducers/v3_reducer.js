@@ -56,6 +56,12 @@ function parsePagination(state, stream, pathname, query, variables) {
   })
 }
 
+function resetSubscribedStreamPagination(state) {
+  return state.deleteIn(['pages', '/discover/subscribed']).
+    deleteIn(['pages', '/discover/subscribed/trending']).
+    deleteIn(['pages', '/discover/subscribed/recent'])
+}
+
 function parseAsset(state, asset) {
   if (!asset) { return state }
   return smartMergeDeepIn(state, ['assets', asset.id], Immutable.fromJS({
@@ -266,6 +272,8 @@ export default function (state, action) {
       return parseCategoryQueries(state, action)
     case ACTION_TYPES.V3.LOAD_PAGE_HEADERS_SUCCESS:
       return parsePageHeaders(state, action)
+    case ACTION_TYPES.PROFILE.FOLLOW_CATEGORIES_SUCCESS:
+      return resetSubscribedStreamPagination(state)
     default:
       return state
   }
