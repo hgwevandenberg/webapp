@@ -479,7 +479,7 @@ class PostContainer extends Component {
     if (isPostEmpty || !author || !author.get('id')) { return null }
     let postHeader
     const headerProps = { detailPath, postCreatedAt, postId }
-    if (!isRepost && (isPostHeaderHidden || isLightBox)) {
+    if (isLightBox || (!isRepost && isPostHeaderHidden)) {
       postHeader = null
     } else if (!isRepost && showCategoryHeader && categoryName && categoryPath) {
       postHeader = (
