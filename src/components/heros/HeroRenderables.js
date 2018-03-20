@@ -13,9 +13,8 @@ import {
   HeroScrollToContentButton,
   HeroShareUserButton,
 } from './HeroParts'
-import {
-  BadgeFeaturedIcon,
-} from '../assets/Icons'
+import Hint from '../hints/Hint'
+import { BadgeFeaturedIcon } from '../assets/Icons'
 import { ZeroStream } from '../zeros/Zeros'
 import UserContainer from '../../containers/UserContainer'
 import { css, media, parent, select } from '../../styles/jss'
@@ -196,7 +195,7 @@ const subscribeHolderStyle = css(
   select('& .featured-badge',
     s.absolute,
     {
-      top: 4,
+      top: 5,
       left: -38,
     },
   ),
@@ -251,8 +250,9 @@ export const HeroPromotionCategory = (props) => {
           <span className={subscribeHolderStyle}>
             <span className="subscribe-inner-holder">
               {isPromo &&
-                <span className="featured-badge">
+                <span className="featured-badge contains-hint">
                   <BadgeFeaturedIcon />
+                  <Hint>Featured Category</Hint>
                 </span>
               }
               <CategorySubscribeButton
