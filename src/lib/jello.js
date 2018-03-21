@@ -87,6 +87,8 @@ export function hideSoftKeyboard() {
 
 export function scrollToPosition(x, y, options = {}) {
   const el = options.el
+  const duration = options.duration >= 0 ? options.duration : 1000
+
   let animate = () => {
     requestAnimationFrame(animate)
     TWEEN.update()
@@ -104,7 +106,7 @@ export function scrollToPosition(x, y, options = {}) {
     y: el ? el.scrollTop : window.pageYOffset || document.documentElement.scrollTop,
   })
     .easing(options.easing || TWEEN.Easing.Quartic.InOut)
-    .to({ x: x || 0, y: y || 0 }, options.duration || 1000)
+    .to({ x: x || 0, y: y || 0 }, duration)
     .onUpdate(updateScroll)
     .onComplete(() => {
       animate = () => {}

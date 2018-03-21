@@ -438,9 +438,9 @@ function LightBoxWrapper(WrappedComponent) {
         if (commentsStream) {
           scrollElement = postSideBar[0]
         }
-        return scrollToPosition(0, scrollToOffset, { el: scrollElement })
+        return scrollToPosition(0, scrollToOffset, { el: scrollElement, duration: 0 })
       }
-      return scrollToPosition(0, scrollToOffset) // stream container view
+      return scrollToPosition(0, scrollToOffset, { duration: 0 }) // stream container view
     }
 
     close() {
