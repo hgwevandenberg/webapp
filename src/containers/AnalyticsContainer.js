@@ -47,7 +47,7 @@ export function doesAllowTracking() {
 function mapStateToProps(state) {
   const creatorTypes = selectCreatorTypes(state)
   return {
-    allowsAnalytics: selectAllowsAnalytics(state),
+    allowsAnalytics: doesAllowTracking() && selectAllowsAnalytics(state),
     analyticsId: selectAnalyticsId(state),
     createdAt: selectCreatedAt(state),
     creatorTypes: creatorTypes.toArray(),
