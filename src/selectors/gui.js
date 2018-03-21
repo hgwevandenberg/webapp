@@ -25,6 +25,7 @@ export const selectIsNavbarHidden = state => state.gui.get('isNavbarHidden')
 export const selectIsNotificationsActive = state => state.gui.get('isNotificationsActive')
 export const selectIsNotificationsUnread = state => state.gui.get('isNotificationsUnread')
 export const selectIsProfileMenuActive = state => state.gui.get('isProfileMenuActive')
+export const selectIsLightBoxActive = state => state.gui.get('isLightBoxActive')
 export const selectIsTextToolsActive = state => state.gui.get('isTextToolsActive')
 export const selectLastAnnouncementSeen = state => state.gui.get('lastAnnouncementSeen')
 export const selectLastDiscoverBeaconVersion = state => state.gui.get('lastDiscoverBeaconVersion') // eslint-disable-line

@@ -6,6 +6,7 @@ import {
   selectInnerHeight,
   selectInnerWidth,
 } from '../selectors/gui'
+import { setIsLightBoxActive } from '../actions/gui'
 import {
   selectPostsAssetIds,
 } from '../selectors/light_box'
@@ -173,6 +174,7 @@ const postsListLightBoxStyle = css(
 function LightBoxWrapper(WrappedComponent) {
   class BaseLightBox extends Component {
     static propTypes = {
+      dispatch: PropTypes.func.isRequired,
       innerHeight: PropTypes.number,
       innerWidth: PropTypes.number,
       commentIds: PropTypes.object, // for comment stream
@@ -218,6 +220,7 @@ function LightBoxWrapper(WrappedComponent) {
       // set keybindings
       if (!prevState.open && this.state.open) {
         this.bindKeys()
+        this.props.dispatch(setIsLightBoxActive({ isActive: true }))
       }
 
       // might need to shift the queue left/right if we've added/removed new posts
@@ -273,6 +276,7 @@ function LightBoxWrapper(WrappedComponent) {
     componentWillUnmount() {
       const releaseKeys = true
       this.bindKeys(releaseKeys)
+      this.props.dispatch(setIsLightBoxActive({ isActive: false }))
     }
 
     getSetPagination(assetId, postId, updateState = true) {
@@ -442,6 +446,7 @@ function LightBoxWrapper(WrappedComponent) {
     close() {
       const releaseKeys = true
       this.bindKeys(releaseKeys)
+      this.props.dispatch(setIsLightBoxActive({ isActive: false }))
 
       return this.setState({
         open: false,

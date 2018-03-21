@@ -18,6 +18,15 @@ export function setIsProfileMenuActive({ isActive }) {
   }
 }
 
+export function setIsLightBoxActive({ isActive }) {
+  return {
+    type: GUI.SET_IS_LIGHT_BOX_ACTIVE,
+    payload: {
+      isLightBoxActive: isActive,
+    },
+  }
+}
+
 export function setLastAnnouncementSeen({ id }) {
   return {
     type: GUI.SET_LAST_ANNOUNCEMENT_SEEN,
