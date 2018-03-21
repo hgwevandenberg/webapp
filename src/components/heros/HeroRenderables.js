@@ -13,6 +13,8 @@ import {
   HeroScrollToContentButton,
   HeroShareUserButton,
 } from './HeroParts'
+import Hint from '../hints/Hint'
+import { BadgeFeaturedIcon } from '../assets/Icons'
 import { ZeroStream } from '../zeros/Zeros'
 import UserContainer from '../../containers/UserContainer'
 import { css, media, parent, select } from '../../styles/jss'
@@ -181,12 +183,24 @@ const categoryHeadingStyle = css(
 const mobileActionStyle = css(s.relative, s.fullWidth, s.px10, s.pb10, s.fontSize14, s.selfEnd)
 const categoryCopyStyle = css(s.mt20)
 const subscribeHolderStyle = css(
+  s.relative,
   s.flex,
   s.fullWidth,
   s.justifyCenter,
   s.mt30,
   media(s.maxBreak2,
     s.mt20,
+  ),
+
+  select('& .featured-badge',
+    s.absolute,
+    {
+      top: 5,
+      left: -38,
+    },
+  ),
+  select('& .subscribe-inner-holder',
+    s.relative,
   ),
 )
 
@@ -218,7 +232,7 @@ const promotionCategoryStyle = css(
 
 export const HeroPromotionCategory = (props) => {
   const { creditLabel, creditSources, creditUsername, creditTrackingLabel } = props
-  const { description, dpi, name, sources } = props
+  const { description, dpi, name, sources, isPromo } = props
   const { ctaCaption, ctaHref, ctaTrackingLabel, isLoggedIn, isMobile, isSubscribed } = props
   const { subscribe, unsubscribe } = props
 
@@ -234,11 +248,19 @@ export const HeroPromotionCategory = (props) => {
           </h1>
           <p className={categoryCopyStyle}>{description}</p>
           <span className={subscribeHolderStyle}>
-            <CategorySubscribeButton
-              subscribe={subscribe}
-              unsubscribe={unsubscribe}
-              isSubscribed={isSubscribed}
-            />
+            <span className="subscribe-inner-holder">
+              {isPromo &&
+                <span className="featured-badge contains-hint">
+                  <BadgeFeaturedIcon />
+                  <Hint>Featured Category</Hint>
+                </span>
+              }
+              <CategorySubscribeButton
+                subscribe={subscribe}
+                unsubscribe={unsubscribe}
+                isSubscribed={isSubscribed}
+              />
+            </span>
           </span>
           <HeroPromotionCTA
             caption={ctaCaption}
@@ -316,6 +338,7 @@ HeroPromotionCategory.propTypes = {
   subscribe: PropTypes.func.isRequired,
   unsubscribe: PropTypes.func.isRequired,
   isSubscribed: PropTypes.bool.isRequired,
+  isPromo: PropTypes.bool.isRequired,
 }
 HeroPromotionCategory.defaultProps = {
   creditSources: null,

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import classNames from 'classnames'
 import {
+  BadgeFeaturedIcon,
   CheckCircleIcon,
 } from '../assets/Icons'
 import { RoundedRectLink } from '../buttons/Buttons'
@@ -336,6 +337,20 @@ const categoryCardStyle = css(
     },
   ),
 
+  // featured badge
+  select('& .featured-badge',
+    s.absolute,
+    s.zIndex2,
+    { top: 10, right: -5 },
+    media(s.maxBreak2,
+      { top: 3, right: -7 },
+      select('& .BadgeFeaturedIcon',
+        { transform: 'scale(0.64)' },
+      ),
+    ),
+  ),
+
+  // subscribe button positioning
   select('& .button-holder',
     s.absolute,
     s.flex,
@@ -350,15 +365,27 @@ const categoryCardStyle = css(
   ),
   select('& .title-holder',
     media('(max-width: 26.25em)', // 420 / 16 = 26.25em
-      // s.absolute,
       { top: 20 },
     ),
   ),
 )
 
-export const CategoryCard = ({ name, imageUrl, to, isSubscribed, subscribe, unsubscribe }) => (
+export const CategoryCard = ({
+  name,
+  imageUrl,
+  to,
+  isSubscribed,
+  isPromo,
+  subscribe,
+  unsubscribe,
+}) => (
   <li className={categoryCardStyle}>
     <CategoryCardLink imageUrl={imageUrl} to={to}>
+      {isPromo &&
+        <span className="featured-badge">
+          <BadgeFeaturedIcon />
+        </span>
+      }
       <CategoryCardTitle
         className="title-holder"
         name={name}
@@ -379,6 +406,7 @@ CategoryCard.propTypes = {
   imageUrl: PropTypes.string,
   to: PropTypes.string.isRequired,
   isSubscribed: PropTypes.bool.isRequired,
+  isPromo: PropTypes.bool.isRequired,
   subscribe: PropTypes.func.isRequired,
   unsubscribe: PropTypes.func.isRequired,
 }

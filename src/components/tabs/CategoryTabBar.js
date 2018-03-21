@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import classNames from 'classnames'
+import { BadgeFeaturedIcon } from '../assets/Icons'
 import { before, css, media, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
@@ -56,6 +57,19 @@ const categoryTabStyle = css(
     s.center,
     s.zIndex2,
     { paddingTop: 1 },
+  ),
+
+  // featured badge
+  select('& .featured-badge',
+    s.absolute,
+    s.zIndex2,
+    { top: 2, right: -7 },
+    select('& .BadgeFeaturedIcon',
+      { transform: 'scale(0.64)' },
+    ),
+    media(s.maxBreak2,
+      { top: -2, right: -12 },
+    ),
   ),
 
   // hover / active states
@@ -124,12 +138,17 @@ const categoryTabStyle = css(
   ),
 )
 
-const CategoryTab = ({ isActive, label, source, to }) => (
+const CategoryTab = ({ isActive, label, source, promo, to }) => (
   <Link
     className={classNames({ isActive }, `${categoryTabStyle}`)}
     to={to}
     style={source ? backgroundStyles(source) : null}
   >
+    {promo &&
+      <span className="featured-badge">
+        <BadgeFeaturedIcon />
+      </span>
+    }
     <span className="text-label-holder">
       <span className="text-label">{label}</span>
     </span>
@@ -138,8 +157,12 @@ const CategoryTab = ({ isActive, label, source, to }) => (
 CategoryTab.propTypes = {
   isActive: PropTypes.bool.isRequired,
   label: PropTypes.string.isRequired,
-  source: PropTypes.string.isRequired,
+  source: PropTypes.string,
+  promo: PropTypes.bool.isRequired,
   to: PropTypes.string.isRequired,
+}
+CategoryTab.defaultProps = {
+  source: null,
 }
 
 const AllCategoryTab = ({ pathname }) => {
@@ -332,6 +355,7 @@ export const CategoryTabBar = ({
           key={`CategoryTab_${tab.to}`}
           label={tab.label}
           source={isImageSizeLarge(deviceSize, tabs.length) ? tab.sources.large : tab.sources.small}
+          promo={tab.promo}
           to={tab.to}
         />),
       )}
