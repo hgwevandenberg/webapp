@@ -18,6 +18,7 @@ import {
   selectIsNavbarHidden,
   selectIsNotificationsActive,
   selectIsProfileMenuActive,
+  selectIsLightBoxActive,
   selectScrollOffset,
 } from '../selectors/gui'
 import { selectModalType } from '../selectors/modal'
@@ -52,6 +53,7 @@ function mapStateToProps(state, props) {
     isNotificationsActive: selectIsNotificationsActive(state),
     isOnboardingView: selectIsOnboardingView(state),
     isProfileMenuActive: selectIsProfileMenuActive(state),
+    isLightBoxActive: selectIsLightBoxActive(state),
     modalType: selectModalType(state),
     scrollOffset: selectScrollOffset(state),
     userDetailPathClassName: selectUserDetailPathClassName(state, props),
@@ -71,6 +73,7 @@ class ViewportContainer extends PureComponent {
     isNotificationsActive: PropTypes.bool.isRequired,
     isOnboardingView: PropTypes.bool.isRequired,
     isProfileMenuActive: PropTypes.bool.isRequired,
+    isLightBoxActive: PropTypes.bool.isRequired,
     modalType: PropTypes.string,
     scrollOffset: PropTypes.number.isRequired,
     userDetailPathClassName: PropTypes.string,
@@ -152,6 +155,7 @@ class ViewportContainer extends PureComponent {
       isNotificationsActive: this.props.isNotificationsActive,
       isOnboardingView: this.props.isOnboardingView,
       isProfileMenuActive: this.props.isProfileMenuActive,
+      isLightBoxActive: this.props.isLightBoxActive,
       userDetailPathClassName: this.props.userDetailPathClassName,
     }
     return <Viewport {...props} />
