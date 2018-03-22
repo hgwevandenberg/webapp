@@ -4,15 +4,13 @@ import PropTypes from 'prop-types'
 // import { Link } from 'react-router'
 import { css, hover, media, modifier, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
-
-const selectionTabSwitcherStyle = css(
-
-)
+import { XIcon } from '../assets/Icons'
 
 const tabStyle = css(
   s.block,
   { border: 0 },
   select('& .label',
+    s.relative,
     s.block,
     s.fullWidth,
     s.colorA,
@@ -23,8 +21,10 @@ const tabStyle = css(
     s.transitionColor,
     {
       lineHeight: 34,
-      borderWidth: 2,
     },
+    media(s.minBreak2,
+      { borderWidth: 2 },
+    ),
     media(s.minBreak3,
       s.fontSize38,
       { lineHeight: 48 },
@@ -33,10 +33,19 @@ const tabStyle = css(
 
   select('& .text',
     s.block,
+    s.mt20,
     s.fullWidth,
     s.colorA,
     s.fontSize14,
-    { marginTop: 25 },
+    media(s.minBreak2,
+      { marginTop: 25 },
+    ),
+    media(s.maxBreak2,
+      s.displayNone,
+      modifier('.open',
+        s.block,
+      ),
+    ),
   ),
 
   modifier('.isActive', select('& .text', s.colorBlack)),
@@ -50,11 +59,51 @@ const tabStyle = css(
   modifier('.declinedSubmissions.isActive', select('& .label', s.colorRed)),
 )
 
+const toggleButtonStyle = css(
+  s.absolute,
+  s.hv20,
+  s.wv20,
+  s.lh20,
+  s.colorWhite,
+  s.bgcA,
+  s.transitionBgColor,
+  {
+    top: 5,
+    right: 0,
+    borderRadius: 20,
+  },
+  select('& .question',
+    s.block,
+    s.sansRegular,
+    s.fontSize12,
+  ),
+  select('& .SVGIcon',
+    s.displayNone,
+  ),
+
+  hover(
+    s.colorWhite,
+    s.bgcBlack,
+  ),
+
+  modifier('.open',
+    s.colorWhite,
+    s.bgcBlack,
+    select('& .SVGIcon',
+      s.block,
+    ),
+    select('& .question',
+      s.displayNone,
+    ),
+  ),
+)
+
 const SelectionTabSwitcher = ({
   dataKey,
   isActive,
   label,
   onClick,
+  innerWidth,
 }) => {
   const className = `${tabStyle} ${dataKey} ${isActive ? 'isActive' : ''}`
   const href = `?submissionType=${dataKey}`
@@ -78,7 +127,7 @@ const SelectionTabSwitcher = ({
   }
 
   return (
-    <li className={selectionTabSwitcherStyle}>
+    <li>
       <a
         href={href}
         className={className}
@@ -86,6 +135,12 @@ const SelectionTabSwitcher = ({
       >
         <span className="label">
           {label}
+          {innerWidth < 640 &&
+            <button className={toggleButtonStyle}>
+              <span className="question">?</span>
+              <XIcon />
+            </button>
+          }
         </span>
         <span className="text">
           {explainerText}
@@ -99,6 +154,7 @@ const propTypes = {
   isActive: PropTypes.bool,
   label: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
+  innerWidth: PropTypes.number.isRequired,
 }
 const defaultProps = {
   isActive: false,

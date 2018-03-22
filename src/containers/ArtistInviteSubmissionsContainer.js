@@ -8,6 +8,7 @@ import {
   selectSubmissionType,
   selectPathname,
 } from '../selectors/routing'
+import { selectInnerWidth } from '../selectors/gui'
 import { updateQueryParams } from '../helpers/uri_helper'
 import { css, media, parent, select } from '../styles/jss'
 import * as s from '../styles/jso'
@@ -42,6 +43,14 @@ const tabsWrapperStyle = css(
     s.resetList,
     select('& li',
       { width: 'calc(25% - 20px)' },
+      media(s.maxBreak2,
+        s.fullWidth,
+        s.mb10,
+      ),
+    ),
+
+    media(s.maxBreak2,
+      s.block,
     ),
   ),
 )
@@ -63,6 +72,7 @@ const mapStateToProps = (state, props) => {
     selectedKey,
     pathname: selectPathname(state),
     streamAction: links.size > 0 ? loadArtistInviteSubmissions(links.getIn([selectedKey, 'href']), selectedKey, props.slug) : null,
+    innerWidth: selectInnerWidth(state),
   }
 }
 
@@ -79,6 +89,7 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
     hasSubmissions: PropTypes.bool.isRequired,
     hasLoaded: PropTypes.bool.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
+    innerWidth: PropTypes.number.isRequired,
   }
 
   static defaultProps = {
@@ -112,7 +123,7 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
   }
 
   renderAdmin() {
-    const { selectedKey, links, sendResultStatus } = this.props
+    const { selectedKey, links, sendResultStatus, innerWidth } = this.props
     const { streamAction } = this.state
     return (
       <div>
@@ -129,6 +140,7 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
                   dataKey={key}
                   isActive={isActive}
                   label={label}
+                  innerWidth={innerWidth}
                   onClick={e => this.onClickSubmissionType(e, key)}
                 />
               )
