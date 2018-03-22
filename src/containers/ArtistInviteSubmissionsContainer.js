@@ -36,6 +36,8 @@ const tabsWrapperStyle = css(
     s.flex,
     s.flexNoWrap,
     s.justifySpaceBetween,
+    s.pt30,
+    s.pb20,
     s.fullWidth,
     s.resetList,
     select('& li',
