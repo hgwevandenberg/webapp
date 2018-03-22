@@ -93,15 +93,17 @@ export class RegionItems extends PureComponent {
           }
           break
         case 'image': {
-          const regionContent = region.get('data')
           const asset = region.get('asset')
-          let assetId = asset ? asset.get('id') : null
+          const regionContent = region.get('data')
 
-          // different treatment for brand new posts since `asset` does not exists in store yet
+          let assetId = region.getIn(['links', 'assets'])
           if (!assetId) {
-            const url = regionContent.get('url')
-            if (url) {
-              assetId = getTempAssetId(url)
+            // brand new post
+            if (region.get('kind') === 'image') {
+              const url = region.getIn(['data', 'url'])
+              if (url) {
+                assetId = getTempAssetId(url)
+              }
             }
           }
 

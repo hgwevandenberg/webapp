@@ -179,7 +179,7 @@ class ArtistInviteSubmissionsAsListSimple extends PureComponent { // eslint-disa
   static propTypes = {
     toggleLightBox: PropTypes.func.isRequired,
     submissionIds: PropTypes.object.isRequired,
-    headerText: PropTypes.string.isRequired,
+    headerText: PropTypes.string,
   }
 
   static defaultProps = {
