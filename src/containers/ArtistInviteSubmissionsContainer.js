@@ -33,7 +33,7 @@ const titleWrapperStyle = css(
 const titleStyle = css(
   s.colorA,
   s.fontSize24,
-  s.inlineBlock,
+  s.block,
   s.sansBlack,
   s.truncate,
   media(s.minBreak3, s.mb20, parent('.ArtistInvitesDetail', s.mb0, s.fontSize38)),
@@ -101,16 +101,17 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
     return (
       <div>
         <div className={titleWrapperStyle}>
-          <h2 className={titleStyle}>Submissions:</h2>
+          <h2 className={titleStyle}>Submissions –</h2>
           {KEYS.map((key) => {
             const submissionStream = links.get(key)
+            const label = submissionStream.get('label').replace('Approved', 'Accepted')
             const isActive = selectedKey === key
             return (
               <SelectionTabSwitcher
                 key={key}
                 dataKey={key}
                 isActive={isActive}
-                label={submissionStream.get('label')}
+                label={label}
                 onClick={e => this.onClickSubmissionType(e)}
               />
             )

@@ -36,9 +36,10 @@ const SelectionTabSwitcher = ({
   onClick,
 }) => {
   const className = `${buttonStyle} ${dataKey} ${isActive ? 'isActive' : ''}`
+  const hrefDecoration = `#${dataKey.replace('Submissions', '').replace('approved', 'accepted')}`
   return (
     <a
-      href={`#${dataKey.replace('Submissions', '')}`}
+      href={hrefDecoration}
       className={className}
       data-key={dataKey}
       onClick={onClick}
