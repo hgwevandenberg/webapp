@@ -12,7 +12,7 @@ import { updateQueryParams } from '../helpers/uri_helper'
 import { css, media, parent } from '../styles/jss'
 import * as s from '../styles/jso'
 import StreamContainer from './StreamContainer'
-import SelectionTool from './../components/artist_invites/ArtistInviteAdminRenderables'
+import SelectionTabSwitcher from './../components/artist_invites/ArtistInviteAdminRenderables'
 
 const KEYS = ['unapprovedSubmissions', 'approvedSubmissions', 'selectedSubmissions', 'declinedSubmissions']
 
@@ -86,6 +86,8 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
   }
 
   onClickSubmissionType = (e) => {
+    e.preventDefault()
+
     const key = e.target.dataset.key
     const { links, slug, pathname, dispatch } = this.props
     const search = updateQueryParams({ submissionType: key })
@@ -104,12 +106,12 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
             const submissionStream = links.get(key)
             const isActive = selectedKey === key
             return (
-              <SelectionTool
+              <SelectionTabSwitcher
                 key={key}
                 dataKey={key}
                 isActive={isActive}
                 label={submissionStream.get('label')}
-                onClick={this.onClickSubmissionType}
+                onClick={e => this.onClickSubmissionType(e)}
               />
             )
           })}

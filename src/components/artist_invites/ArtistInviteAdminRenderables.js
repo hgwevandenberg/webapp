@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import { css, hover, media, modifier, parent } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
-// const selectionToolStyle = css(
+// const selectionTabSwitcherStyle = css(
 
 // )
 
@@ -29,7 +29,7 @@ const buttonStyle = css(
   modifier('.declinedSubmissions.isActive', s.colorRed),
 )
 
-const SelectionTool = ({
+const SelectionTabSwitcher = ({
   dataKey,
   isActive,
   label,
@@ -37,13 +37,14 @@ const SelectionTool = ({
 }) => {
   const className = `${buttonStyle} ${dataKey} ${isActive ? 'isActive' : ''}`
   return (
-    <button
+    <a
+      href={`#${dataKey.replace('Submissions', '')}`}
       className={className}
       data-key={dataKey}
       onClick={onClick}
     >
       {label}
-    </button>
+    </a>
   )
 }
 const propTypes = {
@@ -55,7 +56,7 @@ const propTypes = {
 const defaultProps = {
   isActive: false,
 }
-SelectionTool.propTypes = propTypes
-SelectionTool.defaultProps = defaultProps
+SelectionTabSwitcher.propTypes = propTypes
+SelectionTabSwitcher.defaultProps = defaultProps
 
-export default SelectionTool
+export default SelectionTabSwitcher
