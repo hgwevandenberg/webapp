@@ -9,7 +9,7 @@ import {
   selectPathname,
 } from '../selectors/routing'
 import { updateQueryParams } from '../helpers/uri_helper'
-import { css, media, parent } from '../styles/jss'
+import { css, media, parent, select } from '../styles/jss'
 import * as s from '../styles/jso'
 import StreamContainer from './StreamContainer'
 import SelectionTabSwitcher from './../components/artist_invites/ArtistInviteAdminRenderables'
@@ -21,21 +21,35 @@ const containerStyle = css(
 )
 
 const titleWrapperStyle = css(
-  s.flex,
-  s.itemsCenter,
+  s.block,
   s.maxSiteWidth,
+  s.fullWidth,
   s.px10,
   s.mxAuto,
   media(s.minBreak2, s.px20),
   media(s.minBreak4, s.px0),
 )
 
+const tabsWrapperStyle = css(
+  { ...titleWrapperStyle },
+  select('& ul',
+    s.flex,
+    s.flexNoWrap,
+    s.justifySpaceBetween,
+    s.fullWidth,
+    s.resetList,
+    select('& li',
+      { width: 'calc(25% - 20px)' },
+    ),
+  ),
+)
+
 const titleStyle = css(
+  s.block,
+  s.fullWidth,
+  s.sansBlack,
   s.colorA,
   s.fontSize24,
-  s.block,
-  s.sansBlack,
-  s.truncate,
   media(s.minBreak3, s.mb20, parent('.ArtistInvitesDetail', s.mb0, s.fontSize38)),
 )
 
@@ -85,11 +99,11 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
     }
   }
 
-  onClickSubmissionType = (e) => {
+  onClickSubmissionType = (e, key) => {
+    const { links, slug, pathname, dispatch } = this.props
+
     e.preventDefault()
 
-    const key = e.target.dataset.key
-    const { links, slug, pathname, dispatch } = this.props
     const search = updateQueryParams({ submissionType: key })
     this.setState({ streamAction: loadArtistInviteSubmissions(links.getIn([`${key}`, 'href']), key, slug) })
     dispatch(push({ pathname, search }))
@@ -100,22 +114,24 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
     const { streamAction } = this.state
     return (
       <div>
-        <div className={titleWrapperStyle}>
-          <h2 className={titleStyle}>Submissions –</h2>
-          {KEYS.map((key) => {
-            const submissionStream = links.get(key)
-            const label = submissionStream.get('label').replace('Approved', 'Accepted')
-            const isActive = selectedKey === key
-            return (
-              <SelectionTabSwitcher
-                key={key}
-                dataKey={key}
-                isActive={isActive}
-                label={label}
-                onClick={e => this.onClickSubmissionType(e)}
-              />
-            )
-          })}
+        <div className={tabsWrapperStyle}>
+          <h2 className={titleStyle}>Submissions —</h2>
+          <ul>
+            {KEYS.map((key) => {
+              const submissionStream = links.get(key)
+              const label = submissionStream.get('label').replace('Approved', 'Accepted')
+              const isActive = selectedKey === key
+              return (
+                <SelectionTabSwitcher
+                  key={key}
+                  dataKey={key}
+                  isActive={isActive}
+                  label={label}
+                  onClick={e => this.onClickSubmissionType(e, key)}
+                />
+              )
+            })}
+          </ul>
         </div>
         {streamAction &&
           <StreamContainer
