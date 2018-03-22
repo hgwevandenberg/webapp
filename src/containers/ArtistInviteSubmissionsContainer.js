@@ -9,9 +9,10 @@ import {
   selectPathname,
 } from '../selectors/routing'
 import { updateQueryParams } from '../helpers/uri_helper'
-import { css, hover, media, modifier, parent } from '../styles/jss'
+import { css, media, parent } from '../styles/jss'
 import * as s from '../styles/jso'
 import StreamContainer from './StreamContainer'
+import SelectionTool from './../components/artist_invites/ArtistInviteAdminRenderables'
 
 const KEYS = ['unapprovedSubmissions', 'approvedSubmissions', 'selectedSubmissions', 'declinedSubmissions']
 
@@ -36,21 +37,6 @@ const titleStyle = css(
   s.sansBlack,
   s.truncate,
   media(s.minBreak3, s.mb20, parent('.ArtistInvitesDetail', s.mb0, s.fontSize38)),
-)
-
-const buttonStyle = css(
-  { ...titleStyle },
-  s.borderBottom,
-  s.ml20,
-  s.transitionColor,
-  modifier('.approvedSubmissions', hover(s.colorGreen)),
-  modifier('.selectedSubmissions', hover(s.colorYellow)),
-  modifier('.unapprovedSubmissions', hover(s.colorBlack)),
-  modifier('.declinedSubmissions', hover(s.colorRed)),
-  modifier('.approvedSubmissions.isActive', s.colorGreen),
-  modifier('.selectedSubmissions.isActive', s.colorYellow),
-  modifier('.unapprovedSubmissions.isActive', s.colorBlack),
-  modifier('.declinedSubmissions.isActive', s.colorRed),
 )
 
 const mapStateToProps = (state, props) => {
@@ -116,15 +102,15 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
           <h2 className={titleStyle}>Submissions:</h2>
           {KEYS.map((key) => {
             const submissionStream = links.get(key)
+            const isActive = selectedKey === key
             return (
-              <button
-                className={`${buttonStyle} ${key} ${selectedKey === key ? 'isActive' : ''}`}
-                data-key={key}
+              <SelectionTool
                 key={key}
+                dataKey={key}
+                isActive={isActive}
+                label={submissionStream.get('label')}
                 onClick={this.onClickSubmissionType}
-              >
-                {submissionStream.get('label')}
-              </button>
+              />
             )
           })}
         </div>
