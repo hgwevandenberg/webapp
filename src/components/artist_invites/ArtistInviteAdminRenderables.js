@@ -20,7 +20,7 @@ const tabStyle = css(
     s.borderBottom,
     s.transitionColor,
     {
-      lineHeight: 34,
+      lineHeight: 30,
     },
     media(s.minBreak2,
       { borderWidth: 2 },

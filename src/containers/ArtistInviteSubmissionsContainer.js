@@ -51,6 +51,8 @@ const tabsWrapperStyle = css(
 
     media(s.maxBreak2,
       s.block,
+      s.pt10,
+      s.pb0,
     ),
   ),
 )
