@@ -116,7 +116,7 @@ const linkStyle = css(
 
 const highlightingRules = {
   '/following': /^\/following/,
-  '/artist-invites': /^\/artist-invites$/,
+  '/artist-invites': /(^\/artist-invites$)|^\/artist-invites(?:\/.*\.?.*)/,
   '/discover/subscribed': /^\/discover/,
 }
 
