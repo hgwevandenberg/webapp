@@ -11,163 +11,8 @@ import {
   selectPostsAssetIds,
 } from '../selectors/light_box'
 import { scrollToPosition } from '../lib/jello'
-import { DismissButtonLGReverse } from '../components/buttons/Buttons'
-import PostContainer from './PostContainer'
-import CommentContainer from './CommentContainer'
-// import { RegionItems } from '../regions/RegionRenderables'
-import { css, select, media } from '../styles/jss'
-import * as s from '../styles/jso'
+import LightBox from '../components/light_box/LightBoxRenderables'
 import { SHORTCUT_KEYS } from '../constants/application_types'
-
-const baseLightBoxStyle = css(
-  s.block,
-  s.relative,
-  s.bgcF2,
-  { margin: '0 auto' },
-  select(
-    '> .LightBoxMask',
-    s.fullscreen,
-    s.fullWidth,
-    s.fullHeight,
-    s.bgcModal,
-    s.zModal,
-    { transition: `background-color 0.4s ${s.ease}` },
-    select(
-      '> .LightBox',
-      s.fixed,
-      s.flood,
-      s.fullWidth,
-      s.fullHeight,
-      s.overflowHidden,
-      s.flex,
-      s.itemsCenter,
-      select(
-        '> .LightBoxQueue',
-        s.transitionOpacity,
-        s.relative,
-        {
-          width: 'auto',
-          whiteSpace: 'nowrap',
-          opacity: 1,
-        },
-      ),
-    ),
-    select(
-      '> .LightBox.loaded',
-      select(
-        '> .LightBoxQueue.transition',
-        s.transitionTransform,
-      ),
-    ),
-    select(
-      '> .LightBox.loading',
-      select(
-        '> .LightBoxQueue',
-        { opacity: 0 },
-      ),
-    ),
-  ),
-)
-
-const imageRegionStyle = select(
-  '> .ImageRegion',
-  s.inlineBlock,
-  s.relative,
-  {
-    margin: 0,
-    marginLeft: 40,
-    marginRight: 40,
-    width: 'auto',
-  },
-  media(
-    s.maxBreak4,
-    { marginLeft: 30,
-      marginRight: 30,
-    },
-  ),
-  media(
-    s.maxBreak3,
-    { marginLeft: 20,
-      marginRight: 20,
-    },
-  ),
-  media(
-    s.maxBreak2,
-    { marginLeft: 10,
-      marginRight: 10,
-    },
-  ),
-  select(
-    '> .ImgHolderLightBox',
-    s.inline,
-  ),
-)
-
-const commentsLightBoxStyle = css(
-  { ...baseLightBoxStyle },
-  select(
-    '> .LightBoxMask',
-    select(
-      '> .LightBox',
-      select(
-        '> .LightBoxQueue',
-        select(
-          '> .Comment',
-          s.inline,
-          { padding: 0 },
-          select(
-            '> .CommentBody',
-            s.inline,
-            { padding: 0,
-              margin: 0,
-              border: 'none',
-              width: 'auto',
-            },
-            select(
-              '> div',
-              s.inline,
-              { ...imageRegionStyle },
-            ),
-          ),
-        ),
-      ),
-    ),
-  ),
-)
-
-const postsListLightBoxStyle = css(
-  { ...baseLightBoxStyle },
-  select(
-    '> .LightBoxMask',
-    select(
-      '> .LightBox',
-      select(
-        '> .LightBoxQueue',
-        select(
-          '> .Post',
-          s.inline,
-          { margin: 0,
-            padding: 0,
-          },
-          select(
-            '> .PostBody',
-            s.inline,
-            { padding: 0,
-              margin: 0,
-              border: 'none',
-              width: 'auto',
-            },
-            select(
-              '> div',
-              s.inline,
-              { ...imageRegionStyle },
-            ),
-          ),
-        ),
-      ),
-    ),
-  ),
-)
 
 // Wraps LightBox controls/state around a component
 // This function takes a component
@@ -335,32 +180,31 @@ function LightBoxWrapper(WrappedComponent) {
       return null
     }
 
-    setLightBoxStyle() {
-      const { commentIds } = this.props
-
-      if (commentIds) {
-        return commentsLightBoxStyle
-      }
-
-      return postsListLightBoxStyle
-    }
-
     advance(direction) {
+      const {
+        assetIdToSet,
+        assetIdToSetNext,
+        assetIdToSetPrev,
+        postIdToSet,
+        postIdToSetNext,
+        postIdToSetPrev,
+      } = this.state
+
       let newAssetIdToSet = null
       let newPostIdToSet = null
 
       switch (direction) {
         case 'prev' :
-          newAssetIdToSet = this.state.assetIdToSetPrev
-          newPostIdToSet = this.state.postIdToSetPrev
+          newAssetIdToSet = assetIdToSetPrev
+          newPostIdToSet = postIdToSetPrev
           break
         case 'next' :
-          newAssetIdToSet = this.state.assetIdToSetNext
-          newPostIdToSet = this.state.postIdToSetNext
+          newAssetIdToSet = assetIdToSetNext
+          newPostIdToSet = postIdToSetNext
           break
         default :
-          newAssetIdToSet = this.state.assetIdToSet
-          newPostIdToSet = this.state.postIdToSet
+          newAssetIdToSet = assetIdToSet
+          newPostIdToSet = postIdToSet
       }
 
       // advance to new image
@@ -576,60 +420,47 @@ function LightBoxWrapper(WrappedComponent) {
     }
 
     render() {
-      const { postAssetIdPairs } = this.props
-      const lightBoxSelectedIdPair = {
-        assetIdToSet: this.state.assetIdToSet,
-        postIdToSet: this.state.postIdToSet,
-      }
+      const {
+        commentIds,
+        postAssetIdPairs,
+      } = this.props
+
+      const {
+        assetIdToSet,
+        loading,
+        loaded,
+        open,
+        showOffsetTransition,
+        queueOffsetX,
+        queuePostIdsArray,
+        resize,
+      } = this.state
 
       return (
         <div className="with-lightbox">
-          {this.state.open &&
-            <div className={this.setLightBoxStyle()}>
-              <div className="LightBoxMask" role="presentation" onClick={e => this.handleMaskClick(e)}>
-                <DismissButtonLGReverse
-                  onClick={this.close}
-                />
-                <div className={`LightBox ${this.state.loading ? 'loading' : ''}${this.state.loaded ? 'loaded' : ''}`}>
-                  <div
-                    className={`LightBoxQueue${this.state.showOffsetTransition ? ' transition' : ''}`}
-                    style={{ transform: `translateX(${this.state.queueOffsetX}px)` }}
-                  >
-                    {!this.props.commentIds &&
-                      postAssetIdPairs &&
-                      this.state.queuePostIdsArray &&
-                      this.state.queuePostIdsArray.map(postId =>
-                      (<PostContainer
-                        key={`lightBoxPost_${postId}`}
-                        postId={postId}
-                        isPostHeaderHidden
-                        isLightBox
-                        lightBoxSelectedIdPair={lightBoxSelectedIdPair}
-                        resizeLightBox={this.state.resize}
-                        toggleLightBox={(assetId, postIdToSet) =>
-                          this.handleImageClick(assetId, postIdToSet)}
-                      />),
-                    )}
-                    {this.props.commentIds &&
-                      postAssetIdPairs &&
-                      this.state.queuePostIdsArray &&
-                      this.state.queuePostIdsArray.map(postId =>
-                      (<CommentContainer
-                        key={`lightBoxPost_${postId}`}
-                        commentId={postId}
-                        isLightBox
-                        lightBoxSelectedIdPair={lightBoxSelectedIdPair}
-                        toggleLightBox={(assetId, postIdToSet) =>
-                          this.handleImageClick(assetId, postIdToSet)}
-                      />),
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
+          {open &&
+            <LightBox
+              commentIds={commentIds}
+              postAssetIdPairs={postAssetIdPairs}
+              assetIdToSet={assetIdToSet}
+              postIdToSet={this.state.postIdToSet}
+              queuePostIdsArray={queuePostIdsArray}
+              queueOffsetX={queueOffsetX}
+              loading={loading}
+              loaded={loaded}
+              showOffsetTransition={showOffsetTransition}
+              resize={resize}
+              close={() => this.close()}
+              handleMaskClick={e => this.handleMaskClick(e)}
+              handleImageClick={
+                (assetId, postIdToSet) => this.handleImageClick(assetId, postIdToSet)
+              }
+            />
           }
           <WrappedComponent
-            toggleLightBox={(assetId, postIdToSet) => this.handleImageClick(assetId, postIdToSet)}
+            toggleLightBox={
+              (assetId, postIdToSet) => this.handleImageClick(assetId, postIdToSet)
+            }
             {...this.props}
           />
         </div>
