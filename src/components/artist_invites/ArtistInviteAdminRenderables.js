@@ -1,7 +1,6 @@
 /* eslint-disable react/no-danger */
 import React from 'react'
 import PropTypes from 'prop-types'
-// import { Link } from 'react-router'
 import { css, hover, media, modifier, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 import { XIcon } from '../assets/Icons'
@@ -42,6 +41,7 @@ const tabStyle = css(
     ),
     media(s.maxBreak2,
       s.displayNone,
+      s.colorBlack,
       modifier('.open',
         s.block,
       ),
@@ -103,6 +103,8 @@ const SelectionTabSwitcher = ({
   isActive,
   label,
   onClick,
+  onClickExplainerToggle,
+  explainerKeyOpen,
   innerWidth,
 }) => {
   const className = `${tabStyle} ${dataKey} ${isActive ? 'isActive' : ''}`
@@ -126,6 +128,8 @@ const SelectionTabSwitcher = ({
       explainerText = null
   }
 
+  const explainerIsOpen = explainerKeyOpen === dataKey
+
   return (
     <li>
       <a
@@ -136,13 +140,16 @@ const SelectionTabSwitcher = ({
         <span className="label">
           {label}
           {innerWidth < 640 &&
-            <button className={toggleButtonStyle}>
+            <button
+              className={`${toggleButtonStyle}${explainerIsOpen ? ' open' : ''}`}
+              onClick={onClickExplainerToggle}
+            >
               <span className="question">?</span>
               <XIcon />
             </button>
           }
         </span>
-        <span className="text">
+        <span className={`text${explainerIsOpen ? ' open' : ''}`}>
           {explainerText}
         </span>
       </a>
@@ -154,10 +161,14 @@ const propTypes = {
   isActive: PropTypes.bool,
   label: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
+  onClickExplainerToggle: PropTypes.func,
+  explainerKeyOpen: PropTypes.string,
   innerWidth: PropTypes.number.isRequired,
 }
 const defaultProps = {
   isActive: false,
+  onClickExplainerToggle: null,
+  explainerKeyOpen: null,
 }
 SelectionTabSwitcher.propTypes = propTypes
 SelectionTabSwitcher.defaultProps = defaultProps

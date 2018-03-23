@@ -102,6 +102,15 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
     hasLoaded: false,
   }
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      explainerKeyOpen: null,
+    }
+
+    this.onClickExplainerToggle = this.onClickExplainerToggle.bind(this)
+  }
+
   componentWillMount() {
     const { streamAction } = this.props
 
@@ -114,14 +123,37 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
     }
   }
 
+  componentDidUpdate() {
+    if (this.props.innerWidth > 639) {
+      this.onClickExplainerToggle(null)
+    }
+  }
+
+  onClickExplainerToggle = (key) => {
+    const { explainerKeyOpen } = this.state
+    let newExplainerKeyOpen = null
+
+    if (key !== explainerKeyOpen) {
+      newExplainerKeyOpen = key
+    }
+
+    this.setState({
+      explainerKeyOpen: newExplainerKeyOpen,
+    })
+
+    // set state with explainer tip key open
+  }
+
   onClickSubmissionType = (e, key) => {
     const { links, slug, pathname, dispatch } = this.props
 
     e.preventDefault()
 
-    const search = updateQueryParams({ submissionType: key })
-    this.setState({ streamAction: loadArtistInviteSubmissions(links.getIn([`${key}`, 'href']), key, slug) })
-    dispatch(push({ pathname, search }))
+    if (e.target.tagName !== 'BUTTON') {
+      const search = updateQueryParams({ submissionType: key })
+      this.setState({ streamAction: loadArtistInviteSubmissions(links.getIn([`${key}`, 'href']), key, slug) })
+      dispatch(push({ pathname, search }))
+    }
   }
 
   renderAdmin() {
@@ -143,6 +175,8 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
                   isActive={isActive}
                   label={label}
                   innerWidth={innerWidth}
+                  explainerKeyOpen={this.state.explainerKeyOpen}
+                  onClickExplainerToggle={() => this.onClickExplainerToggle(key)}
                   onClick={e => this.onClickSubmissionType(e, key)}
                 />
               )
