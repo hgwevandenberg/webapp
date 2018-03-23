@@ -44,6 +44,7 @@ const tabStyle = css(
       s.colorBlack,
       modifier('.open',
         s.block,
+        s.mb30,
       ),
     ),
   ),
