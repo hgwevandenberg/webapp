@@ -77,6 +77,7 @@ const toggleButtonStyle = css(
     s.block,
     s.sansRegular,
     s.fontSize12,
+    { lineHeight: 23 },
   ),
   select('& .SVGIcon',
     s.displayNone,
