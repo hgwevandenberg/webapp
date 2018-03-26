@@ -99,16 +99,19 @@ const getActionIcon = (type) => {
 
 export const PostAdminActions = ({ actions, status }, { onClickAction }) => (
   <div className={`${adminActionsStyle} ${status}`}>
-    {actions.entrySeq().map(([type, action]) => (
-      <button
-        className={`${actionButtonStyle} ${type}`}
-        onClick={() => onClickAction(action)}
-        data-label={action.get('label')}
-        key={type}
-      >
-        {getActionIcon(type)}
-      </button>
-    ))}
+    {actions.entrySeq().map(([type, action]) => {
+      const label = action.get('label').replace('Approved', 'Accepted').replace('Approve', 'Accept')
+      return (
+        <button
+          className={`${actionButtonStyle} ${type}`}
+          onClick={() => onClickAction(action)}
+          data-label={label}
+          key={type}
+        >
+          {getActionIcon(type)}
+        </button>
+      )
+    })}
   </div>
 )
 PostAdminActions.propTypes = {
