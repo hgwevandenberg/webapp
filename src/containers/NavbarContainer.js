@@ -61,6 +61,7 @@ function mapStateToProps(state, props) {
       username: selectUsername(state),
       isBrand: selectIsBrand(state),
       viewName,
+      innerWidth,
     }
   }
   return {
@@ -87,12 +88,14 @@ class NavbarContainer extends PureComponent {
     pathname: PropTypes.string.isRequired,
     params: PropTypes.object.isRequired,
     viewName: PropTypes.string.isRequired,
+    innerWidth: PropTypes.string,
   }
 
   static defaultProps = {
     activeTabType: '',
     isProfileMenuActive: false,
     isNotificationsActive: false,
+    innerWidth: null,
   }
 
   static contextTypes = {
@@ -259,7 +262,7 @@ class NavbarContainer extends PureComponent {
   }
 
   render() {
-    const { isLoggedIn } = this.props
+    const { isLoggedIn, innerWidth } = this.props
     if (isLoggedIn) {
       return (
         <NavbarLoggedIn
@@ -277,6 +280,7 @@ class NavbarContainer extends PureComponent {
           onDragOverStreamLink={this.onDragOverStreamLink}
           onDropStreamLink={this.onDropStreamLink}
           onLogOut={this.onLogOut}
+          innerWidth={innerWidth}
         />
       )
     }
