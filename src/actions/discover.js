@@ -14,6 +14,7 @@ const KINDS = {
   featured: 'FEATURED',
   recent: 'RECENT',
   trending: 'TRENDING',
+  shop: 'SHOP',
 }
 
 const postStreamMeta = {
