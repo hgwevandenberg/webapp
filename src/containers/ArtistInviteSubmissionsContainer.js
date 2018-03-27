@@ -8,10 +8,12 @@ import {
   selectSubmissionType,
   selectPathname,
 } from '../selectors/routing'
+import { selectInnerWidth } from '../selectors/gui'
 import { updateQueryParams } from '../helpers/uri_helper'
-import { css, hover, media, modifier, parent } from '../styles/jss'
+import { css, media, parent, select } from '../styles/jss'
 import * as s from '../styles/jso'
 import StreamContainer from './StreamContainer'
+import SelectionTabSwitcher from './../components/artist_invites/ArtistInviteAdminRenderables'
 
 const KEYS = ['unapprovedSubmissions', 'approvedSubmissions', 'selectedSubmissions', 'declinedSubmissions']
 
@@ -20,37 +22,48 @@ const containerStyle = css(
 )
 
 const titleWrapperStyle = css(
-  s.flex,
-  s.itemsCenter,
+  s.block,
   s.maxSiteWidth,
+  s.fullWidth,
   s.px10,
   s.mxAuto,
   media(s.minBreak2, s.px20),
   media(s.minBreak4, s.px0),
 )
 
-const titleStyle = css(
-  s.colorA,
-  s.fontSize24,
-  s.inlineBlock,
-  s.sansBlack,
-  s.truncate,
-  media(s.minBreak3, s.mb20, parent('.ArtistInvitesDetail', s.mb0, s.fontSize38)),
+const tabsWrapperStyle = css(
+  { ...titleWrapperStyle },
+  select('& ul',
+    s.flex,
+    s.flexNoWrap,
+    s.justifySpaceBetween,
+    s.pt30,
+    s.pb20,
+    s.fullWidth,
+    s.resetList,
+    select('& li',
+      { width: 'calc(25% - 20px)' },
+      media(s.maxBreak2,
+        s.fullWidth,
+        s.mb10,
+      ),
+    ),
+
+    media(s.maxBreak2,
+      s.block,
+      s.pt10,
+      s.pb0,
+    ),
+  ),
 )
 
-const buttonStyle = css(
-  { ...titleStyle },
-  s.borderBottom,
-  s.ml20,
-  s.transitionColor,
-  modifier('.approvedSubmissions', hover(s.colorGreen)),
-  modifier('.selectedSubmissions', hover(s.colorYellow)),
-  modifier('.unapprovedSubmissions', hover(s.colorBlack)),
-  modifier('.declinedSubmissions', hover(s.colorRed)),
-  modifier('.approvedSubmissions.isActive', s.colorGreen),
-  modifier('.selectedSubmissions.isActive', s.colorYellow),
-  modifier('.unapprovedSubmissions.isActive', s.colorBlack),
-  modifier('.declinedSubmissions.isActive', s.colorRed),
+const titleStyle = css(
+  s.block,
+  s.fullWidth,
+  s.sansBlack,
+  s.colorA,
+  s.fontSize24,
+  media(s.minBreak3, s.mb20, parent('.ArtistInvitesDetail', s.mb0, s.fontSize38)),
 )
 
 const mapStateToProps = (state, props) => {
@@ -61,6 +74,7 @@ const mapStateToProps = (state, props) => {
     selectedKey,
     pathname: selectPathname(state),
     streamAction: links.size > 0 ? loadArtistInviteSubmissions(links.getIn([selectedKey, 'href']), selectedKey, props.slug) : null,
+    innerWidth: selectInnerWidth(state),
   }
 }
 
@@ -77,6 +91,7 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
     hasSubmissions: PropTypes.bool.isRequired,
     hasLoaded: PropTypes.bool.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
+    innerWidth: PropTypes.number.isRequired,
   }
 
   static defaultProps = {
@@ -85,6 +100,15 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
     sendResultStatus: null,
     hasSubmissions: false,
     hasLoaded: false,
+  }
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      explainerKeyOpen: null,
+    }
+
+    this.onClickExplainerToggle = this.onClickExplainerToggle.bind(this)
   }
 
   componentWillMount() {
@@ -99,34 +123,65 @@ class ArtistInviteSubmissionsContainer extends PureComponent {
     }
   }
 
-  onClickSubmissionType = (e) => {
-    const key = e.target.dataset.key
+  componentDidUpdate() {
+    if (this.props.innerWidth > 639) {
+      this.onClickExplainerToggle(null)
+    }
+  }
+
+  onClickExplainerToggle = (key) => {
+    const { explainerKeyOpen } = this.state
+    let newExplainerKeyOpen = null
+
+    if (key !== explainerKeyOpen) {
+      newExplainerKeyOpen = key
+    }
+
+    this.setState({
+      explainerKeyOpen: newExplainerKeyOpen,
+    })
+
+    // set state with explainer tip key open
+  }
+
+  onClickSubmissionType = (e, key) => {
     const { links, slug, pathname, dispatch } = this.props
-    const search = updateQueryParams({ submissionType: key })
-    this.setState({ streamAction: loadArtistInviteSubmissions(links.getIn([`${key}`, 'href']), key, slug) })
-    dispatch(push({ pathname, search }))
+
+    e.preventDefault()
+
+    if (e.target.tagName !== 'BUTTON') {
+      const search = updateQueryParams({ submissionType: key })
+      this.setState({ streamAction: loadArtistInviteSubmissions(links.getIn([`${key}`, 'href']), key, slug) })
+      dispatch(push({ pathname, search }))
+    }
   }
 
   renderAdmin() {
-    const { selectedKey, links, sendResultStatus } = this.props
+    const { selectedKey, links, sendResultStatus, innerWidth } = this.props
     const { streamAction } = this.state
     return (
       <div>
-        <div className={titleWrapperStyle}>
-          <h2 className={titleStyle}>Submissions:</h2>
-          {KEYS.map((key) => {
-            const submissionStream = links.get(key)
-            return (
-              <button
-                className={`${buttonStyle} ${key} ${selectedKey === key ? 'isActive' : ''}`}
-                data-key={key}
-                key={key}
-                onClick={this.onClickSubmissionType}
-              >
-                {submissionStream.get('label')}
-              </button>
-            )
-          })}
+        <div className={tabsWrapperStyle}>
+          <h2 className={titleStyle}>Submissions —</h2>
+          <ul>
+            {KEYS.map((key) => {
+              const submissionStream = links.get(key)
+              const label = submissionStream.get('label').replace('Approved', 'Accepted')
+              const isActive = selectedKey === key
+              return (
+                <SelectionTabSwitcher
+                  key={key}
+                  dataKey={key}
+                  isActive={isActive}
+                  label={label}
+                  innerWidth={innerWidth}
+                  explainerKeyOpen={this.state.explainerKeyOpen}
+                  onClickExplainerToggle={() => this.onClickExplainerToggle(key)}
+                  onClick={e => this.onClickSubmissionType(e, key)}
+                />
+              )
+            })}
+          </ul>
         </div>
         {streamAction &&
           <StreamContainer
