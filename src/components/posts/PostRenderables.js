@@ -65,7 +65,7 @@ const actionButtonStyle = css(
     s.colorGreen,
     hover(
       select('> .CheckCircleIcon', s.displayNone),
-      after({ content: '"Unapprove"' }),
+      after({ content: '"Unaccept"' }),
     ),
     select('> .CheckCircleIcon', s.inlineBlock),
   ),
@@ -100,7 +100,10 @@ const getActionIcon = (type) => {
 export const PostAdminActions = ({ actions, status }, { onClickAction }) => (
   <div className={`${adminActionsStyle} ${status}`}>
     {actions.entrySeq().map(([type, action]) => {
-      const label = action.get('label').replace('Approved', 'Accepted').replace('Approve', 'Accept')
+      const label = action.get('label')
+        .replace('Approved', 'Accepted')
+        .replace('Approve', 'Accept')
+
       return (
         <button
           className={`${actionButtonStyle} ${type}`}
