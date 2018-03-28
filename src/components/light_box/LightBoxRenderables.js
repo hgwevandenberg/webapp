@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { css, media, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 import PostContainer from './../../containers/PostContainer'
+import PostLightBoxContainer from './../../containers/PostLightBoxContainer'
 import CommentContainer from './../../containers/CommentContainer'
 import { DismissButtonLGReverse } from './../buttons/Buttons'
 
@@ -10,6 +11,7 @@ const baseLightBoxStyle = css(
   s.block,
   s.relative,
   s.bgcF2,
+  s.zIndex1,
   { margin: '0 auto' },
   select(
     '> .LightBoxMask',
@@ -156,6 +158,25 @@ const postsListLightBoxStyle = css(
   ),
 )
 
+const lightBoxControlsStyle = css(
+  s.fixed,
+  s.block,
+  s.fullWidth,
+  s.zIndex2,
+  {
+    bottom: 0,
+    left: 0,
+    height: 50,
+    backgroundColor: 'yellow',
+  },
+
+  select('& .controls',
+    {
+      backgroundColor: 'pink',
+    },
+  ),
+)
+
 function setLightBoxStyle(commentIds) {
   if (commentIds) {
     return commentsLightBoxStyle
@@ -188,6 +209,18 @@ const LightBox = ({
           onClick={close}
         />
         <div className={`LightBox ${loading ? 'loading' : ''}${loaded ? 'loaded' : ''}`}>
+          <div className={`${lightBoxControlsStyle} controls-holder`}>
+            {postIdToSet &&
+              <PostLightBoxContainer
+                key={`lightBoxPostControls_${postIdToSet}`}
+                postId={postIdToSet}
+                resizeLightBox={resize}
+              />
+            }
+            <div className="controls">
+              I am light box controls
+            </div>
+          </div>
           <div
             className={`LightBoxQueue${showOffsetTransition ? ' transition' : ''}`}
             style={{ transform: `translateX(${queueOffsetX}px)` }}
@@ -227,8 +260,14 @@ const LightBox = ({
 const propTypes = {
   commentIds: PropTypes.array,
   postAssetIdPairs: PropTypes.array.isRequired,
-  assetIdToSet: PropTypes.number.isRequired,
-  postIdToSet: PropTypes.number.isRequired,
+  assetIdToSet: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string,
+  ]).isRequired,
+  postIdToSet: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string,
+  ]).isRequired,
   queuePostIdsArray: PropTypes.array,
   queueOffsetX: PropTypes.number.isRequired,
   loading: PropTypes.bool.isRequired,

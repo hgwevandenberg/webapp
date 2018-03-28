@@ -446,3 +446,96 @@ export class PostTools extends PureComponent {
   }
 }
 
+export class PostToolsLightBox extends PureComponent {
+  static propTypes = {
+    author: PropTypes.object.isRequired,
+    detailPath: PropTypes.string.isRequired,
+    isCommentsRequesting: PropTypes.bool.isRequired,
+    isLoggedIn: PropTypes.bool.isRequired,
+    isOwnOriginalPost: PropTypes.bool.isRequired,
+    isOwnPost: PropTypes.bool.isRequired,
+    postCommentsCount: PropTypes.number.isRequired,
+    postId: PropTypes.string.isRequired,
+    postLoved: PropTypes.bool.isRequired,
+    postLovesCount: PropTypes.number.isRequired,
+    postReposted: PropTypes.bool.isRequired,
+    postRepostsCount: PropTypes.number.isRequired,
+    postViewsCountRounded: PropTypes.string.isRequired,
+  }
+
+  render() {
+    const {
+      author,
+      detailPath,
+      isCommentsRequesting,
+      isLoggedIn,
+      isOwnOriginalPost,
+      isOwnPost,
+      postCommentsCount,
+      postId,
+      postLoved,
+      postLovesCount,
+      postReposted,
+      postRepostsCount,
+      postViewsCountRounded,
+    } = this.props
+    const cells = []
+
+    if (author.get('hasCommentingEnabled')) {
+      cells.push(
+        <CommentTool
+          detailPath={detailPath}
+          isLoggedIn={isLoggedIn}
+          key={`CommentTool_${postId}`}
+          postCommentsCount={postCommentsCount}
+        />,
+      )
+    }
+    if (author.get('hasLovesEnabled')) {
+      cells.push(
+        <LoveTool
+          key={`LoveTool_${postId}`}
+          postLoved={postLoved}
+          postLovesCount={postLovesCount}
+        />,
+      )
+    }
+    if (author.get('hasRepostingEnabled') && !(isOwnPost && Number(postRepostsCount) === 0)) {
+      cells.push(
+        <RepostTool
+          isOwnOriginalPost={isOwnOriginalPost}
+          isOwnPost={isOwnPost}
+          isRepostAnimating={false}
+          key={`RepostTool_${postId}`}
+          postReposted={postReposted}
+          postRepostsCount={postRepostsCount}
+        />,
+      )
+    }
+    cells.push(
+      <ViewsTool
+        detailPath={detailPath}
+        isPostDetail={false}
+        isLoggedIn={isLoggedIn}
+        key={`ViewsTool_${postId}`}
+        postViewsCountRounded={postViewsCountRounded}
+      />,
+    )
+
+    if (author.get('hasSharingEnabled')) {
+      cells.push(
+        <ShareTool
+          isLoggedIn={isLoggedIn}
+          key={`ShareTool_${postId}`}
+        />,
+      )
+    }
+
+    return (
+      <header className={classNames('PostTools', { isCommentsRequesting })}>
+        {cells}
+      </header>
+    )
+  }
+}
+
