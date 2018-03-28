@@ -100,11 +100,11 @@ export const selectIsPostDetail = createSelector(
 )
 
 export const selectIsGlobalRoot = createSelector(
-  [selectPathname], pathname => /^\/(?:discover(\/featured|\/recommended|\/trending|\/recent)?)?$/.test(pathname),
+  [selectPathname], pathname => /^\/(?:discover(\/featured|\/recommended|\/trending|\/recent|\/shop)?)?$/.test(pathname),
 )
 
 export const selectIsSubscribedRoot = createSelector(
-  [selectPathname], pathname => /^\/(?:discover\/subscribed(\/trending)?)?$/.test(pathname),
+  [selectPathname], pathname => /^\/(?:discover\/subscribed(\/trending|\/shop|\/recent)?)?$/.test(pathname),
 )
 
 export const selectShowCategoryHeader = createSelector(
