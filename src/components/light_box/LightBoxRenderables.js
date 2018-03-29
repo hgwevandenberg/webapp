@@ -212,6 +212,7 @@ const LightBox = ({
   queuePostIdsArray,
   queueOffsetX,
   advance,
+  advanceDirections,
   loading,
   loaded,
   showOffsetTransition,
@@ -228,18 +229,22 @@ const LightBox = ({
         <DismissButtonLGReverse
           onClick={close}
         />
-        <button
-          className={`prev ${navButtonStyle}`}
-          onClick={() => { advance('prev') }}
-        >
-          Previous
-        </button>
-        <button
-          className={`next ${navButtonStyle}`}
-          onClick={() => { advance('next') }}
-        >
-          Next
-        </button>
+        {advanceDirections.prev &&
+          <button
+            className={`prev ${navButtonStyle}`}
+            onClick={() => { advance('prev') }}
+          >
+            Previous
+          </button>
+        }
+        {advanceDirections.next &&
+          <button
+            className={`next ${navButtonStyle}`}
+            onClick={() => { advance('next') }}
+          >
+            Next
+          </button>
+        }
         <div className={`LightBox ${loading ? 'loading' : ''}${loaded ? 'loaded' : ''}`}>
           {postIdToSet &&
             <div className={`${postLightBoxContainerStyle} controls-holder`}>
@@ -300,6 +305,7 @@ const propTypes = {
   queuePostIdsArray: PropTypes.array,
   queueOffsetX: PropTypes.number.isRequired,
   advance: PropTypes.func.isRequired,
+  advanceDirections: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
   loaded: PropTypes.bool.isRequired,
   showOffsetTransition: PropTypes.bool.isRequired,

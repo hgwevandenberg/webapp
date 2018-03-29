@@ -46,6 +46,10 @@ function LightBoxWrapper(WrappedComponent) {
         postIdToSet: null,
         postIdToSetPrev: null,
         postIdToSetNext: null,
+        directionsEnabled: {
+          next: false,
+          prev: false,
+        },
         queuePostIdsArray: null,
         oldestQueuePostId: null,
         newestQueuePostId: null,
@@ -145,13 +149,17 @@ function LightBoxWrapper(WrappedComponent) {
         if (existingItemIndex !== null) {
           let prevIndex = existingItemIndex - 1
           let nextIndex = existingItemIndex + 1
+          let isPrevEnabled = true
+          let isNextEnabled = true
 
           if (existingItemIndex === 0) {
             prevIndex = 0
+            isPrevEnabled = false
           }
 
           if (existingItemIndex === (numberItems - 1)) {
             nextIndex = existingItemIndex
+            isNextEnabled = false
           }
 
           const prevItemAssetId = postAssetIdPairs[prevIndex][1]
@@ -165,6 +173,10 @@ function LightBoxWrapper(WrappedComponent) {
               assetIdToSetNext: nextItemAssetId,
               postIdToSetPrev: prevItemPostId,
               postIdToSetNext: nextItemPostId,
+              directionsEnabled: {
+                next: isNextEnabled,
+                prev: isPrevEnabled,
+              },
             })
           }
           const nextPrevSet = {
@@ -172,6 +184,10 @@ function LightBoxWrapper(WrappedComponent) {
             assetIdToSetNext: nextItemAssetId,
             postIdToSetPrev: prevItemPostId,
             postIdToSetNext: nextItemPostId,
+            directionsEnabled: {
+              next: isNextEnabled,
+              prev: isPrevEnabled,
+            },
           }
           return nextPrevSet
         }
@@ -431,6 +447,7 @@ function LightBoxWrapper(WrappedComponent) {
         loaded,
         open,
         showOffsetTransition,
+        directionsEnabled,
         queueOffsetX,
         queuePostIdsArray,
         resize,
@@ -447,6 +464,7 @@ function LightBoxWrapper(WrappedComponent) {
               queuePostIdsArray={queuePostIdsArray}
               queueOffsetX={queueOffsetX}
               advance={direction => this.advance(direction)}
+              advanceDirections={directionsEnabled}
               loading={loading}
               loaded={loaded}
               showOffsetTransition={showOffsetTransition}
