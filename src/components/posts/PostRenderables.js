@@ -684,7 +684,6 @@ export const Post = ({
   isMobile,
   isOwnOriginalPost,
   isOwnPost,
-  isNarrowPostDetail,
   isPostDetail,
   isPostHeaderHidden,
   isRelatedPost,
@@ -720,7 +719,7 @@ export const Post = ({
         status={submissionStatus}
       />
     }
-    {!isNarrowPostDetail &&
+    {isLightBox &&
       <PostBody
         {...{
           author,
@@ -747,7 +746,7 @@ export const Post = ({
         }}
       />
     }
-    {isNarrowPostDetail && !isLightBox &&
+    {!isLightBox &&
       <PostBodyWithLightBox
         {...{
           author,
@@ -761,6 +760,9 @@ export const Post = ({
           isGridMode,
           isPostDetail,
           isRepost,
+          resizeLightBox,
+          toggleLightBox,
+          lightBoxSelectedIdPair,
           post,
           postId,
           repostContent,
@@ -831,7 +833,6 @@ Post.propTypes = {
   isMobile: PropTypes.bool.isRequired,
   isOwnOriginalPost: PropTypes.bool.isRequired,
   isOwnPost: PropTypes.bool.isRequired,
-  isNarrowPostDetail: PropTypes.bool,
   isPostDetail: PropTypes.bool.isRequired,
   isPostHeaderHidden: PropTypes.bool,
   isRelatedPost: PropTypes.bool,

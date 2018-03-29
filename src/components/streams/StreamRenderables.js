@@ -227,28 +227,83 @@ export const artistInviteSubmissionsAsList = (submissionIds, headerText) => {
 }
 
 // POSTS
-export const postsAsGrid = (postIds, columnCount, isPostHeaderHidden) => {
-  const postIdsAsList = postIds.toList()
+// export const postsAsGrid = (postIds, columnCount, isPostHeaderHidden) => {
 
-  const columns = []
-  for (let i = 0; i < columnCount; i += 1) { columns.push([]) }
-  postIdsAsList.forEach((value, index) =>
-    columns[index % columnCount].push(postIdsAsList.get(index)),
-  )
-  return (
-    <div className="Posts asGrid">
-      {columns.map((columnPostIds, i) =>
-        (<div className="Column" key={`column_${i + 1}`}>
-          {columnPostIds.map(id =>
-            (<article className="PostGrid" key={`postsAsGrid_${id}`}>
-              <PostContainer postId={id} isPostHeaderHidden={isPostHeaderHidden} />
-            </article>),
-          )}
-        </div>),
-      )}
-    </div>
-  )
+//   return (
+//     <div className="Posts asGrid">
+//       {columns.map((columnPostIds, i) =>
+//         (<div className="Column" key={`column_${i + 1}`}>
+//           {columnPostIds.map(id =>
+//             (<article className="PostGrid" key={`postsAsGrid_${id}`}>
+//               <PostContainer postId={id} isPostHeaderHidden={isPostHeaderHidden} />
+//             </article>),
+//           )}
+//         </div>),
+//       )}
+//     </div>
+//   )
+// }
+
+class PostsAsGridSimple extends PureComponent { // eslint-disable-line react/no-multi-comp
+  static propTypes = {
+    toggleLightBox: PropTypes.func.isRequired,
+    postIds: PropTypes.object.isRequired,
+    columnCount: PropTypes.number.isRequired,
+    isPostHeaderHidden: PropTypes.bool.isRequired,
+  }
+
+  static defaultProps = {
+    toggleLightBox: null,
+    postIds: null,
+    isPostHeaderHidden: false,
+  }
+
+  render() {
+    const {
+      toggleLightBox,
+      postIds,
+      columnCount,
+      isPostHeaderHidden,
+    } = this.props
+
+    const postIdsAsList = postIds.toList()
+
+    const columns = []
+    for (let i = 0; i < columnCount; i += 1) { columns.push([]) }
+    postIdsAsList.forEach((value, index) =>
+      columns[index % columnCount].push(postIdsAsList.get(index)),
+    )
+
+    return (
+      <div className="Posts asGrid">
+        {columns.map((columnPostIds, i) =>
+          (<div className="Column" key={`column_${i + 1}`}>
+            {columnPostIds.map(id =>
+              (<article className="PostGrid" key={`postsAsGrid_${id}`}>
+                <PostContainer
+                  postId={id}
+                  isPostHeaderHidden={isPostHeaderHidden}
+                  toggleLightBox={toggleLightBox}
+                />
+              </article>),
+            )}
+          </div>),
+        )}
+      </div>
+    )
+  }
 }
+
+// wrap posts grid in LightBox factory
+const PostsAsGrid = withLightBoxContainer(PostsAsGridSimple)
+
+export const postsAsGrid = (postIds, columnCount, isPostHeaderHidden) => (
+  <PostsAsGrid
+    columnCount={columnCount}
+    postIds={postIds}
+    isPostHeaderHidden={isPostHeaderHidden}
+  />
+)
 
 class PostsAsListSimple extends PureComponent { // eslint-disable-line react/no-multi-comp
   static propTypes = {

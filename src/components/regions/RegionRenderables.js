@@ -6,7 +6,7 @@ import ImageRegion, { getTempAssetId } from '../regions/ImageRegion'
 import TextRegion from '../regions/TextRegion'
 import { isIOS } from '../../lib/jello'
 
-function handleStaticImageRegionClick(event, assetId, postId, toggleLightBox) {
+function handleImageRegionClick(event, assetId, postId, toggleLightBox) {
   const buyButtonClick = event.target.classList.contains('ElloBuyButton')
 
   if (!buyButtonClick && toggleLightBox) {
@@ -127,8 +127,8 @@ export class RegionItems extends PureComponent {
               isLightBoxSelected={isLightBox ? this.getLightBoxSelected(assetId) : null}
               resizeLightBoxImage={resizeLightBox}
               shouldUseVideo={!!(asset && asset.getIn(['attachment', 'video', 'url'], null)) && !isIOS() && !isPostDetail}
-              handleStaticImageRegionClick={
-                event => handleStaticImageRegionClick(event, assetId, postId, toggleLightBox)
+              handleImageRegionClick={
+                event => handleImageRegionClick(event, assetId, postId, toggleLightBox)
               }
             />,
           )
