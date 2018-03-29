@@ -40,16 +40,16 @@ function LightBoxWrapper(WrappedComponent) {
         loading: true,
         loaded: false,
         direction: null,
+        directionsEnabled: {
+          next: false,
+          prev: false,
+        },
         assetIdToSet: null,
         assetIdToSetPrev: null,
         assetIdToSetNext: null,
         postIdToSet: null,
         postIdToSetPrev: null,
         postIdToSetNext: null,
-        directionsEnabled: {
-          next: false,
-          prev: false,
-        },
         queuePostIdsArray: null,
         oldestQueuePostId: null,
         newestQueuePostId: null,
@@ -320,7 +320,8 @@ function LightBoxWrapper(WrappedComponent) {
     handleMaskClick(e) {
       if (e.target.nodeName !== 'IMG' &&
         e.target.nodeName !== 'VIDEO' &&
-        e.target.nodeName !== 'BUTTON') {
+        e.target.nodeName !== 'BUTTON' &&
+        e.target.classList.value.contains('PostTool')) {
         return this.close()
       }
       return null
