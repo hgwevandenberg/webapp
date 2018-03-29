@@ -158,7 +158,26 @@ const postsListLightBoxStyle = css(
   ),
 )
 
-const lightBoxControlsStyle = css(
+const navButtonStyle = css(
+  s.fixed,
+  s.wv40,
+  s.hv40,
+  s.zIndex2,
+  {
+    top: 'calc(50% - 20px)',
+    left: 20,
+    backgroundColor: 'blue',
+  },
+
+  select('&.next',
+    {
+      left: 'auto',
+      right: 20,
+    },
+  ),
+)
+
+const postLightBoxContainerStyle = css(
   s.fixed,
   s.block,
   s.fullWidth,
@@ -192,6 +211,7 @@ const LightBox = ({
   postIdToSet,
   queuePostIdsArray,
   queueOffsetX,
+  advance,
   loading,
   loaded,
   showOffsetTransition,
@@ -208,19 +228,28 @@ const LightBox = ({
         <DismissButtonLGReverse
           onClick={close}
         />
+        <button
+          className={`prev ${navButtonStyle}`}
+          onClick={() => { advance('prev') }}
+        >
+          Previous
+        </button>
+        <button
+          className={`next ${navButtonStyle}`}
+          onClick={() => { advance('next') }}
+        >
+          Next
+        </button>
         <div className={`LightBox ${loading ? 'loading' : ''}${loaded ? 'loaded' : ''}`}>
-          <div className={`${lightBoxControlsStyle} controls-holder`}>
-            {postIdToSet &&
+          {postIdToSet &&
+            <div className={`${postLightBoxContainerStyle} controls-holder`}>
               <PostLightBoxContainer
-                key={`lightBoxPostControls_${postIdToSet}`}
+                className="controls"
                 postId={postIdToSet}
                 resizeLightBox={resize}
               />
-            }
-            <div className="controls">
-              I am light box controls
             </div>
-          </div>
+          }
           <div
             className={`LightBoxQueue${showOffsetTransition ? ' transition' : ''}`}
             style={{ transform: `translateX(${queueOffsetX}px)` }}
@@ -270,6 +299,7 @@ const propTypes = {
   ]).isRequired,
   queuePostIdsArray: PropTypes.array,
   queueOffsetX: PropTypes.number.isRequired,
+  advance: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
   loaded: PropTypes.bool.isRequired,
   showOffsetTransition: PropTypes.bool.isRequired,

@@ -446,6 +446,7 @@ function LightBoxWrapper(WrappedComponent) {
               postIdToSet={this.state.postIdToSet}
               queuePostIdsArray={queuePostIdsArray}
               queueOffsetX={queueOffsetX}
+              advance={direction => this.advance(direction)}
               loading={loading}
               loaded={loaded}
               showOffsetTransition={showOffsetTransition}
