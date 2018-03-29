@@ -11,7 +11,7 @@ const baseLightBoxStyle = css(
   s.block,
   s.relative,
   s.bgcF2,
-  s.zIndex1,
+  s.zIndex3,
   { margin: '0 auto' },
   select(
     '> .LightBoxMask',
@@ -162,7 +162,7 @@ const navButtonStyle = css(
   s.fixed,
   s.wv40,
   s.hv40,
-  s.zIndex2,
+  s.zIndex4,
   {
     top: 'calc(50% - 20px)',
     left: 20,
@@ -181,7 +181,7 @@ const postLightBoxContainerStyle = css(
   s.fixed,
   s.block,
   s.fullWidth,
-  s.zIndex2,
+  s.zIndex4,
   {
     bottom: 0,
     left: 0,
