@@ -268,6 +268,7 @@ const LightBox = ({
                 postId={postId}
                 isPostHeaderHidden
                 isLightBox
+                isNarrowPostDetail={false}
                 lightBoxSelectedIdPair={lightBoxSelectedIdPair}
                 resizeLightBox={resize}
                 toggleLightBox={handleImageClick}

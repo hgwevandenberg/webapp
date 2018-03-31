@@ -103,7 +103,7 @@ export function makeMapStateToProps() {
       artistInviteSubmission: selectPostArtistInviteSubmission(state, props),
       isCommentsRequesting: selectPostIsCommentsRequesting(state, props),
       showCategoryHeader: selectShowCategoryHeader(state, props),
-      isGridMode: selectPostIsGridMode(state, props),
+      isGridMode: !props.isLightBox && selectPostIsGridMode(state, props),
       isLoggedIn: selectIsLoggedIn(state),
       isMobile: selectIsMobile(state),
       isOwnOriginalPost: selectPostIsOwnOriginal(state, props),
@@ -392,7 +392,6 @@ class PostContainer extends Component {
       dispatch(watchPost(post))
     }
   }
-
 
   onCloseModal = () => {
     const { dispatch } = this.props

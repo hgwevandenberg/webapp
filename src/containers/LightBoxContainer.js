@@ -275,32 +275,36 @@ function LightBoxWrapper(WrappedComponent) {
       const postSideBar = document.getElementsByClassName('PostSideBar')
       const assetInDom = document.getElementById(assetDomId)
 
-      // determine scroll offset of asset in dom
-      let assetInDomTopOffset = null
-      if (postSideBar.length) { // post detail view (scrolling inner-div needs different treatement)
-        if (commentsStream) {
-          assetInDomTopOffset = assetInDom.getBoundingClientRect().top + postSideBar[0].scrollTop
+      if (assetInDom) {
+        // determine scroll offset of asset in dom
+        let assetInDomTopOffset = null
+        // post detail view (scrolling inner-div needs different treatement)
+        if (postSideBar.length) {
+          if (commentsStream) {
+            assetInDomTopOffset = assetInDom.getBoundingClientRect().top + postSideBar[0].scrollTop
+          } else {
+            assetInDomTopOffset = assetInDom.getBoundingClientRect().top + postList[0].scrollTop
+          }
         } else {
-          assetInDomTopOffset = assetInDom.getBoundingClientRect().top + postList[0].scrollTop
+          assetInDomTopOffset = assetInDom.getBoundingClientRect().top + window.scrollY
         }
-      } else {
-        assetInDomTopOffset = assetInDom.getBoundingClientRect().top + window.scrollY
-      }
 
-      // adjust scroll offset for window height / nav bar
-      const windowHeight = window.innerHeight
-      const offsetPadding = (windowHeight / 10)
-      const scrollToOffset = (assetInDomTopOffset - offsetPadding)
+        // adjust scroll offset for window height / nav bar
+        const windowHeight = window.innerHeight
+        const offsetPadding = (windowHeight / 10)
+        const scrollToOffset = (assetInDomTopOffset - offsetPadding)
 
-      // scroll to new position
-      if (postList.length && postSideBar.length) { // post detail view
-        let scrollElement = postList[0]
-        if (commentsStream) {
-          scrollElement = postSideBar[0]
+        // scroll to new position
+        if (postList.length && postSideBar.length) { // post detail view
+          let scrollElement = postList[0]
+          if (commentsStream) {
+            scrollElement = postSideBar[0]
+          }
+          return scrollToPosition(0, scrollToOffset, { el: scrollElement, duration: 0 })
         }
-        return scrollToPosition(0, scrollToOffset, { el: scrollElement, duration: 0 })
+        return scrollToPosition(0, scrollToOffset, { duration: 0 }) // stream container view
       }
-      return scrollToPosition(0, scrollToOffset, { duration: 0 }) // stream container view
+      return null
     }
 
     close() {
@@ -321,7 +325,7 @@ function LightBoxWrapper(WrappedComponent) {
       if (e.target.nodeName !== 'IMG' &&
         e.target.nodeName !== 'VIDEO' &&
         e.target.nodeName !== 'BUTTON' &&
-        e.target.classList.value.contains('PostTool')) {
+        !e.target.classList.contains('PostTool')) {
         return this.close()
       }
       return null
