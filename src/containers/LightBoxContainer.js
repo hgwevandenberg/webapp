@@ -10,6 +10,7 @@ import { setIsLightBoxActive } from '../actions/gui'
 import {
   selectPostsAssetIds,
 } from '../selectors/light_box'
+import { selectPostIsGridMode } from '../selectors/post'
 import { scrollToPosition } from '../lib/jello'
 import LightBox from '../components/light_box/LightBoxRenderables'
 import { SHORTCUT_KEYS } from '../constants/application_types'
@@ -24,6 +25,7 @@ function LightBoxWrapper(WrappedComponent) {
       innerWidth: PropTypes.number,
       commentIds: PropTypes.object, // for comment stream
       postAssetIdPairs: PropTypes.array, // post/asset id pairs
+      isGridMode: PropTypes.bool.isRequired,
     }
 
     static defaultProps = {
@@ -88,8 +90,11 @@ function LightBoxWrapper(WrappedComponent) {
         }
       }
 
-      const slideDelay = !prevState.open ? 200 : 100
-      const transitionDelay = 200
+      let slideDelay = 100
+      if (!prevState.open) {
+        slideDelay = this.props.isGridMode ? 1000 : 200
+      }
+      const transitionDelay = (!prevState.open && this.props.isGridMode) ? 850 : 200
 
       // update the DOM post Ids array and move the queue to the select item
       if (this.state.open &&
@@ -386,7 +391,7 @@ function LightBoxWrapper(WrappedComponent) {
     }
 
     removeLoadingClass() {
-      const transitionDelay = 200
+      const setLodedDelay = 200
 
       this.setState({
         loading: false,
@@ -396,7 +401,7 @@ function LightBoxWrapper(WrappedComponent) {
         this.setState({
           loaded: true,
         })
-      }, transitionDelay)
+      }, setLodedDelay)
     }
 
     bindKeys(unbind) {
@@ -498,6 +503,7 @@ function LightBoxWrapper(WrappedComponent) {
         innerHeight: selectInnerHeight(state),
         innerWidth: selectInnerWidth(state),
         postAssetIdPairs: selectPostsAssetIds(state, props),
+        isGridMode: selectPostIsGridMode(state, props),
       })
   }
 
