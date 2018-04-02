@@ -62,6 +62,7 @@ const imageRegionStyle = select(
   '> .ImageRegion',
   s.inlineBlock,
   s.relative,
+  s.pb20,
   {
     margin: 0,
     marginLeft: 40,

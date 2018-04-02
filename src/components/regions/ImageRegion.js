@@ -7,7 +7,7 @@ import classNames from 'classnames'
 import ImageAsset from '../assets/ImageAsset'
 import VideoAsset from '../assets/VideoAsset'
 import { ElloBuyButton } from '../editor/ElloBuyButton'
-import { css, select } from '../../styles/jss'
+import { css, select, hover } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
 const STATUS = {
@@ -20,6 +20,12 @@ const STATUS = {
 const imageRegionStyle = css(
   s.inlineBlock,
   s.center,
+
+  hover(
+    select('& .lightbox-trigger',
+      s.opacity1,
+    ),
+  ),
 )
 
 const streamImageStyle = css(
@@ -67,10 +73,13 @@ const lightBoxTriggerStyle = css(
   s.wv40,
   s.hv40,
   s.zIndex1,
+  s.opacity0,
+  s.transitionOpacity,
   {
     top: 10,
     right: 10,
     borderRadius: 40,
+    transitionDelay: '350ms',
     backgroundColor: 'blue',
   },
   select(
@@ -321,7 +330,7 @@ class ImageRegion extends PureComponent {
       }
     }
 
-    const innerHeightPadded = (window.innerHeight - padding)
+    const innerHeightPadded = (window.innerHeight - padding - 20)
     const innerWidthPadded = (viewportWidth - (padding * paddingMultiplier))
 
     const innerRatio = innerWidthPadded / innerHeightPadded
@@ -525,7 +534,7 @@ class ImageRegion extends PureComponent {
         </Link>
         {!isLightBoxImage &&
           <button
-            className={`${lightBoxTriggerStyle}${hasBuyButton ? ' with-buy' : ''}`}
+            className={`${lightBoxTriggerStyle} lightbox-trigger${hasBuyButton ? ' with-buy' : ''}`}
           >
             Open Lightbox
           </button>
