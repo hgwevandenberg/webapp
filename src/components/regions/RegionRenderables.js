@@ -122,7 +122,6 @@ export class RegionItems extends PureComponent {
               innerHeight={innerHeight}
               isComment={isComment}
               isGridMode={isGridMode}
-              isPostDetail={isPostDetail}
               isLightBoxImage={isLightBox}
               isLightBoxSelected={isLightBox ? this.getLightBoxSelected(assetId) : null}
               resizeLightBoxImage={resizeLightBox}

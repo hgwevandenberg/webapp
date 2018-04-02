@@ -68,10 +68,14 @@ const lightBoxTriggerStyle = css(
   s.hv40,
   s.zIndex1,
   {
-    top: 20,
-    right: 20,
+    top: 10,
+    right: 10,
     backgroundColor: 'blue',
   },
+  select(
+    '&.with-buy',
+    { right: 60 },
+  ),
 )
 
 // export to re-use this wonky image url parser
@@ -96,7 +100,6 @@ class ImageRegion extends PureComponent {
     detailPath: PropTypes.string.isRequired,
     isComment: PropTypes.bool,
     isPostBody: PropTypes.bool,
-    isPostDetail: PropTypes.bool,
     isGridMode: PropTypes.bool.isRequired,
     isNotification: PropTypes.bool,
     isLightBoxImage: PropTypes.bool,
@@ -117,7 +120,6 @@ class ImageRegion extends PureComponent {
     isComment: false,
     isNotification: false,
     isPostBody: true,
-    isPostDetail: false,
     isGridMode: false,
     isLightBoxImage: false,
     isLightBoxSelected: false,
@@ -374,8 +376,6 @@ class ImageRegion extends PureComponent {
       content,
       isLightBoxImage,
       isPostBody,
-      isPostDetail,
-      isGridMode,
       isLightBoxSelected,
     } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
@@ -391,8 +391,6 @@ class ImageRegion extends PureComponent {
         onLoadSuccess={this.onLoadSuccess}
         role="presentation"
         isPostBody={isPostBody}
-        isPostDetail={isPostDetail}
-        isGridMode={isGridMode}
         srcSet={srcset}
         src={this.attachment.getIn(['hdpi', 'url'])}
         style={isLightBoxImage ? { width: scaledImageWidth, height: scaledImageHeight } : null}
@@ -411,8 +409,6 @@ class ImageRegion extends PureComponent {
       isNotification,
       isLightBoxImage,
       isPostBody,
-      isPostDetail,
-      isGridMode,
       isLightBoxSelected,
     } = this.props
     const attrs = { src: content.get('url') }
@@ -432,8 +428,6 @@ class ImageRegion extends PureComponent {
         onLoadSuccess={this.onLoadSuccess}
         role="presentation"
         isPostBody={isPostBody}
-        isPostDetail={isPostDetail}
-        isGridMode={isGridMode}
         style={isLightBoxImage ? { width: scaledImageWidth, height: scaledImageHeight } : null}
         onScreenDimensions={
           isPostBody ?
@@ -451,8 +445,6 @@ class ImageRegion extends PureComponent {
       content,
       isLightBoxImage,
       isPostBody,
-      isPostDetail,
-      isGridMode,
       isLightBoxSelected,
     } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
@@ -466,8 +458,6 @@ class ImageRegion extends PureComponent {
         onLoadSuccess={this.onLoadSuccess}
         role="presentation"
         isPostBody={isPostBody}
-        isPostDetail={isPostDetail}
-        isGridMode={isGridMode}
         src={this.attachment.getIn(['optimized', 'url'])}
         style={isLightBoxImage ? { width: scaledImageWidth, height: scaledImageHeight } : null}
         onScreenDimensions={
@@ -483,8 +473,6 @@ class ImageRegion extends PureComponent {
     const {
       isLightBoxImage,
       isPostBody,
-      isPostDetail,
-      isGridMode,
       isLightBoxSelected,
     } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
@@ -497,8 +485,6 @@ class ImageRegion extends PureComponent {
         height={dimensions.height}
         width={dimensions.width}
         isPostBody={isPostBody}
-        isPostDetail={isPostDetail}
-        isGridMode={isGridMode}
         src={this.attachment.getIn(['video', 'url'])}
         style={isLightBoxImage ? { width: scaledImageWidth, height: scaledImageHeight } : null}
         onScreenDimensions={
@@ -526,6 +512,8 @@ class ImageRegion extends PureComponent {
 
   renderRegionAsLink() {
     const { buyLinkURL, detailPath, isLightBoxImage } = this.props
+    const hasBuyButton = buyLinkURL && buyLinkURL.length && !isLightBoxImage
+
     return (
       <div
         className="RegionContent"
@@ -536,15 +524,13 @@ class ImageRegion extends PureComponent {
         </Link>
         {!isLightBoxImage &&
           <button
-            className={lightBoxTriggerStyle}
+            className={`${lightBoxTriggerStyle}${hasBuyButton ? ' with-buy' : ''}`}
           >
             Open Lightbox
           </button>
         }
-        {
-          buyLinkURL && buyLinkURL.length && !isLightBoxImage ?
-            <ElloBuyButton to={buyLinkURL} /> :
-            null
+        {hasBuyButton &&
+          <ElloBuyButton to={buyLinkURL} />
         }
       </div>
     )
