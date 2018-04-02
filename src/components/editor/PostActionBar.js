@@ -9,9 +9,16 @@ import {
   ReplyAllIcon,
   XIconLG,
 } from '../assets/Icons'
+import CategoryPostSelector from './CategoryPostSelector'
 import { openModal, closeModal } from '../../actions/modals'
-import { updateBuyLink } from '../../actions/editor'
+import { updateBuyLink, updateCategoryId, clearCategoryId } from '../../actions/editor'
 import BuyLinkDialog from '../dialogs/BuyLinkDialog'
+import {
+  selectSubscribedCategories,
+  selectUnsubscribedCategories,
+  selectFeaturedInCategories,
+  selectPostSelectedCategories,
+} from '../../selectors/categories'
 import { css, disabled, hover, media, modifier, parent, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
@@ -104,6 +111,15 @@ const labelStyle = css(
 )
 const hide = css(s.hide)
 
+function mapStateToProps(state, props) {
+  return {
+    subscribedCategories: selectSubscribedCategories(state, props),
+    featuredInCategories: selectFeaturedInCategories(state, props),
+    unsubscribedCategories: selectUnsubscribedCategories(state, props),
+    selectedCategories: selectPostSelectedCategories(state, props),
+  }
+}
+
 class PostActionBar extends Component {
 
   static propTypes = {
@@ -117,6 +133,11 @@ class PostActionBar extends Component {
     replyAllAction: PropTypes.func,
     submitAction: PropTypes.func.isRequired,
     submitText: PropTypes.string.isRequired,
+    postIntoCategory: PropTypes.bool.isRequired,
+    subscribedCategories: PropTypes.array.isRequired,
+    selectedCategories: PropTypes.array.isRequired,
+    featuredInCategories: PropTypes.array.isRequired,
+    unsubscribedCategories: PropTypes.array.isRequired,
   }
 
   static defaultProps = {
@@ -134,6 +155,16 @@ class PostActionBar extends Component {
   onCloseModal = () => {
     const { dispatch } = this.props
     dispatch(closeModal())
+  }
+
+  onSelectCategory = (category) => {
+    const { dispatch, editorId } = this.props
+    dispatch(updateCategoryId(editorId, category.get('id')))
+  }
+
+  onClearCategory = () => {
+    const { dispatch, editorId } = this.props
+    dispatch(clearCategoryId(editorId))
   }
 
   submitted = () => {
@@ -169,7 +200,18 @@ class PostActionBar extends Component {
   }
 
   render() {
-    const { disableSubmitAction, hasMedia, replyAllAction, submitText, editorId } = this.props
+    const {
+      disableSubmitAction,
+      hasMedia,
+      replyAllAction,
+      submitText,
+      editorId,
+      postIntoCategory,
+      subscribedCategories,
+      selectedCategories,
+      featuredInCategories,
+      unsubscribedCategories,
+    } = this.props
     const isBuyLinked = this.props.buyLink && this.props.buyLink.length
     return (
       <div className={wrapperStyle} id={editorId}>
@@ -194,6 +236,16 @@ class PostActionBar extends Component {
               <MoneyIconCircle />
             </div>
           </button>
+          {postIntoCategory &&
+            <CategoryPostSelector
+              onSelect={this.onSelectCategory}
+              onClear={this.onClearCategory}
+              subscribedCategories={subscribedCategories}
+              featuredInCategories={featuredInCategories}
+              unsubscribedCategories={unsubscribedCategories}
+              selectedCategories={selectedCategories}
+            />
+          }
           {replyAllAction &&
             <button className={`PostActionButton forReplyAll ${buttonStyle}`} onClick={replyAllAction}>
               <div className={buttonContentsStyle}>
@@ -243,5 +295,5 @@ class PostActionBar extends Component {
   }
 }
 
-export default connect()(PostActionBar)
+export default connect(mapStateToProps)(PostActionBar)
 

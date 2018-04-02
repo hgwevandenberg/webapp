@@ -19,6 +19,7 @@ const initialState = Immutable.Map({
   postBuyLink: null,
   shouldPersist: false,
   uid: 0,
+  categoryIds: [],
 })
 
 methods.getCompletions = (action) => {
@@ -207,6 +208,11 @@ methods.updateBuyLink = (state, action) => {
   return updatedState
 }
 
+methods.updateCategoryIds = (state, action) => {
+  const { payload: { categoryIds } } = action
+  return state.set('categoryIds', categoryIds)
+}
+
 methods.getEditorObject = (state = initialState, action) => {
   switch (action.type) {
     case EDITOR.ADD_ARTIST_INVITE:
@@ -282,6 +288,8 @@ methods.getEditorObject = (state = initialState, action) => {
       })
     case EDITOR.UPDATE_BUY_LINK:
       return methods.updateBuyLink(state, action)
+    case EDITOR.UPDATE_CATEGORY_IDS:
+      return methods.updateCategoryIds(state, action)
     case EDITOR.UPDATE_BLOCK:
       return methods.updateBlock(state, action).set('isPosting', false)
     default:
