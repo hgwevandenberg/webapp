@@ -70,6 +70,7 @@ const lightBoxTriggerStyle = css(
   {
     top: 10,
     right: 10,
+    borderRadius: 40,
     backgroundColor: 'blue',
   },
   select(

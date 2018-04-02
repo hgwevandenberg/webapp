@@ -91,10 +91,13 @@ function LightBoxWrapper(WrappedComponent) {
       }
 
       let slideDelay = 100
+      let transitionDelay = 200
       if (!prevState.open) {
-        slideDelay = this.props.isGridMode ? 1000 : 200
+        slideDelay = this.props.isGridMode ? 1250 : 200
       }
-      const transitionDelay = (!prevState.open && this.props.isGridMode) ? 850 : 200
+      if (this.props.isGridMode) {
+        transitionDelay = !prevState.open ? 1250 : 500
+      }
 
       // update the DOM post Ids array and move the queue to the select item
       if (this.state.open &&

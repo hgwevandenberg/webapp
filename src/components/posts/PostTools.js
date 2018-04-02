@@ -512,6 +512,14 @@ export class PostToolsLightBox extends PureComponent {
         />,
       )
     }
+    if (author.get('hasSharingEnabled')) {
+      cells.push(
+        <ShareTool
+          isLoggedIn={isLoggedIn}
+          key={`ShareTool_${postId}`}
+        />,
+      )
+    }
     cells.push(
       <ViewsTool
         detailPath={detailPath}
@@ -522,17 +530,8 @@ export class PostToolsLightBox extends PureComponent {
       />,
     )
 
-    if (author.get('hasSharingEnabled')) {
-      cells.push(
-        <ShareTool
-          isLoggedIn={isLoggedIn}
-          key={`ShareTool_${postId}`}
-        />,
-      )
-    }
-
     return (
-      <header className={classNames('PostTools', { isCommentsRequesting })}>
+      <header className={classNames('PostTools with-lightbox', { isCommentsRequesting })}>
         {cells}
       </header>
     )

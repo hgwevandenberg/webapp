@@ -166,6 +166,7 @@ const navButtonStyle = css(
   {
     top: 'calc(50% - 20px)',
     left: 20,
+    borderRadius: 40,
     backgroundColor: 'blue',
   },
 
@@ -185,12 +186,16 @@ const postLightBoxContainerStyle = css(
   {
     bottom: 0,
     left: 0,
-    height: 50,
-    backgroundColor: 'yellow',
   },
 
-  select('& .controls',
+  select('& .PostTools.with-lightbox',
+    s.block,
+    s.relative,
+    s.fullWidth,
+    s.p20,
     {
+      margin: '0 auto',
+      maxWidth: 450,
       backgroundColor: 'pink',
     },
   ),
@@ -249,7 +254,6 @@ const LightBox = ({
           {postIdToSet &&
             <div className={`${postLightBoxContainerStyle} controls-holder`}>
               <PostLightBoxContainer
-                className="controls"
                 postId={postIdToSet}
                 resizeLightBox={resize}
               />

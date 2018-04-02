@@ -166,10 +166,23 @@
   border-color: #000;
 }
 
+.PostTools.with-lightbox .ViewsTool {
+  position: absolute;
+  top: 19px;
+  right: 10px;
+}
+
 .ShareTool {
   position: absolute;
   top: 19px;
   right: -10px;
+}
+
+.PostTools.with-lightbox .ShareTool {
+  position: relative;
+  top: auto;
+  right: auto;
+  display: inline-block;
 }
 
 .ShareTool .Hint {
