@@ -193,11 +193,13 @@ const postLightBoxContainerStyle = css(
     s.block,
     s.relative,
     s.fullWidth,
-    s.p20,
+    s.pt20,
+    s.pb20,
+    s.pl10,
+    s.pr10,
     {
       margin: '0 auto',
-      maxWidth: 450,
-      backgroundColor: 'pink',
+      maxWidth: 475,
     },
   ),
 )
