@@ -1,6 +1,11 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 
+function filterSearch(categories, searchText) {
+  if (searchText === '') { return categories }
+  return categories.filter(c => c.get('name').toLowerCase().includes(searchText.toLowerCase()))
+}
+
 export default class CategoryPostSelector extends PureComponent {
   static propTypes = {
     onSelect: PropTypes.func.isRequired,
@@ -11,11 +16,36 @@ export default class CategoryPostSelector extends PureComponent {
     selectedCategories: PropTypes.array.isRequired,
   }
 
+  constructor(props) {
+    super(props)
+    const { subscribedCategories, unsubscribedCategories } = props
+    this.state = { subscribedCategories, unsubscribedCategories, searchText: '' }
+  }
+
   componentDidMount() {
     const { onSelect, featuredInCategories } = this.props
     if (featuredInCategories.length > 0) {
       onSelect(featuredInCategories[0])
     }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { subscribedCategories, unsubscribedCategories } = nextProps
+    const { searchText } = this.state
+    this.setState({
+      subscribedCategories: filterSearch(subscribedCategories, searchText),
+      unsubscribedCategories: filterSearch(unsubscribedCategories, searchText),
+    })
+  }
+
+  onSearch = (event) => {
+    const searchText = event.target.value
+    const { subscribedCategories, unsubscribedCategories } = this.props
+    this.setState({
+      searchText,
+      subscribedCategories: filterSearch(subscribedCategories, searchText),
+      unsubscribedCategories: filterSearch(unsubscribedCategories, searchText),
+    })
   }
 
   categoryItem = (category) => {
@@ -30,12 +60,20 @@ export default class CategoryPostSelector extends PureComponent {
   }
 
   render() {
-    const { subscribedCategories, unsubscribedCategories, selectedCategories, onClear } = this.props
+    const { selectedCategories, onClear } = this.props
+    const { subscribedCategories, unsubscribedCategories, searchText } = this.state
     // Everything except this component could support multiple categories, but for now
     // we can assume there is only one selected category per post.
     const selectedCategory = selectedCategories[0]
     return (
       <div>
+        {!selectedCategory &&
+          <input
+            type="search"
+            value={searchText}
+            onChange={this.onSearch}
+          />
+        }
         {selectedCategory &&
           <div>
             <p>{selectedCategory.get('name')}</p>
