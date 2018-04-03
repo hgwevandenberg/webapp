@@ -5,6 +5,7 @@ import Mousetrap from 'mousetrap'
 import {
   selectInnerHeight,
   selectInnerWidth,
+  selectIsLightBoxActive,
 } from '../selectors/gui'
 import { setIsLightBoxActive } from '../actions/gui'
 import {
@@ -26,6 +27,7 @@ function LightBoxWrapper(WrappedComponent) {
       commentIds: PropTypes.object, // for comment stream
       postAssetIdPairs: PropTypes.array, // post/asset id pairs
       isGridMode: PropTypes.bool.isRequired,
+      isLightBoxActive: PropTypes.bool.isRequired,
     }
 
     static defaultProps = {
@@ -71,7 +73,11 @@ function LightBoxWrapper(WrappedComponent) {
       // set keybindings
       if (!prevState.open && this.state.open) {
         this.bindKeys()
-        this.props.dispatch(setIsLightBoxActive({ isActive: true }))
+        if (!this.props.isLightBoxActive) {
+          if (!this.props.isLightBoxActive) {
+            this.props.dispatch(setIsLightBoxActive({ isActive: true }))
+          }
+        }
       }
 
       // might need to shift the queue left/right if we've added/removed new posts
@@ -133,7 +139,9 @@ function LightBoxWrapper(WrappedComponent) {
     componentWillUnmount() {
       const releaseKeys = true
       this.bindKeys(releaseKeys)
-      this.props.dispatch(setIsLightBoxActive({ isActive: false }))
+      if (this.props.isLightBoxActive) {
+        this.props.dispatch(setIsLightBoxActive({ isActive: false }))
+      }
     }
 
     getSetPagination(assetId, postId, updateState = true) {
@@ -318,7 +326,9 @@ function LightBoxWrapper(WrappedComponent) {
     close() {
       const releaseKeys = true
       this.bindKeys(releaseKeys)
-      this.props.dispatch(setIsLightBoxActive({ isActive: false }))
+      if (this.props.isLightBoxActive) {
+        this.props.dispatch(setIsLightBoxActive({ isActive: false }))
+      }
 
       return this.setState({
         open: false,
@@ -507,6 +517,7 @@ function LightBoxWrapper(WrappedComponent) {
         innerWidth: selectInnerWidth(state),
         postAssetIdPairs: selectPostsAssetIds(state, props),
         isGridMode: selectPostIsGridMode(state, props),
+        isLightBoxActive: selectIsLightBoxActive(state),
       })
   }
 
