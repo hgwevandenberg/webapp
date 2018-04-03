@@ -34,12 +34,12 @@
   stroke-width: 1;
 }
 
-.PostTool.isLightBox .PostToolValue.isZero {
-  display: none;
-}
-
 .PostTool.isLightBox .Hint {
   top: calc(-100% - 10px);
+}
+
+.PostTool .PostToolValue.isZero {
+  display: none;
 }
 
 .PostTool > a,
@@ -51,18 +51,23 @@
 }
 
 .PostTool.isLightBox > a,
-.PostTool.isLightBox > button {
+.PostTool.isLightBox > button,
+.Posts.asList .PostTool.isLightBox > a,
+.Posts.asList .PostTool.isLightBox > button {
   padding-right: 15px;
   padding-left: 15px;
   margin: 0;
 }
 
-.PostTool > button.hasPostToolDrawer.isNotZero {
+.PostTool > button.hasPostToolDrawer {
   padding-right: 5px;
 }
 
-.PostTool.isLightBox > button.hasPostToolDrawer.isNotZero {
-  padding-right: 10px;
+.PostTool.isLightBox > a.hasPostToolDrawer,
+.PostTool.isLightBox > button.hasPostToolDrawer,
+.Posts.asList .PostTool.isLightBox > a.hasPostToolDrawer,
+.Posts.asList .PostTool.isLightBox > button.hasPostToolDrawer {
+  padding-right: 15px;
 }
 
 .PostTool > button.PostToolDrawerButton {
@@ -91,6 +96,10 @@
 
 /* // Specific tools */
 .CommentTool.PostTool button.isNotZero .PostToolValue {
+  padding-left: 0;
+}
+
+.CommentTool.isLightBox.PostTool button.isNotZero .PostToolValue {
   padding-left: 12px;
 }
 
@@ -371,6 +380,18 @@
   .Posts.asList .PostTool > button {
     padding-right: 12px;
     padding-left: 4px;
+  }
+/*
+  .Posts.asList .PostTool.isLightBox > a,
+  .Posts.asList .PostTool.isLightBox > button {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin: 0;
+  }*/
+
+  .Posts.asList .PostTool > a.hasPostToolDrawer,
+  .Posts.asList .PostTool > button.hasPostToolDrawer {
+    padding-right: 5px;
   }
 
   .Posts.asList .PostTool.EditTool > button,
