@@ -7,6 +7,7 @@ import classNames from 'classnames'
 import ImageAsset from '../assets/ImageAsset'
 import VideoAsset from '../assets/VideoAsset'
 import { ElloBuyButton } from '../editor/ElloBuyButton'
+import { LightBoxTrigger } from '../assets/Icons'
 import { css, select, hover } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
@@ -21,9 +22,20 @@ const imageRegionStyle = css(
   s.inlineBlock,
   s.center,
 
-  hover(
-    select('& .lightbox-trigger',
-      s.opacity1,
+  select('& .ImgHolder',
+    hover(
+      select('& .lightbox-trigger',
+        s.opacity1,
+        { cursor: 'pointer' },
+      ),
+    ),
+  ),
+  select('& .RegionContent',
+    hover(
+      select('& .lightbox-trigger',
+        s.opacity1,
+        { cursor: 'pointer' },
+      ),
     ),
   ),
 )
@@ -70,8 +82,11 @@ const lightBoxImageStyle = css(
 
 const lightBoxTriggerStyle = css(
   s.absolute,
+  s.flex,
   s.wv40,
   s.hv40,
+  s.itemsCenter,
+  s.justifyCenter,
   s.zIndex1,
   s.opacity0,
   s.transitionOpacity,
@@ -80,11 +95,26 @@ const lightBoxTriggerStyle = css(
     right: 10,
     borderRadius: 40,
     transitionDelay: '350ms',
-    backgroundColor: 'blue',
+    backgroundColor: '#000',
   },
   select(
     '&.with-buy',
     { right: 60 },
+  ),
+
+  select('& .text', s.displayNone),
+  select('& .icon',
+    s.block,
+    {
+      width: 18,
+      height: 18,
+    },
+    select('& .LightBoxTrigger',
+      { verticalAlign: 'baseline' },
+      select('& polygon',
+        { fill: '#fff' },
+      ),
+    ),
   ),
 )
 
@@ -540,7 +570,12 @@ class ImageRegion extends PureComponent {
           <button
             className={`${lightBoxTriggerStyle} lightbox-trigger${hasBuyButton ? ' with-buy' : ''}`}
           >
-            Open Lightbox
+            <span className="text">
+              Open Lightbox
+            </span>
+            <span className="icon">
+              <LightBoxTrigger />
+            </span>
           </button>
         }
         {hasBuyButton &&
@@ -554,6 +589,8 @@ class ImageRegion extends PureComponent {
     const { currentImageHeight, currentImageWidth } = this.state
     const { buyLinkURL, isLightBoxImage } = this.props
     const imgHolderClass = isLightBoxImage ? 'ImgHolderLightBox' : 'ImgHolder'
+    const hasBuyButton = buyLinkURL && buyLinkURL.length && !isLightBoxImage
+
     return (
       <div
         className={isLightBoxImage ? lightBoxImageStyle : streamImageStyle}
@@ -564,15 +601,18 @@ class ImageRegion extends PureComponent {
           {this.renderAttachment()}
           {!isLightBoxImage &&
             <button
-              className={lightBoxTriggerStyle}
+              className={`${lightBoxTriggerStyle} lightbox-trigger${hasBuyButton ? ' with-buy' : ''}`}
             >
-              Open Lightbox
+              <span className="text">
+                Open Lightbox
+              </span>
+              <span className="icon">
+                <LightBoxTrigger />
+              </span>
             </button>
           }
-          {
-            buyLinkURL && buyLinkURL.length && !isLightBoxImage ?
-              <ElloBuyButton to={buyLinkURL} /> :
-              null
+          {hasBuyButton &&
+            <ElloBuyButton to={buyLinkURL} />
           }
         </div>
       </div>

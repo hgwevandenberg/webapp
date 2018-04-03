@@ -496,6 +496,34 @@ export const StarIcon = () => (
 )
 
 // -------------------------------------
+// Misc icons
+
+export const LightBoxTrigger = () => (
+  <SVGBox className="LightBoxTrigger" width="18px" height="18px">
+    <g>
+      <polygon points="2.231,6.538 1,6.538 1,1 6.538,1 6.538,2.231 2.231,2.231" />
+    </g>
+    <g>
+      <polygon points="17,6.538 15.769,6.538 15.769,2.231 11.462,2.231 11.462,1 17,1" />
+    </g>
+    <g>
+      <polygon points="6.538,17 1,17 1,11.462 2.231,11.462 2.231,15.769 6.538,15.769" />
+    </g>
+    <g>
+      <polygon points="17,17 11.462,17 11.462,15.769 15.769,15.769 15.769,11.462 17,11.462" />
+    </g>
+  </SVGBox>
+)
+
+export const LightBoxArrow = () => (
+  <SVGIcon className="LightBoxArrow" width="14px" height="13px">
+    <g>
+      <path d="M1,7.111V5.889l9.771-0.001L7.108,2.043c-0.227-0.239-0.227-0.625,0-0.864s0.596-0.239,0.824,0L13,6.5l-5.068,5.322 C7.818,11.941,7.669,12,7.52,12s-0.298-0.059-0.412-0.179c-0.227-0.239-0.227-0.626,0-0.865l3.664-3.846L1,7.111z" />
+    </g>
+  </SVGIcon>
+)
+
+// -------------------------------------
 // RSS icon
 export const RSSIcon = () => (
   <SVGBox className="RSSIcon" size="22">
