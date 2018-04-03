@@ -20,6 +20,7 @@ import {
   selectInnerWidth,
   selectIsGridMode,
   selectIsLayoutToolHidden,
+  selectIsLightBoxActive,
   selectIsNotificationsActive,
   selectIsNotificationsUnread,
   selectIsProfileMenuActive,
@@ -40,6 +41,7 @@ function mapStateToProps(state, props) {
   const areCategoriesSubscribed = selectAreCategoriesSubscribed(state)
   const isUnread = selectIsNotificationsUnread(state) || !selectAnnouncementHasBeenViewed(state)
   const isGridMode = selectIsGridMode(state)
+  const isLightBoxActive = selectIsLightBoxActive(state)
   const deviceSize = selectDeviceSize(state)
 
   if (isLoggedIn) {
@@ -52,6 +54,7 @@ function mapStateToProps(state, props) {
       deviceSize,
       hasLoadMoreButton,
       isGridMode,
+      isLightBoxActive,
       isLayoutToolHidden: selectIsLayoutToolHidden(state, props),
       isLoggedIn,
       isNotificationsActive: selectIsNotificationsActive(state),
@@ -70,6 +73,7 @@ function mapStateToProps(state, props) {
     deviceSize,
     hasLoadMoreButton,
     isGridMode,
+    isLightBoxActive,
     isLoggedIn,
     pathname,
     viewName,
@@ -77,11 +81,11 @@ function mapStateToProps(state, props) {
 }
 
 class NavbarContainer extends PureComponent {
-
   static propTypes = {
     activeTabType: PropTypes.string,
     dispatch: PropTypes.func.isRequired,
     isGridMode: PropTypes.bool.isRequired,
+    isLightBoxActive: PropTypes.bool.isRequired,
     isProfileMenuActive: PropTypes.bool.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
     isNotificationsActive: PropTypes.bool.isRequired,
@@ -262,7 +266,7 @@ class NavbarContainer extends PureComponent {
   }
 
   render() {
-    const { isLoggedIn, innerWidth } = this.props
+    const { isLoggedIn, isLightBoxActive, innerWidth } = this.props
     if (isLoggedIn) {
       return (
         <NavbarLoggedIn
@@ -280,6 +284,7 @@ class NavbarContainer extends PureComponent {
           onDragOverStreamLink={this.onDragOverStreamLink}
           onDropStreamLink={this.onDropStreamLink}
           onLogOut={this.onLogOut}
+          isLightBoxActive={isLightBoxActive}
           innerWidth={innerWidth}
         />
       )

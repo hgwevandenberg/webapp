@@ -381,13 +381,6 @@
     padding-right: 12px;
     padding-left: 4px;
   }
-/*
-  .Posts.asList .PostTool.isLightBox > a,
-  .Posts.asList .PostTool.isLightBox > button {
-    padding-right: 15px;
-    padding-left: 15px;
-    margin: 0;
-  }*/
 
   .Posts.asList .PostTool > a.hasPostToolDrawer,
   .Posts.asList .PostTool > button.hasPostToolDrawer {
