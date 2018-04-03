@@ -97,7 +97,6 @@ export function getTempAssetId(url) {
 }
 
 class ImageRegion extends PureComponent {
-
   static propTypes = {
     postId: PropTypes.string,
     assetId: PropTypes.string,
@@ -111,6 +110,7 @@ class ImageRegion extends PureComponent {
     isComment: PropTypes.bool,
     isPostBody: PropTypes.bool,
     isGridMode: PropTypes.bool.isRequired,
+    isPostDetail: PropTypes.bool.isRequired,
     isNotification: PropTypes.bool,
     isLightBoxImage: PropTypes.bool,
     isLightBoxSelected: PropTypes.bool,
@@ -270,12 +270,16 @@ class ImageRegion extends PureComponent {
   }
 
   getImageSourceSet() {
-    const { isGridMode } = this.props
+    const { isGridMode, isPostDetail, isLightBoxImage } = this.props
     const images = []
     if (!this.isBasicAttachment()) {
       if (isGridMode) {
         images.push(`${this.attachment.getIn(['mdpi', 'url'])} 375w`)
         images.push(`${this.attachment.getIn(['hdpi', 'url'])} 1920w`)
+      } else if (!isPostDetail && isLightBoxImage) {
+        images.push(`${this.attachment.getIn(['mdpi', 'url'])} 180w`)
+        images.push(`${this.attachment.getIn(['hdpi', 'url'])} 750w`)
+        images.push(`${this.attachment.getIn(['xhdpi', 'url'])} 1500w`)
       } else {
         images.push(`${this.attachment.getIn(['mdpi', 'url'])} 180w`)
         images.push(`${this.attachment.getIn(['hdpi', 'url'])} 750w`)
