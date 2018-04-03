@@ -83,10 +83,10 @@ const lightBoxImageStyle = css(
 const lightBoxTriggerStyle = css(
   s.absolute,
   s.flex,
-  s.wv40,
-  s.hv40,
   s.itemsCenter,
   s.justifyCenter,
+  s.wv40,
+  s.hv40,
   s.zIndex1,
   s.opacity0,
   s.transitionOpacity,

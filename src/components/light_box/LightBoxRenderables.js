@@ -6,6 +6,7 @@ import PostContainer from './../../containers/PostContainer'
 import PostLightBoxContainer from './../../containers/PostLightBoxContainer'
 import CommentContainer from './../../containers/CommentContainer'
 import { DismissButtonLGReverse } from './../buttons/Buttons'
+import { LightBoxArrow } from '../assets/Icons'
 
 const baseLightBoxStyle = css(
   s.block,
@@ -161,6 +162,9 @@ const postsListLightBoxStyle = css(
 
 const navButtonStyle = css(
   s.fixed,
+  s.flex,
+  s.itemsCenter,
+  s.justifyCenter,
   s.wv40,
   s.hv40,
   s.zIndex4,
@@ -168,7 +172,7 @@ const navButtonStyle = css(
     top: 'calc(50% - 20px)',
     left: 20,
     borderRadius: 40,
-    backgroundColor: 'blue',
+    backgroundColor: '#000',
   },
 
   select('&.next',
@@ -176,6 +180,28 @@ const navButtonStyle = css(
       left: 'auto',
       right: 20,
     },
+  ),
+
+  // style icon
+  select('& .text', s.displayNone),
+  select('& .icon',
+    s.block,
+    {
+      width: 14,
+      height: 13,
+    },
+    select('& .LightBoxArrow',
+      s.block,
+      { verticalAlign: 'baseline' },
+      select('& path',
+        { fill: '#fff' },
+      ),
+    ),
+  ),
+  select('&.prev',
+    select('& .icon',
+      s.rotate180,
+    ),
   ),
 )
 
@@ -242,7 +268,12 @@ const LightBox = ({
             className={`prev ${navButtonStyle}`}
             onClick={() => { advance('prev') }}
           >
-            Previous
+            <span className="text">
+              Previous
+            </span>
+            <span className="icon">
+              <LightBoxArrow />
+            </span>
           </button>
         }
         {advanceDirections.next &&
@@ -250,7 +281,12 @@ const LightBox = ({
             className={`next ${navButtonStyle}`}
             onClick={() => { advance('next') }}
           >
-            Next
+            <span className="text">
+              Next
+            </span>
+            <span className="icon">
+              <LightBoxArrow />
+            </span>
           </button>
         }
         <div className={`LightBox ${loading ? 'loading' : ''}${loaded ? 'loaded' : ''}`}>
