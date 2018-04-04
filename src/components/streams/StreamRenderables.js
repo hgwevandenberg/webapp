@@ -206,15 +206,13 @@ class ArtistInviteSubmissionsAsGridSimple extends PureComponent { // eslint-disa
 // wrap posts list in LightBox factory
 const ArtistInviteSubmissionsAsGrid = withLightBoxContainer(ArtistInviteSubmissionsAsGridSimple)
 
-export const artistInviteSubmissionsAsGrid = (submissionIds, columnCount, headerText) => {
-  return (
-    <ArtistInviteSubmissionsAsGrid
-      columnCount={columnCount}
-      submissionIds={submissionIds}
-      headerText={headerText}
-    />
-  )
-}
+export const artistInviteSubmissionsAsGrid = (submissionIds, columnCount, headerText) => (
+  <ArtistInviteSubmissionsAsGrid
+    columnCount={columnCount}
+    submissionIds={submissionIds}
+    headerText={headerText}
+  />
+)
 
 // ---------+++++++++++++++++++
 
@@ -383,31 +381,73 @@ const relatedPostsTitleStyle = css(
   s.m20,
   media(s.minBreak4, s.ml40),
 )
-export const postsAsRelated = (postIds, colCount, isPostHeaderHidden) => {
-  const columns = []
-  // this is for post detail when the comments are fixed to the right
-  const columnCount = colCount > 3 ? colCount - 1 : colCount
-  for (let i = 0; i < columnCount; i += 1) { columns.push([]) }
-  postIds.forEach((value, index) => columns[index % columnCount].push(postIds.get(index)))
-  return (
-    <div className="Posts asGrid">
-      {postIds.size &&
-        <h2 className={relatedPostsTitleStyle}>
-          Related Posts
-        </h2>
-      }
-      {columns.map((columnPostIds, i) =>
-        (<div className="Column" key={`column_${i + 1}`}>
-          {columnPostIds.map(id =>
-            (<article className="PostGrid" key={`postsAsGrid_${id}`}>
-              <PostContainer postId={id} isPostHeaderHidden={isPostHeaderHidden} isRelatedPost />
-            </article>),
-          )}
-        </div>),
-      )}
-    </div>
-  )
+
+class PostsAsRelatedSimple extends PureComponent { // eslint-disable-line react/no-multi-comp
+  static propTypes = {
+    toggleLightBox: PropTypes.func.isRequired,
+    postIds: PropTypes.object.isRequired,
+    columnCount: PropTypes.number.isRequired,
+    isPostHeaderHidden: PropTypes.bool.isRequired,
+  }
+
+  static defaultProps = {
+    toggleLightBox: null,
+    postIds: null,
+    isPostHeaderHidden: false,
+  }
+
+  render() {
+    const {
+      toggleLightBox,
+      postIds,
+      columnCount,
+      isPostHeaderHidden,
+    } = this.props
+
+    const columns = []
+
+    // this is for post detail when the comments are fixed to the right
+    const finalColumnCount = columnCount > 3 ? columnCount - 1 : columnCount
+    for (let i = 0; i < finalColumnCount; i += 1) { columns.push([]) }
+
+    postIds.forEach((value, index) => columns[index % finalColumnCount].push(postIds.get(index)))
+
+    return (
+      <div className="Posts asGrid">
+        {postIds.size &&
+          <h2 className={relatedPostsTitleStyle}>
+            Related Posts
+          </h2>
+        }
+        {columns.map((columnPostIds, i) =>
+          (<div className="Column" key={`column_${i + 1}`}>
+            {columnPostIds.map(id =>
+              (<article className="PostGrid" key={`postsAsGrid_${id}`}>
+                <PostContainer
+                  postId={id}
+                  isPostHeaderHidden={isPostHeaderHidden}
+                  isRelatedPost
+                  toggleLightBox={toggleLightBox}
+                />
+              </article>),
+            )}
+          </div>),
+        )}
+      </div>
+    )
+  }
 }
+
+// wrap posts grid in LightBox factory
+const PostsAsRelated = withLightBoxContainer(PostsAsRelatedSimple)
+
+export const postsAsRelated = (postIds, columnCount, isPostHeaderHidden) => (
+  <PostsAsRelated
+    columnCount={columnCount}
+    postIds={postIds}
+    isPostHeaderHidden={isPostHeaderHidden}
+  />
+)
 
 // USERS
 export const usersAsCompact = userIds =>
