@@ -110,7 +110,7 @@ export const selectCategoryTabs = createSelector(
 export const selectAreCategoriesSubscribed = createSelector(
   [selectSubscribedCategoryIds],
   (subscribedIds) => {
-    if (subscribedIds.size > 0) { return true }
+    if (subscribedIds && subscribedIds.size > 0) { return true }
     return false
   })
 
