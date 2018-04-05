@@ -292,6 +292,7 @@ export default function (state, action) {
     case ACTION_TYPES.V3.POST.DETAIL_SUCCESS:
       return parsePostDetail(state, action)
     case ACTION_TYPES.PROFILE.FOLLOW_CATEGORIES_SUCCESS:
+    case ACTION_TYPES.PROFILE.UNFOLLOW_CATEGORIES_SUCCESS:
       return resetSubscribedStreamPagination(state)
     default:
       return state

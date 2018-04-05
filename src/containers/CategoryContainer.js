@@ -11,7 +11,7 @@ import {
 } from '../selectors/categories'
 import { selectSubscribedCategoryIds } from '../selectors/profile'
 import { selectIsLoggedIn } from '../selectors/authentication'
-import { followCategories } from '../actions/profile'
+import { followCategories, unfollowCategories } from '../actions/profile'
 
 function mapStateToProps(state, props) {
   return {
@@ -62,7 +62,7 @@ class CategoryContainer extends Component {
     const { categoryId, dispatch, subscribedIds } = this.props
     e.preventDefault()
     const catIds = subscribedIds.filter(id => id !== categoryId)
-    dispatch(followCategories(catIds, true))
+    dispatch(unfollowCategories(catIds, true))
   }
 
   render() {

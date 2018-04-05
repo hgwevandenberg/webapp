@@ -128,6 +128,7 @@ export default (state = initialState, action) => {
         .set('coverImage', coverImage)
     }
     case PROFILE.FOLLOW_CATEGORIES_SUCCESS:
+    case PROFILE.UNFOLLOW_CATEGORIES_SUCCESS:
       return updateFollowedCategoryIds(state, action)
     case AUTHENTICATION.USER_SUCCESS:
     case AUTHENTICATION.REFRESH_SUCCESS:
