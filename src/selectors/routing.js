@@ -31,12 +31,14 @@ export const selectSubmissionType = state => state.routing.getIn(['location', 's
 
 // props.routing for discover streams
 export function selectDiscoverStream(state, { params: { stream } }) {
-  if (!stream || stream === 'recent' || stream === 'trending') { return 'global' }
+  if (!stream || stream === 'recent' || stream === 'trending' || stream === 'shop') {
+    return 'global'
+  }
   return stream
 }
 export function selectDiscoverStreamKind(state, { params: { stream, kind } }) {
   if (!kind && !stream) { return 'featured' }
-  if (stream === 'recent' || stream === 'trending') { return stream }
+  if (stream === 'recent' || stream === 'trending' || stream === 'shop') { return stream }
   if (!kind) { return 'featured' }
   return kind
 }
@@ -98,11 +100,11 @@ export const selectIsPostDetail = createSelector(
 )
 
 export const selectIsGlobalRoot = createSelector(
-  [selectPathname], pathname => /^\/(?:discover(\/featured|\/recommended|\/trending|\/recent)?)?$/.test(pathname),
+  [selectPathname], pathname => /^\/(?:discover(\/featured|\/recommended|\/trending|\/recent|\/shop)?)?$/.test(pathname),
 )
 
 export const selectIsSubscribedRoot = createSelector(
-  [selectPathname], pathname => /^\/(?:discover\/subscribed(\/trending)?)?$/.test(pathname),
+  [selectPathname], pathname => /^\/(?:discover\/subscribed(\/trending|\/shop|\/recent)?)?$/.test(pathname),
 )
 
 export const selectShowCategoryHeader = createSelector(
