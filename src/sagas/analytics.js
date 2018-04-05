@@ -123,8 +123,19 @@ function* trackEvents() {
         yield put(trackEventAction('user-deleted-account'))
         break
       case ACTION_TYPES.PROFILE.FOLLOW_CATEGORIES_REQUEST:
-        yield put(trackEventAction('Onboarding.Settings.Categories.Completed',
-          { categories: get(action, 'payload.body.followed_category_ids', []).length },
+        if (!get(action, 'payload.body.disable_follows')) { // Onboarding
+          yield put(trackEventAction('Onboarding.Settings.Categories.Completed',
+            { categories: get(action, 'payload.body.followed_category_ids', Immutable.List()).count() },
+          ))
+        } else {
+          yield put(trackEventAction('followed-categories',
+            { categories: get(action, 'payload.body.followed_category_ids', Immutable.List()).count() },
+          ))
+        }
+        break
+      case ACTION_TYPES.PROFILE.UNFOLLOW_CATEGORIES_REQUEST:
+        yield put(trackEventAction('unfollowed-categories',
+          { categories: get(action, 'payload.body.followed_category_ids', Immutable.List()).count() },
         ))
         break
       case ACTION_TYPES.PROFILE.SIGNUP_SUCCESS:
