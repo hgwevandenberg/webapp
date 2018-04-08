@@ -1,24 +1,99 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { css, select } from '../../styles/jss'
+import { css, hover, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
 const categoryPostSelectorStyle = css(
-  s.inline,
+  s.inlineBlock,
   s.relative,
   s.mr10,
   s.ml10,
+  {
+    width: 300,
+  },
+)
+
+const categoriesSelectionsStyle = css(
+  select('& .selector, & .selected',
+    s.fullWidth,
+  ),
+  select('& .selector',
+    {
+      border: '1px solid #aaa',
+      borderRadius: 0,
+      borderTopRightRadius: 5,
+      borderTopLeftRadius: 5,
+    },
+  ),
 )
 
 const categoriesListStyle = css(
   s.absolute,
+  s.fullWidth,
+  s.p10,
+  s.overflowHidden,
+  s.overflowScrollWebY,
+  s.bgcWhite,
+  s.zTools,
   {
-    top: 30,
+    top: 40,
     left: 0,
+    maxHeight: 260,
+    border: '1px solid #aaa',
+    borderRadius: 0,
+    borderBottomRightRadius: 5,
+    borderBottomLeftRadius: 5,
   },
-  select('ul',
+  select('& .divider',
+    s.p0,
+    s.m10,
+    s.bgcA,
+    {
+      height: 1,
+      border: 0,
+    },
+  ),
+  // list items
+  select('& b',
+    s.block,
+    s.m0,
+    s.p5,
+    s.pr10,
+    s.pl10,
+    s.colorA,
+    s.sansRegular,
+    {
+      lineHeight: 20,
+    },
+  ),
+  select('& ul',
     s.resetList,
+    select('& li',
+      s.m0,
+      s.p0,
+      select('& button',
+        s.block,
+        s.p5,
+        s.pr10,
+        s.pl10,
+        s.fullWidth,
+        {
+          height: 'auto',
+          textAlign: 'left',
+          lineHeight: 20,
+        },
+        hover(
+          s.colorWhite,
+          s.bgcBlack,
+          { borderRadius: 3 },
+        ),
+      ),
+      select('& button:active',
+        s.colorBlack,
+        s.bgcWhite,
+      ),
+    ),
   ),
 )
 
@@ -122,20 +197,23 @@ export default class CategoryPostSelector extends PureComponent {
     const offset = subscribedCategories.length
     return (
       <aside className={categoryPostSelectorStyle}>
-        {!selectedCategory &&
-          <input
-            type="search"
-            value={searchText}
-            onChange={this.handleSearch}
-            onKeyDown={this.handleKeyDown}
-          />
-        }
-        {selectedCategory &&
-          <span className="selected">
-            <b>{selectedCategory.get('name')}</b>
-            <button onClick={onClear}>X</button>
-          </span>
-        }
+        <span className={categoriesSelectionsStyle}>
+          {!selectedCategory &&
+            <input
+              className="selector"
+              type="search"
+              value={searchText}
+              onChange={this.handleSearch}
+              onKeyDown={this.handleKeyDown}
+            />
+          }
+          {selectedCategory &&
+            <span className="selected">
+              <b>{selectedCategory.get('name')}</b>
+              <button onClick={onClear}>X</button>
+            </span>
+          }
+        </span>
         <span className={categoriesListStyle}>
           {subscribedCategories.length > 0 &&
             <span className="subscribed">
@@ -151,6 +229,7 @@ export default class CategoryPostSelector extends PureComponent {
                   />),
                 )}
               </ul>
+              <hr className="divider" />
             </span>
           }
           <span className="all">
