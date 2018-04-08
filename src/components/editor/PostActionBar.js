@@ -35,7 +35,7 @@ const leftStyle = css(
   select('& button:last-child', s.mr0),
   select('& .forCancel.text', s.displayNone),
   select('.PostGrid & .forCancel.text', s.displayNone),
-  media(s.minBreak2, select('& .forCancel.text', s.inlineBlock)),
+  media(s.minBreak2, select('& .forCancel.text', s.inlineBlock, s.mr0, s.p0)),
   select('& .forCancel.button', s.inlineBlock),
   select('.PostGrid & .forCancel.button', s.inlineBlock),
   media(s.minBreak2, select('& .forCancel.button', s.displayNone)),
@@ -50,15 +50,21 @@ const buttonStyle = css(
   s.bgcBlack,
   s.colorWhite,
   s.hv40,
+  s.wv40,
   s.lh40,
   s.nowrap,
-  s.wv40,
-  { borderRadius: 5, transition: `background-color 0.2s ease, color 0.2s ease, width 0.2s ${s.ease}` },
+  {
+    borderRadius: 5,
+    transition: `background-color 0.2s ease, color 0.2s ease, width 0.2s ${s.ease}`,
+  },
   disabled(s.pointerNone, s.bgcA),
   hover({ backgroundColor: '#6a6a6a' }),
   media(
     s.minBreak2,
     { width: 'auto' },
+    select('&.forSubmit',
+      { minWidth: 120 },
+    ),
   ),
   modifier('.isBuyLinked', s.bgcGreen),
   modifier(
@@ -73,7 +79,7 @@ const buttonStyle = css(
       s.wv40,
     ),
   ),
-  modifier('.forSubmit', s.bgcGreen, disabled(s.bgcA), hover({ backgroundColor: '#02B302' }), { width: 'auto' }),
+  modifier('.forSubmit', s.bgcGreen, disabled(s.bgcA), hover({ backgroundColor: '#02b302' }), { width: 'auto' }),
   parent('.isComment', s.wv40, media(s.minBreak2, s.wv40)),
   parent('.PostGrid', s.wv40, media(s.minBreak2, s.wv40)),
 )
@@ -81,8 +87,12 @@ const buttonStyle = css(
 const buttonContentsStyle = css(
   s.inlineFlex,
   s.itemsCenter,
-  s.justifyCenter,
-  { height: '100%' },
+  s.contentCenter,
+  s.justifySpaceBetween,
+  s.fullWidth,
+  s.fullHeight,
+  s.pl20,
+  s.pr20,
 )
 
 const cancelTextButtonStyle = css(
@@ -94,20 +104,24 @@ const cancelTextButtonStyle = css(
 
 const labelStyle = css(
   s.displayNone,
-  { marginLeft: 15, marginRight: 7 },
+  { marginRight: 10 },
   media(
     s.minBreak2,
     s.inlineBlock,
-    select('& + .SVGIcon', { marginRight: 11 }),
+    select('& + .SVGIcon', { marginLeft: 10 }),
     parent(
       '.PostDetail .forComment',
-      select('& + .SVGIcon', { marginRight: 11, marginLeft: 11 }),
+      // select('& + .SVGIcon', { marginRight: 11, marginLeft: 11 }),
     ),
   ),
-  parent('.forSubmit', s.inlineBlock, select('& + .SVGIcon', { marginRight: 11 })),
+  // parent('.forSubmit', s.inlineBlock, select('& + .SVGIcon', { marginRight: 11 })),
   parent('.isComment', s.displayNone, select('& + .SVGIcon', s.mr0)),
   parent('.PostGrid', s.displayNone, select('& + .SVGIcon', s.mr0)),
   parent('.PostGrid .isComment .forComment', s.displayNone, select('& + .SVGIcon', s.mr0)),
+  parent('.forSubmit',
+    s.inlineBlock,
+    select('& + .SVGIcon', { transform: 'scale(1.2)' }),
+  ),
 )
 
 const hide = css(s.hide)

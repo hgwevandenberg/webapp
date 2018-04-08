@@ -7,6 +7,8 @@ import * as s from '../../styles/jso'
 const categoryPostSelectorStyle = css(
   s.inline,
   s.relative,
+  s.mr10,
+  s.ml10,
 )
 
 const categoriesListStyle = css(
