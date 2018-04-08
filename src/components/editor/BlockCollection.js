@@ -532,6 +532,7 @@ class BlockCollection extends PureComponent {
           </div>
           {showQuickEmoji && <QuickEmoji onAddEmoji={this.onInsertEmoji} />}
           <PostActionBar
+            isComment={isComment}
             buyLink={buyLink}
             cancelAction={cancelAction}
             disableSubmitAction={isPosting || isLoading || !hasContent}

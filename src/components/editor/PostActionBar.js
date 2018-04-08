@@ -107,6 +107,7 @@ const hide = css(s.hide)
 class PostActionBar extends Component {
 
   static propTypes = {
+    isComment: PropTypes.bool.isRequired,
     buyLink: PropTypes.string,
     cancelAction: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
@@ -169,7 +170,7 @@ class PostActionBar extends Component {
   }
 
   render() {
-    const { disableSubmitAction, hasMedia, replyAllAction, submitText, editorId } = this.props
+    const { disableSubmitAction, hasMedia, replyAllAction, submitText, editorId, isComment } = this.props
     const isBuyLinked = this.props.buyLink && this.props.buyLink.length
     return (
       <div className={wrapperStyle} id={editorId}>
@@ -184,16 +185,18 @@ class PostActionBar extends Component {
               <BrowseIcon />
             </div>
           </button>
-          <button
-            className={classNames('PostActionButton forMoney', { isBuyLinked }, `${buttonStyle}`)}
-            disabled={!hasMedia}
-            onClick={this.money}
-          >
-            <div className={buttonContentsStyle}>
-              <span className={labelStyle}>Sell</span>
-              <MoneyIconCircle />
-            </div>
-          </button>
+          {!isComment &&
+            <button
+              className={classNames('PostActionButton forMoney', { isBuyLinked }, `${buttonStyle}`)}
+              disabled={!hasMedia}
+              onClick={this.money}
+            >
+              <div className={buttonContentsStyle}>
+                <span className={labelStyle}>Sell</span>
+                <MoneyIconCircle />
+              </div>
+            </button>
+          }
           {replyAllAction &&
             <button className={`PostActionButton forReplyAll ${buttonStyle}`} onClick={replyAllAction}>
               <div className={buttonContentsStyle}>
