@@ -310,7 +310,7 @@ class StreamContainer extends Component {
     if (!action) { return null }
     const { meta } = action
     return (
-      <section className="StreamContainer">
+      <section className="StreamContainer empty">
         {meta && meta.renderStream && meta.renderStream.asZero ?
           meta.renderStream.asZero :
           null
