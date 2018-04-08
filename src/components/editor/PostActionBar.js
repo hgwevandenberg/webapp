@@ -170,7 +170,14 @@ class PostActionBar extends Component {
   }
 
   render() {
-    const { disableSubmitAction, hasMedia, replyAllAction, submitText, editorId, isComment } = this.props
+    const {
+      disableSubmitAction,
+      hasMedia,
+      replyAllAction,
+      submitText,
+      editorId,
+      isComment,
+    } = this.props
     const isBuyLinked = this.props.buyLink && this.props.buyLink.length
     return (
       <div className={wrapperStyle} id={editorId}>
