@@ -33,17 +33,17 @@ const wrapperStyle = css(
 const leftStyle = css(
   select('& button', s.mr10),
   select('& button:last-child', s.mr0),
-  select('& .forCancel', s.inlineBlock),
-  select('.PostGrid & .forCancel', s.inlineBlock),
-  media(s.minBreak2, select('& .forCancel', s.displayNone)),
+  select('& .forCancel.text', s.displayNone),
+  select('.PostGrid & .forCancel.text', s.displayNone),
+  media(s.minBreak2, select('& .forCancel.text', s.inlineBlock)),
+  select('& .forCancel.button', s.inlineBlock),
+  select('.PostGrid & .forCancel.button', s.inlineBlock),
+  media(s.minBreak2, select('& .forCancel.button', s.displayNone)),
 )
 
 const rightStyle = css(
   select('& button + button', s.ml10),
   select('& button:first-child', s.ml0),
-  select('& .forCancel', s.displayNone),
-  select('.PostGrid & .forCancel', s.displayNone),
-  media(s.minBreak2, select('& .forCancel', s.inlineBlock)),
 )
 
 const buttonStyle = css(
@@ -109,6 +109,7 @@ const labelStyle = css(
   parent('.PostGrid', s.displayNone, select('& + .SVGIcon', s.mr0)),
   parent('.PostGrid .isComment .forComment', s.displayNone, select('& + .SVGIcon', s.mr0)),
 )
+
 const hide = css(s.hide)
 
 function mapStateToProps(state, props) {
@@ -216,6 +217,30 @@ class PostActionBar extends Component {
     return (
       <div className={wrapperStyle} id={editorId}>
         <div className={leftStyle}>
+          <button className={`PostActionButton forCancel text ${cancelTextButtonStyle}`} onClick={this.cancel}>
+            <span>Cancel</span>
+          </button>
+          {replyAllAction &&
+            <button className={`PostActionButton forReplyAll ${buttonStyle}`} onClick={replyAllAction}>
+              <div className={buttonContentsStyle}>
+                <span className={labelStyle}>Reply All</span>
+                <ReplyAllIcon />
+              </div>
+            </button>
+          }
+          <button
+            className={`PostActionButton forCancel button ${buttonStyle}`}
+            onClick={this.cancel}
+            disabled={disableSubmitAction}
+          >
+            <div className={buttonContentsStyle}>
+              <span className={labelStyle}>Cancel</span>
+              <XIconLG />
+            </div>
+          </button>
+        </div>
+
+        <div className={rightStyle}>
           <button
             className={`PostActionButton forUpload ${buttonStyle}`}
             onClick={this.browse}
@@ -246,30 +271,6 @@ class PostActionBar extends Component {
               selectedCategories={selectedCategories}
             />
           }
-          {replyAllAction &&
-            <button className={`PostActionButton forReplyAll ${buttonStyle}`} onClick={replyAllAction}>
-              <div className={buttonContentsStyle}>
-                <span className={labelStyle}>Reply All</span>
-                <ReplyAllIcon />
-              </div>
-            </button>
-          }
-          <button
-            className={`PostActionButton forCancel ${buttonStyle}`}
-            onClick={this.cancel}
-            disabled={disableSubmitAction}
-          >
-            <div className={buttonContentsStyle}>
-              <span className={labelStyle}>Cancel</span>
-              <XIconLG />
-            </div>
-          </button>
-        </div>
-
-        <div className={rightStyle}>
-          <button className={`PostActionButton forCancel ${cancelTextButtonStyle}`} onClick={this.cancel}>
-            <span>Cancel</span>
-          </button>
           <button
             className={`PostActionButton forSubmit for${submitText} ${buttonStyle}`}
             disabled={disableSubmitAction}

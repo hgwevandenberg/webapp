@@ -1,6 +1,24 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import { css, select } from '../../styles/jss'
+import * as s from '../../styles/jso'
+
+const categoryPostSelectorStyle = css(
+  s.inline,
+  s.relative,
+)
+
+const categoriesListStyle = css(
+  s.absolute,
+  {
+    top: 30,
+    left: 0,
+  },
+  select('ul',
+    s.resetList,
+  ),
+)
 
 function filterSearch(categories, searchText) {
   if (searchText === '') { return categories }
@@ -101,7 +119,7 @@ export default class CategoryPostSelector extends PureComponent {
     const selectedCategory = selectedCategories[0]
     const offset = subscribedCategories.length
     return (
-      <div>
+      <aside className={categoryPostSelectorStyle}>
         {!selectedCategory &&
           <input
             type="search"
@@ -111,42 +129,44 @@ export default class CategoryPostSelector extends PureComponent {
           />
         }
         {selectedCategory &&
-          <div>
-            <p>{selectedCategory.get('name')}</p>
+          <span className="selected">
+            <b>{selectedCategory.get('name')}</b>
             <button onClick={onClear}>X</button>
-          </div>
+          </span>
         }
-        {subscribedCategories.length > 0 &&
-          <div>
-            <p>Your Categories</p>
+        <span className={categoriesListStyle}>
+          {subscribedCategories.length > 0 &&
+            <span className="subscribed">
+              <b>Your Categories</b>
+              <ul>
+                {subscribedCategories.map((category, index) =>
+                  (<CategoryItem
+                    key={`categorySelect:${category.get('id')}`}
+                    category={category}
+                    index={index}
+                    selectedIndex={selectedIndex}
+                    onSelect={onSelect}
+                  />),
+                )}
+              </ul>
+            </span>
+          }
+          <span className="all">
+            <b>All Categories</b>
             <ul>
-              {subscribedCategories.map((category, index) =>
+              {unsubscribedCategories.map((category, index) =>
                 (<CategoryItem
                   key={`categorySelect:${category.get('id')}`}
                   category={category}
-                  index={index}
+                  index={index + offset}
                   selectedIndex={selectedIndex}
                   onSelect={onSelect}
                 />),
               )}
             </ul>
-          </div>
-        }
-        <div>
-          <p>All Categories</p>
-          <ul>
-            {unsubscribedCategories.map((category, index) =>
-              (<CategoryItem
-                key={`categorySelect:${category.get('id')}`}
-                category={category}
-                index={index + offset}
-                selectedIndex={selectedIndex}
-                onSelect={onSelect}
-              />),
-            )}
-          </ul>
-        </div>
-      </div>
+          </span>
+        </span>
+      </aside>
     )
   }
 }
