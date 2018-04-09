@@ -94,7 +94,7 @@ class PostDetailContainer extends Component {
   componentWillMount() {
     const { dispatch, paramsToken, paramsUsername } = this.props
     this.state = { activeType: 'comments', isInlineCommenting: false, renderType: POST.DETAIL_REQUEST }
-    dispatch(loadPostDetail(`~${paramsToken}`, `~${paramsUsername}`))
+    dispatch(loadPostDetail(paramsToken, paramsUsername))
   }
 
   componentDidMount() {

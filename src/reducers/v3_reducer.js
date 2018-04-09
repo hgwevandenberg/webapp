@@ -240,6 +240,11 @@ function parsePost(state, post) {
   return state6
 }
 
+
+function parsePostDetail(state, { payload: { response: { data: { post } } } }) {
+  return parsePost(state, post)
+}
+
 function parseQueryType(state, stream, pathname, query, variables) {
   const { posts } = stream
   const state1 = parseList(state, posts, parsePost)
@@ -272,6 +277,8 @@ export default function (state, action) {
       return parseCategoryQueries(state, action)
     case ACTION_TYPES.V3.LOAD_PAGE_HEADERS_SUCCESS:
       return parsePageHeaders(state, action)
+    case ACTION_TYPES.V3.POST.DETAIL_SUCCESS:
+      return parsePostDetail(state, action)
     case ACTION_TYPES.PROFILE.FOLLOW_CATEGORIES_SUCCESS:
       return resetSubscribedStreamPagination(state)
     default:
