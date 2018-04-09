@@ -75,6 +75,12 @@ const listStyle = css(
     select('& .PostBody > div', s.flex, s.flexColumn, s.justifyCenter, s.itemsCenter, s.pt20),
   ),
   select('.PostDetails & .TabListStreamContainer', s.px0),
+  select('& .StreamContainer.empty',
+    media(
+      s.minBreak3,
+      { paddingBottom: 42 },
+    ),
+  ),
 )
 
 const relatedPostsStyle = css(
