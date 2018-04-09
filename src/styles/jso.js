@@ -407,6 +407,7 @@ export const hitarea = {
   content: '""',
   backgroundColor: 'rgba(0, 0, 0, 0)',
 }
+
 // usually apply to :after of a container element
 export const clearFix = css(
   after({
@@ -414,4 +415,16 @@ export const clearFix = css(
     display: 'block',
     clear: 'both',
   }),
+)
+
+// reset input styling
+export const resetInput = css(
+  {
+    border: 'none',
+    backgroundColor: 'transparent',
+    boxShadow: 'none',
+    WebkitBoxShadow: 'none',
+    MozBoxShadow: 'none',
+    outline: 'none',
+  },
 )

@@ -18,12 +18,28 @@ const categoriesSelectionsStyle = css(
   select('& .selector, & .selected',
     s.fullWidth,
   ),
-  select('& .selector',
+  select('& input.selector',
+    s.resetInput,
+    s.relative,
+    s.pr20,
+    s.pl20,
+    s.zIndex2,
     {
+      paddingTop: 9,
+      paddingBottom: 9,
+      lineHeight: 20,
       border: '1px solid #aaa',
       borderRadius: 0,
       borderTopRightRadius: 5,
       borderTopLeftRadius: 5,
+    },
+  ),
+  select('& .selector-label',
+    s.absolute,
+    s.colorA,
+    s.zIndex1,
+    {
+      left: 20,
     },
   ),
 )
@@ -37,7 +53,7 @@ const categoriesListStyle = css(
   s.bgcWhite,
   s.zTools,
   {
-    top: 40,
+    top: 39,
     left: 0,
     maxHeight: 260,
     border: '1px solid #aaa',
@@ -142,6 +158,7 @@ export default class CategoryPostSelector extends PureComponent {
       unsubscribedCategories,
       searchText: '',
       selectedIndex: null,
+      focused: false,
     }
   }
 
@@ -151,6 +168,10 @@ export default class CategoryPostSelector extends PureComponent {
       onSelect(featuredInCategories[0])
     }
   }
+
+  // componentDidUpdate() {
+  //   console.log(`focused? ${this.state.focused}`)
+  // }
 
   componentWillReceiveProps(nextProps) {
     const { subscribedCategories, unsubscribedCategories } = nextProps
@@ -188,6 +209,16 @@ export default class CategoryPostSelector extends PureComponent {
     }
   }
 
+  handleBlur(isFocused) {
+    this.setState({
+      focused: isFocused,
+    })
+
+    // if (this.props.handleBlur) {
+    //   this.props.handleBlur(isFocused)
+    // }
+  }
+
   render() {
     const { selectedCategories, onClear, onSelect } = this.props
     const { subscribedCategories, unsubscribedCategories, searchText, selectedIndex } = this.state
@@ -199,13 +230,26 @@ export default class CategoryPostSelector extends PureComponent {
       <aside className={categoryPostSelectorStyle}>
         <span className={categoriesSelectionsStyle}>
           {!selectedCategory &&
-            <input
-              className="selector"
-              type="search"
-              value={searchText}
-              onChange={this.handleSearch}
-              onKeyDown={this.handleKeyDown}
-            />
+            <span className="input-with-label">
+              {!searchText &&
+                <label
+                  className="selector-label"
+                  htmlFor="categorySelector"
+                >
+                  Type community name
+                </label>
+              }
+              <input
+                className="selector"
+                name="categorySelector"
+                type="search"
+                value={searchText}
+                onChange={this.handleSearch}
+                onKeyDown={this.handleKeyDown}
+                onBlur={() => this.handleBlur(false)}
+                onFocus={() => this.handleBlur(true)}
+              />
+            </span>
           }
           {selectedCategory &&
             <span className="selected">
