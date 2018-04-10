@@ -138,6 +138,7 @@ function mapStateToProps(state, props) {
 class PostActionBar extends Component {
 
   static propTypes = {
+    isComment: PropTypes.bool.isRequired,
     buyLink: PropTypes.string,
     cancelAction: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
@@ -250,6 +251,7 @@ class PostActionBar extends Component {
       selectedCategories,
       featuredInCategories,
       unsubscribedCategories,
+      isComment,
     } = this.props
     const { resetCategorySelection } = this.state
     const isBuyLinked = this.props.buyLink && this.props.buyLink.length
@@ -290,16 +292,18 @@ class PostActionBar extends Component {
               <BrowseIcon />
             </div>
           </button>
-          <button
-            className={classNames('PostActionButton forMoney', { isBuyLinked }, `${buttonStyle}`)}
-            disabled={!hasMedia}
-            onClick={this.money}
-          >
-            <div className={buttonContentsStyle}>
-              <span className={labelStyle}>Sell</span>
-              <MoneyIconCircle />
-            </div>
-          </button>
+          {!isComment &&
+            <button
+              className={classNames('PostActionButton forMoney', { isBuyLinked }, `${buttonStyle}`)}
+              disabled={!hasMedia}
+              onClick={this.money}
+            >
+              <div className={buttonContentsStyle}>
+                <span className={labelStyle}>Sell</span>
+                <MoneyIconCircle />
+              </div>
+            </button>
+          }
           {postIntoCategory &&
             <CategoryPostSelector
               onSelect={this.onSelectCategory}

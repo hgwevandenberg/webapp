@@ -513,14 +513,14 @@ class ImageRegion extends PureComponent {
   }
 
   renderRegionAsLink() {
-    const { buyLinkURL, detailPath, isLightBoxImage } = this.props
+    const { buyLinkURL, detailPath, isComment, isLightBoxImage } = this.props
     return (
       <div className="RegionContent">
         <Link to={detailPath} onClick={this.context.onTrackRelatedPostClick}>
           {this.renderAttachment()}
         </Link>
         {
-          buyLinkURL && buyLinkURL.length && !isLightBoxImage ?
+          !isComment && buyLinkURL && buyLinkURL.length && !isLightBoxImage ?
             <ElloBuyButton to={buyLinkURL} /> :
             null
         }
@@ -530,7 +530,7 @@ class ImageRegion extends PureComponent {
 
   renderRegionAsStatic() {
     const { currentImageHeight, currentImageWidth } = this.state
-    const { buyLinkURL, isLightBoxImage } = this.props
+    const { buyLinkURL, isComment, isLightBoxImage } = this.props
     const imgHolderClass = isLightBoxImage ? 'ImgHolderLightBox' : 'ImgHolder'
     return (
       <div
@@ -541,7 +541,7 @@ class ImageRegion extends PureComponent {
         <div className={imgHolderClass}>
           {this.renderAttachment()}
           {
-            buyLinkURL && buyLinkURL.length && !isLightBoxImage ?
+            !isComment && buyLinkURL && buyLinkURL.length && !isLightBoxImage ?
               <ElloBuyButton to={buyLinkURL} /> :
               null
           }

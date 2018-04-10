@@ -87,8 +87,14 @@ const artistInvitesStyle = css(
   ),
 )
 
-// posts list styling (shared between POSTS and ARTIST INVITES)
+const postGridStyle = css(
+  select('& .ImageRegion img',
+    s.fullWidth,
+    { height: 'auto' },
+  ),
+)
 
+// posts list styling (shared between POSTS and ARTIST INVITES)
 const postListStyle = css(
   s.maxSiteWidth,
   s.mxAuto,
@@ -156,7 +162,7 @@ export const artistInviteSubmissionsAsGrid = (submissionIds, columnCount, header
     columns[index % columnCount].push(submissionIds.get(index)),
   )
   return (
-    <div className="Posts asGrid">
+    <div className={`Posts asGrid ${postGridStyle}`}>
       {headerText &&
         <div className={titleWrapperStyle}>
           <h2 className={blackTitleStyle}>{headerText}</h2>
@@ -236,7 +242,7 @@ export const postsAsGrid = (postIds, columnCount, isPostHeaderHidden) => {
     columns[index % columnCount].push(postIdsAsList.get(index)),
   )
   return (
-    <div className="Posts asGrid">
+    <div className={`Posts asGrid ${postGridStyle}`}>
       {columns.map((columnPostIds, i) =>
         (<div className="Column" key={`column_${i + 1}`}>
           {columnPostIds.map(id =>
@@ -309,7 +315,7 @@ export const postsAsRelated = (postIds, colCount, isPostHeaderHidden) => {
   for (let i = 0; i < columnCount; i += 1) { columns.push([]) }
   postIds.forEach((value, index) => columns[index % columnCount].push(postIds.get(index)))
   return (
-    <div className="Posts asGrid">
+    <div className={`Posts asGrid ${postGridStyle}`}>
       {postIds.size &&
         <h2 className={relatedPostsTitleStyle}>
           Related Posts
