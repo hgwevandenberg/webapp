@@ -140,9 +140,10 @@ export class PostDetailHeader extends PureComponent {
     repostedBy: PropTypes.object,
     artistInviteSubmission: PropTypes.object,
     artistInvite: PropTypes.object,
+    originalPostArtistInviteSubmission: PropTypes.object,
+    originalPostArtistInvite: PropTypes.object,
     detailPath: PropTypes.string.isRequired,
     inUserDetail: PropTypes.bool,
-    isArtistInviteSubmission: PropTypes.bool.isRequired,
     isOwnPost: PropTypes.bool.isRequired,
     isRepost: PropTypes.bool.isRequired,
     postCreatedAt: PropTypes.string.isRequired,
@@ -162,14 +163,19 @@ export class PostDetailHeader extends PureComponent {
       repostedBy,
       artistInvite,
       artistInviteSubmission,
+      originalPostArtistInvite,
+      originalPostArtistInviteSubmission,
       detailPath,
       inUserDetail,
-      isArtistInviteSubmission,
       isOwnPost,
       isRepost,
       postCreatedAt,
       postId,
     } = this.props
+
+    const isArtistInviteSubmission = !!(artistInvite || originalPostArtistInvite)
+    const displayInvite = (artistInvite || originalPostArtistInvite)
+    const displaySubmission = (artistInviteSubmission || originalPostArtistInviteSubmission)
 
     return (
       <header
@@ -244,9 +250,9 @@ export class PostDetailHeader extends PureComponent {
           {isArtistInviteSubmission &&
             <span>
               <ArtistInviteSubmissionStatusTool
-                status={artistInviteSubmission.get('status')}
-                slug={artistInvite.get('slug')}
-                title={artistInvite.get('title')}
+                status={displaySubmission.get('status')}
+                slug={displayInvite.get('slug')}
+                title={displayInvite.get('title')}
               />
             </span>
           }

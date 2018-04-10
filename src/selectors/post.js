@@ -169,7 +169,7 @@ export const selectPostArtistInviteId = createSelector(
 
 export const selectPostArtistInvite = createSelector(
   [selectPostArtistInviteId, selectArtistInvites],
-  (id, invites) => id && invites.get(id),
+  (id, invites) => id && invites.get(id, null),
 )
 
 export const selectPostIsCommentsRequesting = createSelector(
@@ -278,3 +278,18 @@ export const selectPostFirstImage = createSelector(
       .first()
   },
 )
+
+// Proxy selectors from the repost to the original post.
+
+export const selectOriginalPostId = createSelector([selectPost], post =>
+  post.getIn(['links', 'repostedSource', 'id'], null))
+
+export const selectOriginalPostArtistInviteSubmission = (state, props) => {
+  const postId = selectOriginalPostId(state, props)
+  return postId && selectPostArtistInviteSubmission(state, { postId })
+}
+
+export const selectOriginalPostArtistInvite = (state, props) => {
+  const postId = selectOriginalPostId(state, props)
+  return postId && selectPostArtistInvite(state, { postId })
+}

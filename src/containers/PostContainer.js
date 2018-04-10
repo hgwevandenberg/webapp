@@ -74,6 +74,8 @@ import {
   selectPostShowEditor,
   selectPostSummary,
   selectPostViewsCountRounded,
+  selectOriginalPostArtistInvite,
+  selectOriginalPostArtistInviteSubmission,
   selectPropsPostId,
 } from '../selectors/post'
 import { selectAvatar } from '../selectors/profile'
@@ -103,6 +105,8 @@ export function makeMapStateToProps() {
       isArtistInviteSubmission: selectPostIsArtistInviteSubmission(state, props),
       artistInviteSubmission: selectPostArtistInviteSubmission(state, props),
       artistInvite: selectPostArtistInvite(state, props),
+      originalPostArtistInviteSubmission: selectOriginalPostArtistInviteSubmission(state, props),
+      originalPostArtistInvite: selectOriginalPostArtistInvite(state, props),
       isCommentsRequesting: selectPostIsCommentsRequesting(state, props),
       showCategoryHeader: selectShowCategoryHeader(state, props),
       isGridMode: selectPostIsGridMode(state, props),
@@ -155,6 +159,8 @@ class PostContainer extends Component {
     innerWidth: PropTypes.number.isRequired,
     artistInviteSubmission: PropTypes.object,
     artistInvite: PropTypes.object,
+    originalPostArtistInviteSubmission: PropTypes.object,
+    originalPostArtistInvite: PropTypes.object,
     isArtistInviteSubmission: PropTypes.bool.isRequired,
     isCommentsRequesting: PropTypes.bool.isRequired,
     showCategoryHeader: PropTypes.bool.isRequired,
@@ -200,6 +206,8 @@ class PostContainer extends Component {
     adminActions: null,
     artistInviteSubmission: null,
     artistInvite: null,
+    originalPostArtistInviteSubmission: null,
+    originalPostArtistInvite: null,
     avatar: null,
     categoryName: null,
     categoryPath: null,
@@ -431,6 +439,8 @@ class PostContainer extends Component {
       author,
       artistInvite,
       artistInviteSubmission,
+      originalPostArtistInvite,
+      originalPostArtistInviteSubmission,
       avatar,
       categoryName,
       categoryPath,
@@ -510,6 +520,8 @@ class PostContainer extends Component {
           repostedBy={repostAuthor ? author : null}
           artistInviteSubmission={artistInviteSubmission}
           artistInvite={artistInvite}
+          originalPostArtistInviteSubmission={originalPostArtistInviteSubmission}
+          originalPostArtistInvite={originalPostArtistInvite}
           inUserDetail={repostAuthor ? isPostHeaderHidden : null}
           isArtistInviteSubmission={isArtistInviteSubmission}
           isRepost={isRepost}
