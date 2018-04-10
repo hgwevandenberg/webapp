@@ -161,6 +161,20 @@ class PostActionBar extends Component {
     replyAllAction: null,
   }
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      resetCategorySelection: false,
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // reset the resets
+    if (!prevState.resetCategorySelection && this.state.resetCategorySelection) {
+      this.refreshResets()
+    }
+  }
+
   onAddBuyLink = ({ value }) => {
     const { dispatch, editorId } = this.props
     dispatch(updateBuyLink(editorId, value))
@@ -175,6 +189,10 @@ class PostActionBar extends Component {
   onSelectCategory = (category) => {
     const { dispatch, editorId } = this.props
     dispatch(updateCategoryId(editorId, category.get('id')))
+
+    this.setState({
+      resetCategorySelection: true,
+    })
   }
 
   onClearCategory = () => {
@@ -214,6 +232,12 @@ class PostActionBar extends Component {
       />))
   }
 
+  refreshResets = () => {
+    this.setState({
+      resetCategorySelection: false,
+    })
+  }
+
   render() {
     const {
       disableSubmitAction,
@@ -227,6 +251,7 @@ class PostActionBar extends Component {
       featuredInCategories,
       unsubscribedCategories,
     } = this.props
+    const { resetCategorySelection } = this.state
     const isBuyLinked = this.props.buyLink && this.props.buyLink.length
     return (
       <div className={wrapperStyle} id={editorId}>
@@ -283,6 +308,7 @@ class PostActionBar extends Component {
               featuredInCategories={featuredInCategories}
               unsubscribedCategories={unsubscribedCategories}
               selectedCategories={selectedCategories}
+              resetSelection={resetCategorySelection}
             />
           }
           <button

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { css, hover, select } from '../../styles/jss'
+import { css, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
 const categoryPostSelectorStyle = css(
@@ -15,6 +15,7 @@ const categoryPostSelectorStyle = css(
 )
 
 const categoriesSelectionsStyle = css(
+  { cursor: 'pointer' },
   select('& .selector, & .selected',
     s.fullWidth,
   ),
@@ -25,13 +26,19 @@ const categoriesSelectionsStyle = css(
     s.pl20,
     s.zIndex2,
     {
+      cursor: 'pointer',
       paddingTop: 9,
       paddingBottom: 9,
       lineHeight: 20,
       border: '1px solid #aaa',
-      borderRadius: 0,
-      borderTopRightRadius: 5,
-      borderTopLeftRadius: 5,
+      borderRadius: 5,
+    },
+  ),
+  select('&.open input.selector',
+    {
+      cursor: 'text',
+      borderBottomRightRadius: 0,
+      borderBottomLeftRadius: 0,
     },
   ),
   select('& .selector-label',
@@ -99,15 +106,16 @@ const categoriesListStyle = css(
           textAlign: 'left',
           lineHeight: 20,
         },
-        hover(
-          s.colorWhite,
-          s.bgcBlack,
-          { borderRadius: 3 },
-        ),
       ),
       select('& button:active',
         s.colorBlack,
         s.bgcWhite,
+      ),
+
+      select('&.isSelected button, & button:hover',
+        s.colorWhite,
+        s.bgcBlack,
+        { borderRadius: 3 },
       ),
     ),
   ),
@@ -122,7 +130,11 @@ function CategoryItem({ category, index, selectedIndex, onSelect }) {
   const isSelected = selectedIndex === index
   return (
     <li className={classNames({ isSelected })}>
-      <button onClick={() => onSelect(category)}>
+      <button
+        role="option"
+        aria-selected={isSelected}
+        onClick={() => onSelect(category)}
+      >
         {category.get('name')}
       </button>
     </li>
@@ -148,6 +160,7 @@ export default class CategoryPostSelector extends PureComponent {
     featuredInCategories: PropTypes.array.isRequired,
     unsubscribedCategories: PropTypes.array.isRequired,
     selectedCategories: PropTypes.array.isRequired,
+    resetSelection: PropTypes.bool.isRequired,
   }
 
   constructor(props) {
@@ -159,7 +172,11 @@ export default class CategoryPostSelector extends PureComponent {
       searchText: '',
       selectedIndex: null,
       focused: false,
+      open: false,
     }
+
+    this.setWrapperRef = this.setWrapperRef.bind(this)
+    this.handleClickOutside = this.handleClickOutside.bind(this)
   }
 
   componentDidMount() {
@@ -168,10 +185,6 @@ export default class CategoryPostSelector extends PureComponent {
       onSelect(featuredInCategories[0])
     }
   }
-
-  // componentDidUpdate() {
-  //   console.log(`focused? ${this.state.focused}`)
-  // }
 
   componentWillReceiveProps(nextProps) {
     const { subscribedCategories, unsubscribedCategories } = nextProps
@@ -182,11 +195,32 @@ export default class CategoryPostSelector extends PureComponent {
     })
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if ((!prevState.open && this.state.open) ||
+      (!this.state.open && !prevState.focused && this.state.focused)) {
+      document.addEventListener('mousedown', this.handleClickOutside)
+    }
+
+    // close & reset selection
+    if (!prevProps.resetSelection && this.props.resetSelection) {
+      this.close()
+    }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.handleClickOutside)
+  }
+
+  setWrapperRef(node) {
+    this.wrapperRef = node
+  }
+
   handleSearch = (event) => {
     const searchText = event.target.value
     const { subscribedCategories, unsubscribedCategories } = this.props
+    const selectedIndex = searchText === '' ? null : 0
     this.setState({
-      selectedIndex: 0,
+      selectedIndex,
       searchText,
       subscribedCategories: filterSearch(subscribedCategories, searchText),
       unsubscribedCategories: filterSearch(unsubscribedCategories, searchText),
@@ -194,18 +228,33 @@ export default class CategoryPostSelector extends PureComponent {
   }
 
   handleKeyDown = (event) => {
-    const { subscribedCategories, unsubscribedCategories, selectedIndex } = this.state
     const { onSelect } = this.props
+    const {
+      subscribedCategories,
+      unsubscribedCategories,
+      selectedIndex,
+    } = this.state
     const categories = subscribedCategories.concat(unsubscribedCategories)
     const max = categories.length
-    if (event.key === 'ArrowDown' && isNaN(selectedIndex)) {
+    const selectedIsNull = (selectedIndex === null)
+
+    if (event.key === 'ArrowDown' && selectedIsNull) {
+      this.setState({ selectedIndex: 0 })
+    } else if (event.key === 'ArrowDown' && selectedIndex === (max - 1)) {
       this.setState({ selectedIndex: 0 })
     } else if (event.key === 'ArrowDown' && selectedIndex < max) {
       this.setState({ selectedIndex: selectedIndex + 1 })
-    } else if (event.key === 'ArrowUp' && !isNaN(selectedIndex) && selectedIndex > 0) {
+    } else if (event.key === 'ArrowUp' && !selectedIsNull && selectedIndex > 0) {
+      event.preventDefault()
       this.setState({ selectedIndex: selectedIndex - 1 })
-    } else if (event.key === 'Enter' && !isNaN(selectedIndex)) {
+    } else if (event.key === 'ArrowUp' && !selectedIsNull && selectedIndex === 0) {
+      event.preventDefault()
+      this.setState({ selectedIndex: max - 1 })
+    } else if (event.key === 'Enter' && !selectedIsNull) {
       onSelect(categories[selectedIndex])
+    } else if (event.key === 'Escape') {
+      this.categorySelectorRef.blur()
+      this.close()
     }
   }
 
@@ -214,21 +263,74 @@ export default class CategoryPostSelector extends PureComponent {
       focused: isFocused,
     })
 
-    // if (this.props.handleBlur) {
-    //   this.props.handleBlur(isFocused)
-    // }
+    if (isFocused) {
+      this.open()
+    }
+  }
+
+  open() {
+    if (!this.state.open) {
+      this.setState({
+        open: true,
+      })
+    }
+  }
+
+  close() {
+    if (this.state.open) {
+      this.resetSelection()
+    }
+  }
+
+  handleSelectorClick() {
+    const { selectedCategories } = this.props
+    if (!selectedCategories) {
+      this.open()
+    }
+  }
+
+  handleClickOutside(event) {
+    if (this.state.open) {
+      if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+        this.close()
+      }
+    }
+  }
+
+  resetSelection() {
+    const { subscribedCategories, unsubscribedCategories } = this.props
+    this.setState({
+      subscribedCategories,
+      unsubscribedCategories,
+      searchText: '',
+      selectedIndex: null,
+      focused: false,
+      open: false,
+    })
   }
 
   render() {
     const { selectedCategories, onClear, onSelect } = this.props
-    const { subscribedCategories, unsubscribedCategories, searchText, selectedIndex } = this.state
+    const {
+      subscribedCategories,
+      unsubscribedCategories,
+      searchText,
+      selectedIndex,
+      open,
+    } = this.state
     // Everything except this component could support multiple categories, but for now
     // we can assume there is only one selected category per post.
     const selectedCategory = selectedCategories[0]
     const offset = subscribedCategories.length
     return (
-      <aside className={categoryPostSelectorStyle}>
-        <span className={categoriesSelectionsStyle}>
+      /* eslint-disable jsx-a11y/interactive-supports-focus */
+      <aside
+        ref={this.setWrapperRef}
+        className={categoryPostSelectorStyle}
+        role="searchbox"
+        onClick={e => this.handleSelectorClick(e)}
+      >
+        <span className={classNames({ open }, `${categoriesSelectionsStyle}`)}>
           {!selectedCategory &&
             <span className="input-with-label">
               {!searchText &&
@@ -236,10 +338,11 @@ export default class CategoryPostSelector extends PureComponent {
                   className="selector-label"
                   htmlFor="categorySelector"
                 >
-                  Type community name
+                  {open ? 'Type community name' : 'Choose Community'}
                 </label>
               }
               <input
+                ref={(node) => { this.categorySelectorRef = node }}
                 className="selector"
                 name="categorySelector"
                 type="search"
@@ -258,39 +361,41 @@ export default class CategoryPostSelector extends PureComponent {
             </span>
           }
         </span>
-        <span className={categoriesListStyle}>
-          {subscribedCategories.length > 0 &&
-            <span className="subscribed">
-              <b>Your Categories</b>
+        {open &&
+          <span className={categoriesListStyle}>
+            {subscribedCategories.length > 0 &&
+              <span className="subscribed">
+                <b>Your Categories</b>
+                <ul>
+                  {subscribedCategories.map((category, index) =>
+                    (<CategoryItem
+                      key={`categorySelect:${category.get('id')}`}
+                      category={category}
+                      index={index}
+                      selectedIndex={selectedIndex}
+                      onSelect={onSelect}
+                    />),
+                  )}
+                </ul>
+                <hr className="divider" />
+              </span>
+            }
+            <span className="all">
+              <b>All Categories</b>
               <ul>
-                {subscribedCategories.map((category, index) =>
+                {unsubscribedCategories.map((category, index) =>
                   (<CategoryItem
                     key={`categorySelect:${category.get('id')}`}
                     category={category}
-                    index={index}
+                    index={index + offset}
                     selectedIndex={selectedIndex}
                     onSelect={onSelect}
                   />),
                 )}
               </ul>
-              <hr className="divider" />
             </span>
-          }
-          <span className="all">
-            <b>All Categories</b>
-            <ul>
-              {unsubscribedCategories.map((category, index) =>
-                (<CategoryItem
-                  key={`categorySelect:${category.get('id')}`}
-                  category={category}
-                  index={index + offset}
-                  selectedIndex={selectedIndex}
-                  onSelect={onSelect}
-                />),
-              )}
-            </ul>
           </span>
-        </span>
+        }
       </aside>
     )
   }
