@@ -13,6 +13,10 @@ import { selectIsGridMode, selectIsMobile } from './gui'
 import { selectId as selectProfileId } from './profile'
 import { selectStreamType, selectStreamMappingType, selectStreamPostIdOrToken } from './stream'
 import { selectUsers } from './user'
+import {
+  selectArtistInviteSubmissions,
+  selectArtistInvites,
+} from './artist_invites'
 
 const countProtector = count => (count < 0 ? 0 : count)
 
@@ -150,8 +154,22 @@ export const selectPostIsArtistInviteSubmission = createSelector(
   [selectPost], post => post && !!post.get('artistInviteId'),
 )
 
+export const selectPostArtistInviteSubmissionId = createSelector(
+  [selectPost], post => post && post.get('artistInviteSubmissionId'),
+)
+
 export const selectPostArtistInviteSubmission = createSelector(
-  [selectPost], post => post && post.get('artistInviteSubmission'),
+  [selectPostArtistInviteSubmissionId, selectArtistInviteSubmissions],
+  (id, submissions) => id && submissions.get(id),
+)
+
+export const selectPostArtistInviteId = createSelector(
+  [selectPost], post => post && post.get('artistInviteId'),
+)
+
+export const selectPostArtistInvite = createSelector(
+  [selectPostArtistInviteId, selectArtistInvites],
+  (id, invites) => id && invites.get(id),
 )
 
 export const selectPostIsCommentsRequesting = createSelector(

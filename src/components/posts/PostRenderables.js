@@ -139,6 +139,7 @@ export class PostDetailHeader extends PureComponent {
     author: PropTypes.object.isRequired,
     repostedBy: PropTypes.object,
     artistInviteSubmission: PropTypes.object,
+    artistInvite: PropTypes.object,
     detailPath: PropTypes.string.isRequired,
     inUserDetail: PropTypes.bool,
     isArtistInviteSubmission: PropTypes.bool.isRequired,
@@ -150,6 +151,7 @@ export class PostDetailHeader extends PureComponent {
 
   static defaultProps = {
     repostedBy: null,
+    artistInvite: null,
     artistInviteSubmission: null,
     inUserDetail: null,
   }
@@ -158,6 +160,7 @@ export class PostDetailHeader extends PureComponent {
     const {
       author,
       repostedBy,
+      artistInvite,
       artistInviteSubmission,
       detailPath,
       inUserDetail,
@@ -242,8 +245,8 @@ export class PostDetailHeader extends PureComponent {
             <span>
               <ArtistInviteSubmissionStatusTool
                 status={artistInviteSubmission.get('status')}
-                slug={artistInviteSubmission.get('slug')}
-                title={artistInviteSubmission.get('title')}
+                slug={artistInvite.get('slug')}
+                title={artistInvite.get('title')}
               />
             </span>
           }

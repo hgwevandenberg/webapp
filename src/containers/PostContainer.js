@@ -45,6 +45,7 @@ import {
 import {
   selectPost,
   selectPostAuthor,
+  selectPostArtistInvite,
   selectPostArtistInviteSubmission,
   selectPostBody,
   selectPostCategoryName,
@@ -101,6 +102,7 @@ export function makeMapStateToProps() {
       innerWidth: selectInnerWidth(state),
       isArtistInviteSubmission: selectPostIsArtistInviteSubmission(state, props),
       artistInviteSubmission: selectPostArtistInviteSubmission(state, props),
+      artistInvite: selectPostArtistInvite(state, props),
       isCommentsRequesting: selectPostIsCommentsRequesting(state, props),
       showCategoryHeader: selectShowCategoryHeader(state, props),
       isGridMode: selectPostIsGridMode(state, props),
@@ -152,6 +154,7 @@ class PostContainer extends Component {
     innerHeight: PropTypes.number.isRequired,
     innerWidth: PropTypes.number.isRequired,
     artistInviteSubmission: PropTypes.object,
+    artistInvite: PropTypes.object,
     isArtistInviteSubmission: PropTypes.bool.isRequired,
     isCommentsRequesting: PropTypes.bool.isRequired,
     showCategoryHeader: PropTypes.bool.isRequired,
@@ -196,6 +199,7 @@ class PostContainer extends Component {
   static defaultProps = {
     adminActions: null,
     artistInviteSubmission: null,
+    artistInvite: null,
     avatar: null,
     categoryName: null,
     categoryPath: null,
@@ -425,6 +429,7 @@ class PostContainer extends Component {
     const {
       adminActions,
       author,
+      artistInvite,
       artistInviteSubmission,
       avatar,
       categoryName,
@@ -504,6 +509,7 @@ class PostContainer extends Component {
           author={repostAuthor || author}
           repostedBy={repostAuthor ? author : null}
           artistInviteSubmission={artistInviteSubmission}
+          artistInvite={artistInvite}
           inUserDetail={repostAuthor ? isPostHeaderHidden : null}
           isArtistInviteSubmission={isArtistInviteSubmission}
           isRepost={isRepost}
