@@ -258,10 +258,24 @@ class PostActionBar extends Component {
     return (
       <div className={wrapperStyle} id={editorId}>
         <div className={leftStyle}>
-          <button className={`PostActionButton forCancel text ${cancelTextButtonStyle}`} onClick={this.cancel}>
-            <span>Cancel</span>
-          </button>
-          {replyAllAction &&
+          {!isComment &&
+            <button className={`PostActionButton forCancel text ${cancelTextButtonStyle}`} onClick={this.cancel}>
+              <span>Cancel</span>
+            </button>
+          }
+          {isComment &&
+            <button
+              className={`PostActionButton forUpload ${buttonStyle}`}
+              onClick={this.browse}
+              ref={(comp) => { this.browseButton = comp }}
+            >
+              <div className={buttonContentsStyle}>
+                <span className={labelStyle}>Upload</span>
+                <BrowseIcon />
+              </div>
+            </button>
+          }
+          {isComment && replyAllAction &&
             <button className={`PostActionButton forReplyAll ${buttonStyle}`} onClick={replyAllAction}>
               <div className={buttonContentsStyle}>
                 <span className={labelStyle}>Reply All</span>
@@ -269,29 +283,21 @@ class PostActionBar extends Component {
               </div>
             </button>
           }
-          <button
-            className={`PostActionButton forCancel button ${buttonStyle}`}
-            onClick={this.cancel}
-            disabled={disableSubmitAction}
-          >
-            <div className={buttonContentsStyle}>
-              <span className={labelStyle}>Cancel</span>
-              <XIconLG />
-            </div>
-          </button>
         </div>
 
         <div className={rightStyle}>
-          <button
-            className={`PostActionButton forUpload ${buttonStyle}`}
-            onClick={this.browse}
-            ref={(comp) => { this.browseButton = comp }}
-          >
-            <div className={buttonContentsStyle}>
-              <span className={labelStyle}>Upload</span>
-              <BrowseIcon />
-            </div>
-          </button>
+          {!isComment &&
+            <button
+              className={`PostActionButton forUpload ${buttonStyle}`}
+              onClick={this.browse}
+              ref={(comp) => { this.browseButton = comp }}
+            >
+              <div className={buttonContentsStyle}>
+                <span className={labelStyle}>Upload</span>
+                <BrowseIcon />
+              </div>
+            </button>
+          }
           {!isComment &&
             <button
               className={classNames('PostActionButton forMoney', { isBuyLinked }, `${buttonStyle}`)}
@@ -314,6 +320,11 @@ class PostActionBar extends Component {
               selectedCategories={selectedCategories}
               resetSelection={resetCategorySelection}
             />
+          }
+          {isComment &&
+            <button className={`PostActionButton forCancel text ${cancelTextButtonStyle}`} onClick={this.cancel}>
+              <span>Cancel</span>
+            </button>
           }
           <button
             className={`PostActionButton forSubmit for${submitText} ${buttonStyle}`}
