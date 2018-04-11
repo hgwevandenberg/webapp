@@ -63,10 +63,14 @@ const categoriesSelectionsStyle = css(
     s.rotate90,
     s.zIndex1,
     {
+      cursor: 'pointer',
       top: 10,
       right: 10,
     },
     // select('& polyline', { fill: '#aaa' }),
+  ),
+  select('&.open svg.ChevronIcon',
+    s.zIndex3,
   ),
   // selected
   select('& .selected',
@@ -315,11 +319,17 @@ export default class CategoryPostSelector extends PureComponent {
     }
   }
 
-  handleSelectorClick() {
+  handleSelectorClick(e) {
     const { selectedCategories } = this.props
     if (!selectedCategories) {
-      this.open()
+      return this.open()
     }
+    if (e.target.nodeName === 'polyline' ||
+      e.target.nodeName === 'g' ||
+      e.target.nodeName === 'svg') {
+      return this.close()
+    }
+    return null
   }
 
   handleClickOutside(event) {
