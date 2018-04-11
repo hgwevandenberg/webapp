@@ -3,7 +3,10 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { css, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
-import { XIcon } from '../assets/Icons'
+import {
+  ChevronIcon,
+  XIcon,
+} from '../assets/Icons'
 
 const categoryPostSelectorStyle = css(
   s.inlineBlock,
@@ -52,11 +55,23 @@ const categoriesSelectionsStyle = css(
       left: 20,
     },
   ),
+  select('& svg.ChevronIcon',
+    s.absolute,
+    s.block,
+    s.colorA,
+    s.rotate90,
+    s.zIndex1,
+    {
+      top: 10,
+      right: 10,
+    },
+    // select('& polyline', { fill: '#aaa' }),
+  ),
   // selected
   select('& .selected',
     {
       cursor: 'default',
-      borderColor: '#000',
+      borderColor: '#979797',
     },
     select('& b',
       s.sansRegular,
@@ -364,6 +379,7 @@ export default class CategoryPostSelector extends PureComponent {
                   {open ? 'Type community name' : 'Choose Community'}
                 </label>
               }
+              <ChevronIcon />
               <input
                 ref={(node) => { this.categorySelectorRef = node }}
                 className="selector"
