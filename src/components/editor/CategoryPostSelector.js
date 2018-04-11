@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { css, select } from '../../styles/jss'
-import * as s from '../../styles/jso'
+import { scrollToPosition } from './../../lib/jello'
+import { css, select } from './../../styles/jss'
+import * as s from './../../styles/jso'
 import {
   ChevronIcon,
   XIcon,
@@ -167,7 +168,10 @@ function filterSearch(categories, searchText) {
 function CategoryItem({ category, index, selectedIndex, onSelect }) {
   const isSelected = selectedIndex === index
   return (
-    <li className={classNames({ isSelected })}>
+    <li
+      id={`categorySelect_${category.get('id')}`}
+      className={classNames({ isSelected })}
+    >
       <button
         role="option"
         aria-selected={isSelected}
@@ -243,6 +247,11 @@ export default class CategoryPostSelector extends PureComponent {
     if (!prevProps.resetSelection && this.props.resetSelection) {
       this.close()
     }
+
+    if (this.state.open &&
+      (prevState.selectedIndex !== this.state.selectedIndex)) {
+      this.scrollToSelectedCategory()
+    }
   }
 
   componentWillUnmount() {
@@ -306,20 +315,6 @@ export default class CategoryPostSelector extends PureComponent {
     }
   }
 
-  open() {
-    if (!this.state.open) {
-      this.setState({
-        open: true,
-      })
-    }
-  }
-
-  close() {
-    if (this.state.open) {
-      this.resetSelection()
-    }
-  }
-
   handleSelectorClick() {
     const { selectedCategories } = this.props
     if (!selectedCategories) {
@@ -332,6 +327,65 @@ export default class CategoryPostSelector extends PureComponent {
       if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
         this.close()
       }
+    }
+  }
+
+  scrollToSelectedCategory() {
+    const {
+      subscribedCategories,
+      unsubscribedCategories,
+      selectedIndex,
+    } = this.state
+    const categories = subscribedCategories.concat(unsubscribedCategories)
+    const selectedCategory = categories[selectedIndex]
+    let selectedCategoryDomId = null
+    if (selectedCategory) {
+      selectedCategoryDomId = `categorySelect_${selectedCategory.get('id')}`
+    }
+
+    // grab elements from the dom
+    const categoryListInDom = document.getElementById('categoryList')
+    const selectedCategoryItemInDom = document.getElementById(selectedCategoryDomId)
+
+    // determine scroll offset of category item in dom
+    let categoryItemInDomTopOffset = null
+    let categoryListInDomTopOffset = null
+    let categoryItemInDomHeight = null
+    let categoryListInDomHeight = null
+    if (selectedCategoryDomId) {
+      categoryItemInDomTopOffset = selectedCategoryItemInDom.getBoundingClientRect().top
+      categoryListInDomTopOffset = categoryListInDom.getBoundingClientRect().top
+      categoryItemInDomHeight = selectedCategoryItemInDom.clientHeight
+      categoryListInDomHeight = categoryListInDom.clientHeight
+    }
+
+    if (categoryItemInDomTopOffset) {
+      // adjust scroll offset for window height / nav bar
+      const scrollElement = categoryListInDom
+      const scrollTo = (categoryItemInDomTopOffset - categoryListInDomTopOffset)
+      const scrollCheckOffset = categoryItemInDomHeight
+
+      if (
+        ((scrollTo + scrollCheckOffset) > categoryListInDomHeight) ||
+        (scrollTo < 0)
+      ) {
+        // scroll to new position
+        scrollToPosition(0, scrollTo, { el: scrollElement, duration: 150 })
+      }
+    }
+  }
+
+  open() {
+    if (!this.state.open) {
+      this.setState({
+        open: true,
+      })
+    }
+  }
+
+  close() {
+    if (this.state.open) {
+      this.resetSelection()
     }
   }
 
@@ -406,7 +460,10 @@ export default class CategoryPostSelector extends PureComponent {
           }
         </span>
         {open &&
-          <span className={categoriesListStyle}>
+          <span
+            id="categoryList"
+            className={categoriesListStyle}
+          >
             {subscribedCategories.length > 0 &&
               <span className="subscribed">
                 <b>Your Categories</b>
