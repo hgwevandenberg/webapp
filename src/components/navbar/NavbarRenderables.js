@@ -324,7 +324,7 @@ NavbarLoggedIn.propTypes = {
   onLogOut: PropTypes.func.isRequired,
   pathname: PropTypes.string.isRequired,
   username: PropTypes.string,
-  innerWidth: PropTypes.string,
+  innerWidth: PropTypes.number,
 }
 NavbarLoggedIn.defaultProps = {
   avatar: null,
