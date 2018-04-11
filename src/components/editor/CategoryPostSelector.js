@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { css, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
+import { XIcon } from '../assets/Icons'
 
 const categoryPostSelectorStyle = css(
   s.inlineBlock,
@@ -16,12 +17,10 @@ const categoryPostSelectorStyle = css(
 
 const categoriesSelectionsStyle = css(
   { cursor: 'pointer' },
+  select('& input', s.resetInput),
   select('& .selector, & .selected',
     s.fullWidth,
-  ),
-  select('& input.selector',
-    s.resetInput,
-    s.relative,
+    s.block,
     s.pr20,
     s.pl20,
     s.zIndex2,
@@ -34,7 +33,11 @@ const categoriesSelectionsStyle = css(
       borderRadius: 5,
     },
   ),
-  select('&.open input.selector',
+  // selector
+  select('& .selector',
+    s.relative,
+  ),
+  select('&.open .selector',
     {
       cursor: 'text',
       borderBottomRightRadius: 0,
@@ -48,6 +51,26 @@ const categoriesSelectionsStyle = css(
     {
       left: 20,
     },
+  ),
+  // selected
+  select('& .selected',
+    {
+      cursor: 'default',
+      borderColor: '#000',
+    },
+    select('& b',
+      s.sansRegular,
+      {
+        lineHeight: 20,
+      },
+    ),
+    select('& button',
+      s.absolute,
+      {
+        right: 15,
+      },
+    ),
+    select('& button span.text', s.displayNone),
   ),
 )
 
@@ -357,7 +380,12 @@ export default class CategoryPostSelector extends PureComponent {
           {selectedCategory &&
             <span className="selected">
               <b>{selectedCategory.get('name')}</b>
-              <button onClick={onClear}>X</button>
+              <button onClick={onClear}>
+                <span className="text">Remove</span>
+                <span className="icon">
+                  <XIcon />
+                </span>
+              </button>
             </span>
           }
         </span>
