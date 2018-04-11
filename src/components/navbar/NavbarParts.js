@@ -436,7 +436,7 @@ NavbarProfile.propTypes = {
   onClickAvatar: PropTypes.func.isRequired,
   onLogOut: PropTypes.func.isRequired,
   username: PropTypes.string,
-  innerWidth: PropTypes.string,
+  innerWidth: PropTypes.number,
 }
 NavbarProfile.defaultProps = {
   avatar: null,
