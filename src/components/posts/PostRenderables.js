@@ -100,6 +100,7 @@ const getActionIcon = (type) => {
 export const PostAdminActions = ({ actions, status }, { onClickAction }) => (
   <div className={`${adminActionsStyle} ${status}`}>
     {actions.entrySeq().map(([type, action]) => {
+      if (!action) { return null }
       const label = action.get('label')
         .replace('Approved', 'Accepted')
         .replace('Approve', 'Accept')
@@ -148,12 +149,14 @@ export class PostDetailHeader extends PureComponent {
     isRepost: PropTypes.bool.isRequired,
     postCreatedAt: PropTypes.string.isRequired,
     postId: PropTypes.string.isRequired,
+    artistInviteSubmissionStatus: PropTypes.string,
   }
 
   static defaultProps = {
     repostedBy: null,
     artistInvite: null,
     artistInviteSubmission: null,
+    artistInviteSubmissionStatus: null,
     inUserDetail: null,
   }
 
@@ -163,6 +166,7 @@ export class PostDetailHeader extends PureComponent {
       repostedBy,
       artistInvite,
       artistInviteSubmission,
+      artistInviteSubmissionStatus,
       originalPostArtistInvite,
       originalPostArtistInviteSubmission,
       detailPath,
@@ -176,12 +180,19 @@ export class PostDetailHeader extends PureComponent {
     const isArtistInviteSubmission = !!(artistInvite || originalPostArtistInvite)
     const displayInvite = (artistInvite || originalPostArtistInvite)
     const displaySubmission = (artistInviteSubmission || originalPostArtistInviteSubmission)
+    const isArtistInviteAdmin = !!artistInviteSubmission && !!artistInviteSubmission.get('actions')
 
     return (
       <header
         className={classNames('PostHeader PostDetailHeader', isRepost ? 'RepostHeader RepostDetailHeader' : '', { inUserDetail, isOwnPost })}
         key={`PostHeader_${postId}`}
       >
+        {isArtistInviteAdmin &&
+          <PostAdminActions
+            status={artistInviteSubmissionStatus}
+            actions={artistInviteSubmission.get('actions')}
+          />
+        }
         <div className="PostHeaderLeft">
           <Link className="PostHeaderLinkAvatar" to={`/${author.get('username')}`}>
             <Avatar

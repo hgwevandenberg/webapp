@@ -163,6 +163,11 @@ export const selectPostArtistInviteSubmission = createSelector(
   (id, submissions) => id && submissions.get(id),
 )
 
+export const selectPostArtistInviteSubmissionStatus = createSelector(
+  [selectPostArtistInviteSubmissionId, selectArtistInviteSubmissions],
+  (id, submissions) => id && submissions.getIn([id, 'status']),
+)
+
 export const selectPostArtistInviteId = createSelector(
   [selectPost], post => post && post.get('artistInviteId'),
 )

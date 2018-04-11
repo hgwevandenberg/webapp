@@ -16,6 +16,7 @@ import {
   unwatchPost,
   watchPost,
 } from '../actions/posts'
+import { sendAdminAction } from '../actions/artist_invites'
 import ConfirmDialog from '../components/dialogs/ConfirmDialog'
 import FlagDialog from '../components/dialogs/FlagDialog'
 import {
@@ -47,6 +48,7 @@ import {
   selectPostAuthor,
   selectPostArtistInvite,
   selectPostArtistInviteSubmission,
+  selectPostArtistInviteSubmissionStatus,
   selectPostBody,
   selectPostCategoryName,
   selectPostCategorySlug,
@@ -105,6 +107,7 @@ export function makeMapStateToProps() {
       isArtistInviteSubmission: selectPostIsArtistInviteSubmission(state, props),
       artistInviteSubmission: selectPostArtistInviteSubmission(state, props),
       artistInvite: selectPostArtistInvite(state, props),
+      submissionStatus: selectPostArtistInviteSubmissionStatus(state, props),
       originalPostArtistInviteSubmission: selectOriginalPostArtistInviteSubmission(state, props),
       originalPostArtistInvite: selectOriginalPostArtistInvite(state, props),
       isCommentsRequesting: selectPostIsCommentsRequesting(state, props),
@@ -237,6 +240,7 @@ class PostContainer extends Component {
   }
 
   static childContextTypes = {
+    onClickAction: PropTypes.func.isRequired,
     onClickDeletePost: PropTypes.func.isRequired,
     onClickEditPost: PropTypes.func.isRequired,
     onClickFlagPost: PropTypes.func.isRequired,
@@ -260,6 +264,7 @@ class PostContainer extends Component {
   getChildContext() {
     const { isLoggedIn } = this.props
     return {
+      onClickAction: this.onClickAction,
       onClickDeletePost: this.onClickDeletePost,
       onClickEditPost: this.onClickEditPost,
       onClickFlagPost: this.onClickFlagPost,
@@ -421,6 +426,11 @@ class PostContainer extends Component {
     onClickOpenRegistrationRequestDialog('post-tools')
   }
 
+  onClickAction = (action) => {
+    const { dispatch } = this.props
+    dispatch(sendAdminAction(action))
+  }
+
   getUserModalTabs() {
     const { postLovesCount, postRepostsCount } = this.props
     const tabs = []
@@ -519,6 +529,7 @@ class PostContainer extends Component {
           author={repostAuthor || author}
           repostedBy={repostAuthor ? author : null}
           artistInviteSubmission={artistInviteSubmission}
+          artistInviteSubmissionStatus={submissionStatus}
           artistInvite={artistInvite}
           originalPostArtistInviteSubmission={originalPostArtistInviteSubmission}
           originalPostArtistInvite={originalPostArtistInvite}
