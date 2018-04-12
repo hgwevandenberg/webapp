@@ -203,14 +203,11 @@ export function CategorySubNav({ stream, kind }) {
           Trending
         </Link>
       </li>
-      {
-      // Disable this until post to category for non featured users is ready.
-      // <li className={classNames({ selected: kind === 'recent' })}>
-      //   <Link to={`/discover/${stream}/recent`}>
-      //     Recent
-      //   </Link>
-      // </li>
-      }
+      <li className={classNames({ selected: kind === 'recent' })}>
+        <Link to={`/discover/${stream}/recent`}>
+          Recent
+        </Link>
+      </li>
       <li className={classNames({ selected: kind === 'shop' })}>
         <Link to={`/discover/${stream}/shop`}>
           Shop
