@@ -42,6 +42,12 @@ const categoriesSelectionsStyle = css(
       borderRadius: 5,
     },
   ),
+  select('&.open .selector, &.open .selected',
+    {
+      borderBottomRightRadius: 0,
+      borderBottomLeftRadius: 0,
+    },
+  ),
   // selector
   select('& .selector',
     s.relative,
@@ -49,8 +55,6 @@ const categoriesSelectionsStyle = css(
   select('&.open .selector',
     {
       cursor: 'text',
-      borderBottomRightRadius: 0,
-      borderBottomLeftRadius: 0,
     },
   ),
   select('& .selector-label',
@@ -254,9 +258,13 @@ export default class CategoryPostSelector extends PureComponent {
   }
 
   componentDidMount() {
-    const { onSelect, featuredInCategories } = this.props
+    const { onSelect, featuredInCategories, selectedCategories } = this.props
     if (featuredInCategories.length > 0) {
       onSelect(featuredInCategories[0])
+    }
+
+    if (selectedCategories) {
+      this.setIndexOfSelection()
     }
   }
 
