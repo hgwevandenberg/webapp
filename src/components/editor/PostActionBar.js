@@ -30,6 +30,9 @@ const wrapperStyle = css(
   s.hv40,
   s.lh40,
   s.mt10,
+  media(s.maxBreak2,
+    { height: 'auto' },
+  ),
 )
 
 const leftStyle = css(

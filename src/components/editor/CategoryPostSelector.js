@@ -145,15 +145,18 @@ const categoriesListStyle = css(
       s.p0,
       select('& button',
         s.block,
-        s.p5,
-        s.pr10,
-        s.pl10,
         s.fullWidth,
         {
+          marginTop: 1,
+          marginBottom: 1,
+          padding: 4,
           height: 'auto',
           textAlign: 'left',
           lineHeight: 20,
         },
+        // have to be below `padding: 4`
+        s.pr10,
+        s.pl10,
       ),
       select('& button:active',
         s.colorBlack,
@@ -166,6 +169,20 @@ const categoriesListStyle = css(
         { borderRadius: 3 },
       ),
     ),
+  ),
+  // mobile tweaks
+  media(s.maxBreak2,
+    s.relative,
+    s.block,
+    {
+      WebkitOverflowScrolling: 'none',
+      overflowX: 'hidden',
+      overflowY: 'visible',
+      top: 'auto',
+      left: 'auto',
+      maxHeight: '100%',
+      borderTopWidth: 0,
+    },
   ),
 )
 
