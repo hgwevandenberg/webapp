@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { scrollToPosition } from './../../lib/jello'
-import { css, select } from './../../styles/jss'
+import { css, media, select } from './../../styles/jss'
 import * as s from './../../styles/jso'
 import {
   ChevronIcon,
@@ -17,6 +17,11 @@ const categoryPostSelectorStyle = css(
   {
     width: 300,
   },
+  media(s.maxBreak2,
+    s.m0,
+    s.fullWidth,
+    { marginBottom: 10 },
+  ),
 )
 
 const categoriesSelectionsStyle = css(

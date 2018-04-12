@@ -25,6 +25,7 @@ import * as s from '../../styles/jso'
 
 const wrapperStyle = css(
   s.flex,
+  s.flexWrap,
   s.justifySpaceBetween,
   s.hv40,
   s.lh40,
@@ -35,7 +36,7 @@ const leftStyle = css(
   select('& button', s.mr10),
   select('& button:last-child', s.mr0),
   // manage comments cancel buttons
-  media(s.minBreak3,
+  media(s.minBreak2,
     select('.PostDetail & .isComment.forCancel.icon-text', s.displayNone),
   ),
 )
@@ -45,7 +46,7 @@ const rightStyle = css(
   select('& button:first-child', s.ml0),
   // manage comments cancel buttons
   select('.PostDetail & .isComment.forCancel.text', s.displayNone),
-  media(s.minBreak3,
+  media(s.minBreak2,
     select('.PostGrid & .isComment.forCancel.text', s.displayNone),
     select('.PostDetail & .isComment.forCancel.text', s.inlineBlock),
   ),
@@ -113,6 +114,14 @@ const buttonStyle = css(
   select('&.isComment.forSubmit',
     s.wv40,
     { minWidth: 0 },
+    media(s.maxBreak2,
+      s.pl20,
+      s.pr20,
+      { width: 'auto' },
+      select('& .SVGIcon',
+        s.displayNone,
+      ),
+    ),
   ),
   parent('.PostGrid', s.wv40, media(s.minBreak2, s.wv40)),
   parent('.PostGrid .isComment.forComment', s.displayNone),
@@ -139,6 +148,10 @@ const labelStyle = css(
   parent('.forSubmit',
     s.inlineBlock,
     select('& + .SVGIcon', { transform: 'scale(1.2)' }),
+  ),
+  media(s.maxBreak2,
+    parent('.isComment.forSubmit', s.inlineBlock),
+    parent('.isComment.forSubmit .SVGIcon', s.displayNone),
   ),
 )
 
@@ -279,15 +292,79 @@ class PostActionBar extends Component {
 
     // post version
     if (!isComment) {
+      // desktop post version
+      if (innerWidth > 639) {
+        return (
+          <div className={wrapperStyle} id={editorId}>
+            <div className={leftStyle}>
+              <button className={`PostActionButton forCancel text ${cancelTextButtonStyle}`} onClick={this.cancel}>
+                <span>Cancel</span>
+              </button>
+            </div>
+
+            <div className={rightStyle}>
+              <button
+                className={`PostActionButton forUpload ${buttonStyle}`}
+                onClick={this.browse}
+                ref={(comp) => { this.browseButton = comp }}
+              >
+                <span className={labelStyle}>Upload</span>
+                <BrowseIcon />
+              </button>
+              <button
+                className={classNames('PostActionButton forMoney', { isBuyLinked }, `${buttonStyle}`)}
+                disabled={!hasMedia}
+                onClick={this.money}
+              >
+                <span className={labelStyle}>Sell</span>
+                <MoneyIconCircle />
+              </button>
+              {postIntoCategory &&
+                <CategoryPostSelector
+                  onSelect={this.onSelectCategory}
+                  onClear={this.onClearCategory}
+                  subscribedCategories={subscribedCategories}
+                  featuredInCategories={featuredInCategories}
+                  unsubscribedCategories={unsubscribedCategories}
+                  selectedCategories={selectedCategories}
+                  resetSelection={resetCategorySelection}
+                />
+              }
+              <button
+                className={`PostActionButton forSubmit for${submitText} ${buttonStyle}`}
+                disabled={disableSubmitAction}
+                ref={(comp) => { this.submitButton = comp }}
+                onClick={this.submitted}
+              >
+                <span className={labelStyle}>{submitText}</span>
+                <ArrowIcon />
+              </button>
+            </div>
+            <input
+              className={hide}
+              onChange={this.handleFileBrowser}
+              ref={(comp) => { this.fileBrowser = comp }}
+              type="file"
+              accept="image/*"
+              multiple
+            />
+          </div>
+        )
+      }
+
+      // mobile post version
       return (
         <div className={wrapperStyle} id={editorId}>
+          <CategoryPostSelector
+            onSelect={this.onSelectCategory}
+            onClear={this.onClearCategory}
+            subscribedCategories={subscribedCategories}
+            featuredInCategories={featuredInCategories}
+            unsubscribedCategories={unsubscribedCategories}
+            selectedCategories={selectedCategories}
+            resetSelection={resetCategorySelection}
+          />
           <div className={leftStyle}>
-            <button className={`PostActionButton forCancel text ${cancelTextButtonStyle}`} onClick={this.cancel}>
-              <span>Cancel</span>
-            </button>
-          </div>
-
-          <div className={rightStyle}>
             <button
               className={`PostActionButton forUpload ${buttonStyle}`}
               onClick={this.browse}
@@ -304,17 +381,20 @@ class PostActionBar extends Component {
               <span className={labelStyle}>Sell</span>
               <MoneyIconCircle />
             </button>
-            {postIntoCategory &&
-              <CategoryPostSelector
-                onSelect={this.onSelectCategory}
-                onClear={this.onClearCategory}
-                subscribedCategories={subscribedCategories}
-                featuredInCategories={featuredInCategories}
-                unsubscribedCategories={unsubscribedCategories}
-                selectedCategories={selectedCategories}
-                resetSelection={resetCategorySelection}
-              />
-            }
+            <button
+              className={`PostActionButton forCancel icon-text ${buttonStyle}`}
+              onClick={this.cancel}
+              disabled={disableSubmitAction}
+            >
+              <span className={labelStyle}>Cancel</span>
+              <XIconLG />
+            </button>
+          </div>
+
+          <div className={rightStyle}>
+            <button className={`PostActionButton forCancel text ${cancelTextButtonStyle}`} onClick={this.cancel}>
+              <span>Cancel</span>
+            </button>
             <button
               className={`PostActionButton forSubmit for${submitText} ${buttonStyle}`}
               disabled={disableSubmitAction}
