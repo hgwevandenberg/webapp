@@ -35,20 +35,26 @@ const wrapperStyle = css(
 const leftStyle = css(
   select('& button', s.mr10),
   select('& button:last-child', s.mr0),
-  // manage comments cancel buttons
+  // manage cancel buttons
   media(s.minBreak2,
     select('.PostDetail & .isComment.forCancel.icon-text', s.displayNone),
+  ),
+  media('(min-width: 20.0625em)',
+    select('& .isPost.forCancel.icon-text', s.displayNone),
   ),
 )
 
 const rightStyle = css(
   select('& button + button', s.ml10),
   select('& button:first-child', s.ml0),
-  // manage comments cancel buttons
+  // manage cancel buttons
   select('.PostDetail & .isComment.forCancel.text', s.displayNone),
   media(s.minBreak2,
     select('.PostGrid & .isComment.forCancel.text', s.displayNone),
     select('.PostDetail & .isComment.forCancel.text', s.inlineBlock),
+  ),
+  media('(max-width: 20em)',
+    select('& .isPost.forCancel.text', s.displayNone),
   ),
 )
 
@@ -382,7 +388,7 @@ class PostActionBar extends Component {
               <MoneyIconCircle />
             </button>
             <button
-              className={`PostActionButton forCancel icon-text ${buttonStyle}`}
+              className={`PostActionButton isPost forCancel icon-text ${buttonStyle}`}
               onClick={this.cancel}
               disabled={disableSubmitAction}
             >
@@ -392,7 +398,7 @@ class PostActionBar extends Component {
           </div>
 
           <div className={rightStyle}>
-            <button className={`PostActionButton forCancel text ${cancelTextButtonStyle}`} onClick={this.cancel}>
+            <button className={`PostActionButton isPost forCancel text ${cancelTextButtonStyle}`} onClick={this.cancel}>
               <span>Cancel</span>
             </button>
             <button
