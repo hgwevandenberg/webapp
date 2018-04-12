@@ -80,7 +80,6 @@ const categoriesSelectionsStyle = css(
   // selected
   select('& .selected',
     {
-      cursor: 'default',
       borderColor: '#979797',
     },
     select('& b',
