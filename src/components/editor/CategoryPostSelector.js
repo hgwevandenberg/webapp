@@ -88,12 +88,19 @@ const categoriesSelectionsStyle = css(
       {
         lineHeight: 20,
       },
+      select('& i',
+        s.sansRegular,
+        s.colorA,
+      ),
     ),
     select('& button',
       s.absolute,
       {
         right: 15,
       },
+      media(s.maxBreak2,
+        { right: 18 },
+      ),
     ),
     select('& button span.text', s.displayNone),
   ),
@@ -481,7 +488,7 @@ export default class CategoryPostSelector extends PureComponent {
           }
           {selectedCategory &&
             <span className="selected">
-              <b>{selectedCategory.get('name')}</b>
+              <b><i>Post into:</i> {selectedCategory.get('name')}</b>
               <button onClick={onClear}>
                 <span className="text">Remove</span>
                 <span className="icon">
