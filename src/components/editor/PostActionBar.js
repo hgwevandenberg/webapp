@@ -2,13 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
-import {
-  ArrowIcon,
-  BrowseIcon,
-  MoneyIconCircle,
-  ReplyAllIcon,
-  XIconLG,
-} from '../assets/Icons'
+import { selectInnerWidth } from '../../selectors/gui'
 import CategoryPostSelector from './CategoryPostSelector'
 import { openModal, closeModal } from '../../actions/modals'
 import { updateBuyLink, updateCategoryId, clearCategoryId } from '../../actions/editor'
@@ -19,6 +13,13 @@ import {
   selectFeaturedInCategories,
   selectPostSelectedCategories,
 } from '../../selectors/categories'
+import {
+  ArrowIcon,
+  BrowseIcon,
+  MoneyIconCircle,
+  ReplyAllIcon,
+  XIconLG,
+} from '../assets/Icons'
 import { css, disabled, hover, media, modifier, parent, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
@@ -33,23 +34,27 @@ const wrapperStyle = css(
 const leftStyle = css(
   select('& button', s.mr10),
   select('& button:last-child', s.mr0),
-  select('& .forCancel.text', s.displayNone),
-  select('.PostGrid & .forCancel.text', s.displayNone),
-  media(s.minBreak2, select('& .forCancel.text', s.inlineBlock, s.mr0, s.p0)),
-  select('& .forCancel.button', s.inlineBlock),
-  select('.PostGrid & .forCancel.button', s.inlineBlock),
-  media(s.minBreak2, select('& .forCancel.button', s.displayNone)),
+  // manage comments cancel buttons
+  media(s.minBreak3,
+    select('.PostDetail & .isComment.forCancel.icon-text', s.displayNone),
+  ),
 )
 
 const rightStyle = css(
   select('& button + button', s.ml10),
   select('& button:first-child', s.ml0),
+  // manage comments cancel buttons
+  select('.PostDetail & .isComment.forCancel.text', s.displayNone),
+  media(s.minBreak3,
+    select('.PostGrid & .isComment.forCancel.text', s.displayNone),
+    select('.PostDetail & .isComment.forCancel.text', s.inlineBlock),
+  ),
 )
 
 const buttonStyle = css(
   s.inlineFlex,
-  s.pl20,
-  s.pr20,
+  s.pl10,
+  s.pr10,
   s.itemsCenter,
   s.contentCenter,
   s.justifySpaceBetween,
@@ -68,11 +73,22 @@ const buttonStyle = css(
   disabled(s.pointerNone, s.bgcA),
   hover({ backgroundColor: '#6a6a6a' }),
   media(
-    s.minBreak2,
+    s.minBreak3,
+    s.pl20,
+    s.pr20,
     { width: 'auto' },
     select('&.forSubmit',
       { minWidth: 120 },
     ),
+    select('&.isComment, &.isComment',
+      s.pl10,
+      s.pr10,
+    ),
+  ),
+  select('&.forSubmit',
+    s.pl20,
+    s.pr20,
+    { minWidth: 120 },
   ),
   modifier('.isBuyLinked', s.bgcGreen),
   modifier(
@@ -81,6 +97,11 @@ const buttonStyle = css(
       '.isComment',
       s.wv40,
       disabled(s.bgcA),
+      media(
+        s.maxBreak3,
+        s.pl10,
+        s.pr10,
+      ),
     ),
     parent(
       '.PostGrid .isComment',
@@ -88,8 +109,13 @@ const buttonStyle = css(
     ),
   ),
   modifier('.forSubmit', s.bgcGreen, disabled(s.bgcA), hover({ backgroundColor: '#02b302' }), { width: 'auto' }),
-  parent('.isComment', s.wv40, media(s.minBreak2, s.wv40)),
+  select('&.isComment', s.wv40, media(s.minBreak2, s.wv40)),
+  select('&.isComment.forSubmit',
+    s.wv40,
+    { minWidth: 0 },
+  ),
   parent('.PostGrid', s.wv40, media(s.minBreak2, s.wv40)),
+  parent('.PostGrid .isComment.forComment', s.displayNone),
 )
 
 const cancelTextButtonStyle = css(
@@ -101,20 +127,15 @@ const cancelTextButtonStyle = css(
 
 const labelStyle = css(
   s.displayNone,
-  { marginRight: 10 },
+  s.m0,
   media(
-    s.minBreak2,
+    s.minBreak3,
     s.inlineBlock,
-    select('& + .SVGIcon', { marginLeft: 10 }),
-    parent(
-      '.PostDetail .forComment',
-      // select('& + .SVGIcon', { marginRight: 11, marginLeft: 11 }),
-    ),
+    { marginRight: 10 },
   ),
-  // parent('.forSubmit', s.inlineBlock, select('& + .SVGIcon', { marginRight: 11 })),
-  parent('.isComment', s.displayNone, select('& + .SVGIcon', s.mr0)),
-  parent('.PostGrid', s.displayNone, select('& + .SVGIcon', s.mr0)),
-  parent('.PostGrid .isComment .forComment', s.displayNone, select('& + .SVGIcon', s.mr0)),
+  parent('.isComment', s.displayNone),
+  parent('.PostGrid', s.displayNone),
+  parent('.isComment.forSubmit', s.displayNone),
   parent('.forSubmit',
     s.inlineBlock,
     select('& + .SVGIcon', { transform: 'scale(1.2)' }),
@@ -129,6 +150,7 @@ function mapStateToProps(state, props) {
     featuredInCategories: selectFeaturedInCategories(state, props),
     unsubscribedCategories: selectUnsubscribedCategories(state, props),
     selectedCategories: selectPostSelectedCategories(state, props),
+    innerWidth: selectInnerWidth(state),
   }
 }
 
@@ -151,6 +173,7 @@ class PostActionBar extends Component {
     selectedCategories: PropTypes.array.isRequired,
     featuredInCategories: PropTypes.array.isRequired,
     unsubscribedCategories: PropTypes.array.isRequired,
+    innerWidth: PropTypes.number.isRequired,
   }
 
   static defaultProps = {
@@ -249,51 +272,22 @@ class PostActionBar extends Component {
       featuredInCategories,
       unsubscribedCategories,
       isComment,
+      innerWidth,
     } = this.props
     const { resetCategorySelection } = this.state
     const isBuyLinked = this.props.buyLink && this.props.buyLink.length
-    return (
-      <div className={wrapperStyle} id={editorId}>
-        <div className={leftStyle}>
-          {!isComment &&
+
+    // post version
+    if (!isComment) {
+      return (
+        <div className={wrapperStyle} id={editorId}>
+          <div className={leftStyle}>
             <button className={`PostActionButton forCancel text ${cancelTextButtonStyle}`} onClick={this.cancel}>
               <span>Cancel</span>
             </button>
-          }
-          {isComment &&
-            <button
-              className={`PostActionButton forUpload ${buttonStyle}`}
-              onClick={this.browse}
-              ref={(comp) => { this.browseButton = comp }}
-            >
-              <span className={labelStyle}>Upload</span>
-              <BrowseIcon />
-            </button>
-          }
-          {isComment && replyAllAction &&
-            <button className={`PostActionButton forReplyAll ${buttonStyle}`} onClick={replyAllAction}>
-              <span className={buttonContentsStyle}>
-                <span className={labelStyle}>Reply All</span>
-                <ReplyAllIcon />
-              </span>
-            </button>
-          }
-          {isComment &&
-            <button
-              className={`PostActionButton forCancel ${buttonStyle}`}
-              onClick={this.cancel}
-              disabled={disableSubmitAction}
-            >
-              <span className={buttonContentsStyle}>
-                <span className={labelStyle}>Cancel</span>
-                <XIconLG />
-              </span>
-            </button>
-          }
-        </div>
+          </div>
 
-        <div className={rightStyle}>
-          {!isComment &&
+          <div className={rightStyle}>
             <button
               className={`PostActionButton forUpload ${buttonStyle}`}
               onClick={this.browse}
@@ -302,8 +296,6 @@ class PostActionBar extends Component {
               <span className={labelStyle}>Upload</span>
               <BrowseIcon />
             </button>
-          }
-          {!isComment &&
             <button
               className={classNames('PostActionButton forMoney', { isBuyLinked }, `${buttonStyle}`)}
               disabled={!hasMedia}
@@ -312,25 +304,73 @@ class PostActionBar extends Component {
               <span className={labelStyle}>Sell</span>
               <MoneyIconCircle />
             </button>
-          }
-          {postIntoCategory &&
-            <CategoryPostSelector
-              onSelect={this.onSelectCategory}
-              onClear={this.onClearCategory}
-              subscribedCategories={subscribedCategories}
-              featuredInCategories={featuredInCategories}
-              unsubscribedCategories={unsubscribedCategories}
-              selectedCategories={selectedCategories}
-              resetSelection={resetCategorySelection}
-            />
-          }
-          {isComment &&
-            <button className={`PostActionButton forCancel text ${cancelTextButtonStyle}`} onClick={this.cancel}>
-              <span>Cancel</span>
+            {postIntoCategory &&
+              <CategoryPostSelector
+                onSelect={this.onSelectCategory}
+                onClear={this.onClearCategory}
+                subscribedCategories={subscribedCategories}
+                featuredInCategories={featuredInCategories}
+                unsubscribedCategories={unsubscribedCategories}
+                selectedCategories={selectedCategories}
+                resetSelection={resetCategorySelection}
+              />
+            }
+            <button
+              className={`PostActionButton forSubmit for${submitText} ${buttonStyle}`}
+              disabled={disableSubmitAction}
+              ref={(comp) => { this.submitButton = comp }}
+              onClick={this.submitted}
+            >
+              <span className={labelStyle}>{submitText}</span>
+              <ArrowIcon />
+            </button>
+          </div>
+          <input
+            className={hide}
+            onChange={this.handleFileBrowser}
+            ref={(comp) => { this.fileBrowser = comp }}
+            type="file"
+            accept="image/*"
+            multiple
+          />
+        </div>
+      )
+    }
+
+    // comment version
+    return (
+      <div className={wrapperStyle} id={editorId}>
+        <div className={leftStyle}>
+          <button
+            className={`PostActionButton isComment forUpload ${buttonStyle}`}
+            onClick={this.browse}
+            ref={(comp) => { this.browseButton = comp }}
+          >
+            <span className={labelStyle}>Upload</span>
+            <BrowseIcon />
+          </button>
+          {replyAllAction &&
+            <button className={`PostActionButton isComment forReplyAll ${buttonStyle}`} onClick={replyAllAction}>
+              <span className={labelStyle}>Reply All</span>
+              <ReplyAllIcon />
             </button>
           }
           <button
-            className={`PostActionButton forSubmit for${submitText} ${buttonStyle}`}
+            className={`PostActionButton isComment forCancel icon-text ${buttonStyle}`}
+            onClick={this.cancel}
+            disabled={disableSubmitAction}
+          >
+            <span className={labelStyle}>Cancel</span>
+            <XIconLG />
+          </button>
+        </div>
+
+        <div className={rightStyle}>
+          <button className={`PostActionButton isComment forCancel text ${cancelTextButtonStyle}`} onClick={this.cancel}>
+            <span>Cancel</span>
+          </button>
+          <button
+            className={`PostActionButton isComment forSubmit for${submitText} ${buttonStyle}`}
             disabled={disableSubmitAction}
             ref={(comp) => { this.submitButton = comp }}
             onClick={this.submitted}
