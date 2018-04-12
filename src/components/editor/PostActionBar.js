@@ -47,6 +47,14 @@ const rightStyle = css(
 )
 
 const buttonStyle = css(
+  s.inlineFlex,
+  s.pl20,
+  s.pr20,
+  s.itemsCenter,
+  s.contentCenter,
+  s.justifySpaceBetween,
+  s.fullWidth,
+  s.fullHeight,
   s.bgcBlack,
   s.colorWhite,
   s.hv40,
@@ -82,17 +90,6 @@ const buttonStyle = css(
   modifier('.forSubmit', s.bgcGreen, disabled(s.bgcA), hover({ backgroundColor: '#02b302' }), { width: 'auto' }),
   parent('.isComment', s.wv40, media(s.minBreak2, s.wv40)),
   parent('.PostGrid', s.wv40, media(s.minBreak2, s.wv40)),
-)
-
-const buttonContentsStyle = css(
-  s.inlineFlex,
-  s.itemsCenter,
-  s.contentCenter,
-  s.justifySpaceBetween,
-  s.fullWidth,
-  s.fullHeight,
-  s.pl20,
-  s.pr20,
 )
 
 const cancelTextButtonStyle = css(
@@ -269,18 +266,16 @@ class PostActionBar extends Component {
               onClick={this.browse}
               ref={(comp) => { this.browseButton = comp }}
             >
-              <div className={buttonContentsStyle}>
-                <span className={labelStyle}>Upload</span>
-                <BrowseIcon />
-              </div>
+              <span className={labelStyle}>Upload</span>
+              <BrowseIcon />
             </button>
           }
           {isComment && replyAllAction &&
             <button className={`PostActionButton forReplyAll ${buttonStyle}`} onClick={replyAllAction}>
-              <div className={buttonContentsStyle}>
+              <span className={buttonContentsStyle}>
                 <span className={labelStyle}>Reply All</span>
                 <ReplyAllIcon />
-              </div>
+              </span>
             </button>
           }
           {isComment &&
@@ -289,10 +284,10 @@ class PostActionBar extends Component {
               onClick={this.cancel}
               disabled={disableSubmitAction}
             >
-              <div className={buttonContentsStyle}>
+              <span className={buttonContentsStyle}>
                 <span className={labelStyle}>Cancel</span>
                 <XIconLG />
-              </div>
+              </span>
             </button>
           }
         </div>
@@ -304,10 +299,8 @@ class PostActionBar extends Component {
               onClick={this.browse}
               ref={(comp) => { this.browseButton = comp }}
             >
-              <div className={buttonContentsStyle}>
-                <span className={labelStyle}>Upload</span>
-                <BrowseIcon />
-              </div>
+              <span className={labelStyle}>Upload</span>
+              <BrowseIcon />
             </button>
           }
           {!isComment &&
@@ -316,10 +309,8 @@ class PostActionBar extends Component {
               disabled={!hasMedia}
               onClick={this.money}
             >
-              <div className={buttonContentsStyle}>
-                <span className={labelStyle}>Sell</span>
-                <MoneyIconCircle />
-              </div>
+              <span className={labelStyle}>Sell</span>
+              <MoneyIconCircle />
             </button>
           }
           {postIntoCategory &&
@@ -344,10 +335,8 @@ class PostActionBar extends Component {
             ref={(comp) => { this.submitButton = comp }}
             onClick={this.submitted}
           >
-            <div className={buttonContentsStyle}>
-              <span className={labelStyle}>{submitText}</span>
-              <ArrowIcon />
-            </div>
+            <span className={labelStyle}>{submitText}</span>
+            <ArrowIcon />
           </button>
         </div>
         <input
