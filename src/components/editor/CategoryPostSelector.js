@@ -88,8 +88,13 @@ const categoriesSelectionsStyle = css(
     },
     select('& b',
       s.sansRegular,
+      s.inlineBlock,
+      s.fullWidth,
+      s.truncate,
       {
+        width: 'calc(100% - 24px)',
         lineHeight: 20,
+        verticalAlign: 'middle',
       },
       select('& i',
         s.sansRegular,
