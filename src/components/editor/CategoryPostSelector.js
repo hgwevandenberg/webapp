@@ -198,8 +198,8 @@ function filterSearch(categories, searchText) {
   return categories.filter(c => c.get('name').toLowerCase().includes(searchText.toLowerCase()))
 }
 
-function CategoryItem({ category, index, selectedIndex, onSelect }) {
-  const isSelected = selectedIndex === index
+function CategoryItem({ category, index, selectedIndexCurrent, onSelect }) {
+  const isSelected = selectedIndexCurrent === index
   return (
     <li
       id={`categorySelect_${category.get('id')}`}
@@ -219,12 +219,12 @@ function CategoryItem({ category, index, selectedIndex, onSelect }) {
 CategoryItem.propTypes = {
   category: PropTypes.object.isRequired,
   index: PropTypes.number.isRequired,
-  selectedIndex: PropTypes.number,
+  selectedIndexCurrent: PropTypes.number,
   onSelect: PropTypes.func.isRequired,
 }
 
 CategoryItem.defaultProps = {
-  selectedIndex: null,
+  selectedIndexCurrent: null,
 }
 
 export default class CategoryPostSelector extends PureComponent {
@@ -285,10 +285,44 @@ export default class CategoryPostSelector extends PureComponent {
       (prevState.selectedIndex !== this.state.selectedIndex)) {
       this.scrollToSelectedCategory()
     }
+
+    if (this.props.selectedCategories &&
+      prevProps.selectedCategories !== this.props.selectedCategories) {
+      this.setIndexOfSelection()
+    }
+
+    if (this.state.open && !this.props.selectedCategories.length > 0) {
+      this.categorySelectorRef.focus()
+    }
   }
 
   componentWillUnmount() {
     document.removeEventListener('mousedown', this.handleClickOutside)
+  }
+
+  setIndexOfSelection() {
+    const { selectedCategories } = this.props
+    const {
+      subscribedCategories,
+      unsubscribedCategories,
+    } = this.state
+
+    if (selectedCategories.length > 0) {
+      // assume we only have one selection at a time for now
+      const selectedCategory = selectedCategories[0]
+      const categories = subscribedCategories.concat(unsubscribedCategories)
+
+      let selectedIndex = null
+      categories.map((category, index) => {
+        if (selectedCategory.get('id') === category.get('id')) {
+          selectedIndex = index
+        }
+        return selectedIndex
+      })
+
+      return this.setState({ selectedIndex })
+    }
+    return this.setState({ selectedIndex: null })
   }
 
   setWrapperRef(node) {
@@ -298,9 +332,15 @@ export default class CategoryPostSelector extends PureComponent {
   handleSearch = (event) => {
     const searchText = event.target.value
     const { subscribedCategories, unsubscribedCategories } = this.props
-    const selectedIndex = searchText === '' ? null : 0
+    const { selectedIndex } = this.state
+
+    let newSelectedIndex = selectedIndex
+    if (!selectedIndex) {
+      newSelectedIndex = searchText === '' ? null : 0
+      // newSelectedIndex = 0
+    }
     this.setState({
-      selectedIndex,
+      selectedIndex: newSelectedIndex,
       searchText,
       subscribedCategories: filterSearch(subscribedCategories, searchText),
       unsubscribedCategories: filterSearch(unsubscribedCategories, searchText),
@@ -349,14 +389,13 @@ export default class CategoryPostSelector extends PureComponent {
   }
 
   handleSelectorClick(e) {
-    const { selectedCategories } = this.props
-    if (!selectedCategories) {
-      return this.open()
-    }
     if (e.target.nodeName === 'polyline' ||
       e.target.nodeName === 'g' ||
       e.target.nodeName === 'svg') {
       return this.close()
+    }
+    if (e.target.nodeName !== 'BUTTON') {
+      return this.open()
     }
     return null
   }
@@ -428,20 +467,28 @@ export default class CategoryPostSelector extends PureComponent {
     }
   }
 
+  clearLocal() {
+    const { onClear } = this.props
+    const { open } = this.state
+    if (open) {
+      // this.categorySelectorRef.focus()
+    }
+    onClear()
+  }
+
   resetSelection() {
     const { subscribedCategories, unsubscribedCategories } = this.props
     this.setState({
       subscribedCategories,
       unsubscribedCategories,
       searchText: '',
-      selectedIndex: null,
       focused: false,
       open: false,
     })
   }
 
   render() {
-    const { selectedCategories, onClear, onSelect } = this.props
+    const { selectedCategories, onSelect } = this.props
     const {
       subscribedCategories,
       unsubscribedCategories,
@@ -489,7 +536,7 @@ export default class CategoryPostSelector extends PureComponent {
           {selectedCategory &&
             <span className="selected">
               <b><i>Post into:</i> {selectedCategory.get('name')}</b>
-              <button onClick={onClear}>
+              <button onClick={() => this.clearLocal()}>
                 <span className="text">Remove</span>
                 <span className="icon">
                   <XIcon />
@@ -512,7 +559,7 @@ export default class CategoryPostSelector extends PureComponent {
                       key={`categorySelect:${category.get('id')}`}
                       category={category}
                       index={index}
-                      selectedIndex={selectedIndex}
+                      selectedIndexCurrent={selectedIndex}
                       onSelect={onSelect}
                     />),
                   )}
@@ -528,7 +575,7 @@ export default class CategoryPostSelector extends PureComponent {
                     key={`categorySelect:${category.get('id')}`}
                     category={category}
                     index={index + offset}
-                    selectedIndex={selectedIndex}
+                    selectedIndexCurrent={selectedIndex}
                     onSelect={onSelect}
                   />),
                 )}
