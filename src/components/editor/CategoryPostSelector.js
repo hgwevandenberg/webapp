@@ -528,7 +528,7 @@ export default class CategoryPostSelector extends PureComponent {
                   className="selector-label"
                   htmlFor="categorySelector"
                 >
-                  {open ? 'Type community name' : 'Choose Community'}
+                  {open ? 'Type category name' : 'Choose Category'}
                 </label>
               }
               <ChevronIcon />
