@@ -38,6 +38,10 @@ const adminActionsStyle = css(
   s.justifyCenter,
   s.mb10,
   { marginTop: -10 },
+  // post detail instance
+  select('.header-holder &.post-admin-actions',
+    s.m0,
+  ),
 )
 
 const actionButtonStyle = css(
@@ -98,7 +102,7 @@ const getActionIcon = (type) => {
 }
 
 export const PostAdminActions = ({ actions, status }, { onClickAction }) => (
-  <div className={`${adminActionsStyle} ${status}`}>
+  <div className={`post-admin-actions ${adminActionsStyle} ${status}`}>
     {actions.entrySeq().map(([type, action]) => {
       if (!action) { return null }
       const label = action.get('label')
@@ -183,95 +187,97 @@ export class PostDetailHeader extends PureComponent {
     const isArtistInviteAdmin = !!artistInviteSubmission && !!artistInviteSubmission.get('actions')
 
     return (
-      <header
-        className={classNames('PostHeader PostDetailHeader', isRepost ? 'RepostHeader RepostDetailHeader' : '', { inUserDetail, isOwnPost })}
-        key={`PostHeader_${postId}`}
-      >
+      <div className="header-holder">
         {isArtistInviteAdmin &&
           <PostAdminActions
             status={artistInviteSubmissionStatus}
             actions={artistInviteSubmission.get('actions')}
           />
         }
-        <div className="PostHeaderLeft">
-          <Link className="PostHeaderLinkAvatar" to={`/${author.get('username')}`}>
-            <Avatar
-              priority={author.get('relationshipPriority')}
-              sources={author.get('avatar')}
-              userId={`${author.get('id')}`}
-              username={author.get('username')}
-            />
-          </Link>
-          <div className="PostHeaderLinks">
-            <Link className={!isRepost ? 'FullNameLink' : 'UserNameLink RepostAuthor'} to={`/${author.get('username')}`}>
-              <span
-                className={`DraggableUsername${!isRepost && author.get('name') ? ' PostHeaderAuthorName' : 'PostHeaderAuthorUsername'}`}
-                data-priority={author.get('relationshipPriority') || 'inactive'}
-                data-userid={author.get('id')}
-                data-username={author.get('username')}
-                draggable
-              >
-                {!isRepost && author.get('name') ?
-                  author.get('name')
-                  :
-                  `@${author.get('username')}`
-                }
-                {isRepost &&
-                  <RelationshipContainer className="isInHeader" user={author} />
-                }
-              </span>
+        <header
+          className={classNames('PostHeader PostDetailHeader', isRepost ? 'RepostHeader RepostDetailHeader' : '', { inUserDetail, isOwnPost })}
+          key={`PostHeader_${postId}`}
+        >
+          <div className="PostHeaderLeft">
+            <Link className="PostHeaderLinkAvatar" to={`/${author.get('username')}`}>
+              <Avatar
+                priority={author.get('relationshipPriority')}
+                sources={author.get('avatar')}
+                userId={`${author.get('id')}`}
+                username={author.get('username')}
+              />
             </Link>
-            {!isRepost && author.get('name') &&
-              <Link className="UserNameLink" to={`/${author.get('username')}`}>
+            <div className="PostHeaderLinks">
+              <Link className={!isRepost ? 'FullNameLink' : 'UserNameLink RepostAuthor'} to={`/${author.get('username')}`}>
                 <span
-                  className="DraggableUsername PostHeaderAuthorUsername"
+                  className={`DraggableUsername${!isRepost && author.get('name') ? ' PostHeaderAuthorName' : 'PostHeaderAuthorUsername'}`}
                   data-priority={author.get('relationshipPriority') || 'inactive'}
                   data-userid={author.get('id')}
                   data-username={author.get('username')}
                   draggable
                 >
-                  {`@${author.get('username')}`}
+                  {!isRepost && author.get('name') ?
+                    author.get('name')
+                    :
+                    `@${author.get('username')}`
+                  }
+                  {isRepost &&
+                    <RelationshipContainer className="isInHeader" user={author} />
+                  }
                 </span>
               </Link>
+              {!isRepost && author.get('name') &&
+                <Link className="UserNameLink" to={`/${author.get('username')}`}>
+                  <span
+                    className="DraggableUsername PostHeaderAuthorUsername"
+                    data-priority={author.get('relationshipPriority') || 'inactive'}
+                    data-userid={author.get('id')}
+                    data-username={author.get('username')}
+                    draggable
+                  >
+                    {`@${author.get('username')}`}
+                  </span>
+                </Link>
+              }
+              {isRepost &&
+                <Link className="UserNameLink" to={`/${repostedBy.get('username')}`}>
+                  <RepostIcon />
+                  <span
+                    className="DraggableUsername"
+                    data-priority={repostedBy.get('relationshipPriority') || 'inactive'}
+                    data-userid={repostedBy.get('id')}
+                    data-username={repostedBy.get('username')}
+                    draggable
+                  >
+                    {` by @${repostedBy.get('username')}`}
+                  </span>
+                </Link>
+              }
+            </div>
+          </div>
+          <div className="PostHeaderTools">
+            <PostHeaderTimeAgoLink to={detailPath} createdAt={postCreatedAt} />
+            {isOwnPost &&
+              <span>
+                <EditTool />
+                <DeleteTool />
+              </span>
             }
-            {isRepost &&
-              <Link className="UserNameLink" to={`/${repostedBy.get('username')}`}>
-                <RepostIcon />
-                <span
-                  className="DraggableUsername"
-                  data-priority={repostedBy.get('relationshipPriority') || 'inactive'}
-                  data-userid={repostedBy.get('id')}
-                  data-username={repostedBy.get('username')}
-                  draggable
-                >
-                  {` by @${repostedBy.get('username')}`}
-                </span>
-              </Link>
+            {isArtistInviteSubmission &&
+              <span>
+                <ArtistInviteSubmissionStatusTool
+                  status={displaySubmission.get('status')}
+                  slug={displayInvite.get('slug')}
+                  title={displayInvite.get('title')}
+                />
+              </span>
+            }
+            {!repostedBy &&
+              <RelationshipContainer className="isInHeader" user={author} />
             }
           </div>
-        </div>
-        <div className="PostHeaderTools">
-          <PostHeaderTimeAgoLink to={detailPath} createdAt={postCreatedAt} />
-          {isOwnPost &&
-            <span>
-              <EditTool />
-              <DeleteTool />
-            </span>
-          }
-          {isArtistInviteSubmission &&
-            <span>
-              <ArtistInviteSubmissionStatusTool
-                status={displaySubmission.get('status')}
-                slug={displayInvite.get('slug')}
-                title={displayInvite.get('title')}
-              />
-            </span>
-          }
-          {!repostedBy &&
-            <RelationshipContainer className="isInHeader" user={author} />
-          }
-        </div>
-      </header>
+        </header>
+      </div>
     )
   }
 }
