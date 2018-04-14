@@ -42,6 +42,7 @@ const adminActionsStyle = css(
   select('.header-holder &.post-admin-actions',
     s.m0,
     s.mb10,
+    s.mt10,
     media(s.maxBreak3,
       {
         marginLeft: -10,
