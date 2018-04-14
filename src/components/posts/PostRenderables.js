@@ -41,6 +41,13 @@ const adminActionsStyle = css(
   // post detail instance
   select('.header-holder &.post-admin-actions',
     s.m0,
+    s.mb10,
+    media(s.maxBreak3,
+      {
+        marginLeft: -10,
+        width: 'calc(100% + 20px)',
+      },
+    ),
   ),
 )
 
@@ -148,6 +155,7 @@ export class PostDetailHeader extends PureComponent {
     originalPostArtistInviteSubmission: PropTypes.object,
     originalPostArtistInvite: PropTypes.object,
     detailPath: PropTypes.string.isRequired,
+    innerWidth: PropTypes.number.isRequired,
     inUserDetail: PropTypes.bool,
     isOwnPost: PropTypes.bool.isRequired,
     isRepost: PropTypes.bool.isRequired,
@@ -174,6 +182,7 @@ export class PostDetailHeader extends PureComponent {
       originalPostArtistInvite,
       originalPostArtistInviteSubmission,
       detailPath,
+      innerWidth,
       inUserDetail,
       isOwnPost,
       isRepost,
@@ -188,7 +197,7 @@ export class PostDetailHeader extends PureComponent {
 
     return (
       <div className="header-holder">
-        {isArtistInviteAdmin &&
+        {isArtistInviteAdmin && innerWidth > 959 &&
           <PostAdminActions
             status={artistInviteSubmissionStatus}
             actions={artistInviteSubmission.get('actions')}
@@ -277,6 +286,12 @@ export class PostDetailHeader extends PureComponent {
             }
           </div>
         </header>
+        {isArtistInviteAdmin && innerWidth < 960 &&
+          <PostAdminActions
+            status={artistInviteSubmissionStatus}
+            actions={artistInviteSubmission.get('actions')}
+          />
+        }
       </div>
     )
   }

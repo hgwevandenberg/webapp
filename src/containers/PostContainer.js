@@ -533,6 +533,7 @@ class PostContainer extends Component {
           artistInvite={artistInvite}
           originalPostArtistInviteSubmission={originalPostArtistInviteSubmission}
           originalPostArtistInvite={originalPostArtistInvite}
+          innerWidth={innerWidth}
           inUserDetail={repostAuthor ? isPostHeaderHidden : null}
           isArtistInviteSubmission={isArtistInviteSubmission}
           isRepost={isRepost}
