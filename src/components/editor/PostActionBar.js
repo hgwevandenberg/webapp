@@ -30,6 +30,9 @@ const wrapperStyle = css(
   s.hv40,
   s.lh40,
   s.mt10,
+  parent('.PostGrid .isPostReposting',
+    { height: 'auto' },
+  ),
   media(s.maxBreak2,
     { height: 'auto' },
   ),
@@ -118,6 +121,14 @@ const buttonStyle = css(
       s.wv40,
     ),
   ),
+  parent('.PostGrid .isPostReposting',
+    s.pl10,
+    s.pr10,
+    select('&.forSubmit',
+      s.pl20,
+      s.pr20,
+    ),
+  ),
   modifier('.forSubmit', s.bgcGreen, disabled(s.bgcA), hover({ backgroundColor: '#02b302' }), { width: 'auto' }),
   select('&.isComment', s.wv40, media(s.minBreak2, s.wv40)),
   select('&.isComment.forSubmit',
@@ -141,6 +152,9 @@ const cancelTextButtonStyle = css(
   s.px10,
   { width: 'auto' },
   hover({ color: '#6a6a6a' }),
+  media(s.minBreak2,
+    s.pl0,
+  ),
 )
 
 const labelStyle = css(
@@ -179,23 +193,25 @@ function mapStateToProps(state, props) {
 class PostActionBar extends Component {
 
   static propTypes = {
-    isComment: PropTypes.bool.isRequired,
     buyLink: PropTypes.string,
     cancelAction: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     disableSubmitAction: PropTypes.bool.isRequired,
     editorId: PropTypes.string.isRequired,
+    featuredInCategories: PropTypes.array.isRequired,
     handleFileAction: PropTypes.func.isRequired,
     hasMedia: PropTypes.bool,
+    innerWidth: PropTypes.number.isRequired,
+    isComment: PropTypes.bool.isRequired,
+    isGridMode: PropTypes.bool.isRequired,
+    isPostReposting: PropTypes.bool.isRequired,
+    postIntoCategory: PropTypes.bool.isRequired,
     replyAllAction: PropTypes.func,
     submitAction: PropTypes.func.isRequired,
     submitText: PropTypes.string.isRequired,
-    postIntoCategory: PropTypes.bool.isRequired,
     subscribedCategories: PropTypes.array.isRequired,
     selectedCategories: PropTypes.array.isRequired,
-    featuredInCategories: PropTypes.array.isRequired,
     unsubscribedCategories: PropTypes.array.isRequired,
-    innerWidth: PropTypes.number.isRequired,
   }
 
   static defaultProps = {
@@ -284,17 +300,19 @@ class PostActionBar extends Component {
   render() {
     const {
       disableSubmitAction,
-      hasMedia,
-      replyAllAction,
-      submitText,
       editorId,
-      postIntoCategory,
-      subscribedCategories,
-      selectedCategories,
       featuredInCategories,
-      unsubscribedCategories,
-      isComment,
+      hasMedia,
       innerWidth,
+      isGridMode,
+      isPostReposting,
+      isComment,
+      postIntoCategory,
+      replyAllAction,
+      selectedCategories,
+      submitText,
+      subscribedCategories,
+      unsubscribedCategories,
     } = this.props
     const { resetCategorySelection } = this.state
     const isBuyLinked = this.props.buyLink && this.props.buyLink.length
@@ -302,7 +320,8 @@ class PostActionBar extends Component {
     // post version
     if (!isComment) {
       // desktop post version
-      if (innerWidth > 639) {
+      if ((innerWidth > 639 && !isPostReposting) ||
+        (innerWidth > 639 && isPostReposting && !isGridMode)) {
         return (
           <div className={wrapperStyle} id={editorId}>
             <div className={leftStyle}>
