@@ -135,20 +135,23 @@ const categorySubNavStyle = css(
 
   // style mobile-specific version
   media(s.maxBreak2,
+    s.flex,
+    s.flexNoWrap,
     s.pr10,
     s.pl10,
 
     select('& li',
       s.relative,
       s.inlineBlock,
+      s.fullWidth,
       s.m0,
       s.center,
       s.borderBottom,
       {
-        width: '50%',
         borderColor: '#aaa',
       },
       select('& a',
+        s.fontSize14,
         { borderWidth: '0' },
       ),
       select('&.selected',
