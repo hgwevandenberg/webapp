@@ -479,7 +479,7 @@ class BlockCollection extends PureComponent {
       artistInvite, buyLink, cancelAction, collection, dragBlock, editorId, firstBlock, categoryIds,
       hasContent, hasMedia, hasMention, isComment, isLoading, isPosting, order, orderLength,
       showArtistInviteSuccess, submitText, hasComments, isOwnPost, isMobileGridStream,
-      isPostEditing, isPostReposting,
+      isGridMode, isPostEditing, isPostReposting,
     } = this.props
     const { dragBlockTop, hasDragOver } = this.state
     const firstBlockIsText = firstBlock ? /text/.test(firstBlock.get('kind')) : true
@@ -538,6 +538,7 @@ class BlockCollection extends PureComponent {
           </div>
           {showQuickEmoji && <QuickEmoji onAddEmoji={this.onInsertEmoji} />}
           <PostActionBar
+            isGridMode={isGridMode}
             isPostReposting={isPostReposting}
             isComment={isComment}
             buyLink={buyLink}

@@ -190,24 +190,25 @@ function mapStateToProps(state, props) {
 class PostActionBar extends Component {
 
   static propTypes = {
-    isPostReposting: PropTypes.bool.isRequired,
-    isComment: PropTypes.bool.isRequired,
     buyLink: PropTypes.string,
     cancelAction: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     disableSubmitAction: PropTypes.bool.isRequired,
     editorId: PropTypes.string.isRequired,
+    featuredInCategories: PropTypes.array.isRequired,
     handleFileAction: PropTypes.func.isRequired,
     hasMedia: PropTypes.bool,
+    innerWidth: PropTypes.number.isRequired,
+    isComment: PropTypes.bool.isRequired,
+    isGridMode: PropTypes.bool.isRequired,
+    isPostReposting: PropTypes.bool.isRequired,
+    postIntoCategory: PropTypes.bool.isRequired,
     replyAllAction: PropTypes.func,
     submitAction: PropTypes.func.isRequired,
     submitText: PropTypes.string.isRequired,
-    postIntoCategory: PropTypes.bool.isRequired,
     subscribedCategories: PropTypes.array.isRequired,
     selectedCategories: PropTypes.array.isRequired,
-    featuredInCategories: PropTypes.array.isRequired,
     unsubscribedCategories: PropTypes.array.isRequired,
-    innerWidth: PropTypes.number.isRequired,
   }
 
   static defaultProps = {
@@ -300,6 +301,7 @@ class PostActionBar extends Component {
       featuredInCategories,
       hasMedia,
       innerWidth,
+      isGridMode,
       isPostReposting,
       isComment,
       postIntoCategory,
@@ -315,7 +317,8 @@ class PostActionBar extends Component {
     // post version
     if (!isComment) {
       // desktop post version
-      if (innerWidth > 639 && !isPostReposting) {
+      if ((innerWidth > 639 && !isPostReposting) ||
+        (innerWidth > 639 && isPostReposting && !isGridMode)) {
         return (
           <div className={wrapperStyle} id={editorId}>
             <div className={leftStyle}>
