@@ -354,10 +354,21 @@ class PostContainer extends Component {
   }
 
   onClickRepostPost = () => {
-    const { detailPath, dispatch, isRelatedPost, post, postReposted } = this.props
+    const {
+      detailPath,
+      deviceSize,
+      dispatch,
+      isGridMode,
+      isRelatedPost,
+      post,
+      postReposted,
+    } = this.props
     if (!postReposted && !isRelatedPost) {
       dispatch(toggleReposting(post, true))
       dispatch(loadEditablePost(post.get('id')))
+      if (isGridMode && deviceSize === 'mobile') {
+        dispatch(push(detailPath))
+      }
     } else {
       dispatch(push(detailPath))
       this.onTrackRelatedPostClick()
