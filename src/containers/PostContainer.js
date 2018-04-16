@@ -16,6 +16,7 @@ import {
   unwatchPost,
   watchPost,
 } from '../actions/posts'
+import { sendAdminAction } from '../actions/artist_invites'
 import ConfirmDialog from '../components/dialogs/ConfirmDialog'
 import FlagDialog from '../components/dialogs/FlagDialog'
 import {
@@ -45,7 +46,9 @@ import {
 import {
   selectPost,
   selectPostAuthor,
+  selectPostArtistInvite,
   selectPostArtistInviteSubmission,
+  selectPostArtistInviteSubmissionStatus,
   selectPostBody,
   selectPostCategoryName,
   selectPostCategorySlug,
@@ -73,6 +76,8 @@ import {
   selectPostShowEditor,
   selectPostSummary,
   selectPostViewsCountRounded,
+  selectOriginalPostArtistInvite,
+  selectOriginalPostArtistInviteSubmission,
   selectPropsPostId,
 } from '../selectors/post'
 import { selectAvatar } from '../selectors/profile'
@@ -101,6 +106,10 @@ export function makeMapStateToProps() {
       innerWidth: selectInnerWidth(state),
       isArtistInviteSubmission: selectPostIsArtistInviteSubmission(state, props),
       artistInviteSubmission: selectPostArtistInviteSubmission(state, props),
+      artistInvite: selectPostArtistInvite(state, props),
+      submissionStatus: selectPostArtistInviteSubmissionStatus(state, props),
+      originalPostArtistInviteSubmission: selectOriginalPostArtistInviteSubmission(state, props),
+      originalPostArtistInvite: selectOriginalPostArtistInvite(state, props),
       isCommentsRequesting: selectPostIsCommentsRequesting(state, props),
       showCategoryHeader: selectShowCategoryHeader(state, props),
       isGridMode: selectPostIsGridMode(state, props),
@@ -152,6 +161,9 @@ class PostContainer extends Component {
     innerHeight: PropTypes.number.isRequired,
     innerWidth: PropTypes.number.isRequired,
     artistInviteSubmission: PropTypes.object,
+    artistInvite: PropTypes.object,
+    originalPostArtistInviteSubmission: PropTypes.object,
+    originalPostArtistInvite: PropTypes.object,
     isArtistInviteSubmission: PropTypes.bool.isRequired,
     isCommentsRequesting: PropTypes.bool.isRequired,
     showCategoryHeader: PropTypes.bool.isRequired,
@@ -196,6 +208,9 @@ class PostContainer extends Component {
   static defaultProps = {
     adminActions: null,
     artistInviteSubmission: null,
+    artistInvite: null,
+    originalPostArtistInviteSubmission: null,
+    originalPostArtistInvite: null,
     avatar: null,
     categoryName: null,
     categoryPath: null,
@@ -225,6 +240,7 @@ class PostContainer extends Component {
   }
 
   static childContextTypes = {
+    onClickAction: PropTypes.func.isRequired,
     onClickDeletePost: PropTypes.func.isRequired,
     onClickEditPost: PropTypes.func.isRequired,
     onClickFlagPost: PropTypes.func.isRequired,
@@ -248,6 +264,7 @@ class PostContainer extends Component {
   getChildContext() {
     const { isLoggedIn } = this.props
     return {
+      onClickAction: this.onClickAction,
       onClickDeletePost: this.onClickDeletePost,
       onClickEditPost: this.onClickEditPost,
       onClickFlagPost: this.onClickFlagPost,
@@ -409,6 +426,11 @@ class PostContainer extends Component {
     onClickOpenRegistrationRequestDialog('post-tools')
   }
 
+  onClickAction = (action) => {
+    const { dispatch } = this.props
+    dispatch(sendAdminAction(action))
+  }
+
   getUserModalTabs() {
     const { postLovesCount, postRepostsCount } = this.props
     const tabs = []
@@ -425,7 +447,10 @@ class PostContainer extends Component {
     const {
       adminActions,
       author,
+      artistInvite,
       artistInviteSubmission,
+      originalPostArtistInvite,
+      originalPostArtistInviteSubmission,
       avatar,
       categoryName,
       categoryPath,
@@ -504,6 +529,11 @@ class PostContainer extends Component {
           author={repostAuthor || author}
           repostedBy={repostAuthor ? author : null}
           artistInviteSubmission={artistInviteSubmission}
+          artistInviteSubmissionStatus={submissionStatus}
+          artistInvite={artistInvite}
+          originalPostArtistInviteSubmission={originalPostArtistInviteSubmission}
+          originalPostArtistInvite={originalPostArtistInvite}
+          innerWidth={innerWidth}
           inUserDetail={repostAuthor ? isPostHeaderHidden : null}
           isArtistInviteSubmission={isArtistInviteSubmission}
           isRepost={isRepost}

@@ -67,6 +67,10 @@ const baseStyle = css(
   media(
     s.maxBreak2,
     select('.isProfileMenuActive ~ .NavbarProfile > &', s.pointerNone),
+    select('.PostDetailHeader &',
+      s.wv40,
+      s.hv40,
+    ),
   ),
   media(
     s.minBreak2,
