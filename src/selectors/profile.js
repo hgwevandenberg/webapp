@@ -41,6 +41,7 @@ export const selectProfileLinksCategories = state => state.profile.getIn(['links
 export const selectUuid = state => state.profile.get('uuid')
 export const selectSplit = (state, props) => state.profile.getIn(['splits', props.splitName])
 export const selectSubscribedCategoryIds = state => state.profile.get('followedCategoryIds', Immutable.List())
+export const selectFeaturedInCategoryIds = state => state.profile.getIn(['links', 'categories'], Immutable.List())
 
 // Memoized selectors
 export const selectIsAvatarBlank = createSelector(

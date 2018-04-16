@@ -5,8 +5,11 @@ import { findPostQuery } from '../queries/findPost'
 import * as StreamRenderables from '../components/streams/StreamRenderables'
 import { resetEditor } from '../actions/editor'
 
-export function createPost(body, editorId, repostId, repostedFromId, artistInviteId) {
-  const data = body.length ? { body } : null
+export function createPost(body, editorId, repostId, repostedFromId, artistInviteId, categoryIds) {
+  const data = { category_ids: categoryIds || [] }
+  if (body.length > 0) {
+    data.body = body
+  }
   if (data && !repostId && !repostedFromId && artistInviteId) {
     data.artist_invite_id = artistInviteId
   }
