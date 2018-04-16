@@ -152,6 +152,9 @@ const cancelTextButtonStyle = css(
   s.px10,
   { width: 'auto' },
   hover({ color: '#6a6a6a' }),
+  media(s.minBreak2,
+    s.pl0,
+  ),
 )
 
 const labelStyle = css(
