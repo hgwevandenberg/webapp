@@ -30,6 +30,9 @@ const wrapperStyle = css(
   s.hv40,
   s.lh40,
   s.mt10,
+  parent('.PostGrid .isPostReposting',
+    { height: 'auto' },
+  ),
   media(s.maxBreak2,
     { height: 'auto' },
   ),
@@ -179,6 +182,7 @@ function mapStateToProps(state, props) {
 class PostActionBar extends Component {
 
   static propTypes = {
+    isPostReposting: PropTypes.bool.isRequired,
     isComment: PropTypes.bool.isRequired,
     buyLink: PropTypes.string,
     cancelAction: PropTypes.func.isRequired,
@@ -284,17 +288,18 @@ class PostActionBar extends Component {
   render() {
     const {
       disableSubmitAction,
-      hasMedia,
-      replyAllAction,
-      submitText,
       editorId,
-      postIntoCategory,
-      subscribedCategories,
-      selectedCategories,
       featuredInCategories,
-      unsubscribedCategories,
-      isComment,
+      hasMedia,
       innerWidth,
+      isPostReposting,
+      isComment,
+      postIntoCategory,
+      replyAllAction,
+      selectedCategories,
+      submitText,
+      subscribedCategories,
+      unsubscribedCategories,
     } = this.props
     const { resetCategorySelection } = this.state
     const isBuyLinked = this.props.buyLink && this.props.buyLink.length
@@ -302,7 +307,7 @@ class PostActionBar extends Component {
     // post version
     if (!isComment) {
       // desktop post version
-      if (innerWidth > 639) {
+      if (innerWidth > 639 && !isPostReposting) {
         return (
           <div className={wrapperStyle} id={editorId}>
             <div className={leftStyle}>
