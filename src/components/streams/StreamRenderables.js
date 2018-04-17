@@ -87,8 +87,14 @@ const artistInvitesStyle = css(
   ),
 )
 
-// posts list styling (shared between POSTS and ARTIST INVITES)
+const postGridStyle = css(
+  select('& .ImageRegion img',
+    s.fullWidth,
+    { height: 'auto' },
+  ),
+)
 
+// posts list styling (shared between POSTS and ARTIST INVITES)
 const postListStyle = css(
   s.maxSiteWidth,
   s.mxAuto,
@@ -180,7 +186,7 @@ class ArtistInviteSubmissionsAsGridSimple extends PureComponent { // eslint-disa
     )
 
     return (
-      <div className="Posts asGrid">
+      <div className={`Posts asGrid ${postGridStyle}`}>
         {headerText &&
           <div className={titleWrapperStyle}>
             <h2 className={blackTitleStyle}>{headerText}</h2>
@@ -299,7 +305,7 @@ class PostsAsGridSimple extends PureComponent { // eslint-disable-line react/no-
     )
 
     return (
-      <div className="Posts asGrid">
+      <div className={`Posts asGrid ${postGridStyle}`}>
         {columns.map((columnPostIds, i) =>
           (<div className="Column" key={`column_${i + 1}`}>
             {columnPostIds.map(id =>
@@ -413,7 +419,7 @@ class PostsAsRelatedSimple extends PureComponent { // eslint-disable-line react/
     postIds.forEach((value, index) => columns[index % finalColumnCount].push(postIds.get(index)))
 
     return (
-      <div className="Posts asGrid">
+      <div className={`Posts asGrid ${postGridStyle}`}>
         {postIds.size &&
           <h2 className={relatedPostsTitleStyle}>
             Related Posts

@@ -69,12 +69,50 @@ export const artistInviteSubmissionSummary = `
   }
 `
 
+export const artistInviteSubmissionAction = `
+  fragment artistInviteSubmissionAction on ArtistInviteSubmissionAction {
+    href label method body { status }
+  }
+`
+
+export const artistInviteSubmissionDetails = `
+  fragment artistInviteSubmissionDetails on ArtistInviteSubmission {
+    id
+    status
+    artistInvite { id slug title }
+    actions {
+      approve { ...artistInviteSubmissionAction }
+      decline { ...artistInviteSubmissionAction }
+      select { ...artistInviteSubmissionAction }
+      unapprove { ...artistInviteSubmissionAction }
+      unselect { ...artistInviteSubmissionAction }
+    }
+  }
+`
+
 export const postSummary = `
   fragment postSummary on Post {
     id
     token
     createdAt
     artistInviteSubmission { ...artistInviteSubmissionSummary }
+    summary { ...contentProps }
+    content { ...contentProps }
+    repostContent { ...contentProps }
+    author { ...authorSummary }
+    categories { ...categorySummary }
+    assets { id attachment { ...responsiveImageVersions } }
+    postStats { lovesCount commentsCount viewsCount repostsCount }
+    currentUserState { watching loved reposted }
+  }
+`
+
+export const fullPost = `
+  fragment fullPost on Post {
+    id
+    token
+    createdAt
+    artistInviteSubmission { ...artistInviteSubmissionDetails }
     summary { ...contentProps }
     content { ...contentProps }
     repostContent { ...contentProps }
@@ -112,4 +150,16 @@ export const postStreamAllFragments = `
   ${artistInviteSubmissionSummary}
   ${postSummary}
   ${postStream}
+`
+
+export const fullPostAllFragments = `
+  ${imageVersionProps}
+  ${responsiveImageVersions}
+  ${tshirtImageVersions}
+  ${contentProps}
+  ${authorSummary}
+  ${categorySummary}
+  ${artistInviteSubmissionAction}
+  ${artistInviteSubmissionDetails}
+  ${fullPost}
 `

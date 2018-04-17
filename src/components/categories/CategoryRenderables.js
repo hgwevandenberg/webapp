@@ -135,20 +135,23 @@ const categorySubNavStyle = css(
 
   // style mobile-specific version
   media(s.maxBreak2,
+    s.flex,
+    s.flexNoWrap,
     s.pr10,
     s.pl10,
 
     select('& li',
       s.relative,
       s.inlineBlock,
+      s.fullWidth,
       s.m0,
       s.center,
       s.borderBottom,
       {
-        width: '50%',
         borderColor: '#aaa',
       },
       select('& a',
+        s.fontSize14,
         { borderWidth: '0' },
       ),
       select('&.selected',
@@ -183,6 +186,11 @@ export function CategorySubNav({ stream, kind }) {
             Recent
           </Link>
         </li>
+        <li className={classNames({ selected: kind === 'shop' })}>
+          <Link to="/discover/shop">
+            Shop
+          </Link>
+        </li>
       </ul>
     )
   }
@@ -196,6 +204,16 @@ export function CategorySubNav({ stream, kind }) {
       <li className={classNames({ selected: kind === 'trending' })}>
         <Link to={`/discover/${stream}/trending`}>
           Trending
+        </Link>
+      </li>
+      <li className={classNames({ selected: kind === 'recent' })}>
+        <Link to={`/discover/${stream}/recent`}>
+          Recent
+        </Link>
+      </li>
+      <li className={classNames({ selected: kind === 'shop' })}>
+        <Link to={`/discover/${stream}/shop`}>
+          Shop
         </Link>
       </li>
     </ul>

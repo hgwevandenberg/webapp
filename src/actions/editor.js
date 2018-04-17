@@ -1,5 +1,6 @@
-import { EDITOR } from '../constants/action_types'
+import { EDITOR, V3 } from '../constants/action_types'
 import * as api from '../networking/api'
+import allCategoriesQuery from '../queries/allCategories'
 
 export function addBlock(block, editorId, shouldCheckForEmpty = true) {
   return {
@@ -192,6 +193,26 @@ export function updateBuyLink(editorId, link) {
   }
 }
 
+export function updateCategoryId(editorId, categoryId) {
+  return {
+    type: EDITOR.UPDATE_CATEGORY_IDS,
+    payload: {
+      editorId,
+      categoryIds: [categoryId],
+    },
+  }
+}
+
+export function clearCategoryId(editorId) {
+  return {
+    type: EDITOR.UPDATE_CATEGORY_IDS,
+    payload: {
+      editorId,
+      categoryIds: [],
+    },
+  }
+}
+
 export function updateBlock(block, uid, editorId) {
   return {
     type: EDITOR.UPDATE_BLOCK,
@@ -203,3 +224,12 @@ export function updateBlock(block, uid, editorId) {
   }
 }
 
+export function fetchEditorCategories() {
+  return {
+    type: V3.LOAD_CATEGORIES,
+    payload: {
+      query: allCategoriesQuery,
+      variables: {},
+    },
+  }
+}

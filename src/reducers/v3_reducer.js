@@ -90,10 +90,22 @@ function parseCategory(state, category) {
   }))
 }
 
+function parseArtistInvite(state, invite) {
+  if (!invite || !invite.id) { return state }
+  return smartMergeDeepIn(state, ['artistInvites', invite.id], Immutable.fromJS({
+    id: invite.id,
+    title: invite.title,
+    slug: invite.slug,
+  }))
+}
+
 function parseArtistInviteSubmission(state, submission) {
   if (!submission || !submission.id) { return state }
-  return smartMergeDeepIn(state, ['artistInviteSubmissions', submission.id], Immutable.fromJS({
+  const state2 = parseArtistInvite(state, submission.artistInvite)
+  return smartMergeDeepIn(state2, ['artistInviteSubmissions', submission.id], Immutable.fromJS({
     id: submission.id,
+    status: submission.status,
+    actions: submission.actions,
   }))
 }
 
@@ -214,8 +226,8 @@ function parsePost(state, post) {
     // Properties
     token: post.token,
     createdAt: post.createdAt,
-    artistInviteId: deepGet(post, ['artistInviteSubmission', 'artistInvite']),
-    artistInviteSubmission: post.artistInviteSubmission,
+    artistInviteId: deepGet(post, ['artistInviteSubmission', 'artistInvite', 'id']),
+    artistInviteSubmissionId: deepGet(post, ['artistInviteSubmission', 'id']),
 
     // Content
     summary: parseRegion(post, 'summary', assetsById),
@@ -238,6 +250,11 @@ function parsePost(state, post) {
   }))
 
   return state6
+}
+
+
+function parsePostDetail(state, { payload: { response: { data: { post } } } }) {
+  return parsePost(state, post)
 }
 
 function parseQueryType(state, stream, pathname, query, variables) {
@@ -272,6 +289,8 @@ export default function (state, action) {
       return parseCategoryQueries(state, action)
     case ACTION_TYPES.V3.LOAD_PAGE_HEADERS_SUCCESS:
       return parsePageHeaders(state, action)
+    case ACTION_TYPES.V3.POST.DETAIL_SUCCESS:
+      return parsePostDetail(state, action)
     case ACTION_TYPES.PROFILE.FOLLOW_CATEGORIES_SUCCESS:
       return resetSubscribedStreamPagination(state)
     default:

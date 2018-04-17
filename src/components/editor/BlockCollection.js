@@ -28,6 +28,7 @@ import * as ACTION_TYPES from '../../constants/action_types'
 import { addDragObject, removeDragObject } from '../../interactions/Drag'
 import { scrollToLastTextBlock } from '../../lib/jello'
 import { selectIsMobileGridStream, selectIsNavbarHidden, selectIsGridMode } from '../../selectors/gui'
+import { selectEditorCategoryIds } from '../../selectors/editor'
 import { selectPropsPostId } from '../../selectors/post'
 import { selectIsPostDetail, selectPathname } from '../../selectors/routing'
 import { css, hover, media, parent, select } from '../../styles/jss'
@@ -89,6 +90,7 @@ function mapStateToProps(state, props) {
   return {
     artistInvite,
     artistInviteId: artistInvite ? artistInvite.get('id') : props.post.get('artistInviteId'),
+    categoryIds: selectEditorCategoryIds(state, props),
     buyLink,
     collection,
     dragBlock: editor.get('dragBlock'),
@@ -114,6 +116,7 @@ class BlockCollection extends PureComponent {
   static propTypes = {
     artistInvite: PropTypes.object,
     artistInviteId: PropTypes.string,
+    categoryIds: PropTypes.array.isRequired,
     blocks: PropTypes.object,
     buyLink: PropTypes.string,
     cancelAction: PropTypes.func.isRequired,
@@ -422,8 +425,8 @@ class BlockCollection extends PureComponent {
   }
 
   submit = () => {
-    const { artistInviteId, submitAction } = this.props
-    submitAction(this.serialize(), artistInviteId)
+    const { artistInviteId, submitAction, categoryIds } = this.props
+    submitAction(this.serialize(), artistInviteId, categoryIds)
   }
 
   serialize() {
@@ -473,9 +476,10 @@ class BlockCollection extends PureComponent {
 
   render() {
     const {
-      artistInvite, buyLink, cancelAction, collection, dragBlock, editorId, firstBlock,
+      artistInvite, buyLink, cancelAction, collection, dragBlock, editorId, firstBlock, categoryIds,
       hasContent, hasMedia, hasMention, isComment, isLoading, isPosting, order, orderLength,
       showArtistInviteSuccess, submitText, hasComments, isOwnPost, isMobileGridStream,
+      isGridMode, isPostEditing, isPostReposting,
     } = this.props
     const { dragBlockTop, hasDragOver } = this.state
     const firstBlockIsText = firstBlock ? /text/.test(firstBlock.get('kind')) : true
@@ -489,6 +493,7 @@ class BlockCollection extends PureComponent {
       isComment,
       isLoading,
       isPosting,
+      isPostReposting,
     })
     if (showArtistInviteSuccess) {
       return (
@@ -507,6 +512,7 @@ class BlockCollection extends PureComponent {
       )
     }
     const showReplyAll = hasComments && isComment && isOwnPost && !isMobileGridStream
+    const postIntoCategory = !isComment && !isPostEditing
     return (
       <div className={editorWrapperStyle}>
         {artistInvite &&
@@ -532,6 +538,9 @@ class BlockCollection extends PureComponent {
           </div>
           {showQuickEmoji && <QuickEmoji onAddEmoji={this.onInsertEmoji} />}
           <PostActionBar
+            isGridMode={isGridMode}
+            isPostReposting={isPostReposting}
+            isComment={isComment}
             buyLink={buyLink}
             cancelAction={cancelAction}
             disableSubmitAction={isPosting || isLoading || !hasContent}
@@ -541,6 +550,8 @@ class BlockCollection extends PureComponent {
             replyAllAction={showReplyAll ? this.replyAll : null}
             submitAction={this.submit}
             submitText={submitText}
+            postIntoCategory={postIntoCategory}
+            categoryIds={categoryIds}
           />
         </div>
       </div>

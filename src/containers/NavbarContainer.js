@@ -92,7 +92,7 @@ class NavbarContainer extends PureComponent {
     pathname: PropTypes.string.isRequired,
     params: PropTypes.object.isRequired,
     viewName: PropTypes.string.isRequired,
-    innerWidth: PropTypes.string,
+    innerWidth: PropTypes.number,
   }
 
   static defaultProps = {

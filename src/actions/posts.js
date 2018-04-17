@@ -1,11 +1,15 @@
-import { LOAD_STREAM, POST } from '../constants/action_types'
+import { LOAD_STREAM, POST, V3 } from '../constants/action_types'
 import * as MAPPING_TYPES from '../constants/mapping_types'
 import * as api from '../networking/api'
+import { findPostQuery } from '../queries/findPost'
 import * as StreamRenderables from '../components/streams/StreamRenderables'
 import { resetEditor } from '../actions/editor'
 
-export function createPost(body, editorId, repostId, repostedFromId, artistInviteId) {
-  const data = body.length ? { body } : null
+export function createPost(body, editorId, repostId, repostedFromId, artistInviteId, categoryIds) {
+  const data = { category_ids: categoryIds || [] }
+  if (body.length > 0) {
+    data.body = body
+  }
   if (data && !repostId && !repostedFromId && artistInviteId) {
     data.artist_invite_id = artistInviteId
   }
@@ -87,16 +91,12 @@ export function loadEditablePost(idOrToken) {
   }
 }
 
-export function loadPostDetail(idOrToken, userIdOrToken) {
+export function loadPostDetail(token, username) {
   return {
-    type: POST.DETAIL,
+    type: V3.POST.DETAIL,
     payload: {
-      endpoint: api.postDetail(idOrToken, userIdOrToken),
-      postIdOrToken: idOrToken,
-    },
-    meta: {
-      mappingType: MAPPING_TYPES.POSTS,
-      updateResult: false,
+      query: findPostQuery,
+      variables: { token, username },
     },
   }
 }

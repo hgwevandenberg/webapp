@@ -7,7 +7,7 @@ import { CATEGORIES } from '../constants/mapping_types'
 import { META } from '../constants/locales/en'
 import { selectParamsType } from './params'
 import { selectPathname } from './routing'
-import { selectSubscribedCategoryIds } from './profile'
+import { selectSubscribedCategoryIds, selectFeaturedInCategoryIds } from './profile'
 import { selectIsLoggedIn } from './authentication'
 
 export const selectPropsCategoryId = (state, props) => get(props, 'categoryId')
@@ -32,6 +32,7 @@ export const selectCategoryIsPromo = createSelector([selectCategory], category =
 
 export const selectAllCategoriesAsArray = createSelector([selectCategoryCollection],
   categories => (categories || Map()).valueSeq())
+
 
 const levelEnum = {
   promoted: 10,
@@ -72,6 +73,24 @@ export const selectCreatorTypeCategories = createSelector(
   [selectOrderedCategories], categories =>
     categories.filter(category => category.get('isCreatorType')).toArray())
 
+export const selectSubscribedCategories = createSelector(
+  [selectCategoryCollection, selectSubscribedCategoryIds], (categories, ids) =>
+    ids.map(id => categories.get(id)).filter(val => !!val).toArray())
+
+export const selectFeaturedInCategories = createSelector(
+  [selectCategoryCollection, selectFeaturedInCategoryIds], (categories, ids) =>
+    ids.map(id => categories.get(id)).filter(val => !!val).toArray())
+
+export const selectUnsubscribedCategories = createSelector(
+  [selectOrderedCategories, selectSubscribedCategoryIds], (categories, ids) =>
+    categories.filter(cat => !ids.includes(cat.get('id'))).toArray())
+
+const selectPostSelectedCategoryIds = (state, props) => props.categoryIds || []
+
+export const selectPostSelectedCategories = createSelector(
+  [selectCategoryCollection, selectPostSelectedCategoryIds], (categories, ids) =>
+    ids.map(id => categories.get(id)).filter(val => !!val))
+
 export const selectCategoryTabs = createSelector(
   [selectCategoryCollection, selectIsLoggedIn, selectSubscribedCategoryIds],
   (categories, isLoggedIn, subscribedIds) => {
@@ -110,7 +129,7 @@ export const selectCategoryTabs = createSelector(
 export const selectAreCategoriesSubscribed = createSelector(
   [selectSubscribedCategoryIds],
   (subscribedIds) => {
-    if (subscribedIds.size > 0) { return true }
+    if (subscribedIds && subscribedIds.size > 0) { return true }
     return false
   })
 

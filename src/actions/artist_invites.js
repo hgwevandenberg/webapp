@@ -47,7 +47,7 @@ export const sendAdminAction = action => (
     type: LOAD_STREAM,
     meta: {
       mappingType: ARTIST_INVITE_SUBMISSIONS,
-      updateResult: false,
+      updateResult: true,
     },
     payload: {
       body: action.get('body').toJS(),
