@@ -13,7 +13,7 @@ import { selectIsLoggedIn } from './authentication'
 export const selectPropsCategoryId = (state, props) => get(props, 'categoryId')
 
 // state.json.categories.xxx
-export const selectCategoryCollection = state => state.json.get(CATEGORIES)
+export const selectCategoryCollection = state => state.json.get(CATEGORIES, Map())
 
 // Requires `categoryId` to be found in props
 export const selectCategory = createSelector(
