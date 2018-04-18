@@ -26,6 +26,7 @@ function LightBoxWrapper(WrappedComponent) {
       innerWidth: PropTypes.number,
       commentIds: PropTypes.object, // for comment stream
       postAssetIdPairs: PropTypes.array, // post/asset id pairs
+      isRelatedPost: PropTypes.bool,
       isGridMode: PropTypes.bool.isRequired,
       isLightBoxActive: PropTypes.bool.isRequired,
     }
@@ -35,6 +36,7 @@ function LightBoxWrapper(WrappedComponent) {
       innerWidth: null,
       commentIds: null,
       postAssetIdPairs: null,
+      isRelatedPost: false,
     }
 
     constructor(props) {
@@ -468,6 +470,7 @@ function LightBoxWrapper(WrappedComponent) {
       const {
         commentIds,
         postAssetIdPairs,
+        isRelatedPost,
       } = this.props
 
       const {
@@ -488,6 +491,7 @@ function LightBoxWrapper(WrappedComponent) {
             <LightBox
               commentIds={commentIds}
               postAssetIdPairs={postAssetIdPairs}
+              isRelatedPost={isRelatedPost}
               assetIdToSet={assetIdToSet}
               postIdToSet={this.state.postIdToSet}
               queuePostIdsArray={queuePostIdsArray}

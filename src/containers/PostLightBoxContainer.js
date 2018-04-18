@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { trackEvent } from '../actions/analytics'
+import { setIsLightBoxActive } from '../actions/gui'
 import { openModal, closeModal } from '../actions/modals'
 import { UserModal } from '../components/posts/PostRenderables'
 import {
@@ -30,7 +31,6 @@ import {
   selectPostReposted,
   selectPostRepostsCount,
   selectPostViewsCountRounded,
-  selectPostShowCommentEditor,
 } from '../selectors/post'
 
 function mapStateToProps(state, props) {
@@ -50,7 +50,6 @@ function mapStateToProps(state, props) {
     postReposted: selectPostReposted(state, props),
     postRepostsCount: selectPostRepostsCount(state, props),
     postViewsCountRounded: selectPostViewsCountRounded(state, props),
-    showCommentEditor: selectPostShowCommentEditor(state, props),
   }
 }
 
@@ -73,7 +72,6 @@ class PostLightBoxContainer extends Component {
     postReposted: PropTypes.bool,
     postRepostsCount: PropTypes.number,
     postViewsCountRounded: PropTypes.string,
-    showCommentEditor: PropTypes.bool.isRequired,
   }
 
   static defaultProps = {
@@ -156,13 +154,21 @@ class PostLightBoxContainer extends Component {
   }
 
   onClickToggleComments = () => {
-    const { detailPath, deviceSize, dispatch, isLoggedIn,
-      post, showCommentEditor } = this.props
-    if (isLoggedIn) {
+    const {
+      detailPath,
+      deviceSize,
+      dispatch,
+      isLoggedIn,
+      isRelatedPost,
+      post,
+    } = this.props
+
+    dispatch(setIsLightBoxActive({ isActive: false }))
+    if (isLoggedIn && !isRelatedPost) {
       if ((deviceSize === 'mobile') || isElloAndroid()) {
         dispatch(push(detailPath))
       } else {
-        const nextShowComments = !showCommentEditor
+        const nextShowComments = true
         dispatch(toggleComments(post, nextShowComments))
       }
     } else {
@@ -214,7 +220,6 @@ class PostLightBoxContainer extends Component {
       postReposted,
       postRepostsCount,
       postViewsCountRounded,
-      showCommentEditor,
     } = this.props
 
     return (
@@ -232,7 +237,6 @@ class PostLightBoxContainer extends Component {
         postReposted={postReposted}
         postRepostsCount={postRepostsCount}
         postViewsCountRounded={postViewsCountRounded}
-        showCommentEditor={showCommentEditor}
       />
     )
   }

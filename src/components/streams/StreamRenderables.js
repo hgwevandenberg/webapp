@@ -444,7 +444,7 @@ class PostsAsRelatedSimple extends PureComponent { // eslint-disable-line react/
   }
 }
 
-// wrap posts grid in LightBox factory
+// wrap related posts grid in LightBox factory
 const PostsAsRelated = withLightBoxContainer(PostsAsRelatedSimple)
 
 export const postsAsRelated = (postIds, columnCount, isPostHeaderHidden) => (
@@ -452,6 +452,7 @@ export const postsAsRelated = (postIds, columnCount, isPostHeaderHidden) => (
     columnCount={columnCount}
     postIds={postIds}
     isPostHeaderHidden={isPostHeaderHidden}
+    isRelatedPost
   />
 )
 

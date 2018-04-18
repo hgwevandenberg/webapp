@@ -254,6 +254,7 @@ const LightBox = ({
   close,
   handleMaskClick,
   handleImageClick,
+  isRelatedPost,
 }) => {
   const lightBoxSelectedIdPair = { assetIdToSet, postIdToSet }
 
@@ -290,11 +291,12 @@ const LightBox = ({
           </button>
         }
         <div className={`LightBox ${loading ? 'loading' : ''}${loaded ? 'loaded' : ''}`}>
-          {postIdToSet &&
+          {postIdToSet && // render the post tools
             <div className={`${postLightBoxContainerStyle} controls-holder`}>
               <PostLightBoxContainer
                 postId={postIdToSet}
                 resizeLightBox={resize}
+                isRelatedPost={isRelatedPost}
               />
             </div>
           }
@@ -357,10 +359,12 @@ const propTypes = {
   close: PropTypes.func.isRequired,
   handleMaskClick: PropTypes.func.isRequired,
   handleImageClick: PropTypes.func.isRequired,
+  isRelatedPost: PropTypes.bool,
 }
 const defaultProps = {
   commentIds: null,
   queuePostIdsArray: null,
+  isRelatedPost: false,
 }
 LightBox.propTypes = propTypes
 LightBox.defaultProps = defaultProps
