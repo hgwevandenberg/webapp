@@ -111,14 +111,11 @@ class PostLightBoxContainer extends Component {
       onClickRepostPost: isLoggedIn ? this.onClickRepostPost : this.onOpenSignupModal,
       onClickSharePost: this.onClickSharePost,
       onClickToggleComments: this.onClickToggleComments,
-      onClickToggleLovers: PropTypes.func.isRequired,
+      onClickToggleLovers: this.onClickToggleLovers,
       onClickToggleReposters: this.onClickToggleReposters,
       onTrackRelatedPostClick: this.onTrackRelatedPostClick,
     }
   }
-
-  // componentWillMount() {
-  // }
 
   // shouldComponentUpdate(nextProps) {
   //   return !Immutable.is(nextProps.post, this.props.post) ||
@@ -217,6 +214,18 @@ class PostLightBoxContainer extends Component {
   onOpenSignupModal = () => {
     const { onClickOpenRegistrationRequestDialog } = this.context
     onClickOpenRegistrationRequestDialog('post-tools')
+  }
+
+  getUserModalTabs() {
+    const { postLovesCount, postRepostsCount } = this.props
+    const tabs = []
+    if (postLovesCount > 0) {
+      tabs.push({ type: 'loves', children: 'Lovers' })
+    }
+    if (postRepostsCount > 0) {
+      tabs.push({ type: 'reposts', children: 'Reposters' })
+    }
+    return tabs
   }
 
   render() {
