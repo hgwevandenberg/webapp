@@ -137,7 +137,7 @@ export function makeMapStateToProps() {
       repostAuthor: selectPostRepostAuthorWithFallback(state, props),
       repostContent: selectPostRepostContent(state, props),
       showCommentEditor: selectPostShowCommentEditor(state, props),
-      showEditor: selectPostShowEditor(state, props),
+      showEditor: !props.isLightBox && selectPostShowEditor(state, props),
       summary: selectPostSummary(state, props),
     })
 }

@@ -8,6 +8,7 @@ import { setIsLightBoxActive } from '../actions/gui'
 import { openModal, closeModal } from '../actions/modals'
 import { UserModal } from '../components/posts/PostRenderables'
 import {
+  loadEditablePost,
   toggleComments,
   toggleReposting,
 } from '../actions/posts'
@@ -138,9 +139,22 @@ class PostLightBoxContainer extends Component {
   }
 
   onClickRepostPost = () => {
-    const { detailPath, dispatch, post, postReposted } = this.props
-    if (!postReposted) {
+    const {
+      detailPath,
+      deviceSize,
+      dispatch,
+      isRelatedPost,
+      post,
+      postReposted,
+    } = this.props
+
+    dispatch(setIsLightBoxActive({ isActive: false }))
+    if (!postReposted && !isRelatedPost) {
       dispatch(toggleReposting(post, true))
+      dispatch(loadEditablePost(post.get('id')))
+      if (deviceSize === 'mobile') {
+        dispatch(push(detailPath))
+      }
     } else {
       dispatch(push(detailPath))
       this.onTrackRelatedPostClick()
