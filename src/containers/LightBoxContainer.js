@@ -80,6 +80,12 @@ function LightBoxWrapper(WrappedComponent) {
         }
       }
 
+      // light box was closed externally
+      if (this.state.open &&
+        (prevProps.isLightBoxActive && !this.props.isLightBoxActive)) {
+        this.close()
+      }
+
       // might need to shift the queue left/right if we've added/removed new posts
       if (this.state.open && (prevState.oldestQueuePostId !== this.state.oldestQueuePostId)) {
         const nextPrev = this.getSetPagination(this.state.assetIdToSet,
