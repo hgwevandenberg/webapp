@@ -90,6 +90,20 @@ function parseCategory(state, category) {
   }))
 }
 
+function parseCategoryPost(state, categoryPost) {
+  if (!categoryPost) { return state }
+  const state2 = parseCategory(state, categoryPost.category)
+  // TODO: Submitted by/featured by
+  return smartMergeDeepIn(state2, ['categoryPosts', categoryPost.id], Immutable.fromJS({
+    id: categoryPost.id,
+    status: categoryPost.status,
+    featuredAt: categoryPost.featuredAt,
+    submittedAt: categoryPost.submittedAt,
+    categoryId: deepGet(categoryPost, ['category', 'id']),
+    actions: categoryPost.actions,
+  }))
+}
+
 function parseArtistInvite(state, invite) {
   if (!invite || !invite.id) { return state }
   return smartMergeDeepIn(state, ['artistInvites', invite.id], Immutable.fromJS({
@@ -184,6 +198,12 @@ function postLinks(post) {
     links.categories = categories.map(cat => cat.id)
   }
 
+  const categoryPosts = deepGet(post, ['categoryPosts'])
+  if (categoryPosts && !!categoryPosts.length) {
+    links.categoryPosts = categoryPosts.map(cp => cp.id)
+    links.categories = categoryPosts.map(cp => (cp.category ? cp.category.id : null))
+  }
+
   return links
 }
 
@@ -214,11 +234,12 @@ function parsePost(state, post) {
   const state3 = parsePost(state2, post.repostedSource)
   const state4 = parseArtistInviteSubmission(state3, post.artistInviteSubmission)
   const state5 = parseList(state4, post.categories, parseCategory)
+  const state6 = parseList(state5, post.categoryPosts, parseCategoryPost)
 
   const assetsById = reduceAssets(post.assets)
   const repostAssetsById = post.repostedSource ? reduceAssets(post.repostedSource.assets) : null
 
-  const state6 = smartMergeDeepIn(state5, ['posts', post.id], Immutable.fromJS({
+  return smartMergeDeepIn(state6, ['posts', post.id], Immutable.fromJS({
     // ids
     id: post.id,
     authorId: deepGet(post, ['author', 'id']), // We don't use links for this
@@ -248,8 +269,6 @@ function parsePost(state, post) {
     // Links
     links: postLinks(post),
   }))
-
-  return state6
 }
 
 

@@ -15,7 +15,13 @@ import {
 import { DismissButtonLG } from '../buttons/Buttons'
 import Editor from '../editor/Editor'
 import ContentWarningButton from '../posts/ContentWarningButton'
-import { PostTools, EditTool, DeleteTool, ArtistInviteSubmissionStatusTool } from '../posts/PostTools'
+import {
+  FeatureCategoryPostTool,
+  PostTools,
+  EditTool,
+  DeleteTool,
+  ArtistInviteSubmissionStatusTool,
+} from '../posts/PostTools'
 import { TabListButtons } from '../tabs/TabList'
 import RelationshipContainer from '../../containers/RelationshipContainer'
 import StreamContainer from '../../containers/StreamContainer'
@@ -301,6 +307,9 @@ export class PostDetailHeader extends PureComponent {
 export class PostHeader extends PureComponent {
   static propTypes = {
     author: PropTypes.object.isRequired,
+    categoryPostStatus: PropTypes.string,
+    categoryPostActions: PropTypes.object,
+    categoryPostFireAction: PropTypes.func.isRequired,
     repostedBy: PropTypes.object,
     detailPath: PropTypes.string.isRequired,
     inUserDetail: PropTypes.bool,
@@ -311,6 +320,8 @@ export class PostHeader extends PureComponent {
   }
 
   static defaultProps = {
+    categoryPostStatus: null,
+    categoryPostActions: null,
     repostedBy: null,
     inUserDetail: null,
   }
@@ -318,6 +329,9 @@ export class PostHeader extends PureComponent {
   render() {
     const {
       author,
+      categoryPostStatus,
+      categoryPostActions,
+      categoryPostFireAction,
       repostedBy,
       detailPath,
       inUserDetail,
@@ -370,6 +384,11 @@ export class PostHeader extends PureComponent {
         }
         <div className="PostHeaderTools">
           <PostHeaderTimeAgoLink to={detailPath} createdAt={postCreatedAt} />
+          <FeatureCategoryPostTool
+            status={categoryPostStatus}
+            actions={categoryPostActions}
+            fireAction={categoryPostFireAction}
+          />
         </div>
       </header>
     )
