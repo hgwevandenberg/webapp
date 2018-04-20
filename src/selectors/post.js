@@ -3,7 +3,11 @@ import { createSelector } from 'reselect'
 import get from 'lodash/get'
 import { selectPages } from './pages'
 import { selectParamsToken } from './params'
-import { selectCategoryCollection } from './categories'
+import {
+  selectCategoryCollection,
+  selectCategoryForPath,
+  selectCategoryPostCollection,
+} from './categories'
 import { LOAD_STREAM_REQUEST } from '../constants/action_types'
 import { COMMENTS, POSTS } from '../constants/mapping_types'
 import { selectIsPostDetail } from './routing'
@@ -134,8 +138,8 @@ export const selectPostCategories = createSelector(
 )
 
 export const selectPostCategory = createSelector(
-  [selectCategoryCollection, selectPostCategories], (collection, categories) =>
-    (collection && collection.get(categories ? `${categories.first()}` : null)),
+  [selectCategoryCollection, selectPostCategories], (collection, categoryIds) =>
+    (collection && collection.get(categoryIds ? `${categoryIds.first()}` : null)),
 )
 
 export const selectPostCategoryName = createSelector(
@@ -145,6 +149,23 @@ export const selectPostCategoryName = createSelector(
 export const selectPostCategorySlug = createSelector(
   [selectPostCategory], category => (category ? `/discover/${category.get('slug')}` : null),
 )
+
+export const selectPostCategoryPostIds = createSelector(
+  [selectPost], post => post.getIn(['links', 'categoryPosts'], Immutable.List()))
+
+export const selectPostCategoryPosts = createSelector(
+  [selectCategoryPostCollection, selectPostCategoryPostIds], (collection, cpIds) =>
+    (collection && cpIds.map(id => collection.get(id))))
+
+export const selectPostCategoryPostForPath = createSelector(
+  [selectPostCategoryPosts, selectCategoryForPath], (categoryPosts, category) =>
+    !!category && categoryPosts.find(cp => cp.get('categoryId') === category.get('id')))
+
+export const selectPostCategoryPostStatusForPath = createSelector(
+  [selectPostCategoryPostForPath], categoryPost => categoryPost && categoryPost.get('status'))
+
+export const selectPostCategoryPostActionsForPath = createSelector(
+  [selectPostCategoryPostForPath], categoryPost => categoryPost && categoryPost.get('actions'))
 
 export const selectPostDetailPath = createSelector(
   [selectPostAuthorUsername, selectPostToken], (username, token) => `/${username}/post/${token}`,

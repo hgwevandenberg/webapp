@@ -14,6 +14,7 @@ export const selectPropsCategoryId = (state, props) => get(props, 'categoryId')
 
 // state.json.categories.xxx
 export const selectCategoryCollection = state => state.json.get(CATEGORIES, Map())
+export const selectCategoryPostCollection = state => state.json.get('categoryPosts', Map())
 
 // Requires `categoryId` to be found in props
 export const selectCategory = createSelector(
@@ -152,7 +153,11 @@ export const selectCategoryPageTitle = createSelector(
 
 export const selectCategoryForPath = createSelector(
   [selectPathname, selectAllCategoriesAsArray], (pathname, categories) => {
-    const slug = pathname.replace('/discover/', '')
+    const slug = pathname
+      .replace('/discover/', '')
+      .replace('/recent', '')
+      .replace('/shop', '')
+      .replace('/trending', '')
     return categories.find(category => category.get('slug') === slug) || Map()
   },
 )

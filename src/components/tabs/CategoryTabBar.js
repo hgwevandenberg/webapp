@@ -378,7 +378,7 @@ CategoryTabBar.propTypes = {
   subscribed: PropTypes.bool.isRequired,
   areCategoriesSubscribed: PropTypes.bool.isRequired,
   tabs: PropTypes.array.isRequired,
-  deviceSize: PropTypes.bool.isRequired,
+  deviceSize: PropTypes.string.isRequired,
 }
 
 export default CategoryTabBar

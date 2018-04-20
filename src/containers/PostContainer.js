@@ -17,6 +17,7 @@ import {
   watchPost,
 } from '../actions/posts'
 import { sendAdminAction } from '../actions/artist_invites'
+import { sendCategoryPostAction } from '../actions/category_posts'
 import ConfirmDialog from '../components/dialogs/ConfirmDialog'
 import FlagDialog from '../components/dialogs/FlagDialog'
 import {
@@ -52,6 +53,8 @@ import {
   selectPostBody,
   selectPostCategoryName,
   selectPostCategorySlug,
+  selectPostCategoryPostStatusForPath,
+  selectPostCategoryPostActionsForPath,
   selectPostCommentsCount,
   selectPostContent,
   selectPostContentWarning,
@@ -95,6 +98,8 @@ export function makeMapStateToProps() {
       author: selectPostAuthor(state, props),
       categoryName: selectPostCategoryName(state, props),
       categoryPath: selectPostCategorySlug(state, props),
+      categoryPostStatus: selectPostCategoryPostStatusForPath(state, props),
+      categoryPostActions: selectPostCategoryPostActionsForPath(state, props),
       columnWidth: selectColumnWidth(state),
       commentOffset: selectCommentOffset(state),
       content: selectPostContent(state, props),
@@ -150,6 +155,8 @@ class PostContainer extends Component {
     avatar: PropTypes.object,
     categoryName: PropTypes.string,
     categoryPath: PropTypes.string,
+    categoryPostStatus: PropTypes.string,
+    categoryPostActions: PropTypes.object,
     columnWidth: PropTypes.number.isRequired,
     commentOffset: PropTypes.number.isRequired,
     content: PropTypes.object,
@@ -214,6 +221,8 @@ class PostContainer extends Component {
     avatar: null,
     categoryName: null,
     categoryPath: null,
+    categoryPostStatus: null,
+    categoryPostActions: null,
     content: null,
     contentWarning: null,
     isNarrowPostDetail: false,
@@ -441,6 +450,11 @@ class PostContainer extends Component {
     dispatch(sendAdminAction(action))
   }
 
+  onFireCategoryPostAction = (action) => {
+    const { dispatch } = this.props
+    dispatch(sendCategoryPostAction(action))
+  }
+
   getUserModalTabs() {
     const { postLovesCount, postRepostsCount } = this.props
     const tabs = []
@@ -464,6 +478,8 @@ class PostContainer extends Component {
       avatar,
       categoryName,
       categoryPath,
+      categoryPostStatus,
+      categoryPostActions,
       columnWidth,
       commentOffset,
       content,
@@ -560,6 +576,9 @@ class PostContainer extends Component {
           isArtistInviteSubmission={isArtistInviteSubmission}
           isRepost={isRepost}
           isOwnPost={isOwnPost}
+          categoryPostStatus={categoryPostStatus}
+          categoryPostActions={categoryPostActions}
+          categoryPostFireAction={this.onFireCategoryPostAction}
         />
       )
     }
