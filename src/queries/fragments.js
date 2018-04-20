@@ -102,6 +102,20 @@ export const categoryPostSummary = `
   }
 `
 
+export const categoryPostDetails = `
+  fragment categoryPostDetails on CategoryPost {
+    id
+    status
+    featuredBy { username }
+    submittedBy { username }
+    actions {
+      feature { method href }
+      unfeature { method href }
+    }
+    category { ...categorySummary }
+  }
+`
+
 export const postSummary = `
   fragment postSummary on Post {
     id
@@ -129,7 +143,7 @@ export const fullPost = `
     content { ...contentProps }
     repostContent { ...contentProps }
     author { ...authorSummary }
-    categories { ...categorySummary }
+    categoryPosts { ...categoryPostDetails }
     assets { id attachment { ...responsiveImageVersions } }
     postStats { lovesCount commentsCount viewsCount repostsCount }
     currentUserState { watching loved reposted }
@@ -171,6 +185,7 @@ export const fullPostAllFragments = `
   ${tshirtImageVersions}
   ${contentProps}
   ${authorSummary}
+  ${categoryPostDetails}
   ${categorySummary}
   ${artistInviteSubmissionAction}
   ${artistInviteSubmissionDetails}

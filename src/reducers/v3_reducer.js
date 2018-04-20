@@ -93,12 +93,15 @@ function parseCategory(state, category) {
 function parseCategoryPost(state, categoryPost) {
   if (!categoryPost) { return state }
   const state2 = parseCategory(state, categoryPost.category)
-  // TODO: Submitted by/featured by
   return smartMergeDeepIn(state2, ['categoryPosts', categoryPost.id], Immutable.fromJS({
     id: categoryPost.id,
     status: categoryPost.status,
-    featuredAt: categoryPost.featuredAt,
     submittedAt: categoryPost.submittedAt,
+    submittedByUsername: deepGet(categoryPost, ['submittedBy', 'username']),
+    featuredAt: categoryPost.featuredAt,
+    featuredByUsername: deepGet(categoryPost, ['featuredBy', 'username']),
+    categorySlug: deepGet(categoryPost, ['category', 'slug']),
+    categoryName: deepGet(categoryPost, ['category', 'name']),
     categoryId: deepGet(categoryPost, ['category', 'id']),
     actions: categoryPost.actions,
   }))
