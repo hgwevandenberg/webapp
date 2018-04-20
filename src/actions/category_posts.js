@@ -1,6 +1,5 @@
 import { LOAD_STREAM } from '../constants/action_types'
 import { CATEGORY_POSTS } from '../constants/mapping_types'
-import * as api from '../networking/api'
 
 export function sendCategoryPostAction(action) {
   return {
@@ -15,3 +14,5 @@ export function sendCategoryPostAction(action) {
     },
   }
 }
+
+export default sendCategoryPostAction
