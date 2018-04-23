@@ -219,13 +219,14 @@ class ShareTool extends PureComponent {
 
 export class FeatureCategoryPostTool extends PureComponent {
   static propTypes = {
-    status: PropTypes.string.isRequired,
+    status: PropTypes.string,
     actions: PropTypes.object,
     fireAction: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
     actions: null,
+    status: null,
   }
 
   render() {

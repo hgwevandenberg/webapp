@@ -309,6 +309,7 @@ class PostContainer extends Component {
         'submissionStatus',
         'lightBoxSelectedIdPair',
         'resizeLightBox',
+        'categoryPostStatus',
       ].some(prop =>
         nextProps[prop] !== this.props[prop],
       )

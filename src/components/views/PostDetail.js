@@ -43,6 +43,7 @@ const postDetailStyle = css(
       select('& .WatchTool', s.displayNone),
       select('& .FlagTool', s.displayNone),
       select('& .TimeAgoTool', s.displayNone),
+      select('& .CategoryHistoryTool', s.displayNone),
       select('& .ShareTool', { position: 'static' }),
       select('& .ViewsTool', s.pointerNone, modifier('.isPill', { marginRight: '0 !important' })),
     ),
@@ -53,6 +54,9 @@ const postDetailStyle = css(
     select('& .PostTool', s.displayNone,
       modifier('.WatchTool', s.block),
       modifier('.FlagTool', s.block, s.opacity1, s.pointerAuto),
+    ),
+    select('& .CategoryHistoryTool', s.block, s.color9,
+      select('& p', s.fontSize14),
     ),
   ),
   media(

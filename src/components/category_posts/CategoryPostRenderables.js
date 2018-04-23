@@ -21,7 +21,7 @@ export class CategoryPostHistoryRecord extends Component {
   statusIcon() {
     const { status } = this.props
     const color = status === 'submitted' ? '#aaaaaa' : '#00D101'
-    return <BadgeFeaturedIcon color={color} />
+    return <BadgeFeaturedIcon color={color} size={30} />
   }
 
   featuredElement() {
@@ -51,7 +51,7 @@ export class CategoryPostHistoryRecord extends Component {
     if (submittedByUsername === authorUsername) {
       return (
         <span>
-          Posted into
+          Posted into&nbsp;
           <Link to={`/discover/${categorySlug}`}>{categoryName}</Link>.
         </span>
       )
@@ -71,7 +71,7 @@ export class CategoryPostHistoryRecord extends Component {
     return (
       <p>
         {this.statusIcon()}
-        {this.featuredElement()}
+        {this.featuredElement()}&nbsp;
         {this.submittedElement()}
       </p>
     )

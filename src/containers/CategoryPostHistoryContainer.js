@@ -29,7 +29,7 @@ const CategoryPostHistoryContainer = ({ categoryPosts, authorUsername }) => {
     ),
   ).toArray()
 
-  return <div>{elems}</div>
+  return <div className="PostTool CategoryHistoryTool">{elems}</div>
 }
 CategoryPostHistoryContainer.propTypes = {
   authorUsername: PropTypes.string.isRequired,

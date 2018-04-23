@@ -6,7 +6,7 @@ export function sendCategoryPostAction(action) {
     type: LOAD_STREAM,
     meta: {
       mappingType: CATEGORY_POSTS,
-      updateResult: true,
+      updateResult: false,
     },
     payload: {
       endpoint: { path: action.get('href') },
