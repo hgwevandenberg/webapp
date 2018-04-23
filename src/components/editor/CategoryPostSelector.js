@@ -244,6 +244,7 @@ export default class CategoryPostSelector extends PureComponent {
   static propTypes = {
     onSelect: PropTypes.func.isRequired,
     onClear: PropTypes.func.isRequired,
+    trackEvent: PropTypes.func.isRequired,
     subscribedCategories: PropTypes.array.isRequired,
     featuredInCategories: PropTypes.array.isRequired,
     unsubscribedCategories: PropTypes.array.isRequired,
@@ -295,7 +296,7 @@ export default class CategoryPostSelector extends PureComponent {
 
     // close & reset selection
     if (!prevProps.resetSelection && this.props.resetSelection) {
-      this.close()
+      this.close(false)
     }
 
     if (this.state.open &&
@@ -315,6 +316,15 @@ export default class CategoryPostSelector extends PureComponent {
 
   componentWillUnmount() {
     document.removeEventListener('mousedown', this.handleClickOutside)
+  }
+
+  onSelectLocal = (category) => {
+    const { onSelect, trackEvent } = this.props
+    trackEvent('category-post-selector-selected', {
+      id: category.get('id'),
+      slug: category.get('slug'),
+    })
+    onSelect(category)
   }
 
   setIndexOfSelection() {
@@ -365,7 +375,7 @@ export default class CategoryPostSelector extends PureComponent {
   }
 
   handleKeyDown = (event) => {
-    const { onSelect } = this.props
+    const { onSelect, trackEvent } = this.props
     const {
       subscribedCategories,
       unsubscribedCategories,
@@ -388,6 +398,11 @@ export default class CategoryPostSelector extends PureComponent {
       event.preventDefault()
       this.setState({ selectedIndex: max - 1 })
     } else if (event.key === 'Enter' && !selectedIsNull) {
+      const selected = categories[selectedIndex]
+      trackEvent('category-post-selector-selected', {
+        id: selected.get('id'),
+        slug: selected.get('slug'),
+      })
       onSelect(categories[selectedIndex])
     } else if (event.key === 'Escape') {
       this.categorySelectorRef.blur()
@@ -472,29 +487,33 @@ export default class CategoryPostSelector extends PureComponent {
 
   open() {
     if (!this.state.open) {
+      this.props.trackEvent('category-post-selector-opened')
       this.setState({
         open: true,
       })
     }
   }
 
-  close() {
+  close(track = true) {
     if (this.state.open) {
-      this.resetSelection()
+      if (track) { this.props.trackEvent('category-post-selector-closed') }
+      this.resetSelection(false)
     }
   }
 
   clearLocal() {
-    const { onClear } = this.props
+    const { onClear, trackEvent } = this.props
     const { open } = this.state
     if (open) {
       // this.categorySelectorRef.focus()
     }
+    trackEvent('category-post-selector-cleared')
     onClear()
   }
 
-  resetSelection() {
+  resetSelection(track = true) {
     const { subscribedCategories, unsubscribedCategories } = this.props
+    if (track) { this.props.trackEvent('category-post-selector-reset') }
     this.setState({
       subscribedCategories,
       unsubscribedCategories,
@@ -505,7 +524,7 @@ export default class CategoryPostSelector extends PureComponent {
   }
 
   render() {
-    const { selectedCategories, onSelect } = this.props
+    const { selectedCategories } = this.props
     const {
       subscribedCategories,
       unsubscribedCategories,
@@ -577,7 +596,7 @@ export default class CategoryPostSelector extends PureComponent {
                       category={category}
                       index={index}
                       selectedIndexCurrent={selectedIndex}
-                      onSelect={onSelect}
+                      onSelect={this.onSelectLocal}
                     />),
                   )}
                 </ul>
@@ -593,7 +612,7 @@ export default class CategoryPostSelector extends PureComponent {
                     category={category}
                     index={index + offset}
                     selectedIndexCurrent={selectedIndex}
-                    onSelect={onSelect}
+                    onSelect={this.onSelectLocal}
                   />),
                 )}
               </ul>
