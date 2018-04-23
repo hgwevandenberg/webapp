@@ -279,17 +279,17 @@ export class FeatureCategoryPostTool extends PureComponent {
     if (status === 'submitted' && actions && actions.get('feature')) {
       return (
         <button onClick={() => fireAction(actions.get('feature'))}>
-          <BadgeFeaturedIcon color="#aaaaaa" />
+          <BadgeFeaturedIcon color="#aaaaaa" size="30" />
         </button>
       )
     } else if (status === 'featured' && actions && actions.get('unfeature')) {
       return (
         <button onClick={() => fireAction(actions.get('unfeature'))}>
-          <BadgeFeaturedIcon />
+          <BadgeFeaturedIcon size="30" />
         </button>
       )
     } else if (status === 'featured') {
-      return <BadgeFeaturedIcon />
+      return <BadgeFeaturedIcon size="30" />
     }
     return null
   }

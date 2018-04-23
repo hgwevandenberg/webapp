@@ -129,12 +129,12 @@ export const BadgeFeaturedIcon = ({ color, size }) =>
 
 BadgeFeaturedIcon.propTypes = {
   color: PropTypes.string,
-  size: PropTypes.number,
+  size: PropTypes.string,
 }
 
 BadgeFeaturedIcon.defaultProps = {
   color: '#00D101',
-  size: 40,
+  size: '40',
 }
 
 // -------------------------------------
