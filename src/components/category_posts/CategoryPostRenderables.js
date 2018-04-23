@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
-import { BadgeFeaturedIcon } from '../assets/Icons'
+import { FeatureCategoryPostTool } from '../posts/PostTools'
 
 export class CategoryPostHistoryRecord extends Component {
   static propTypes = {
@@ -11,17 +11,25 @@ export class CategoryPostHistoryRecord extends Component {
     categoryName: PropTypes.string.isRequired,
     submittedByUsername: PropTypes.string,
     featuredByUsername: PropTypes.string,
+    actions: PropTypes.object,
+    fireAction: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
     submittedByUsername: null,
     featuredByUsername: null,
+    actions: null,
   }
 
   statusIcon() {
-    const { status } = this.props
-    const color = status === 'submitted' ? '#aaaaaa' : '#00D101'
-    return <BadgeFeaturedIcon color={color} size={30} />
+    const { status, actions, fireAction } = this.props
+    return (
+      <FeatureCategoryPostTool
+        status={status}
+        actions={actions}
+        fireAction={fireAction}
+      />
+    )
   }
 
   featuredElement() {
