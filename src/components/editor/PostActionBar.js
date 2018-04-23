@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { selectInnerWidth } from '../../selectors/gui'
 import CategoryPostSelector from './CategoryPostSelector'
 import { openModal, closeModal } from '../../actions/modals'
+import { trackEvent } from '../../actions/analytics'
 import { updateBuyLink, updateCategoryId, clearCategoryId } from '../../actions/editor'
 import BuyLinkDialog from '../dialogs/BuyLinkDialog'
 import {
@@ -259,6 +260,11 @@ class PostActionBar extends Component {
     dispatch(clearCategoryId(editorId))
   }
 
+  onTrackEvent = (eventName, eventData) => {
+    const { dispatch } = this.props
+    dispatch(trackEvent(eventName, eventData))
+  }
+
   submitted = () => {
     const { submitAction } = this.props
     submitAction()
@@ -356,6 +362,7 @@ class PostActionBar extends Component {
                   unsubscribedCategories={unsubscribedCategories}
                   selectedCategories={selectedCategories}
                   resetSelection={resetCategorySelection}
+                  trackEvent={this.onTrackEvent}
                 />
               }
               <button
@@ -383,15 +390,17 @@ class PostActionBar extends Component {
       // mobile post version
       return (
         <div className={wrapperStyle} id={editorId}>
-          <CategoryPostSelector
-            onSelect={this.onSelectCategory}
-            onClear={this.onClearCategory}
-            subscribedCategories={subscribedCategories}
-            featuredInCategories={featuredInCategories}
-            unsubscribedCategories={unsubscribedCategories}
-            selectedCategories={selectedCategories}
-            resetSelection={resetCategorySelection}
-          />
+          {postIntoCategory &&
+            <CategoryPostSelector
+              onSelect={this.onSelectCategory}
+              onClear={this.onClearCategory}
+              subscribedCategories={subscribedCategories}
+              featuredInCategories={featuredInCategories}
+              unsubscribedCategories={unsubscribedCategories}
+              selectedCategories={selectedCategories}
+              resetSelection={resetCategorySelection}
+            />
+          }
           <div className={leftStyle}>
             <button
               className={`PostActionButton forUpload ${buttonStyle}`}
