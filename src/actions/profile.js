@@ -17,17 +17,29 @@ export function autoCompleteLocation(location) {
   }
 }
 
+function followCategoriesPayload(catIds, disableFollows) {
+  return {
+    body: {
+      followed_category_ids: catIds,
+      disable_follows: !!disableFollows,
+    },
+    endpoint: api.followCategories(),
+    method: 'PUT',
+  }
+}
+
 export function followCategories(catIds, disableFollows) {
   return {
     type: PROFILE.FOLLOW_CATEGORIES,
-    payload: {
-      body: {
-        followed_category_ids: catIds,
-        disable_follows: !!disableFollows,
-      },
-      endpoint: api.followCategories(),
-      method: 'PUT',
-    },
+    payload: followCategoriesPayload(catIds, disableFollows),
+    meta: {},
+  }
+}
+
+export function unfollowCategories(catIds, disableFollows) {
+  return {
+    type: PROFILE.UNFOLLOW_CATEGORIES,
+    payload: followCategoriesPayload(catIds, disableFollows),
     meta: {},
   }
 }

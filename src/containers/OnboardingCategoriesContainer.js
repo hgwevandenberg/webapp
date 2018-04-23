@@ -1,3 +1,4 @@
+import Immutable from 'immutable'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -65,7 +66,7 @@ class OnboardingCategoriesContainer extends PureComponent {
   onNextClick = () => {
     const { dispatch } = this.props
     const categoryIds = this.state.categoryIds
-    dispatch(followCategories(categoryIds, false))
+    dispatch(followCategories(Immutable.List(categoryIds || []), false))
     dispatch(push('/onboarding/settings'))
   }
 
