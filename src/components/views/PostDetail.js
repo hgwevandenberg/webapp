@@ -86,7 +86,7 @@ const listStyle = css(
   ),
   media(
     s.minBreak3,
-    { width: 'calc(100vw - 360px)' },
+    { width: 'calc(100vw - 420px)' },
     select('& .PostBody > div', s.flex, s.flexColumn, s.justifyCenter, s.itemsCenter, s.pt20),
   ),
   select('.PostDetails & .TabListStreamContainer', s.px0),
@@ -111,7 +111,7 @@ const relatedPostsStyle = css(
 const asideStyle = css(
   s.absolute,
   s.overflowScrollWebY,
-  { height: '100vh', paddingBottom: 160, width: 360, borderLeft: '1px solid #f2f2f2', top: 0, right: 0 },
+  { height: '100vh', paddingBottom: 160, width: 420, borderLeft: '1px solid #f2f2f2', top: 0, right: 0 },
   select('& .CommentContent',
     s.m20,
     select('& .Paginator',
