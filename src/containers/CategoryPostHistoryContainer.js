@@ -45,7 +45,7 @@ class CategoryPostHistoryContainer extends Component {
       ),
     ).toArray()
 
-    return <div className="PostTool CategoryHistoryTool">{elems}</div>
+    return <aside className="CategoryHistory">{elems}</aside>
   }
 }
 

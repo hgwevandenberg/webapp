@@ -19,7 +19,6 @@ import {
   BadgeFeaturedIcon,
 } from '../assets/Icons'
 import { numberToHuman } from '../../lib/number_to_human'
-import CategoryPostHistory from '../../containers/CategoryPostHistoryContainer'
 
 class ViewsTool extends PureComponent {
   static propTypes = {
@@ -279,7 +278,7 @@ export class FeatureCategoryPostTool extends PureComponent {
     if (status === 'submitted' && actions && actions.get('feature')) {
       return (
         <button onClick={() => fireAction(actions.get('feature'))}>
-          <BadgeFeaturedIcon color="#aaaaaa"/>
+          <BadgeFeaturedIcon color="#aaaaaa" />
         </button>
       )
     } else if (status === 'featured' && actions && actions.get('unfeature')) {
@@ -523,14 +522,6 @@ export class PostTools extends PureComponent {
       if (!isOwnPost) {
         cells.push(<FlagTool key={`FlagTool_${postId}`} />)
       }
-    }
-    if (isPostDetail) {
-      cells.push(
-        <CategoryPostHistory
-          key={`CategoryPostHistory_${postId}`}
-          postId={postId}
-        />,
-      )
     }
     return (
       <footer className={classNames('PostTools', { isCommentsRequesting }, { isCommentsActive })}>

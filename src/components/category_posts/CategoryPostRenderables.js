@@ -2,6 +2,35 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import { FeatureCategoryPostTool } from '../posts/PostTools'
+import { css, hover, media, modifier, select } from '../../styles/jss'
+import * as s from '../../styles/jso'
+
+const categoryPostHistoryRecordStyle = css(
+  s.block,
+  s.m0,
+  s.fontSize12,
+  s.lh20,
+  s.color9,
+  select('& button',
+    s.relative,
+    s.inlineBlock,
+    s.mr10,
+    {
+      marginTop: -2,
+      width: 16,
+      height: 16,
+      overflow: 'hidden',
+    },
+    select('& .BadgeFeaturedIcon',
+      s.absolute,
+      {
+        top: -7,
+        right: -17,
+        transform: 'scale(0.64)',
+      },
+    ),
+  ),
+)
 
 export class CategoryPostHistoryRecord extends Component {
   static propTypes = {
@@ -77,7 +106,7 @@ export class CategoryPostHistoryRecord extends Component {
     const { status } = this.props
     if (status === 'removed') { return null }
     return (
-      <p>
+      <p className={categoryPostHistoryRecordStyle}>
         {this.statusIcon()}
         {this.featuredElement()}&nbsp;
         {this.submittedElement()}
