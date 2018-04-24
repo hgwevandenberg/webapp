@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import { FeatureCategoryPostTool } from '../posts/PostTools'
-import { css, hover, media, modifier, select } from '../../styles/jss'
+import { css, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
 const categoryPostHistoryRecordStyle = css(
