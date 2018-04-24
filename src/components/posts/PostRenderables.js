@@ -25,6 +25,7 @@ import {
 import { TabListButtons } from '../tabs/TabList'
 import RelationshipContainer from '../../containers/RelationshipContainer'
 import StreamContainer from '../../containers/StreamContainer'
+import CategoryPostHistory from '../../containers/CategoryPostHistoryContainer'
 import { RegionItems } from '../regions/RegionRenderables'
 import { loadUserDrawer } from '../../actions/user'
 import { loadComments } from '../../actions/posts'
@@ -1048,6 +1049,12 @@ export const PostDetailAsideBottom = ({
         postViewsCountRounded,
       }}
     />
+    {isPostDetail && !isMobile &&
+      <CategoryPostHistory
+        key={`CategoryPostHistory_${postId}`}
+        postId={postId}
+      />
+    }
   </div>
 )
 PostDetailAsideBottom.propTypes = {
