@@ -150,20 +150,24 @@ const CommentContent = (
       editorOrButton = <LaunchMobileCommentEditorButton avatar={avatar} post={post} />
     }
   }
-  return (
-    <div className="CommentContent">
-      {editorOrButton}
-      {streamAction &&
-        <StreamContainer
-          action={streamAction}
-          className="TabListStreamContainer"
-          key={`TabListStreamContainer_${activeType}`}
-          paginatorText="Load More"
-          shouldInfiniteScroll={false}
-        />
-      }
-    </div>
-  )
+
+  if (isLoggedIn) {
+    return (
+      <div className="CommentContent">
+        {editorOrButton}
+        {streamAction &&
+          <StreamContainer
+            action={streamAction}
+            className="TabListStreamContainer"
+            key={`TabListStreamContainer_${activeType}`}
+            paginatorText="Load More"
+            shouldInfiniteScroll={false}
+          />
+        }
+      </div>
+    )
+  }
+  return null
 }
 CommentContent.propTypes = {
   activeType: PropTypes.string.isRequired,
