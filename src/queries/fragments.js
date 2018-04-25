@@ -90,6 +90,32 @@ export const artistInviteSubmissionDetails = `
   }
 `
 
+export const categoryPostSummary = `
+  fragment categoryPostSummary on CategoryPost {
+    id
+    status
+    actions {
+      feature { method href }
+      unfeature { method href }
+    }
+    category { ...categorySummary }
+  }
+`
+
+export const categoryPostDetails = `
+  fragment categoryPostDetails on CategoryPost {
+    id
+    status
+    featuredBy { username }
+    submittedBy { username }
+    actions {
+      feature { method href }
+      unfeature { method href }
+    }
+    category { ...categorySummary }
+  }
+`
+
 export const postSummary = `
   fragment postSummary on Post {
     id
@@ -100,7 +126,7 @@ export const postSummary = `
     content { ...contentProps }
     repostContent { ...contentProps }
     author { ...authorSummary }
-    categories { ...categorySummary }
+    categoryPosts { ...categoryPostSummary }
     assets { id attachment { ...responsiveImageVersions } }
     postStats { lovesCount commentsCount viewsCount repostsCount }
     currentUserState { watching loved reposted }
@@ -117,7 +143,7 @@ export const fullPost = `
     content { ...contentProps }
     repostContent { ...contentProps }
     author { ...authorSummary }
-    categories { ...categorySummary }
+    categoryPosts { ...categoryPostDetails }
     assets { id attachment { ...responsiveImageVersions } }
     postStats { lovesCount commentsCount viewsCount repostsCount }
     currentUserState { watching loved reposted }
@@ -147,6 +173,7 @@ export const postStreamAllFragments = `
   ${contentProps}
   ${authorSummary}
   ${categorySummary}
+  ${categoryPostSummary}
   ${artistInviteSubmissionSummary}
   ${postSummary}
   ${postStream}
@@ -158,6 +185,7 @@ export const fullPostAllFragments = `
   ${tshirtImageVersions}
   ${contentProps}
   ${authorSummary}
+  ${categoryPostDetails}
   ${categorySummary}
   ${artistInviteSubmissionAction}
   ${artistInviteSubmissionDetails}

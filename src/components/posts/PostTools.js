@@ -16,6 +16,7 @@ import {
   XBoxIcon,
   ArtistInviteSubmissionApprovedIcon,
   ArtistInviteSubmissionSelectedIcon,
+  BadgeFeaturedIcon,
 } from '../assets/Icons'
 import { numberToHuman } from '../../lib/number_to_human'
 
@@ -212,6 +213,43 @@ class ShareTool extends PureComponent {
         </button>
       </span>
     )
+  }
+}
+
+export class FeatureCategoryPostTool extends PureComponent {
+  static propTypes = {
+    status: PropTypes.string,
+    actions: PropTypes.object,
+    fireAction: PropTypes.func.isRequired,
+  }
+
+  static defaultProps = {
+    actions: null,
+    status: null,
+  }
+
+  render() {
+    const { status, actions, fireAction } = this.props
+    if (status === 'submitted' && actions && actions.get('feature')) {
+      return (
+        <button className="featured-toggle" onClick={() => fireAction(actions.get('feature'))}>
+          <BadgeFeaturedIcon color="#aaaaaa" />
+        </button>
+      )
+    } else if (status === 'featured' && actions && actions.get('unfeature')) {
+      return (
+        <button className="featured-toggle" onClick={() => fireAction(actions.get('unfeature'))}>
+          <BadgeFeaturedIcon />
+        </button>
+      )
+    } else if (status === 'featured') {
+      return (
+        <span className="featured-toggle">
+          <BadgeFeaturedIcon />
+        </span>
+      )
+    }
+    return null
   }
 }
 

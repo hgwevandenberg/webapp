@@ -15,10 +15,17 @@ import {
 import { DismissButtonLG } from '../buttons/Buttons'
 import Editor from '../editor/Editor'
 import ContentWarningButton from '../posts/ContentWarningButton'
-import { PostTools, EditTool, DeleteTool, ArtistInviteSubmissionStatusTool } from '../posts/PostTools'
+import {
+  FeatureCategoryPostTool,
+  PostTools,
+  EditTool,
+  DeleteTool,
+  ArtistInviteSubmissionStatusTool,
+} from '../posts/PostTools'
 import { TabListButtons } from '../tabs/TabList'
 import RelationshipContainer from '../../containers/RelationshipContainer'
 import StreamContainer from '../../containers/StreamContainer'
+import CategoryPostHistory from '../../containers/CategoryPostHistoryContainer'
 import { RegionItems } from '../regions/RegionRenderables'
 import { loadUserDrawer } from '../../actions/user'
 import { loadComments } from '../../actions/posts'
@@ -301,6 +308,9 @@ export class PostDetailHeader extends PureComponent {
 export class PostHeader extends PureComponent {
   static propTypes = {
     author: PropTypes.object.isRequired,
+    categoryPostStatus: PropTypes.string,
+    categoryPostActions: PropTypes.object,
+    categoryPostFireAction: PropTypes.func.isRequired,
     repostedBy: PropTypes.object,
     detailPath: PropTypes.string.isRequired,
     inUserDetail: PropTypes.bool,
@@ -311,6 +321,8 @@ export class PostHeader extends PureComponent {
   }
 
   static defaultProps = {
+    categoryPostStatus: null,
+    categoryPostActions: null,
     repostedBy: null,
     inUserDetail: null,
   }
@@ -318,6 +330,9 @@ export class PostHeader extends PureComponent {
   render() {
     const {
       author,
+      categoryPostStatus,
+      categoryPostActions,
+      categoryPostFireAction,
       repostedBy,
       detailPath,
       inUserDetail,
@@ -370,6 +385,13 @@ export class PostHeader extends PureComponent {
         }
         <div className="PostHeaderTools">
           <PostHeaderTimeAgoLink to={detailPath} createdAt={postCreatedAt} />
+          {categoryPostActions &&
+            <FeatureCategoryPostTool
+              status={categoryPostStatus}
+              actions={categoryPostActions}
+              fireAction={categoryPostFireAction}
+            />
+          }
         </div>
       </header>
     )
@@ -592,7 +614,6 @@ export class PostBody extends PureComponent {
 }
 
 const launchCommentEditorStyle = css(
-  s.mt30,
   s.relative,
 )
 
@@ -606,12 +627,12 @@ const launchCommentEditorButtonStyle = css(
   s.colorWhite,
   s.sansRegular,
   s.ml20,
+  s.mr10,
   s.fontSize14,
   {
     borderRadius: 5,
     height: 50,
-    width: 'calc(100% - 50px)',
-    maxWidth: '640px',
+    width: 'calc(100% - 60px)',
     paddingLeft: 8,
     textAlign: 'left',
   },
@@ -628,6 +649,10 @@ const launchCommentEditorButtonStyle = css(
       borderWidth: 10,
       borderRightColor: '#000',
     },
+  ),
+  media(s.maxBreak2,
+    s.mr0,
+    { width: 'calc(100% - 50px)' },
   ),
 )
 
@@ -839,6 +864,12 @@ export const Post = ({
         }}
       />
     }
+    {!isLightBox && isPostDetail && innerWidth < 960 &&
+      <CategoryPostHistory
+        key={`CategoryPostHistory_${postId}`}
+        postId={postId}
+      />
+    }
     {isLoggedIn && showCommentEditor && supportsNativeEditor && !isLightBox &&
       <LaunchNativeCommentEditorButton avatar={avatar} post={post} />
     }
@@ -983,6 +1014,7 @@ PostDetailAsideTop.propTypes = {
 export const PostDetailAsideBottom = ({
   author,
   detailPath,
+  innerWidth,
   isCommentsActive,
   isCommentsRequesting,
   isGridMode,
@@ -1029,11 +1061,18 @@ export const PostDetailAsideBottom = ({
         postViewsCountRounded,
       }}
     />
+    {isPostDetail && innerWidth > 959 &&
+      <CategoryPostHistory
+        key={`CategoryPostHistory_${postId}`}
+        postId={postId}
+      />
+    }
   </div>
 )
 PostDetailAsideBottom.propTypes = {
   author: PropTypes.object.isRequired,
   detailPath: PropTypes.string.isRequired,
+  innerWidth: PropTypes.number.isRequired,
   isCommentsActive: PropTypes.bool.isRequired,
   isCommentsRequesting: PropTypes.bool.isRequired,
   isGridMode: PropTypes.bool.isRequired,

@@ -28,7 +28,10 @@ const postDetailStyle = css(
       ),
     ),
     select('& .PostTools',
-      s.flex, s.justifySpaceBetween, s.itemsCenter, s.p0, { maxWidth: 310 },
+      s.flex,
+      s.justifySpaceBetween,
+      s.itemsCenter,
+      s.p0,
       media(s.minBreak3, s.pr10, { paddingLeft: 15, maxWidth: 640 }),
       select('& .ShyTool',
         s.absolute,
@@ -43,16 +46,38 @@ const postDetailStyle = css(
       select('& .WatchTool', s.displayNone),
       select('& .FlagTool', s.displayNone),
       select('& .TimeAgoTool', s.displayNone),
+      select('& .CategoryHistory', s.displayNone),
       select('& .ShareTool', { position: 'static' }),
       select('& .ViewsTool', s.pointerNone, modifier('.isPill', { marginRight: '0 !important' })),
     ),
   ),
+  select('& .PostDetails.Posts.asList .PostList > .Post',
+    select('& .PostTools',
+      s.pt30,
+      s.pb40,
+      { height: 'auto' },
+    ),
+  ),
   select('> .PostDetails.Posts.asList', s.relative),
   select('& .PostDetails.Posts.asList .PostDetailAsideBottom',
-    select('& .PostTools', s.px0, s.mt40, s.flex, s.justifyStart, media(s.minBreak3, s.justifyEnd, s.px10)),
+    select('& .PostTools',
+      s.px0,
+      s.pt0,
+      s.flex,
+      s.justifyStart,
+      {
+        paddingBottom: 15,
+        height: 'auto',
+      },
+      media(s.minBreak3, s.justifyEnd, s.px10),
+    ),
     select('& .PostTool', s.displayNone,
       modifier('.WatchTool', s.block),
       modifier('.FlagTool', s.block, s.opacity1, s.pointerAuto),
+    ),
+    select('& .CategoryHistory',
+      s.pl20,
+      s.pr20,
     ),
   ),
   media(
@@ -71,7 +96,7 @@ const listStyle = css(
   ),
   media(
     s.minBreak3,
-    { width: 'calc(100vw - 360px)' },
+    { width: 'calc(100vw - 420px)' },
     select('& .PostBody > div', s.flex, s.flexColumn, s.justifyCenter, s.itemsCenter, s.pt20),
   ),
   select('.PostDetails & .TabListStreamContainer', s.px0),
@@ -96,8 +121,15 @@ const relatedPostsStyle = css(
 const asideStyle = css(
   s.absolute,
   s.overflowScrollWebY,
-  { height: '100vh', paddingBottom: 80, width: 360, borderLeft: '1px solid #f2f2f2', top: 0, right: 0 },
-  select('& .CommentContent', s.m20),
+  { height: '100vh', paddingBottom: 160, width: 420, borderLeft: '1px solid #f2f2f2', top: 0, right: 0 },
+  select('& .CommentContent',
+    s.m20,
+    select('& .Paginator',
+      s.m0,
+      s.mt30,
+      s.fullWidth,
+    ),
+  ),
   select('.PostDetails & .TabListStreamContainer', s.px0),
   select('& .UserProfileCard',
     media(s.minBreak3, s.mt20, { width: 'calc(100% - 40px)' }),
@@ -118,20 +150,24 @@ const CommentContent = (
       editorOrButton = <LaunchMobileCommentEditorButton avatar={avatar} post={post} />
     }
   }
-  return (
-    <div className="CommentContent">
-      {editorOrButton}
-      {streamAction &&
-        <StreamContainer
-          action={streamAction}
-          className="TabListStreamContainer"
-          key={`TabListStreamContainer_${activeType}`}
-          paginatorText="Load More"
-          shouldInfiniteScroll={false}
-        />
-      }
-    </div>
-  )
+
+  if (isLoggedIn) {
+    return (
+      <div className="CommentContent">
+        {editorOrButton}
+        {streamAction &&
+          <StreamContainer
+            action={streamAction}
+            className="TabListStreamContainer"
+            key={`TabListStreamContainer_${activeType}`}
+            paginatorText="Load More"
+            shouldInfiniteScroll={false}
+          />
+        }
+      </div>
+    )
+  }
+  return null
 }
 CommentContent.propTypes = {
   activeType: PropTypes.string.isRequired,
