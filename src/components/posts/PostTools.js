@@ -243,7 +243,11 @@ export class FeatureCategoryPostTool extends PureComponent {
         </button>
       )
     } else if (status === 'featured') {
-      return <BadgeFeaturedIcon />
+      return (
+        <span className="featured-toggle">
+          <BadgeFeaturedIcon />
+        </span>
+      )
     }
     return null
   }
