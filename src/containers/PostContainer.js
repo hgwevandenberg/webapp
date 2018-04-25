@@ -598,6 +598,7 @@ class PostContainer extends Component {
             {...{
               author,
               detailPath,
+              innerWidth,
               isCommentsActive: this.state.isCommentsActive,
               isCommentsRequesting,
               isGridMode,
