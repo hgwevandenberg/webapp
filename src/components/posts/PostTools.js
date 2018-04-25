@@ -232,13 +232,13 @@ export class FeatureCategoryPostTool extends PureComponent {
     const { status, actions, fireAction } = this.props
     if (status === 'submitted' && actions && actions.get('feature')) {
       return (
-        <button onClick={() => fireAction(actions.get('feature'))}>
+        <button className="featured-toggle" onClick={() => fireAction(actions.get('feature'))}>
           <BadgeFeaturedIcon color="#aaaaaa" />
         </button>
       )
     } else if (status === 'featured' && actions && actions.get('unfeature')) {
       return (
-        <button onClick={() => fireAction(actions.get('unfeature'))}>
+        <button className="featured-toggle" onClick={() => fireAction(actions.get('unfeature'))}>
           <BadgeFeaturedIcon />
         </button>
       )

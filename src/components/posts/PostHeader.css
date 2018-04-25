@@ -216,6 +216,14 @@
   stroke-width: 1;
 }
 
+.PostHeaderTools .featured-toggle {
+  width: 24px;
+  height: 24px;
+  margin-top: -3px;
+  margin-right: 10px;
+  overflow: hidden;
+}
+
 .PostHeaderTimeAgoLink {
   padding-left: 5px;
 }
