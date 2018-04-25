@@ -10,7 +10,7 @@ const categoryPostHistoryRecordStyle = css(
   s.m0,
   s.fontSize12,
   s.lh20,
-  s.color9,
+  s.colorA,
   select('& button',
     s.relative,
     s.inlineBlock,
@@ -73,7 +73,7 @@ export class CategoryPostHistoryRecord extends Component {
         </span>
       )
     } else if (status === 'featured') {
-      return <span>Featured by <Link to="/ello">@ello</Link></span>
+      return <span>Featured by <Link to="/ello">@ello</Link>.</span>
     }
     return null
   }

@@ -612,7 +612,6 @@ export class PostBody extends PureComponent {
 }
 
 const launchCommentEditorStyle = css(
-  s.mt30,
   s.relative,
 )
 
@@ -626,12 +625,12 @@ const launchCommentEditorButtonStyle = css(
   s.colorWhite,
   s.sansRegular,
   s.ml20,
+  s.mr10,
   s.fontSize14,
   {
     borderRadius: 5,
     height: 50,
-    width: 'calc(100% - 50px)',
-    maxWidth: '640px',
+    width: 'calc(100% - 60px)',
     paddingLeft: 8,
     textAlign: 'left',
   },
@@ -648,6 +647,10 @@ const launchCommentEditorButtonStyle = css(
       borderWidth: 10,
       borderRightColor: '#000',
     },
+  ),
+  media(s.maxBreak2,
+    s.mr0,
+    { width: 'calc(100% - 50px)' },
   ),
 )
 
@@ -859,6 +862,12 @@ export const Post = ({
         }}
       />
     }
+    {!isLightBox && isPostDetail && innerWidth < 960 &&
+      <CategoryPostHistory
+        key={`CategoryPostHistory_${postId}`}
+        postId={postId}
+      />
+    }
     {isLoggedIn && showCommentEditor && supportsNativeEditor && !isLightBox &&
       <LaunchNativeCommentEditorButton avatar={avatar} post={post} />
     }
@@ -1003,6 +1012,7 @@ PostDetailAsideTop.propTypes = {
 export const PostDetailAsideBottom = ({
   author,
   detailPath,
+  innerWidth,
   isCommentsActive,
   isCommentsRequesting,
   isGridMode,
@@ -1049,7 +1059,7 @@ export const PostDetailAsideBottom = ({
         postViewsCountRounded,
       }}
     />
-    {isPostDetail && !isMobile &&
+    {isPostDetail && innerWidth > 959 &&
       <CategoryPostHistory
         key={`CategoryPostHistory_${postId}`}
         postId={postId}
@@ -1060,6 +1070,7 @@ export const PostDetailAsideBottom = ({
 PostDetailAsideBottom.propTypes = {
   author: PropTypes.object.isRequired,
   detailPath: PropTypes.string.isRequired,
+  innerWidth: PropTypes.number.isRequired,
   isCommentsActive: PropTypes.bool.isRequired,
   isCommentsRequesting: PropTypes.bool.isRequired,
   isGridMode: PropTypes.bool.isRequired,

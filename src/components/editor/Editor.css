@@ -33,6 +33,10 @@
   margin-top: 10px;
 }
 
+.PostDetail .editor.isComment .editor-region {
+  margin-top: 20px;
+}
+
 .editor.isComment .editor-region {
   min-height: 91px;
 }
