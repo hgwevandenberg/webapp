@@ -9,6 +9,8 @@ import {
   CommentMentionNotification,
   CommentOnOriginalPostNotification,
   CommentOnRepostNotification,
+  FeaturedCategoryPostNotification,
+  FeaturedCategoryPostRepostNotification,
   InvitationAcceptedNotification,
   LoveNotification,
   LoveOnOriginalPostNotification,
@@ -46,6 +48,8 @@ const NOTIFICATION_KIND = {
   WATCH_ORIGINAL: 'watch_on_original_post_notification',
   WATCH_REPOST: 'watch_on_repost_notification',
   WELCOME: 'welcome_notification',
+  CATEGORY_POST_FEATURED: 'category_post_featured',
+  CATEGORY_POST_REPOST_FEATURED: 'category_post_repost_featured',
 }
 
 const SUBJECT_TYPE = {
@@ -54,6 +58,7 @@ const SUBJECT_TYPE = {
   USER: 'user',
   WATCH: 'watch',
   ARTIST_INVITE_SUBMISSION: 'artistinvitesubmission',
+  CATEGORY_POST: 'categorypost',
 }
 
 function mapStateToProps(state, ownProps) {
@@ -116,6 +121,15 @@ function mapStateToProps(state, ownProps) {
     postActionAuthor = getLinkObject(postActionPost, 'author', json) ||
       json.getIn([MAPPING_TYPES.USERS, postActionPost.get('authorId')])
   }
+
+  // subject is a category post
+  if (subjectType === SUBJECT_TYPE.CATEGORY_POST) {
+    postActionUser = getLinkObject(subject, 'featuredBy', json)
+    postActionPost = getLinkObject(subject, 'post', json)
+    postActionAuthor = getLinkObject(postActionPost, 'author', json) ||
+      json.getIn([MAPPING_TYPES.USERS, postActionPost.get('authorId')])
+  }
+
   // subject can be a user as well but we don't
   // need to add any additional properties
 
@@ -201,6 +215,26 @@ class NotificationParser extends Component {
             subject={subject}
             postActionPost={postActionPost}
             postActionAuthor={postActionAuthor}
+            createdAt={createdAt}
+          />
+        )
+      case NOTIFICATION_KIND.CATEGORY_POST_FEATURED:
+        return (
+          <FeaturedCategoryPostNotification
+            subject={subject}
+            postActionPost={postActionPost}
+            postActionAuthor={postActionAuthor}
+            postActionUser={postActionUser}
+            createdAt={createdAt}
+          />
+        )
+      case NOTIFICATION_KIND.CATEGORY_POST_REPOST_FEATURED:
+        return (
+          <FeaturedCategoryPostRepostNotification
+            subject={subject}
+            postActionPost={postActionPost}
+            postActionAuthor={postActionAuthor}
+            postActionUser={postActionUser}
             createdAt={createdAt}
           />
         )
