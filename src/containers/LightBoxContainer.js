@@ -98,7 +98,7 @@ function LightBoxWrapper(WrappedComponent) {
         if (this.state.direction === 'next') {
           this.slideQueue(nextPrev.assetIdToSetPrev, nextPrev.postIdToSetPrev)
         } else {
-          setTimeout(() => {
+          this.slideQueueDomDelay = setTimeout(() => {
             this.slideQueue(nextPrev.assetIdToSetNext, nextPrev.postIdToSetNext)
           }, 1) // small timeout allows DOM time to instantiate new post
         }
@@ -119,14 +119,14 @@ function LightBoxWrapper(WrappedComponent) {
         (prevState.postIdToSet !== this.state.postIdToSet))) {
         this.constructPostIdsArray()
 
-        setTimeout(() => {
+        this.slideQueueDelay = setTimeout(() => {
           this.slideQueue()
         }, slideDelay)
       }
 
       // remove loading class if lightbox was recently opened
       if (this.state.open && !prevState.open) {
-        setTimeout(() => {
+        this.removeLoadingClassDelay = setTimeout(() => {
           this.removeLoadingClass()
         }, transitionDelay)
       }
@@ -150,6 +150,13 @@ function LightBoxWrapper(WrappedComponent) {
       if (this.props.isLightBoxActive) {
         this.props.dispatch(setIsLightBoxActive({ isActive: false }))
       }
+
+      // clear timeouts
+      if (this.slideQueueDomDelay) { clearTimeout(this.slideQueueDomDelay) }
+      if (this.slideQueueDelay) { clearTimeout(this.slideQueueDelay) }
+      if (this.removeLoadingClassDelay) { clearTimeout(this.removeLoadingClassDelay) }
+      if (this.slideQueueResizeDelay) { clearTimeout(this.slideQueueResizeDelay) }
+      if (this.setLoadedStateDelay) { clearTimeout(this.setLoadedStateDelay) }
     }
 
     getSetPagination(assetId, postId, updateState = true) {
@@ -402,7 +409,7 @@ function LightBoxWrapper(WrappedComponent) {
       }
 
       // resize off
-      setTimeout(() => {
+      this.slideQueueResizeDelay = setTimeout(() => {
         this.slideQueue(this.state.assetIdToSet, this.state.postIdToSet)
       }, 250)
 
@@ -418,11 +425,12 @@ function LightBoxWrapper(WrappedComponent) {
         loading: false,
       })
 
-      return setTimeout(() => {
+      this.setLoadedStateDelay = setTimeout(() => {
         this.setState({
           loaded: true,
         })
       }, setLodedDelay)
+      return null
     }
 
     bindKeys(unbind) {
