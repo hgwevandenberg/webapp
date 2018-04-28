@@ -532,21 +532,27 @@ function LightBoxWrapper(WrappedComponent) {
   }
 
   function mapStateToProps(state, props) {
+    const isGridMode = selectPostIsGridMode(state, props)
+    const isLightBoxActive = selectIsLightBoxActive(state)
+
     // set up commentId for grabbing originalPostId and creating parentPostId
     let commentId = null
-    if (props.commentIds) {
-      props.commentIds.map((id) => {
-        commentId = id
-        return null
-      })
+    if (isLightBoxActive && !isGridMode) {
+      if (props.commentIds) {
+        props.commentIds.map((id) => {
+          commentId = id
+          return null
+        })
+      }
     }
+
     return {
       parentPostId: selectCommentOriginalPostId(state, { commentId }),
       innerHeight: selectInnerHeight(state),
       innerWidth: selectInnerWidth(state),
       postAssetIdPairs: selectPostsAssetIds(state, props),
-      isGridMode: selectPostIsGridMode(state, props),
-      isLightBoxActive: selectIsLightBoxActive(state),
+      isGridMode,
+      isLightBoxActive,
     }
   }
 
