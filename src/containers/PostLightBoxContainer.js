@@ -1,4 +1,4 @@
-// import Immutable from 'immutable'
+import Immutable from 'immutable'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -41,7 +41,6 @@ function mapStateToProps(state, props) {
     deviceSize: selectDeviceSize(state),
     isCommentsRequesting: selectPostIsCommentsRequesting(state, props),
     isLoggedIn: selectIsLoggedIn(state),
-    isMobile: selectIsMobile(state),
     isOwnOriginalPost: selectPostIsOwnOriginal(state, props),
     isOwnPost: selectPostIsOwn(state, props),
     post: selectPost(state, props),
@@ -77,7 +76,6 @@ class PostLightBoxContainer extends Component {
 
   static defaultProps = {
     isRelatedPost: false,
-    resizeLightBox: false,
     postCommentsCount: null,
     postLoved: false,
     postLovesCount: null,
@@ -117,16 +115,15 @@ class PostLightBoxContainer extends Component {
     }
   }
 
-  // shouldComponentUpdate(nextProps) {
-  //   return !Immutable.is(nextProps.post, this.props.post) ||
-  //     [
-  //       'isLoggedIn',
-  //       'isMobile',
-  //       'resizeLightBox',
-  //     ].some(prop =>
-  //       nextProps[prop] !== this.props[prop],
-  //     )
-  // }
+  shouldComponentUpdate(nextProps) {
+    return !Immutable.is(nextProps.post, this.props.post) ||
+      [
+        'isLoggedIn',
+        'postId',
+      ].some(prop =>
+        nextProps[prop] !== this.props[prop],
+      )
+  }
 
   onClickLovePost = () => {
     const { postLoved, post } = this.props

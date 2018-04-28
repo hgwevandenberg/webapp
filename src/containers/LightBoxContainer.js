@@ -2,15 +2,14 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Mousetrap from 'mousetrap'
+import { selectComment } from '../selectors/comment'
 import {
   selectInnerHeight,
   selectInnerWidth,
   selectIsLightBoxActive,
 } from '../selectors/gui'
 import { setIsLightBoxActive } from '../actions/gui'
-import {
-  selectPostsAssetIds,
-} from '../selectors/light_box'
+import { selectPostsAssetIds } from '../selectors/light_box'
 import { selectPostIsGridMode } from '../selectors/post'
 import { scrollToPosition } from '../lib/jello'
 import LightBox from '../components/light_box/LightBoxRenderables'
@@ -21,6 +20,7 @@ import { SHORTCUT_KEYS } from '../constants/application_types'
 function LightBoxWrapper(WrappedComponent) {
   class BaseLightBox extends Component {
     static propTypes = {
+      comment: PropTypes.object,
       dispatch: PropTypes.func.isRequired,
       innerHeight: PropTypes.number,
       innerWidth: PropTypes.number,
@@ -32,6 +32,7 @@ function LightBoxWrapper(WrappedComponent) {
     }
 
     static defaultProps = {
+      comment: null,
       innerHeight: null,
       innerWidth: null,
       commentIds: null,
@@ -476,6 +477,7 @@ function LightBoxWrapper(WrappedComponent) {
 
     render() {
       const {
+        comment,
         commentIds,
         postAssetIdPairs,
         isRelatedPost,
@@ -483,38 +485,44 @@ function LightBoxWrapper(WrappedComponent) {
 
       const {
         assetIdToSet,
+        directionsEnabled,
         loading,
         loaded,
         open,
-        showOffsetTransition,
-        directionsEnabled,
         queueOffsetX,
         queuePostIdsArray,
         resize,
+        showOffsetTransition,
       } = this.state
+
+      let parentPostId = null
+      if (comment.size > 0) {
+        parentPostId = comment.get('originalPostId')
+      }
 
       return (
         <div className="with-lightbox">
           {open &&
             <LightBox
-              commentIds={commentIds}
-              postAssetIdPairs={postAssetIdPairs}
-              isRelatedPost={isRelatedPost}
-              assetIdToSet={assetIdToSet}
-              postIdToSet={this.state.postIdToSet}
-              queuePostIdsArray={queuePostIdsArray}
-              queueOffsetX={queueOffsetX}
               advance={direction => this.advance(direction)}
               advanceDirections={directionsEnabled}
-              loading={loading}
-              loaded={loaded}
-              showOffsetTransition={showOffsetTransition}
-              resize={resize}
+              assetIdToSet={assetIdToSet}
               close={() => this.close()}
+              commentIds={commentIds}
               handleMaskClick={e => this.handleMaskClick(e)}
               handleImageClick={
                 (assetId, postIdToSet) => this.handleImageClick(assetId, postIdToSet)
               }
+              isRelatedPost={isRelatedPost}
+              loading={loading}
+              loaded={loaded}
+              parentPostId={parentPostId}
+              postAssetIdPairs={postAssetIdPairs}
+              postIdToSet={this.state.postIdToSet}
+              queuePostIdsArray={queuePostIdsArray}
+              queueOffsetX={queueOffsetX}
+              resize={resize}
+              showOffsetTransition={showOffsetTransition}
             />
           }
           <WrappedComponent
@@ -528,18 +536,25 @@ function LightBoxWrapper(WrappedComponent) {
     }
   }
 
-  function makeMapStateToProps() {
-    return (state, props) =>
-      ({
-        innerHeight: selectInnerHeight(state),
-        innerWidth: selectInnerWidth(state),
-        postAssetIdPairs: selectPostsAssetIds(state, props),
-        isGridMode: selectPostIsGridMode(state, props),
-        isLightBoxActive: selectIsLightBoxActive(state),
+  function mapStateToProps(state, props) {
+    let commentId = null
+    if (props.commentIds) {
+      props.commentIds.map((id) => {
+        console.log(`id ${id}`)
+        return commentId = id
       })
+    }
+    return {
+      comment: selectComment(state, { commentId: commentId }),
+      innerHeight: selectInnerHeight(state),
+      innerWidth: selectInnerWidth(state),
+      postAssetIdPairs: selectPostsAssetIds(state, props),
+      isGridMode: selectPostIsGridMode(state, props),
+      isLightBoxActive: selectIsLightBoxActive(state),
+    }
   }
 
-  return connect(makeMapStateToProps)(BaseLightBox)
+  return connect(mapStateToProps)(BaseLightBox)
 }
 
 export default LightBoxWrapper

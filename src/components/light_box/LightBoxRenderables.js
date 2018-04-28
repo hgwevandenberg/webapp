@@ -239,22 +239,23 @@ function setLightBoxStyle(commentIds) {
 }
 
 const LightBox = ({
-  commentIds,
-  postAssetIdPairs,
-  assetIdToSet,
-  postIdToSet,
-  queuePostIdsArray,
-  queueOffsetX,
   advance,
   advanceDirections,
-  loading,
-  loaded,
-  showOffsetTransition,
-  resize,
+  assetIdToSet,
   close,
+  commentIds,
   handleMaskClick,
   handleImageClick,
   isRelatedPost,
+  loading,
+  loaded,
+  parentPostId,
+  postAssetIdPairs,
+  postIdToSet,
+  resize,
+  showOffsetTransition,
+  queuePostIdsArray,
+  queueOffsetX,
 }) => {
   const lightBoxSelectedIdPair = { assetIdToSet, postIdToSet }
 
@@ -294,7 +295,7 @@ const LightBox = ({
           {postIdToSet && // render the post tools
             <div className={`${postLightBoxContainerStyle} controls-holder`}>
               <PostLightBoxContainer
-                postId={postIdToSet}
+                postId={parentPostId ? parentPostId : postIdToSet}
                 resizeLightBox={resize}
                 isRelatedPost={isRelatedPost}
               />
@@ -338,33 +339,35 @@ const LightBox = ({
   )
 }
 const propTypes = {
-  commentIds: PropTypes.object,
-  postAssetIdPairs: PropTypes.array.isRequired,
+  advance: PropTypes.func.isRequired,
+  advanceDirections: PropTypes.object.isRequired,
   assetIdToSet: PropTypes.oneOfType([
     PropTypes.number,
     PropTypes.string,
   ]).isRequired,
+  close: PropTypes.func.isRequired,
+  commentIds: PropTypes.object,
+  handleMaskClick: PropTypes.func.isRequired,
+  handleImageClick: PropTypes.func.isRequired,
+  isRelatedPost: PropTypes.bool,
+  parentPostId: PropTypes.number,
   postIdToSet: PropTypes.oneOfType([
     PropTypes.number,
     PropTypes.string,
   ]).isRequired,
-  queuePostIdsArray: PropTypes.array,
-  queueOffsetX: PropTypes.number.isRequired,
-  advance: PropTypes.func.isRequired,
-  advanceDirections: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
   loaded: PropTypes.bool.isRequired,
-  showOffsetTransition: PropTypes.bool.isRequired,
+  postAssetIdPairs: PropTypes.array.isRequired,
+  queuePostIdsArray: PropTypes.array,
+  queueOffsetX: PropTypes.number.isRequired,
   resize: PropTypes.bool.isRequired,
-  close: PropTypes.func.isRequired,
-  handleMaskClick: PropTypes.func.isRequired,
-  handleImageClick: PropTypes.func.isRequired,
-  isRelatedPost: PropTypes.bool,
+  showOffsetTransition: PropTypes.bool.isRequired,
 }
 const defaultProps = {
   commentIds: null,
-  queuePostIdsArray: null,
+  parentPostId: null,
   isRelatedPost: false,
+  queuePostIdsArray: null,
 }
 LightBox.propTypes = propTypes
 LightBox.defaultProps = defaultProps
