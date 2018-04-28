@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Mousetrap from 'mousetrap'
-import { selectComment } from '../selectors/comment'
+import { selectCommentOriginalPostId } from '../selectors/comment'
 import {
   selectInnerHeight,
   selectInnerWidth,
@@ -20,24 +20,24 @@ import { SHORTCUT_KEYS } from '../constants/application_types'
 function LightBoxWrapper(WrappedComponent) {
   class BaseLightBox extends Component {
     static propTypes = {
-      comment: PropTypes.object,
+      commentIds: PropTypes.object, // for comment stream
       dispatch: PropTypes.func.isRequired,
       innerHeight: PropTypes.number,
       innerWidth: PropTypes.number,
-      commentIds: PropTypes.object, // for comment stream
-      postAssetIdPairs: PropTypes.array, // post/asset id pairs
       isRelatedPost: PropTypes.bool,
       isGridMode: PropTypes.bool.isRequired,
       isLightBoxActive: PropTypes.bool.isRequired,
+      parentPostId: PropTypes.string,
+      postAssetIdPairs: PropTypes.array, // post/asset id pairs
     }
 
     static defaultProps = {
-      comment: null,
+      commentIds: null,
       innerHeight: null,
       innerWidth: null,
-      commentIds: null,
-      postAssetIdPairs: null,
       isRelatedPost: false,
+      parentPostId: null,
+      postAssetIdPairs: null,
     }
 
     constructor(props) {
@@ -477,7 +477,7 @@ function LightBoxWrapper(WrappedComponent) {
 
     render() {
       const {
-        comment,
+        parentPostId,
         commentIds,
         postAssetIdPairs,
         isRelatedPost,
@@ -494,11 +494,6 @@ function LightBoxWrapper(WrappedComponent) {
         resize,
         showOffsetTransition,
       } = this.state
-
-      let parentPostId = null
-      if (comment.size > 0) {
-        parentPostId = comment.get('originalPostId')
-      }
 
       return (
         <div className="with-lightbox">
@@ -537,15 +532,16 @@ function LightBoxWrapper(WrappedComponent) {
   }
 
   function mapStateToProps(state, props) {
+    // set up commentId for grabbing originalPostId and creating parentPostId
     let commentId = null
     if (props.commentIds) {
       props.commentIds.map((id) => {
-        console.log(`id ${id}`)
-        return commentId = id
+        commentId = id
+        return null
       })
     }
     return {
-      comment: selectComment(state, { commentId: commentId }),
+      parentPostId: selectCommentOriginalPostId(state, { commentId }),
       innerHeight: selectInnerHeight(state),
       innerWidth: selectInnerWidth(state),
       postAssetIdPairs: selectPostsAssetIds(state, props),

@@ -295,7 +295,7 @@ const LightBox = ({
           {postIdToSet && // render the post tools
             <div className={`${postLightBoxContainerStyle} controls-holder`}>
               <PostLightBoxContainer
-                postId={parentPostId ? parentPostId : postIdToSet}
+                postId={parentPostId || postIdToSet}
                 resizeLightBox={resize}
                 isRelatedPost={isRelatedPost}
               />
@@ -350,7 +350,7 @@ const propTypes = {
   handleMaskClick: PropTypes.func.isRequired,
   handleImageClick: PropTypes.func.isRequired,
   isRelatedPost: PropTypes.bool,
-  parentPostId: PropTypes.number,
+  parentPostId: PropTypes.string,
   postIdToSet: PropTypes.oneOfType([
     PropTypes.number,
     PropTypes.string,

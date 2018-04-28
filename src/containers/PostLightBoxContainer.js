@@ -15,10 +15,7 @@ import {
 import { PostToolsLightBox } from '../components/posts/PostTools'
 import { isElloAndroid } from '../lib/jello'
 import { selectIsLoggedIn } from '../selectors/authentication'
-import {
-  selectDeviceSize,
-  selectIsMobile,
-} from '../selectors/gui'
+import { selectDeviceSize } from '../selectors/gui'
 import {
   selectPost,
   selectPostAuthor,
