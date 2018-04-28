@@ -338,7 +338,7 @@ const LightBox = ({
   )
 }
 const propTypes = {
-  commentIds: PropTypes.array,
+  commentIds: PropTypes.object,
   postAssetIdPairs: PropTypes.array.isRequired,
   assetIdToSet: PropTypes.oneOfType([
     PropTypes.number,
