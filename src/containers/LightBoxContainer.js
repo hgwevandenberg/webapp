@@ -148,7 +148,7 @@ function LightBoxWrapper(WrappedComponent) {
     componentWillUnmount() {
       const releaseKeys = true
       this.bindKeys(releaseKeys)
-      if (this.props.isLightBoxActive) {
+      if (this.state.open && this.props.isLightBoxActive) {
         this.props.dispatch(setIsLightBoxActive({ isActive: false }))
       }
 
