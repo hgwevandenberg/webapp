@@ -290,10 +290,10 @@ class PostsAsGridSimple extends PureComponent { // eslint-disable-line react/no-
 
   render() {
     const {
-      toggleLightBox,
-      postIds,
       columnCount,
       isPostHeaderHidden,
+      postIds,
+      toggleLightBox,
     } = this.props
 
     const postIdsAsList = postIds.toList()
@@ -311,8 +311,8 @@ class PostsAsGridSimple extends PureComponent { // eslint-disable-line react/no-
             {columnPostIds.map(id =>
               (<article className="PostGrid" key={`postsAsGrid_${id}`}>
                 <PostContainer
-                  postId={id}
                   isPostHeaderHidden={isPostHeaderHidden}
+                  postId={id}
                   toggleLightBox={toggleLightBox}
                 />
               </article>),
@@ -350,9 +350,9 @@ class PostsAsListSimple extends PureComponent { // eslint-disable-line react/no-
 
   render() {
     const {
-      toggleLightBox,
-      postIds,
       isPostHeaderHidden,
+      postIds,
+      toggleLightBox,
     } = this.props
 
     return (
@@ -360,9 +360,9 @@ class PostsAsListSimple extends PureComponent { // eslint-disable-line react/no-
         {postIds.map(id =>
           (<article className="PostList" key={`postsAsList_${id}`}>
             <PostContainer
-              toggleLightBox={toggleLightBox}
               postId={id}
               isPostHeaderHidden={isPostHeaderHidden}
+              toggleLightBox={toggleLightBox}
             />
           </article>),
         )}
@@ -404,10 +404,10 @@ class PostsAsRelatedSimple extends PureComponent { // eslint-disable-line react/
 
   render() {
     const {
-      toggleLightBox,
-      postIds,
       columnCount,
       isPostHeaderHidden,
+      postIds,
+      toggleLightBox,
     } = this.props
 
     const columns = []
@@ -430,9 +430,9 @@ class PostsAsRelatedSimple extends PureComponent { // eslint-disable-line react/
             {columnPostIds.map(id =>
               (<article className="PostGrid" key={`postsAsGrid_${id}`}>
                 <PostContainer
-                  postId={id}
                   isPostHeaderHidden={isPostHeaderHidden}
                   isRelatedPost
+                  postId={id}
                   toggleLightBox={toggleLightBox}
                 />
               </article>),
