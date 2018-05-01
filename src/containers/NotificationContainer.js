@@ -10,7 +10,8 @@ import {
   CommentOnOriginalPostNotification,
   CommentOnRepostNotification,
   FeaturedCategoryPostNotification,
-  FeaturedCategoryPostRepostNotification,
+  FeaturedCategoryRepostNotification,
+  FeaturedCategoryPostViaRepostNotification,
   InvitationAcceptedNotification,
   LoveNotification,
   LoveOnOriginalPostNotification,
@@ -49,7 +50,8 @@ const NOTIFICATION_KIND = {
   WATCH_REPOST: 'watch_on_repost_notification',
   WELCOME: 'welcome_notification',
   CATEGORY_POST_FEATURED: 'category_post_featured',
-  CATEGORY_POST_REPOST_FEATURED: 'category_post_repost_featured',
+  CATEGORY_REPOST_FEATURED: 'category_repost_featured',
+  CATEGORY_POST_VIA_REPOST_FEATURED: 'category_post_via_repost_featured',
 }
 
 const SUBJECT_TYPE = {
@@ -228,9 +230,19 @@ class NotificationParser extends Component {
             createdAt={createdAt}
           />
         )
-      case NOTIFICATION_KIND.CATEGORY_POST_REPOST_FEATURED:
+      case NOTIFICATION_KIND.CATEGORY_REPOST_FEATURED:
         return (
-          <FeaturedCategoryPostRepostNotification
+          <FeaturedCategoryRepostNotification
+            subject={subject}
+            postActionPost={postActionPost}
+            postActionAuthor={postActionAuthor}
+            postActionUser={postActionUser}
+            createdAt={createdAt}
+          />
+        )
+      case NOTIFICATION_KIND.CATEGORY_POST_VIA_REPOST_FEATURED:
+        return (
+          <FeaturedCategoryPostViaRepostNotification
             subject={subject}
             postActionPost={postActionPost}
             postActionAuthor={postActionAuthor}

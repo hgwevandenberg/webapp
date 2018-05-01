@@ -302,7 +302,7 @@ FeaturedCategoryPostNotification.defaultProps = {
   createdAt: null,
 }
 
-export const FeaturedCategoryPostRepostNotification = (props) => {
+export const FeaturedCategoryRepostNotification = (props) => {
   const { createdAt, subject, postActionPost, postActionAuthor, postActionUser } = props
   const activityPath = getActivityPath(postActionAuthor, postActionPost)
   const summary = parseSummary(postActionPost, activityPath)
@@ -310,7 +310,47 @@ export const FeaturedCategoryPostRepostNotification = (props) => {
   return (
     <Notification
       activityPath={activityPath}
-      className="FeaturedCategoryPostRepostNotification"
+      className="FeaturedCategoryRepostNotification"
+      createdAt={createdAt}
+      summary={summary}
+      notifier={postActionUser}
+    >
+      <p>
+        <UserTextLink user={postActionUser} />
+        {' featured your '}
+        <PostTextLink author={postActionAuthor} post={postActionPost} text="repost" />
+        {' in '}
+        <Link to={`/discover/${subject.get('categorySlug')}`}>
+          {subject.get('categoryName')}
+        </Link>
+      </p>
+    </Notification>
+  )
+}
+FeaturedCategoryRepostNotification.propTypes = {
+  subject: PropTypes.object,
+  postActionPost: PropTypes.object,
+  postActionAuthor: PropTypes.object,
+  postActionUser: PropTypes.object,
+  createdAt: PropTypes.string,
+}
+FeaturedCategoryRepostNotification.defaultProps = {
+  subject: null,
+  postActionPost: null,
+  postActionAuthor: null,
+  postActionUser: null,
+  createdAt: null,
+}
+
+export const FeaturedCategoryPostViaRepostNotification = (props) => {
+  const { createdAt, subject, postActionPost, postActionAuthor, postActionUser } = props
+  const activityPath = getActivityPath(postActionAuthor, postActionPost)
+  const summary = parseSummary(postActionPost, activityPath)
+
+  return (
+    <Notification
+      activityPath={activityPath}
+      className="FeaturedCategoryPostViaRepostNotification"
       createdAt={createdAt}
       summary={summary}
       notifier={postActionUser}
@@ -327,14 +367,14 @@ export const FeaturedCategoryPostRepostNotification = (props) => {
     </Notification>
   )
 }
-FeaturedCategoryPostRepostNotification.propTypes = {
+FeaturedCategoryPostViaRepostNotification.propTypes = {
   subject: PropTypes.object,
   postActionPost: PropTypes.object,
   postActionAuthor: PropTypes.object,
   postActionUser: PropTypes.object,
   createdAt: PropTypes.string,
 }
-FeaturedCategoryPostRepostNotification.defaultProps = {
+FeaturedCategoryPostViaRepostNotification.defaultProps = {
   subject: null,
   postActionPost: null,
   postActionAuthor: null,
