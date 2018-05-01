@@ -189,21 +189,15 @@ CommentContent.contextTypes = {
 
 // TODO: Remove references to the PostDetailStreamContainer styles
 export const PostDetail = (props) => {
-  const {
-    columnCount,
-    post,
-    shouldInlineComments,
-    toggleLightBox,
-  } = props
+  const { columnCount, post, shouldInlineComments } = props
   return (
     <MainView className={`PostDetail ${postDetailStyle}`}>
       <div className="PostDetails Posts asList">
         <article className={`PostList ${listStyle}`} id={`Post_${post.get('id')}`}>
           <PostContainer
             isNarrowPostDetail={shouldInlineComments}
-            postId={post.get('id')}
-            toggleLightBox={shouldInlineComments ? toggleLightBox : null}
             type={shouldInlineComments ? null : 'PostDetailBody'}
+            postId={post.get('id')}
           />
           {shouldInlineComments && <CommentContent {...props} />}
           <StreamContainer
@@ -228,10 +222,6 @@ PostDetail.propTypes = {
   columnCount: PropTypes.number.isRequired,
   post: PropTypes.object.isRequired,
   shouldInlineComments: PropTypes.bool.isRequired,
-  toggleLightBox: PropTypes.func,
-}
-PostDetail.defaultProps = {
-  toggleLightBox: null,
 }
 
 export const PostDetailError = ({ children }) =>

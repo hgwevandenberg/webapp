@@ -536,15 +536,15 @@ export class PostBody extends PureComponent {
       isPostBody,
       isRepost,
       isLightBox,
+      resizeLightBox,
+      toggleLightBox,
       lightBoxSelectedIdPair,
       post,
       postId,
       repostContent,
-      resizeLightBox,
       showEditor,
       summary,
       supportsNativeEditor,
-      toggleLightBox,
     } = this.props
 
     if (showEditor && !supportsNativeEditor) {
@@ -758,6 +758,8 @@ export const Post = ({
   isRepostAnimating,
   isWatchingPost,
   isLightBox,
+  resizeLightBox,
+  toggleLightBox,
   lightBoxSelectedIdPair,
   post,
   postCommentsCount,
@@ -770,13 +772,11 @@ export const Post = ({
   postRepostsCount,
   postViewsCountRounded,
   repostContent,
-  resizeLightBox,
   showCommentEditor,
   showEditor,
   submissionStatus,
   summary,
   supportsNativeEditor,
-  toggleLightBox,
 }) => (
   <div className={classNames('Post', { isPostHeaderHidden: isPostHeaderHidden && !isRepost })}>
     {postHeader}
@@ -801,15 +801,15 @@ export const Post = ({
           isPostDetail,
           isRepost,
           isLightBox,
+          resizeLightBox,
+          toggleLightBox,
           lightBoxSelectedIdPair,
           post,
           postId,
           repostContent,
-          resizeLightBox,
           showEditor,
           summary,
           supportsNativeEditor,
-          toggleLightBox,
         }}
       />
     }
@@ -827,11 +827,12 @@ export const Post = ({
           isGridMode,
           isPostDetail,
           isRepost,
+          resizeLightBox,
+          toggleLightBox,
           lightBoxSelectedIdPair,
           post,
           postId,
           repostContent,
-          resizeLightBox,
           showEditor,
           summary,
           supportsNativeEditor,
@@ -912,6 +913,8 @@ Post.propTypes = {
   isRepostAnimating: PropTypes.bool.isRequired,
   isWatchingPost: PropTypes.bool.isRequired,
   isLightBox: PropTypes.bool,
+  resizeLightBox: PropTypes.bool,
+  toggleLightBox: PropTypes.func,
   lightBoxSelectedIdPair: PropTypes.object,
   post: PropTypes.object.isRequired,
   postCommentsCount: PropTypes.number,
@@ -924,13 +927,11 @@ Post.propTypes = {
   postRepostsCount: PropTypes.number,
   postViewsCountRounded: PropTypes.string,
   repostContent: PropTypes.object,
-  resizeLightBox: PropTypes.bool,
   showCommentEditor: PropTypes.bool.isRequired,
   showEditor: PropTypes.bool.isRequired,
   submissionStatus: PropTypes.string,
   summary: PropTypes.object,
   supportsNativeEditor: PropTypes.bool.isRequired,
-  toggleLightBox: PropTypes.func,
 }
 
 export const PostDetailAsideTop = ({
@@ -1167,3 +1168,4 @@ UserModal.propTypes = {
   postId: PropTypes.string.isRequired,
   tabs: PropTypes.array.isRequired,
 }
+
