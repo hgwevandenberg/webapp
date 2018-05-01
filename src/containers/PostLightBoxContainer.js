@@ -58,6 +58,7 @@ class PostLightBoxContainer extends Component {
     dispatch: PropTypes.func.isRequired,
     isCommentsRequesting: PropTypes.bool.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
+    isMobile: PropTypes.bool.isRequired,
     isOwnOriginalPost: PropTypes.bool.isRequired,
     isOwnPost: PropTypes.bool.isRequired,
     isRelatedPost: PropTypes.bool,
@@ -228,6 +229,7 @@ class PostLightBoxContainer extends Component {
       detailPath,
       isCommentsRequesting,
       isLoggedIn,
+      isMobile,
       isOwnOriginalPost,
       isOwnPost,
       postCommentsCount,
@@ -245,6 +247,7 @@ class PostLightBoxContainer extends Component {
         detailPath={detailPath}
         isCommentsRequesting={isCommentsRequesting}
         isLoggedIn={isLoggedIn}
+        isMobile={isMobile}
         isOwnOriginalPost={isOwnOriginalPost}
         isOwnPost={isOwnPost}
         postCommentsCount={postCommentsCount}

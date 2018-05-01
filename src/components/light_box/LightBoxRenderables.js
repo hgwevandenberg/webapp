@@ -246,6 +246,7 @@ const LightBox = ({
   commentIds,
   handleMaskClick,
   handleImageClick,
+  isMobile,
   isRelatedPost,
   loading,
   loaded,
@@ -295,9 +296,10 @@ const LightBox = ({
           {postIdToSet && // render the post tools
             <div className={`${postLightBoxContainerStyle} controls-holder`}>
               <PostLightBoxContainer
+                isMobile={isMobile}
+                isRelatedPost={isRelatedPost}
                 postId={parentPostId || postIdToSet}
                 resizeLightBox={resize}
-                isRelatedPost={isRelatedPost}
               />
             </div>
           }
@@ -349,6 +351,7 @@ const propTypes = {
   commentIds: PropTypes.object,
   handleMaskClick: PropTypes.func.isRequired,
   handleImageClick: PropTypes.func.isRequired,
+  isMobile: PropTypes.bool.isRequired,
   isRelatedPost: PropTypes.bool,
   parentPostId: PropTypes.string,
   postIdToSet: PropTypes.oneOfType([

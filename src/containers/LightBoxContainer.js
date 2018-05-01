@@ -7,6 +7,7 @@ import {
   selectInnerHeight,
   selectInnerWidth,
   selectIsLightBoxActive,
+  selectIsMobile,
 } from '../selectors/gui'
 import { setIsLightBoxActive } from '../actions/gui'
 import { selectPostsAssetIds } from '../selectors/light_box'
@@ -24,6 +25,7 @@ function LightBoxWrapper(WrappedComponent) {
       dispatch: PropTypes.func.isRequired,
       innerHeight: PropTypes.number,
       innerWidth: PropTypes.number,
+      isMobile: PropTypes.bool.isRequired,
       isRelatedPost: PropTypes.bool,
       isGridMode: PropTypes.bool.isRequired,
       isLightBoxActive: PropTypes.bool.isRequired,
@@ -477,10 +479,11 @@ function LightBoxWrapper(WrappedComponent) {
 
     render() {
       const {
-        parentPostId,
         commentIds,
-        postAssetIdPairs,
         isRelatedPost,
+        isMobile,
+        parentPostId,
+        postAssetIdPairs,
       } = this.props
 
       const {
@@ -508,6 +511,7 @@ function LightBoxWrapper(WrappedComponent) {
               handleImageClick={
                 (assetId, postIdToSet) => this.handleImageClick(assetId, postIdToSet)
               }
+              isMobile={isMobile}
               isRelatedPost={isRelatedPost}
               loading={loading}
               loaded={loaded}
@@ -547,12 +551,13 @@ function LightBoxWrapper(WrappedComponent) {
     }
 
     return {
-      parentPostId: selectCommentOriginalPostId(state, { commentId }),
       innerHeight: selectInnerHeight(state),
       innerWidth: selectInnerWidth(state),
-      postAssetIdPairs: selectPostsAssetIds(state, props),
-      isGridMode,
       isLightBoxActive,
+      isGridMode,
+      isMobile: selectIsMobile(state),
+      parentPostId: selectCommentOriginalPostId(state, { commentId }),
+      postAssetIdPairs: selectPostsAssetIds(state, props),
     }
   }
 

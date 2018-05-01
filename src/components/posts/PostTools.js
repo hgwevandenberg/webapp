@@ -276,12 +276,9 @@ class LightBoxTriggerTool extends PureComponent {
     summary.map((region) => {
       if ((firstAssetId === null) && (region.get('kind') === 'image')) {
         firstAssetId = region.getIn(['links', 'assets'])
-        console.log(firstAssetId)
         if (!firstAssetId) {
           // brand new post
-          console.log(region)
           const url = region.getIn(['data', 'url'])
-          console.log(`url ${url}`)
           if (url) {
             firstAssetId = getTempAssetId(url)
           }
@@ -607,6 +604,7 @@ export class PostToolsLightBox extends PureComponent {
     detailPath: PropTypes.string.isRequired,
     isCommentsRequesting: PropTypes.bool.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
+    isMobile: PropTypes.bool.isRequired,
     isOwnOriginalPost: PropTypes.bool.isRequired,
     isOwnPost: PropTypes.bool.isRequired,
     postCommentsCount: PropTypes.number.isRequired,
@@ -624,6 +622,7 @@ export class PostToolsLightBox extends PureComponent {
       detailPath,
       isCommentsRequesting,
       isLoggedIn,
+      isMobile,
       isOwnOriginalPost,
       isOwnPost,
       postCommentsCount,
@@ -670,7 +669,7 @@ export class PostToolsLightBox extends PureComponent {
         />,
       )
     }
-    if (author.get('hasSharingEnabled')) {
+    if ((author.get('hasSharingEnabled')) && !isMobile) {
       cells.push(
         <ShareTool
           isLightBox
