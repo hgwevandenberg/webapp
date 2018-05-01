@@ -5,19 +5,21 @@ import classNames from 'classnames'
 import { Link } from 'react-router'
 import Hint from '../hints/Hint'
 import {
+  ArtistInviteSubmissionApprovedIcon,
+  ArtistInviteSubmissionSelectedIcon,
+  BadgeFeaturedIcon,
   BoltIcon,
   BubbleIcon,
   EyeIcon,
   FlagIcon,
   HeartIcon,
+  LightBoxTrigger,
   PencilIcon,
   RepostIcon,
   ShareIcon,
   XBoxIcon,
-  ArtistInviteSubmissionApprovedIcon,
-  ArtistInviteSubmissionSelectedIcon,
-  BadgeFeaturedIcon,
 } from '../assets/Icons'
+import { getTempAssetId } from '../regions/ImageRegion'
 import { numberToHuman } from '../../lib/number_to_human'
 
 class ViewsTool extends PureComponent {
@@ -261,6 +263,54 @@ class ShareTool extends PureComponent {
   }
 }
 
+class LightBoxTriggerTool extends PureComponent {
+  static propTypes = {
+    postId: PropTypes.string.isRequired,
+    summary: PropTypes.object.isRequired,
+    toggleLightBox: PropTypes.func.isRequired,
+  }
+
+  getFirstAssetId() {
+    const { summary } = this.props
+    let firstAssetId = null
+    summary.map((region) => {
+      if ((firstAssetId === null) && (region.get('kind') === 'image')) {
+        firstAssetId = region.getIn(['links', 'assets'])
+        console.log(firstAssetId)
+        if (!firstAssetId) {
+          // brand new post
+          console.log(region)
+          const url = region.getIn(['data', 'url'])
+          console.log(`url ${url}`)
+          if (url) {
+            firstAssetId = getTempAssetId(url)
+          }
+        }
+        return null
+      }
+      return null
+    })
+    return firstAssetId
+  }
+
+  render() {
+    const { postId, toggleLightBox } = this.props
+    const firstAssetId = this.getFirstAssetId()
+
+    if (firstAssetId) {
+      return (
+        <span className="PostTool LightBoxTriggerTool">
+          <button onClick={() => toggleLightBox(firstAssetId, postId)}>
+            <LightBoxTrigger />
+            <Hint>Lightbox</Hint>
+          </button>
+        </span>
+      )
+    }
+    return null
+  }
+}
+
 export class FeatureCategoryPostTool extends PureComponent {
   static propTypes = {
     status: PropTypes.string,
@@ -406,11 +456,18 @@ export class PostTools extends PureComponent {
     postReposted: PropTypes.bool.isRequired,
     postRepostsCount: PropTypes.number.isRequired,
     postViewsCountRounded: PropTypes.string.isRequired,
+    summary: PropTypes.object,
+    toggleLightBox: PropTypes.func,
+  }
+  static defaultProps = {
+    summary: null,
+    toggleLightBox: null,
   }
 
   render() {
     const {
       author,
+      summary,
       detailPath,
       isCommentsActive,
       isCommentsRequesting,
@@ -431,6 +488,7 @@ export class PostTools extends PureComponent {
       postReposted,
       postRepostsCount,
       postViewsCountRounded,
+      toggleLightBox,
     } = this.props
     const cells = []
     if (!isPostDetail) {
@@ -488,6 +546,16 @@ export class PostTools extends PureComponent {
         />,
       )
     }
+    if (isMobile && !isPostDetail) {
+      cells.push(
+        <LightBoxTriggerTool
+          summary={summary}
+          postId={postId}
+          toggleLightBox={toggleLightBox}
+          key={`LightBoxTriggerTool_${postId}`}
+        />,
+      )
+    }
     if (isPostDetail) {
       cells.push(
         <ViewsTool
@@ -500,7 +568,6 @@ export class PostTools extends PureComponent {
         />,
       )
     }
-
     if (!isOwnPost && !isOwnOriginalPost) {
       if (isPostDetail || (!isMobile && !isGridMode)) {
         cells.push(
@@ -512,7 +579,6 @@ export class PostTools extends PureComponent {
         )
       }
     }
-
     if (author.get('hasSharingEnabled')) {
       cells.push(
         <ShareTool

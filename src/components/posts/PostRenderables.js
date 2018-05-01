@@ -888,6 +888,8 @@ export const Post = ({
           postReposted,
           postRepostsCount,
           postViewsCountRounded,
+          summary,
+          toggleLightBox,
         }}
       />
     }
@@ -1060,6 +1062,7 @@ export const PostDetailAsideBottom = ({
   postReposted,
   postRepostsCount,
   postViewsCountRounded,
+  toggleLightBox,
 }) => (
   <div className="PostDetailAsideBottom">
     <PostTools
@@ -1085,6 +1088,7 @@ export const PostDetailAsideBottom = ({
         postReposted,
         postRepostsCount,
         postViewsCountRounded,
+        toggleLightBox,
       }}
     />
     {isPostDetail && innerWidth > 959 &&
@@ -1118,6 +1122,10 @@ PostDetailAsideBottom.propTypes = {
   postReposted: PropTypes.bool,
   postRepostsCount: PropTypes.number,
   postViewsCountRounded: PropTypes.string,
+  toggleLightBox: PropTypes.func,
+}
+PostDetailAsideBottom.defaultProps = {
+  toggleLightBox: null,
 }
 
 const userModalStyle = css(

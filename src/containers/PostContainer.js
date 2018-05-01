@@ -618,6 +618,7 @@ class PostContainer extends Component {
               postReposted,
               postRepostsCount,
               postViewsCountRounded,
+              toggleLightBox,
             }}
           />
         )
