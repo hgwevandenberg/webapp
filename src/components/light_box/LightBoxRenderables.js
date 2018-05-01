@@ -12,7 +12,6 @@ const baseLightBoxStyle = css(
   s.block,
   s.relative,
   s.bgcF2,
-  s.zIndex3,
   { margin: '0 auto' },
   select(
     '> .LightBoxMask',
