@@ -154,6 +154,28 @@
   left: -6px;
 }
 
+@media (--break-2) {
+  .no-touch .LightBoxTriggerTool {
+    display: none;
+  }
+}
+
+.LightBoxTriggerTool > button svg polygon {
+  fill: currentColor;
+}
+
+.no-touch .LightBoxTriggerTool > button:hover svg polygon {
+  fill: #000;
+}
+
+.LightBoxTriggerTool svg {
+  margin-top: -3px;
+}
+
+.LightBoxTriggerTool .Hint {
+  left: -22px;
+}
+
 .PostTool .SVGIcon + .PostToolValue {
   margin-left: 5px;
 }

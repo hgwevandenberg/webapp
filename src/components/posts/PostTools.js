@@ -13,7 +13,7 @@ import {
   EyeIcon,
   FlagIcon,
   HeartIcon,
-  LightBoxTrigger,
+  LightBoxTriggerSmall,
   PencilIcon,
   RepostIcon,
   ShareIcon,
@@ -298,7 +298,7 @@ class LightBoxTriggerTool extends PureComponent {
       return (
         <span className="PostTool LightBoxTriggerTool">
           <button onClick={() => toggleLightBox(firstAssetId, postId)}>
-            <LightBoxTrigger />
+            <LightBoxTriggerSmall />
             <Hint>Lightbox</Hint>
           </button>
         </span>
@@ -543,7 +543,7 @@ export class PostTools extends PureComponent {
         />,
       )
     }
-    if (isMobile && !isPostDetail) {
+    if (!isPostDetail) {
       cells.push(
         <LightBoxTriggerTool
           summary={summary}

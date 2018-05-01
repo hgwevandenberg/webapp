@@ -524,6 +524,23 @@ export const LightBoxTrigger = () => (
   </SVGBox>
 )
 
+export const LightBoxTriggerSmall = () => (
+  <SVGBox className="LightBoxTriggerSmall" width="12px" height="12px">
+    <g>
+      <polygon points="1.25,4.625 0,4.625 0,0 4.625,0 4.625,1.25 1.25,1.25" />
+    </g>
+    <g>
+      <polygon points="12,4.625 10.75,4.625 10.75,1.25 7.375,1.25 7.375,0 12,0" />
+    </g>
+    <g>
+      <polygon points="4.625,12 0,12 0,7.375 1.25,7.375 1.25,10.75 4.625,10.75" />
+    </g>
+    <g>
+      <polygon points="12,12 7.375,12 7.375,10.75 10.75,10.75 10.75,7.375 12,7.375" />
+    </g>
+  </SVGBox>
+)
+
 export const LightBoxArrow = () => (
   <SVGBox className="LightBoxArrow" width="14px" height="13px">
     <g>
