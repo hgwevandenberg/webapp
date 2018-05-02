@@ -512,7 +512,10 @@ class BlockCollection extends PureComponent {
       )
     }
     const showReplyAll = hasComments && isComment && isOwnPost && !isMobileGridStream
-    const postIntoCategory = !isComment && !isPostEditing
+    const postIntoCategory = !isComment
+
+    console.log(categoryIds)
+
     return (
       <div className={editorWrapperStyle}>
         {artistInvite &&
@@ -538,20 +541,21 @@ class BlockCollection extends PureComponent {
           </div>
           {showQuickEmoji && <QuickEmoji onAddEmoji={this.onInsertEmoji} />}
           <PostActionBar
-            isGridMode={isGridMode}
-            isPostReposting={isPostReposting}
-            isComment={isComment}
             buyLink={buyLink}
             cancelAction={cancelAction}
+            categoryIds={categoryIds}
             disableSubmitAction={isPosting || isLoading || !hasContent}
             editorId={editorId}
             handleFileAction={this.handleFiles}
             hasMedia={hasMedia}
+            isGridMode={isGridMode}
+            isPostEditing={isPostEditing}
+            isPostReposting={isPostReposting}
+            isComment={isComment}
+            postIntoCategory={postIntoCategory}
             replyAllAction={showReplyAll ? this.replyAll : null}
             submitAction={this.submit}
             submitText={submitText}
-            postIntoCategory={postIntoCategory}
-            categoryIds={categoryIds}
           />
         </div>
       </div>
