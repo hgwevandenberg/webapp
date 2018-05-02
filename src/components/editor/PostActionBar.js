@@ -399,6 +399,7 @@ class PostActionBar extends Component {
               unsubscribedCategories={unsubscribedCategories}
               selectedCategories={selectedCategories}
               resetSelection={resetCategorySelection}
+              trackEvent={this.onTrackEvent}
             />
           }
           <div className={leftStyle}>
