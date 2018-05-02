@@ -258,10 +258,10 @@ export default class CategoryPostSelector extends PureComponent {
     this.state = {
       subscribedCategories,
       unsubscribedCategories,
-      searchText: '',
-      selectedIndex: null,
       focused: false,
       open: false,
+      searchText: '',
+      selectedIndex: null,
     }
 
     this.setWrapperRef = this.setWrapperRef.bind(this)
