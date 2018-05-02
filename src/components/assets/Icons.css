@@ -313,6 +313,11 @@
   fill: #000;
 }
 
+.no-touch .CommentTool.isLightBox > button:hover > .BubbleIcon > g,
+.no-touch .FlagTool.isLightBox > button:hover > .FlagIcon > g:nth-of-type(2) {
+  fill: #fff;
+}
+
 .IconTab.isActive .BubbleIcon > g,
 .IconTab.isActive .HeartIcon > g,
 .no-touch .IconTab:hover .BubbleIcon > g,
@@ -323,7 +328,8 @@
 /* Hide the tail */
 .NotificationsContainerTabs  .BubbleIcon > g:nth-child(2),
 .Post .BubbleIcon > g:nth-child(2),
-.StyleGuide .BubbleIcon > g:nth-child(2) {
+.StyleGuide .BubbleIcon > g:nth-child(2),
+.PostTool.isLightBox .BubbleIcon.SVGIcon > g:nth-child(2) {
   display: none;
 }
 
@@ -382,8 +388,16 @@
   stroke: #000;
 }
 
+.no-touch .ViewsTool.isLightBox > a:hover > .EyeIcon > g {
+  stroke: #fff;
+}
+
 .no-touch .LoveTool > button:hover > .HeartIcon > g {
   fill: #000;
+}
+
+.no-touch .LoveTool.isLightBox > button:hover > .HeartIcon > g {
+  fill: #fff;
 }
 
 .LoveTool > button.isActive > .HeartIcon > g {
