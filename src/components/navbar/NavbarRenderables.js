@@ -80,6 +80,7 @@ export const NavbarLoggedOut = ({
   categoryTabs,
   areCategoriesSubscribed,
   deviceSize,
+  isLightBoxActive,
   hasLoadMoreButton,
   onClickLoadMorePosts,
   onClickNavbarMark,
@@ -141,7 +142,7 @@ export const NavbarLoggedOut = ({
         to="/join"
       />
     </div>
-    {categoryTabs &&
+    {categoryTabs && !isLightBoxActive &&
       <CategoryTabBar
         pathname={pathname}
         tabs={categoryTabs}
@@ -156,6 +157,7 @@ NavbarLoggedOut.propTypes = {
   categoryTabs: PropTypes.array,
   areCategoriesSubscribed: PropTypes.bool,
   deviceSize: PropTypes.string.isRequired,
+  isLightBoxActive: PropTypes.bool,
   hasLoadMoreButton: PropTypes.bool.isRequired,
   onClickLoadMorePosts: PropTypes.func.isRequired,
   onClickNavbarMark: PropTypes.func.isRequired,
@@ -163,6 +165,7 @@ NavbarLoggedOut.propTypes = {
 }
 NavbarLoggedOut.defaultProps = {
   categoryTabs: null,
+  isLightBoxActive: false,
   areCategoriesSubscribed: false,
 }
 NavbarLoggedOut.contextTypes = {
@@ -180,6 +183,7 @@ export const NavbarLoggedIn = ({
   hasLoadMoreButton,
   isBrand,
   isGridMode,
+  isLightBoxActive,
   isLayoutToolHidden,
   isNotificationsActive,
   isNotificationsUnread,
@@ -286,7 +290,7 @@ export const NavbarLoggedIn = ({
         <NotificationsContainer isModal /> : null
       }
     </div>
-    {categoryTabs &&
+    {categoryTabs && !isLightBoxActive &&
       <CategoryTabBar
         pathname={pathname}
         tabs={categoryTabs}
@@ -306,6 +310,7 @@ NavbarLoggedIn.propTypes = {
   hasLoadMoreButton: PropTypes.bool.isRequired,
   isBrand: PropTypes.bool.isRequired,
   isGridMode: PropTypes.bool,
+  isLightBoxActive: PropTypes.bool,
   isLayoutToolHidden: PropTypes.bool.isRequired,
   isNotificationsActive: PropTypes.bool.isRequired,
   isNotificationsUnread: PropTypes.bool.isRequired,
@@ -331,6 +336,7 @@ NavbarLoggedIn.defaultProps = {
   categoryTabs: null,
   areCategoriesSubscribed: false,
   isGridMode: false,
+  isLightBoxActive: false,
   username: null,
   innerWidth: null,
 }

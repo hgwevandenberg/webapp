@@ -2,189 +2,43 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Mousetrap from 'mousetrap'
+import { selectCommentOriginalPostId } from '../selectors/comment'
 import {
   selectInnerHeight,
   selectInnerWidth,
+  selectIsLightBoxActive,
+  selectIsMobile,
 } from '../selectors/gui'
 import { setIsLightBoxActive } from '../actions/gui'
-import {
-  selectPostsAssetIds,
-} from '../selectors/light_box'
+import { selectPostsAssetIds } from '../selectors/light_box'
+import { selectPostIsGridMode } from '../selectors/post'
 import { scrollToPosition } from '../lib/jello'
-import { DismissButtonLGReverse } from '../components/buttons/Buttons'
-import PostContainer from './PostContainer'
-import CommentContainer from './CommentContainer'
-// import { RegionItems } from '../regions/RegionRenderables'
-import { css, select, media } from '../styles/jss'
-import * as s from '../styles/jso'
+import LightBox from '../components/light_box/LightBoxRenderables'
 import { SHORTCUT_KEYS } from '../constants/application_types'
-
-const baseLightBoxStyle = css(
-  s.block,
-  s.relative,
-  s.bgcF2,
-  { margin: '0 auto' },
-  select(
-    '> .LightBoxMask',
-    s.fullscreen,
-    s.fullWidth,
-    s.fullHeight,
-    s.bgcModal,
-    s.zModal,
-    { transition: `background-color 0.4s ${s.ease}` },
-    select(
-      '> .LightBox',
-      s.fixed,
-      s.flood,
-      s.fullWidth,
-      s.fullHeight,
-      s.overflowHidden,
-      s.flex,
-      s.itemsCenter,
-      select(
-        '> .LightBoxQueue',
-        s.transitionOpacity,
-        s.relative,
-        {
-          width: 'auto',
-          whiteSpace: 'nowrap',
-          opacity: 1,
-        },
-      ),
-    ),
-    select(
-      '> .LightBox.loaded',
-      select(
-        '> .LightBoxQueue.transition',
-        s.transitionTransform,
-      ),
-    ),
-    select(
-      '> .LightBox.loading',
-      select(
-        '> .LightBoxQueue',
-        { opacity: 0 },
-      ),
-    ),
-  ),
-)
-
-const imageRegionStyle = select(
-  '> .ImageRegion',
-  s.inlineBlock,
-  s.relative,
-  {
-    margin: 0,
-    marginLeft: 40,
-    marginRight: 40,
-    width: 'auto',
-  },
-  media(
-    s.maxBreak4,
-    { marginLeft: 30,
-      marginRight: 30,
-    },
-  ),
-  media(
-    s.maxBreak3,
-    { marginLeft: 20,
-      marginRight: 20,
-    },
-  ),
-  media(
-    s.maxBreak2,
-    { marginLeft: 10,
-      marginRight: 10,
-    },
-  ),
-  select(
-    '> .ImgHolderLightBox',
-    s.inline,
-  ),
-)
-
-const commentsLightBoxStyle = css(
-  { ...baseLightBoxStyle },
-  select(
-    '> .LightBoxMask',
-    select(
-      '> .LightBox',
-      select(
-        '> .LightBoxQueue',
-        select(
-          '> .Comment',
-          s.inline,
-          { padding: 0 },
-          select(
-            '> .CommentBody',
-            s.inline,
-            { padding: 0,
-              margin: 0,
-              border: 'none',
-              width: 'auto',
-            },
-            select(
-              '> div',
-              s.inline,
-              { ...imageRegionStyle },
-            ),
-          ),
-        ),
-      ),
-    ),
-  ),
-)
-
-const postsListLightBoxStyle = css(
-  { ...baseLightBoxStyle },
-  select(
-    '> .LightBoxMask',
-    select(
-      '> .LightBox',
-      select(
-        '> .LightBoxQueue',
-        select(
-          '> .Post',
-          s.inline,
-          { margin: 0,
-            padding: 0,
-          },
-          select(
-            '> .PostBody',
-            s.inline,
-            { padding: 0,
-              margin: 0,
-              border: 'none',
-              width: 'auto',
-            },
-            select(
-              '> div',
-              s.inline,
-              { ...imageRegionStyle },
-            ),
-          ),
-        ),
-      ),
-    ),
-  ),
-)
 
 // Wraps LightBox controls/state around a component
 // This function takes a component
 function LightBoxWrapper(WrappedComponent) {
   class BaseLightBox extends Component {
     static propTypes = {
+      commentIds: PropTypes.object, // for comment stream
       dispatch: PropTypes.func.isRequired,
       innerHeight: PropTypes.number,
       innerWidth: PropTypes.number,
-      commentIds: PropTypes.object, // for comment stream
+      isMobile: PropTypes.bool.isRequired,
+      isRelatedPost: PropTypes.bool,
+      isGridMode: PropTypes.bool.isRequired,
+      isLightBoxActive: PropTypes.bool.isRequired,
+      parentPostId: PropTypes.string,
       postAssetIdPairs: PropTypes.array, // post/asset id pairs
     }
 
     static defaultProps = {
+      commentIds: null,
       innerHeight: null,
       innerWidth: null,
-      commentIds: null,
+      isRelatedPost: false,
+      parentPostId: null,
       postAssetIdPairs: null,
     }
 
@@ -195,6 +49,10 @@ function LightBoxWrapper(WrappedComponent) {
         loading: true,
         loaded: false,
         direction: null,
+        directionsEnabled: {
+          next: false,
+          prev: false,
+        },
         assetIdToSet: null,
         assetIdToSetPrev: null,
         assetIdToSetNext: null,
@@ -220,7 +78,17 @@ function LightBoxWrapper(WrappedComponent) {
       // set keybindings
       if (!prevState.open && this.state.open) {
         this.bindKeys()
-        this.props.dispatch(setIsLightBoxActive({ isActive: true }))
+        if (!this.props.isLightBoxActive) {
+          if (!this.props.isLightBoxActive) {
+            this.props.dispatch(setIsLightBoxActive({ isActive: true }))
+          }
+        }
+      }
+
+      // light box was closed externally
+      if (this.state.open &&
+        (prevProps.isLightBoxActive && !this.props.isLightBoxActive)) {
+        this.close()
       }
 
       // might need to shift the queue left/right if we've added/removed new posts
@@ -233,14 +101,20 @@ function LightBoxWrapper(WrappedComponent) {
         if (this.state.direction === 'next') {
           this.slideQueue(nextPrev.assetIdToSetPrev, nextPrev.postIdToSetPrev)
         } else {
-          setTimeout(() => {
+          this.slideQueueDomDelay = setTimeout(() => {
             this.slideQueue(nextPrev.assetIdToSetNext, nextPrev.postIdToSetNext)
           }, 1) // small timeout allows DOM time to instantiate new post
         }
       }
 
-      const slideDelay = !prevState.open ? 200 : 100
-      const transitionDelay = 200
+      let slideDelay = 100
+      let transitionDelay = 200
+      if (!prevState.open) {
+        slideDelay = this.props.isGridMode ? 1250 : 200
+      }
+      if (this.props.isGridMode) {
+        transitionDelay = !prevState.open ? 1250 : 500
+      }
 
       // update the DOM post Ids array and move the queue to the select item
       if (this.state.open &&
@@ -248,14 +122,14 @@ function LightBoxWrapper(WrappedComponent) {
         (prevState.postIdToSet !== this.state.postIdToSet))) {
         this.constructPostIdsArray()
 
-        setTimeout(() => {
+        this.slideQueueDelay = setTimeout(() => {
           this.slideQueue()
         }, slideDelay)
       }
 
       // remove loading class if lightbox was recently opened
       if (this.state.open && !prevState.open) {
-        setTimeout(() => {
+        this.removeLoadingClassDelay = setTimeout(() => {
           this.removeLoadingClass()
         }, transitionDelay)
       }
@@ -276,7 +150,16 @@ function LightBoxWrapper(WrappedComponent) {
     componentWillUnmount() {
       const releaseKeys = true
       this.bindKeys(releaseKeys)
-      this.props.dispatch(setIsLightBoxActive({ isActive: false }))
+      if (this.state.open && this.props.isLightBoxActive) {
+        this.props.dispatch(setIsLightBoxActive({ isActive: false }))
+      }
+
+      // clear timeouts
+      if (this.slideQueueDomDelay) { clearTimeout(this.slideQueueDomDelay) }
+      if (this.slideQueueDelay) { clearTimeout(this.slideQueueDelay) }
+      if (this.removeLoadingClassDelay) { clearTimeout(this.removeLoadingClassDelay) }
+      if (this.slideQueueResizeDelay) { clearTimeout(this.slideQueueResizeDelay) }
+      if (this.setLoadedStateDelay) { clearTimeout(this.setLoadedStateDelay) }
     }
 
     getSetPagination(assetId, postId, updateState = true) {
@@ -300,13 +183,17 @@ function LightBoxWrapper(WrappedComponent) {
         if (existingItemIndex !== null) {
           let prevIndex = existingItemIndex - 1
           let nextIndex = existingItemIndex + 1
+          let isPrevEnabled = true
+          let isNextEnabled = true
 
           if (existingItemIndex === 0) {
             prevIndex = 0
+            isPrevEnabled = false
           }
 
           if (existingItemIndex === (numberItems - 1)) {
             nextIndex = existingItemIndex
+            isNextEnabled = false
           }
 
           const prevItemAssetId = postAssetIdPairs[prevIndex][1]
@@ -320,6 +207,10 @@ function LightBoxWrapper(WrappedComponent) {
               assetIdToSetNext: nextItemAssetId,
               postIdToSetPrev: prevItemPostId,
               postIdToSetNext: nextItemPostId,
+              directionsEnabled: {
+                next: isNextEnabled,
+                prev: isPrevEnabled,
+              },
             })
           }
           const nextPrevSet = {
@@ -327,6 +218,10 @@ function LightBoxWrapper(WrappedComponent) {
             assetIdToSetNext: nextItemAssetId,
             postIdToSetPrev: prevItemPostId,
             postIdToSetNext: nextItemPostId,
+            directionsEnabled: {
+              next: isNextEnabled,
+              prev: isPrevEnabled,
+            },
           }
           return nextPrevSet
         }
@@ -335,32 +230,31 @@ function LightBoxWrapper(WrappedComponent) {
       return null
     }
 
-    setLightBoxStyle() {
-      const { commentIds } = this.props
-
-      if (commentIds) {
-        return commentsLightBoxStyle
-      }
-
-      return postsListLightBoxStyle
-    }
-
     advance(direction) {
+      const {
+        assetIdToSet,
+        assetIdToSetNext,
+        assetIdToSetPrev,
+        postIdToSet,
+        postIdToSetNext,
+        postIdToSetPrev,
+      } = this.state
+
       let newAssetIdToSet = null
       let newPostIdToSet = null
 
       switch (direction) {
         case 'prev' :
-          newAssetIdToSet = this.state.assetIdToSetPrev
-          newPostIdToSet = this.state.postIdToSetPrev
+          newAssetIdToSet = assetIdToSetPrev
+          newPostIdToSet = postIdToSetPrev
           break
         case 'next' :
-          newAssetIdToSet = this.state.assetIdToSetNext
-          newPostIdToSet = this.state.postIdToSetNext
+          newAssetIdToSet = assetIdToSetNext
+          newPostIdToSet = postIdToSetNext
           break
         default :
-          newAssetIdToSet = this.state.assetIdToSet
-          newPostIdToSet = this.state.postIdToSet
+          newAssetIdToSet = assetIdToSet
+          newPostIdToSet = postIdToSet
       }
 
       // advance to new image
@@ -415,38 +309,44 @@ function LightBoxWrapper(WrappedComponent) {
       const postSideBar = document.getElementsByClassName('PostSideBar')
       const assetInDom = document.getElementById(assetDomId)
 
-      // determine scroll offset of asset in dom
-      let assetInDomTopOffset = null
-      if (postSideBar.length) { // post detail view (scrolling inner-div needs different treatement)
-        if (commentsStream) {
-          assetInDomTopOffset = assetInDom.getBoundingClientRect().top + postSideBar[0].scrollTop
+      if (assetInDom) {
+        // determine scroll offset of asset in dom
+        let assetInDomTopOffset = null
+        // post detail view (scrolling inner-div needs different treatement)
+        if (postSideBar.length) {
+          if (commentsStream) {
+            assetInDomTopOffset = assetInDom.getBoundingClientRect().top + postSideBar[0].scrollTop
+          } else {
+            assetInDomTopOffset = assetInDom.getBoundingClientRect().top + postList[0].scrollTop
+          }
         } else {
-          assetInDomTopOffset = assetInDom.getBoundingClientRect().top + postList[0].scrollTop
+          assetInDomTopOffset = assetInDom.getBoundingClientRect().top + window.scrollY
         }
-      } else {
-        assetInDomTopOffset = assetInDom.getBoundingClientRect().top + window.scrollY
-      }
 
-      // adjust scroll offset for window height / nav bar
-      const windowHeight = window.innerHeight
-      const offsetPadding = (windowHeight / 10)
-      const scrollToOffset = (assetInDomTopOffset - offsetPadding)
+        // adjust scroll offset for window height / nav bar
+        const windowHeight = window.innerHeight
+        const offsetPadding = (windowHeight / 10)
+        const scrollToOffset = (assetInDomTopOffset - offsetPadding)
 
-      // scroll to new position
-      if (postList.length && postSideBar.length) { // post detail view
-        let scrollElement = postList[0]
-        if (commentsStream) {
-          scrollElement = postSideBar[0]
+        // scroll to new position
+        if (postList.length && postSideBar.length) { // post detail view
+          let scrollElement = postList[0]
+          if (commentsStream) {
+            scrollElement = postSideBar[0]
+          }
+          return scrollToPosition(0, scrollToOffset, { el: scrollElement, duration: 0 })
         }
-        return scrollToPosition(0, scrollToOffset, { el: scrollElement, duration: 0 })
+        return scrollToPosition(0, scrollToOffset, { duration: 0 }) // stream container view
       }
-      return scrollToPosition(0, scrollToOffset, { duration: 0 }) // stream container view
+      return null
     }
 
     close() {
       const releaseKeys = true
       this.bindKeys(releaseKeys)
-      this.props.dispatch(setIsLightBoxActive({ isActive: false }))
+      if (this.props.isLightBoxActive) {
+        this.props.dispatch(setIsLightBoxActive({ isActive: false }))
+      }
 
       return this.setState({
         open: false,
@@ -460,7 +360,8 @@ function LightBoxWrapper(WrappedComponent) {
     handleMaskClick(e) {
       if (e.target.nodeName !== 'IMG' &&
         e.target.nodeName !== 'VIDEO' &&
-        e.target.nodeName !== 'BUTTON') {
+        e.target.nodeName !== 'BUTTON' &&
+        !e.target.classList.contains('PostTool')) {
         return this.close()
       }
       return null
@@ -511,7 +412,7 @@ function LightBoxWrapper(WrappedComponent) {
       }
 
       // resize off
-      setTimeout(() => {
+      this.slideQueueResizeDelay = setTimeout(() => {
         this.slideQueue(this.state.assetIdToSet, this.state.postIdToSet)
       }, 250)
 
@@ -521,17 +422,18 @@ function LightBoxWrapper(WrappedComponent) {
     }
 
     removeLoadingClass() {
-      const transitionDelay = 200
+      const setLodedDelay = 200
 
       this.setState({
         loading: false,
       })
 
-      return setTimeout(() => {
+      this.setLoadedStateDelay = setTimeout(() => {
         this.setState({
           loaded: true,
         })
-      }, transitionDelay)
+      }, setLodedDelay)
+      return null
     }
 
     bindKeys(unbind) {
@@ -576,60 +478,56 @@ function LightBoxWrapper(WrappedComponent) {
     }
 
     render() {
-      const { postAssetIdPairs } = this.props
-      const lightBoxSelectedIdPair = {
-        assetIdToSet: this.state.assetIdToSet,
-        postIdToSet: this.state.postIdToSet,
-      }
+      const {
+        commentIds,
+        isRelatedPost,
+        isMobile,
+        parentPostId,
+        postAssetIdPairs,
+      } = this.props
+
+      const {
+        assetIdToSet,
+        directionsEnabled,
+        loading,
+        loaded,
+        open,
+        queueOffsetX,
+        queuePostIdsArray,
+        resize,
+        showOffsetTransition,
+      } = this.state
 
       return (
         <div className="with-lightbox">
-          {this.state.open &&
-            <div className={this.setLightBoxStyle()}>
-              <div className="LightBoxMask" role="presentation" onClick={e => this.handleMaskClick(e)}>
-                <DismissButtonLGReverse
-                  onClick={this.close}
-                />
-                <div className={`LightBox ${this.state.loading ? 'loading' : ''}${this.state.loaded ? 'loaded' : ''}`}>
-                  <div
-                    className={`LightBoxQueue${this.state.showOffsetTransition ? ' transition' : ''}`}
-                    style={{ transform: `translateX(${this.state.queueOffsetX}px)` }}
-                  >
-                    {!this.props.commentIds &&
-                      postAssetIdPairs &&
-                      this.state.queuePostIdsArray &&
-                      this.state.queuePostIdsArray.map(postId =>
-                      (<PostContainer
-                        key={`lightBoxPost_${postId}`}
-                        postId={postId}
-                        isPostHeaderHidden
-                        isLightBox
-                        lightBoxSelectedIdPair={lightBoxSelectedIdPair}
-                        resizeLightBox={this.state.resize}
-                        toggleLightBox={(assetId, postIdToSet) =>
-                          this.handleImageClick(assetId, postIdToSet)}
-                      />),
-                    )}
-                    {this.props.commentIds &&
-                      postAssetIdPairs &&
-                      this.state.queuePostIdsArray &&
-                      this.state.queuePostIdsArray.map(postId =>
-                      (<CommentContainer
-                        key={`lightBoxPost_${postId}`}
-                        commentId={postId}
-                        isLightBox
-                        lightBoxSelectedIdPair={lightBoxSelectedIdPair}
-                        toggleLightBox={(assetId, postIdToSet) =>
-                          this.handleImageClick(assetId, postIdToSet)}
-                      />),
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
+          {open &&
+            <LightBox
+              advance={direction => this.advance(direction)}
+              advanceDirections={directionsEnabled}
+              assetIdToSet={assetIdToSet}
+              close={() => this.close()}
+              commentIds={commentIds}
+              handleMaskClick={e => this.handleMaskClick(e)}
+              handleImageClick={
+                (assetId, postIdToSet) => this.handleImageClick(assetId, postIdToSet)
+              }
+              isMobile={isMobile}
+              isRelatedPost={isRelatedPost}
+              loading={loading}
+              loaded={loaded}
+              parentPostId={parentPostId}
+              postAssetIdPairs={postAssetIdPairs}
+              postIdToSet={this.state.postIdToSet}
+              queuePostIdsArray={queuePostIdsArray}
+              queueOffsetX={queueOffsetX}
+              resize={resize}
+              showOffsetTransition={showOffsetTransition}
+            />
           }
           <WrappedComponent
-            toggleLightBox={(assetId, postIdToSet) => this.handleImageClick(assetId, postIdToSet)}
+            toggleLightBox={
+              (assetId, postIdToSet) => this.handleImageClick(assetId, postIdToSet)
+            }
             {...this.props}
           />
         </div>
@@ -637,16 +535,33 @@ function LightBoxWrapper(WrappedComponent) {
     }
   }
 
-  function makeMapStateToProps() {
-    return (state, props) =>
-      ({
-        innerHeight: selectInnerHeight(state),
-        innerWidth: selectInnerWidth(state),
-        postAssetIdPairs: selectPostsAssetIds(state, props),
-      })
+  function mapStateToProps(state, props) {
+    const isGridMode = selectPostIsGridMode(state, props)
+    const isLightBoxActive = selectIsLightBoxActive(state)
+
+    // set up commentId for grabbing originalPostId and creating parentPostId
+    let commentId = null
+    if (isLightBoxActive && !isGridMode) {
+      if (props.commentIds) {
+        props.commentIds.map((id) => {
+          commentId = id
+          return null
+        })
+      }
+    }
+
+    return {
+      innerHeight: selectInnerHeight(state),
+      innerWidth: selectInnerWidth(state),
+      isLightBoxActive,
+      isGridMode,
+      isMobile: selectIsMobile(state),
+      parentPostId: selectCommentOriginalPostId(state, { commentId }),
+      postAssetIdPairs: selectPostsAssetIds(state, props),
+    }
   }
 
-  return connect(makeMapStateToProps)(BaseLightBox)
+  return connect(mapStateToProps)(BaseLightBox)
 }
 
 export default LightBoxWrapper

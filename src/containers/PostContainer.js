@@ -117,7 +117,7 @@ export function makeMapStateToProps() {
       originalPostArtistInvite: selectOriginalPostArtistInvite(state, props),
       isCommentsRequesting: selectPostIsCommentsRequesting(state, props),
       showCategoryHeader: selectShowCategoryHeader(state, props),
-      isGridMode: selectPostIsGridMode(state, props),
+      isGridMode: !props.isLightBox && selectPostIsGridMode(state, props),
       isLoggedIn: selectIsLoggedIn(state),
       isMobile: selectIsMobile(state),
       isOwnOriginalPost: selectPostIsOwnOriginal(state, props),
@@ -142,7 +142,7 @@ export function makeMapStateToProps() {
       repostAuthor: selectPostRepostAuthorWithFallback(state, props),
       repostContent: selectPostRepostContent(state, props),
       showCommentEditor: selectPostShowCommentEditor(state, props),
-      showEditor: selectPostShowEditor(state, props),
+      showEditor: !props.isLightBox && selectPostShowEditor(state, props),
       summary: selectPostSummary(state, props),
     })
 }
@@ -188,8 +188,6 @@ class PostContainer extends Component {
     isReposting: PropTypes.bool.isRequired,
     isWatchingPost: PropTypes.bool.isRequired,
     isLightBox: PropTypes.bool,
-    resizeLightBox: PropTypes.bool,
-    toggleLightBox: PropTypes.func,
     lightBoxSelectedIdPair: PropTypes.object,
     pathname: PropTypes.string.isRequired,
     post: PropTypes.object.isRequired,
@@ -205,10 +203,12 @@ class PostContainer extends Component {
     previousPath: PropTypes.string,
     repostAuthor: PropTypes.object,
     repostContent: PropTypes.object,
+    resizeLightBox: PropTypes.bool,
     showCommentEditor: PropTypes.bool.isRequired,
     showEditor: PropTypes.bool.isRequired,
     submissionStatus: PropTypes.string,
     summary: PropTypes.object,
+    toggleLightBox: PropTypes.func,
     type: PropTypes.string,
   }
 
@@ -229,8 +229,6 @@ class PostContainer extends Component {
     isPostHeaderHidden: false,
     isRelatedPost: false,
     isLightBox: false,
-    resizeLightBox: false,
-    toggleLightBox: null,
     lightBoxSelectedIdPair: null,
     postBody: null,
     postCommentsCount: null,
@@ -243,8 +241,10 @@ class PostContainer extends Component {
     previousPath: null,
     repostAuthor: null,
     repostContent: null,
+    resizeLightBox: false,
     submissionStatus: null,
     summary: null,
+    toggleLightBox: null,
     type: null,
   }
 
@@ -431,7 +431,6 @@ class PostContainer extends Component {
     }
   }
 
-
   onCloseModal = () => {
     const { dispatch } = this.props
     dispatch(closeModal())
@@ -507,8 +506,6 @@ class PostContainer extends Component {
       isReposting,
       isWatchingPost,
       isLightBox,
-      resizeLightBox,
-      toggleLightBox,
       lightBoxSelectedIdPair,
       post,
       postBody,
@@ -522,10 +519,12 @@ class PostContainer extends Component {
       postViewsCountRounded,
       repostAuthor,
       repostContent,
+      resizeLightBox,
       showCommentEditor,
       showEditor,
       submissionStatus,
       summary,
+      toggleLightBox,
       type,
     } = this.props
     const { onLaunchNativeEditor } = this.context
@@ -619,6 +618,7 @@ class PostContainer extends Component {
               postReposted,
               postRepostsCount,
               postViewsCountRounded,
+              toggleLightBox,
             }}
           />
         )
@@ -732,8 +732,6 @@ class PostContainer extends Component {
               isRepostAnimating,
               isWatchingPost,
               isLightBox,
-              resizeLightBox,
-              toggleLightBox,
               lightBoxSelectedIdPair,
               post,
               postCommentsCount,
@@ -746,11 +744,13 @@ class PostContainer extends Component {
               postRepostsCount,
               postViewsCountRounded,
               repostContent,
+              resizeLightBox,
               showCommentEditor,
               showEditor,
               submissionStatus,
               summary,
               supportsNativeEditor,
+              toggleLightBox,
             }}
           />
         )

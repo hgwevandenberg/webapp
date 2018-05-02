@@ -7,7 +7,8 @@ import classNames from 'classnames'
 import ImageAsset from '../assets/ImageAsset'
 import VideoAsset from '../assets/VideoAsset'
 import { ElloBuyButton } from '../editor/ElloBuyButton'
-import { css, select } from '../../styles/jss'
+import { LightBoxTrigger } from '../assets/Icons'
+import { css, select, hover } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
 const STATUS = {
@@ -20,6 +21,23 @@ const STATUS = {
 const imageRegionStyle = css(
   s.inlineBlock,
   s.center,
+
+  select('& .ImgHolder',
+    hover(
+      select('& .lightbox-trigger',
+        s.opacity1,
+        { cursor: 'pointer' },
+      ),
+    ),
+  ),
+  select('& .RegionContent',
+    hover(
+      select('& .lightbox-trigger',
+        s.opacity1,
+        { cursor: 'pointer' },
+      ),
+    ),
+  ),
 )
 
 const streamImageStyle = css(
@@ -62,6 +80,44 @@ const lightBoxImageStyle = css(
   ),
 )
 
+const lightBoxTriggerStyle = css(
+  s.absolute,
+  s.flex,
+  s.itemsCenter,
+  s.justifyCenter,
+  s.wv40,
+  s.hv40,
+  s.zIndex1,
+  s.opacity0,
+  s.transitionOpacity,
+  {
+    top: 10,
+    right: 10,
+    borderRadius: 40,
+    transitionDelay: '350ms',
+    backgroundColor: '#000',
+  },
+  select(
+    '&.with-buy',
+    { right: 60 },
+  ),
+
+  select('& .text', s.displayNone),
+  select('& .icon',
+    s.block,
+    {
+      width: 18,
+      height: 18,
+    },
+    select('& .LightBoxTrigger',
+      { verticalAlign: 'baseline' },
+      select('& polygon',
+        { fill: '#fff' },
+      ),
+    ),
+  ),
+)
+
 // export to re-use this wonky image url parser
 export function getTempAssetId(url) {
   if (url.includes('uploads/')) {
@@ -71,7 +127,6 @@ export function getTempAssetId(url) {
 }
 
 class ImageRegion extends PureComponent {
-
   static propTypes = {
     postId: PropTypes.string,
     assetId: PropTypes.string,
@@ -84,14 +139,14 @@ class ImageRegion extends PureComponent {
     detailPath: PropTypes.string.isRequired,
     isComment: PropTypes.bool,
     isPostBody: PropTypes.bool,
-    isPostDetail: PropTypes.bool,
     isGridMode: PropTypes.bool.isRequired,
+    isPostDetail: PropTypes.bool.isRequired,
     isNotification: PropTypes.bool,
     isLightBoxImage: PropTypes.bool,
     isLightBoxSelected: PropTypes.bool,
     resizeLightBoxImage: PropTypes.bool,
     shouldUseVideo: PropTypes.bool.isRequired,
-    handleStaticImageRegionClick: PropTypes.func,
+    handleImageRegionClick: PropTypes.func,
   }
 
   static defaultProps = {
@@ -105,12 +160,11 @@ class ImageRegion extends PureComponent {
     isComment: false,
     isNotification: false,
     isPostBody: true,
-    isPostDetail: false,
     isGridMode: false,
     isLightBoxImage: false,
     isLightBoxSelected: false,
     resizeLightBoxImage: false,
-    handleStaticImageRegionClick: null,
+    handleImageRegionClick: null,
   }
 
   static contextTypes = {
@@ -162,8 +216,8 @@ class ImageRegion extends PureComponent {
     return null
   }
 
-  onClickStaticImageRegion = (event) => {
-    this.props.handleStaticImageRegionClick(event)
+  onClickImageRegion = (event) => {
+    this.props.handleImageRegionClick(event)
     return false
   }
 
@@ -246,12 +300,16 @@ class ImageRegion extends PureComponent {
   }
 
   getImageSourceSet() {
-    const { isGridMode } = this.props
+    const { isGridMode, isPostDetail, isLightBoxImage } = this.props
     const images = []
     if (!this.isBasicAttachment()) {
       if (isGridMode) {
         images.push(`${this.attachment.getIn(['mdpi', 'url'])} 375w`)
         images.push(`${this.attachment.getIn(['hdpi', 'url'])} 1920w`)
+      } else if (!isPostDetail && isLightBoxImage) {
+        images.push(`${this.attachment.getIn(['mdpi', 'url'])} 180w`)
+        images.push(`${this.attachment.getIn(['hdpi', 'url'])} 750w`)
+        images.push(`${this.attachment.getIn(['xhdpi', 'url'])} 1500w`)
       } else {
         images.push(`${this.attachment.getIn(['mdpi', 'url'])} 180w`)
         images.push(`${this.attachment.getIn(['hdpi', 'url'])} 750w`)
@@ -306,7 +364,7 @@ class ImageRegion extends PureComponent {
       }
     }
 
-    const innerHeightPadded = (window.innerHeight - padding)
+    const innerHeightPadded = (window.innerHeight - padding - 20)
     const innerWidthPadded = (viewportWidth - (padding * paddingMultiplier))
 
     const innerRatio = innerWidthPadded / innerHeightPadded
@@ -362,8 +420,6 @@ class ImageRegion extends PureComponent {
       content,
       isLightBoxImage,
       isPostBody,
-      isPostDetail,
-      isGridMode,
       isLightBoxSelected,
     } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
@@ -379,13 +435,11 @@ class ImageRegion extends PureComponent {
         onLoadSuccess={this.onLoadSuccess}
         role="presentation"
         isPostBody={isPostBody}
-        isPostDetail={isPostDetail}
-        isGridMode={isGridMode}
         srcSet={srcset}
         src={this.attachment.getIn(['hdpi', 'url'])}
         style={isLightBoxImage ? { width: scaledImageWidth, height: scaledImageHeight } : null}
         onScreenDimensions={
-          isPostBody && (isPostDetail || !isGridMode) ?
+          isPostBody ?
             ((measuredDimensions) => { this.handleScreenDimensions(measuredDimensions) }) :
             null
         }
@@ -399,8 +453,6 @@ class ImageRegion extends PureComponent {
       isNotification,
       isLightBoxImage,
       isPostBody,
-      isPostDetail,
-      isGridMode,
       isLightBoxSelected,
     } = this.props
     const attrs = { src: content.get('url') }
@@ -420,11 +472,9 @@ class ImageRegion extends PureComponent {
         onLoadSuccess={this.onLoadSuccess}
         role="presentation"
         isPostBody={isPostBody}
-        isPostDetail={isPostDetail}
-        isGridMode={isGridMode}
         style={isLightBoxImage ? { width: scaledImageWidth, height: scaledImageHeight } : null}
         onScreenDimensions={
-          isPostBody && (isPostDetail || !isGridMode) ?
+          isPostBody ?
             ((measuredDimensions) => { this.handleScreenDimensions(measuredDimensions) }) :
             null
         }
@@ -439,8 +489,6 @@ class ImageRegion extends PureComponent {
       content,
       isLightBoxImage,
       isPostBody,
-      isPostDetail,
-      isGridMode,
       isLightBoxSelected,
     } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
@@ -454,12 +502,10 @@ class ImageRegion extends PureComponent {
         onLoadSuccess={this.onLoadSuccess}
         role="presentation"
         isPostBody={isPostBody}
-        isPostDetail={isPostDetail}
-        isGridMode={isGridMode}
         src={this.attachment.getIn(['optimized', 'url'])}
         style={isLightBoxImage ? { width: scaledImageWidth, height: scaledImageHeight } : null}
         onScreenDimensions={
-          isPostBody && (isPostDetail || !isGridMode) ?
+          isPostBody ?
             ((measuredDimensions) => { this.handleScreenDimensions(measuredDimensions) }) :
             null
         }
@@ -471,8 +517,6 @@ class ImageRegion extends PureComponent {
     const {
       isLightBoxImage,
       isPostBody,
-      isPostDetail,
-      isGridMode,
       isLightBoxSelected,
     } = this.props
     const { scaledImageHeight, scaledImageWidth } = this.state
@@ -485,12 +529,10 @@ class ImageRegion extends PureComponent {
         height={dimensions.height}
         width={dimensions.width}
         isPostBody={isPostBody}
-        isPostDetail={isPostDetail}
-        isGridMode={isGridMode}
         src={this.attachment.getIn(['video', 'url'])}
         style={isLightBoxImage ? { width: scaledImageWidth, height: scaledImageHeight } : null}
         onScreenDimensions={
-          isPostBody && (isPostDetail || !isGridMode) ?
+          isPostBody ?
             ((measuredDimensions) => { this.handleScreenDimensions(measuredDimensions) }) :
             null
         }
@@ -514,11 +556,28 @@ class ImageRegion extends PureComponent {
 
   renderRegionAsLink() {
     const { buyLinkURL, detailPath, isComment, isLightBoxImage } = this.props
+    const hasBuyButton = buyLinkURL && buyLinkURL.length && !isLightBoxImage
+
     return (
-      <div className="RegionContent">
+      <div
+        className="RegionContent"
+        onClick={this.onClickImageRegion}
+      >
         <Link to={detailPath} onClick={this.context.onTrackRelatedPostClick}>
           {this.renderAttachment()}
         </Link>
+        {!isLightBoxImage &&
+          <button
+            className={`${lightBoxTriggerStyle} lightbox-trigger${hasBuyButton ? ' with-buy' : ''}`}
+          >
+            <span className="text">
+              Open Lightbox
+            </span>
+            <span className="icon">
+              <LightBoxTrigger />
+            </span>
+          </button>
+        }
         {
           !isComment && buyLinkURL && buyLinkURL.length && !isLightBoxImage ?
             <ElloBuyButton to={buyLinkURL} /> :
@@ -532,14 +591,28 @@ class ImageRegion extends PureComponent {
     const { currentImageHeight, currentImageWidth } = this.state
     const { buyLinkURL, isComment, isLightBoxImage } = this.props
     const imgHolderClass = isLightBoxImage ? 'ImgHolderLightBox' : 'ImgHolder'
+    const hasBuyButton = buyLinkURL && buyLinkURL.length && !isLightBoxImage
+
     return (
       <div
         className={isLightBoxImage ? lightBoxImageStyle : streamImageStyle}
-        onClick={this.onClickStaticImageRegion}
+        onClick={this.onClickImageRegion}
         style={!isLightBoxImage ? { height: currentImageHeight, width: currentImageWidth } : null}
       >
         <div className={imgHolderClass}>
           {this.renderAttachment()}
+          {!isLightBoxImage &&
+            <button
+              className={`${lightBoxTriggerStyle} lightbox-trigger${hasBuyButton ? ' with-buy' : ''}`}
+            >
+              <span className="text">
+                Open Lightbox
+              </span>
+              <span className="icon">
+                <LightBoxTrigger />
+              </span>
+            </button>
+          }
           {
             !isComment && buyLinkURL && buyLinkURL.length && !isLightBoxImage ?
               <ElloBuyButton to={buyLinkURL} /> :
@@ -551,9 +624,9 @@ class ImageRegion extends PureComponent {
   }
 
   render() {
-    const { isGridMode, detailPath } = this.props
+    const { isGridMode, isLightBoxImage, detailPath } = this.props
     const { status } = this.state
-    const asLink = isGridMode && detailPath
+    const asLink = isGridMode && detailPath && !isLightBoxImage
     return (
       <div className={`${classNames('ImageRegion', status)} ${imageRegionStyle}`} >
         {asLink ? this.renderRegionAsLink() : this.renderRegionAsStatic()}
