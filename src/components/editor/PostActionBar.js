@@ -355,14 +355,14 @@ class PostActionBar extends Component {
               </button>
               {postIntoCategory &&
                 <CategoryPostSelector
+                  featuredInCategories={featuredInCategories}
                   onSelect={this.onSelectCategory}
                   onClear={this.onClearCategory}
-                  subscribedCategories={subscribedCategories}
-                  featuredInCategories={featuredInCategories}
-                  unsubscribedCategories={unsubscribedCategories}
-                  selectedCategories={selectedCategories}
                   resetSelection={resetCategorySelection}
+                  selectedCategories={selectedCategories}
+                  subscribedCategories={subscribedCategories}
                   trackEvent={this.onTrackEvent}
+                  unsubscribedCategories={unsubscribedCategories}
                 />
               }
               <button
@@ -392,13 +392,14 @@ class PostActionBar extends Component {
         <div className={wrapperStyle} id={editorId}>
           {postIntoCategory &&
             <CategoryPostSelector
+              featuredInCategories={featuredInCategories}
               onSelect={this.onSelectCategory}
               onClear={this.onClearCategory}
-              subscribedCategories={subscribedCategories}
-              featuredInCategories={featuredInCategories}
-              unsubscribedCategories={unsubscribedCategories}
-              selectedCategories={selectedCategories}
               resetSelection={resetCategorySelection}
+              selectedCategories={selectedCategories}
+              subscribedCategories={subscribedCategories}
+              trackEvent={this.onTrackEvent}
+              unsubscribedCategories={unsubscribedCategories}
             />
           }
           <div className={leftStyle}>
