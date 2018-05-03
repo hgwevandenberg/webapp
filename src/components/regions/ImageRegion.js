@@ -223,6 +223,7 @@ class ImageRegion extends PureComponent {
       handleImageRegionClick(event)
       return false
     }
+    return null
   }
 
   onLoadSuccess = (img) => {
