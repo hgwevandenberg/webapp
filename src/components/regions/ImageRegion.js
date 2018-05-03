@@ -218,8 +218,11 @@ class ImageRegion extends PureComponent {
   }
 
   onClickImageRegion = (event) => {
-    this.props.handleImageRegionClick(event)
-    return false
+    const { handleImageRegionClick } = this.props
+    if (handleImageRegionClick) {
+      handleImageRegionClick(event)
+      return false
+    }
   }
 
   onLoadSuccess = (img) => {
