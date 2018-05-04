@@ -244,6 +244,7 @@ export default class CategoryPostSelector extends PureComponent {
   static propTypes = {
     categoryPostCollection: PropTypes.object,
     featuredInCategories: PropTypes.array.isRequired,
+    isPostEditing: PropTypes.bool.isRequired,
     onSelect: PropTypes.func.isRequired,
     onClear: PropTypes.func.isRequired,
     resetSelection: PropTypes.bool.isRequired,
@@ -340,6 +341,7 @@ export default class CategoryPostSelector extends PureComponent {
   setCategorySelection() {
     const {
       categoryPostCollection,
+      isPostEditing,
       selectedCategories,
     } = this.props
     const {
@@ -353,8 +355,8 @@ export default class CategoryPostSelector extends PureComponent {
       let selectedIndex = null
       const categories = subscribedCategories.concat(unsubscribedCategories)
 
-      // grab the selected category
-      if ((selectedCategories.length > 0)) {
+      // grab the selected category (if not editing)
+      if (!isPostEditing && (selectedCategories.length > 0)) {
         selectedCategory = selectedCategories[0]
 
         categories.map((category, index) => {
@@ -366,7 +368,7 @@ export default class CategoryPostSelector extends PureComponent {
       }
 
       // grab the selected category from the post (if editing)
-      if ((selectedIndex === null) && categoryPostCollection) {
+      if (isPostEditing && categoryPostCollection) {
         categories.map((category, index) => {
           categoryPostCollection.map((categoryPost) => {
             if (categoryPost.get('categoryId') === category.get('id')) {

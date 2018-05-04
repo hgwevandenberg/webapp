@@ -194,7 +194,6 @@ function mapStateToProps(state, props) {
 }
 
 class PostActionBar extends Component {
-
   static propTypes = {
     buyLink: PropTypes.string,
     cancelAction: PropTypes.func.isRequired,
@@ -208,6 +207,7 @@ class PostActionBar extends Component {
     innerWidth: PropTypes.number.isRequired,
     isComment: PropTypes.bool.isRequired,
     isGridMode: PropTypes.bool.isRequired,
+    isPostEditing: PropTypes.bool.isRequired,
     isPostReposting: PropTypes.bool.isRequired,
     postIntoCategory: PropTypes.bool.isRequired,
     replyAllAction: PropTypes.func,
@@ -316,6 +316,7 @@ class PostActionBar extends Component {
       hasMedia,
       innerWidth,
       isGridMode,
+      isPostEditing,
       isPostReposting,
       isComment,
       postIntoCategory,
@@ -362,6 +363,7 @@ class PostActionBar extends Component {
                 <CategoryPostSelector
                   categoryPostCollection={categoryPostCollection}
                   featuredInCategories={featuredInCategories}
+                  isPostEditing={isPostEditing}
                   onSelect={this.onSelectCategory}
                   onClear={this.onClearCategory}
                   resetSelection={resetCategorySelection}
@@ -400,6 +402,7 @@ class PostActionBar extends Component {
             <CategoryPostSelector
               categoryPostCollection={categoryPostCollection}
               featuredInCategories={featuredInCategories}
+              isPostEditing={isPostEditing}
               onSelect={this.onSelectCategory}
               onClear={this.onClearCategory}
               resetSelection={resetCategorySelection}
