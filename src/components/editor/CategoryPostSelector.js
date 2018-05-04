@@ -27,6 +27,9 @@ const categoryPostSelectorStyle = css(
     s.fullWidth,
     { marginBottom: 10 },
   ),
+  select('&.disabled',
+    { opacity: 0.45 },
+  ),
 )
 
 const categoriesSelectionsStyle = css(
@@ -459,13 +462,17 @@ export default class CategoryPostSelector extends PureComponent {
   }
 
   handleSelectorClick(e) {
-    if (e.target.nodeName === 'polyline' ||
-      e.target.nodeName === 'g' ||
-      e.target.nodeName === 'svg') {
-      return this.close()
-    }
-    if (e.target.nodeName !== 'BUTTON') {
-      return this.open()
+    const { isPostEditing } = this.props
+
+    if (!isPostEditing) {
+      if (e.target.nodeName === 'polyline' ||
+        e.target.nodeName === 'g' ||
+        e.target.nodeName === 'svg') {
+        return this.close()
+      }
+      if (e.target.nodeName !== 'BUTTON') {
+        return this.open()
+      }
     }
     return null
   }
@@ -540,13 +547,11 @@ export default class CategoryPostSelector extends PureComponent {
   }
 
   clearLocal() {
-    const { onClear, trackEvent } = this.props
-    const { open } = this.state
-    if (open) {
-      // this.categorySelectorRef.focus()
+    const { onClear, isPostEditing, trackEvent } = this.props
+    if (!isPostEditing) {
+      trackEvent('category-post-selector-cleared')
+      onClear()
     }
-    trackEvent('category-post-selector-cleared')
-    onClear()
   }
 
   resetSelection(track = true) {
@@ -562,13 +567,14 @@ export default class CategoryPostSelector extends PureComponent {
   }
 
   render() {
+    const { isPostEditing } = this.props
     const {
-      subscribedCategories,
-      unsubscribedCategories,
+      open,
       searchText,
       selectedCategory,
       selectedIndex,
-      open,
+      subscribedCategories,
+      unsubscribedCategories,
     } = this.state
     // Everything except this component could support multiple categories, but for now
     // we can assume there is only one selected category per post.
@@ -577,7 +583,7 @@ export default class CategoryPostSelector extends PureComponent {
       /* eslint-disable jsx-a11y/interactive-supports-focus */
       <aside
         ref={this.setWrapperRef}
-        className={categoryPostSelectorStyle}
+        className={`${categoryPostSelectorStyle}${isPostEditing ? ' disabled' : ''}`}
         role="searchbox"
         onClick={e => this.handleSelectorClick(e)}
       >
@@ -608,7 +614,17 @@ export default class CategoryPostSelector extends PureComponent {
           }
           {selectedCategory &&
             <span className="selected">
-              <b><i>Post into:</i> {selectedCategory.get('name')}</b>
+              <b>
+                <i>
+                  {isPostEditing ?
+                    'Posted into:'
+                    :
+                    'Post into:'
+                  }
+                </i>
+                &nbsp;
+                {selectedCategory.get('name')}
+              </b>
               <button onClick={() => this.clearLocal()}>
                 <span className="text">Remove</span>
                 <span className="icon">
@@ -618,7 +634,7 @@ export default class CategoryPostSelector extends PureComponent {
             </span>
           }
         </span>
-        {open &&
+        {open && !isPostEditing &&
           <span
             id="categoryList"
             className={categoriesListStyle}
