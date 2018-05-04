@@ -514,8 +514,6 @@ class BlockCollection extends PureComponent {
     const showReplyAll = hasComments && isComment && isOwnPost && !isMobileGridStream
     const postIntoCategory = !isComment
 
-    console.log(categoryIds)
-
     return (
       <div className={editorWrapperStyle}>
         {artistInvite &&

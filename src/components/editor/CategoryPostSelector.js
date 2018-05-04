@@ -242,14 +242,18 @@ CategoryItem.defaultProps = {
 
 export default class CategoryPostSelector extends PureComponent {
   static propTypes = {
+    categoryPostCollection: PropTypes.object,
+    featuredInCategories: PropTypes.array.isRequired,
     onSelect: PropTypes.func.isRequired,
     onClear: PropTypes.func.isRequired,
-    trackEvent: PropTypes.func.isRequired,
-    subscribedCategories: PropTypes.array.isRequired,
-    featuredInCategories: PropTypes.array.isRequired,
-    unsubscribedCategories: PropTypes.array.isRequired,
-    selectedCategories: PropTypes.array.isRequired,
     resetSelection: PropTypes.bool.isRequired,
+    selectedCategories: PropTypes.array.isRequired,
+    subscribedCategories: PropTypes.array.isRequired,
+    trackEvent: PropTypes.func.isRequired,
+    unsubscribedCategories: PropTypes.array.isRequired,
+  }
+  static defaultProps = {
+    categoryPostCollection: null,
   }
 
   constructor(props) {
@@ -261,6 +265,7 @@ export default class CategoryPostSelector extends PureComponent {
       focused: false,
       open: false,
       searchText: '',
+      selectedCategory: null,
       selectedIndex: null,
     }
 
@@ -269,13 +274,18 @@ export default class CategoryPostSelector extends PureComponent {
   }
 
   componentDidMount() {
-    const { onSelect, featuredInCategories, selectedCategories } = this.props
+    const {
+      categoryPostCollection,
+      featuredInCategories,
+      onSelect,
+      selectedCategories,
+    } = this.props
     if (featuredInCategories.length > 0) {
       onSelect(featuredInCategories[0])
     }
 
-    if (selectedCategories) {
-      this.setIndexOfSelection()
+    if (selectedCategories || categoryPostCollection) {
+      this.setCategorySelection()
     }
   }
 
@@ -306,7 +316,7 @@ export default class CategoryPostSelector extends PureComponent {
 
     if (this.props.selectedCategories &&
       prevProps.selectedCategories !== this.props.selectedCategories) {
-      this.setIndexOfSelection()
+      this.setCategorySelection()
     }
 
     if (this.state.open && !this.props.selectedCategories.length > 0) {
@@ -327,28 +337,54 @@ export default class CategoryPostSelector extends PureComponent {
     onSelect(category)
   }
 
-  setIndexOfSelection() {
-    const { selectedCategories } = this.props
+  setCategorySelection() {
+    const {
+      categoryPostCollection,
+      selectedCategories,
+    } = this.props
     const {
       subscribedCategories,
       unsubscribedCategories,
     } = this.state
 
-    if (selectedCategories.length > 0) {
+    if ((selectedCategories.length > 0) || (categoryPostCollection)) {
       // assume we only have one selection at a time for now
-      const selectedCategory = selectedCategories[0]
+      let selectedCategory = null
+      let selectedIndex = null
       const categories = subscribedCategories.concat(unsubscribedCategories)
 
-      let selectedIndex = null
-      categories.map((category, index) => {
-        if (selectedCategory.get('id') === category.get('id')) {
-          selectedIndex = index
-        }
-        return selectedIndex
-      })
+      // grab the selected category
+      if ((selectedCategories.length > 0)) {
+        selectedCategory = selectedCategories[0]
 
-      return this.setState({ selectedIndex })
+        categories.map((category, index) => {
+          if (selectedCategory.get('id') === category.get('id')) {
+            selectedIndex = index
+          }
+          return selectedIndex
+        })
+      }
+
+      // grab the selected category from the post (if editing)
+      if ((selectedIndex === null) && categoryPostCollection) {
+        categories.map((category, index) => {
+          categoryPostCollection.map((categoryPost) => {
+            if (categoryPost.get('categoryId') === category.get('id')) {
+              selectedCategory = category
+              selectedIndex = index
+            }
+            return selectedIndex
+          })
+          return selectedIndex
+        })
+      }
+
+      return this.setState({
+        selectedCategory,
+        selectedIndex,
+      })
     }
+
     return this.setState({ selectedIndex: null })
   }
 
@@ -524,17 +560,16 @@ export default class CategoryPostSelector extends PureComponent {
   }
 
   render() {
-    const { selectedCategories } = this.props
     const {
       subscribedCategories,
       unsubscribedCategories,
       searchText,
+      selectedCategory,
       selectedIndex,
       open,
     } = this.state
     // Everything except this component could support multiple categories, but for now
     // we can assume there is only one selected category per post.
-    const selectedCategory = selectedCategories[0]
     const offset = subscribedCategories.length
     return (
       /* eslint-disable jsx-a11y/interactive-supports-focus */

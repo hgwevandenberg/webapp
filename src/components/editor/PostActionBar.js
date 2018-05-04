@@ -9,10 +9,11 @@ import { trackEvent } from '../../actions/analytics'
 import { updateBuyLink, updateCategoryId, clearCategoryId } from '../../actions/editor'
 import BuyLinkDialog from '../dialogs/BuyLinkDialog'
 import {
-  selectSubscribedCategories,
-  selectUnsubscribedCategories,
+  selectCategoryPostCollection,
   selectFeaturedInCategories,
   selectPostSelectedCategories,
+  selectSubscribedCategories,
+  selectUnsubscribedCategories,
 } from '../../selectors/categories'
 import {
   ArrowIcon,
@@ -183,11 +184,12 @@ const hide = css(s.hide)
 
 function mapStateToProps(state, props) {
   return {
-    subscribedCategories: selectSubscribedCategories(state, props),
+    categoryPostCollection: selectCategoryPostCollection(state, props),
     featuredInCategories: selectFeaturedInCategories(state, props),
-    unsubscribedCategories: selectUnsubscribedCategories(state, props),
-    selectedCategories: selectPostSelectedCategories(state, props),
     innerWidth: selectInnerWidth(state),
+    selectedCategories: selectPostSelectedCategories(state, props),
+    subscribedCategories: selectSubscribedCategories(state, props),
+    unsubscribedCategories: selectUnsubscribedCategories(state, props),
   }
 }
 
@@ -196,6 +198,7 @@ class PostActionBar extends Component {
   static propTypes = {
     buyLink: PropTypes.string,
     cancelAction: PropTypes.func.isRequired,
+    categoryPostCollection: PropTypes.object,
     dispatch: PropTypes.func.isRequired,
     disableSubmitAction: PropTypes.bool.isRequired,
     editorId: PropTypes.string.isRequired,
@@ -217,6 +220,7 @@ class PostActionBar extends Component {
 
   static defaultProps = {
     buyLink: null,
+    categoryPostCollection: null,
     hasMedia: false,
     replyAllAction: null,
   }
@@ -305,6 +309,7 @@ class PostActionBar extends Component {
 
   render() {
     const {
+      categoryPostCollection,
       disableSubmitAction,
       editorId,
       featuredInCategories,
@@ -355,6 +360,7 @@ class PostActionBar extends Component {
               </button>
               {postIntoCategory &&
                 <CategoryPostSelector
+                  categoryPostCollection={categoryPostCollection}
                   featuredInCategories={featuredInCategories}
                   onSelect={this.onSelectCategory}
                   onClear={this.onClearCategory}
@@ -392,6 +398,7 @@ class PostActionBar extends Component {
         <div className={wrapperStyle} id={editorId}>
           {postIntoCategory &&
             <CategoryPostSelector
+              categoryPostCollection={categoryPostCollection}
               featuredInCategories={featuredInCategories}
               onSelect={this.onSelectCategory}
               onClear={this.onClearCategory}
