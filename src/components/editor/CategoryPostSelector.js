@@ -27,9 +27,6 @@ const categoryPostSelectorStyle = css(
     s.fullWidth,
     { marginBottom: 10 },
   ),
-  select('&.disabled',
-    { opacity: 0.45 },
-  ),
 )
 
 const categoriesSelectionsStyle = css(
@@ -625,12 +622,14 @@ export default class CategoryPostSelector extends PureComponent {
                 &nbsp;
                 {selectedCategory.get('name')}
               </b>
-              <button onClick={() => this.clearLocal()}>
-                <span className="text">Remove</span>
-                <span className="icon">
-                  <XIcon />
-                </span>
-              </button>
+              {!isPostEditing &&
+                <button onClick={() => this.clearLocal()}>
+                  <span className="text">Remove</span>
+                  <span className="icon">
+                    <XIcon />
+                  </span>
+                </button>
+              }
             </span>
           }
         </span>
