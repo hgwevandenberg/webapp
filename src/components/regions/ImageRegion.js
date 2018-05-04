@@ -140,7 +140,7 @@ class ImageRegion extends PureComponent {
     isComment: PropTypes.bool,
     isPostBody: PropTypes.bool,
     isGridMode: PropTypes.bool.isRequired,
-    isPostDetail: PropTypes.bool.isRequired,
+    isPostDetail: PropTypes.bool,
     isNotification: PropTypes.bool,
     isLightBoxImage: PropTypes.bool,
     isLightBoxSelected: PropTypes.bool,
@@ -160,6 +160,7 @@ class ImageRegion extends PureComponent {
     isComment: false,
     isNotification: false,
     isPostBody: true,
+    isPostDetail: false,
     isGridMode: false,
     isLightBoxImage: false,
     isLightBoxSelected: false,
@@ -217,8 +218,12 @@ class ImageRegion extends PureComponent {
   }
 
   onClickImageRegion = (event) => {
-    this.props.handleImageRegionClick(event)
-    return false
+    const { handleImageRegionClick } = this.props
+    if (handleImageRegionClick) {
+      handleImageRegionClick(event)
+      return false
+    }
+    return null
   }
 
   onLoadSuccess = (img) => {
@@ -555,7 +560,13 @@ class ImageRegion extends PureComponent {
   }
 
   renderRegionAsLink() {
-    const { buyLinkURL, detailPath, isComment, isLightBoxImage } = this.props
+    const {
+      buyLinkURL,
+      detailPath,
+      isComment,
+      isLightBoxImage,
+      isNotification,
+    } = this.props
     const hasBuyButton = buyLinkURL && buyLinkURL.length && !isLightBoxImage
 
     return (
@@ -566,7 +577,7 @@ class ImageRegion extends PureComponent {
         <Link to={detailPath} onClick={this.context.onTrackRelatedPostClick}>
           {this.renderAttachment()}
         </Link>
-        {!isLightBoxImage &&
+        {!isLightBoxImage && !isNotification &&
           <button
             className={`${lightBoxTriggerStyle} lightbox-trigger${hasBuyButton ? ' with-buy' : ''}`}
           >
