@@ -206,7 +206,7 @@ class PostActionBar extends Component {
     isGridMode: PropTypes.bool.isRequired,
     isPostEditing: PropTypes.bool.isRequired,
     isPostReposting: PropTypes.bool.isRequired,
-    postCategories: PropTypes.array,
+    postCategories: PropTypes.object,
     postIntoCategory: PropTypes.bool.isRequired,
     replyAllAction: PropTypes.func,
     submitAction: PropTypes.func.isRequired,
@@ -328,7 +328,8 @@ class PostActionBar extends Component {
     const isBuyLinked = this.props.buyLink && this.props.buyLink.length
     let hasPostIntoCategory = false
     if (postIntoCategory &&
-      (!isPostEditing || (isPostEditing && postCategories))) {
+      (!isPostEditing ||
+      (isPostEditing && postCategories && postCategories.size > 0))) {
       hasPostIntoCategory = true
     }
 
