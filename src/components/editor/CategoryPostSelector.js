@@ -235,8 +235,8 @@ function CategoryItem({ category, index, selectedIndexCurrent, onSelect }) {
 CategoryItem.propTypes = {
   category: PropTypes.object.isRequired,
   index: PropTypes.number.isRequired,
-  selectedIndexCurrent: PropTypes.number,
   onSelect: PropTypes.func.isRequired,
+  selectedIndexCurrent: PropTypes.number,
 }
 
 CategoryItem.defaultProps = {
@@ -245,11 +245,11 @@ CategoryItem.defaultProps = {
 
 export default class CategoryPostSelector extends PureComponent {
   static propTypes = {
-    categoryPostCollection: PropTypes.object,
     featuredInCategories: PropTypes.array.isRequired,
     isPostEditing: PropTypes.bool.isRequired,
     onSelect: PropTypes.func.isRequired,
     onClear: PropTypes.func.isRequired,
+    postCategories: PropTypes.array,
     resetSelection: PropTypes.bool.isRequired,
     selectedCategories: PropTypes.array.isRequired,
     subscribedCategories: PropTypes.array.isRequired,
@@ -257,7 +257,7 @@ export default class CategoryPostSelector extends PureComponent {
     unsubscribedCategories: PropTypes.array.isRequired,
   }
   static defaultProps = {
-    categoryPostCollection: null,
+    postCategories: null,
   }
 
   constructor(props) {
@@ -279,16 +279,16 @@ export default class CategoryPostSelector extends PureComponent {
 
   componentDidMount() {
     const {
-      categoryPostCollection,
       featuredInCategories,
       onSelect,
+      postCategories,
       selectedCategories,
     } = this.props
     if (featuredInCategories.length > 0) {
       onSelect(featuredInCategories[0])
     }
 
-    if (selectedCategories || categoryPostCollection) {
+    if (selectedCategories || postCategories) {
       this.setCategorySelection()
     }
   }
@@ -343,8 +343,8 @@ export default class CategoryPostSelector extends PureComponent {
 
   setCategorySelection() {
     const {
-      categoryPostCollection,
       isPostEditing,
+      postCategories,
       selectedCategories,
     } = this.props
     const {
@@ -352,7 +352,7 @@ export default class CategoryPostSelector extends PureComponent {
       unsubscribedCategories,
     } = this.state
 
-    if ((selectedCategories.length > 0) || (categoryPostCollection)) {
+    if ((selectedCategories.length > 0) || (postCategories)) {
       // assume we only have one selection at a time for now
       let selectedCategory = null
       let selectedIndex = null
@@ -371,10 +371,10 @@ export default class CategoryPostSelector extends PureComponent {
       }
 
       // grab the selected category from the post (if editing)
-      if (isPostEditing && categoryPostCollection) {
+      if (isPostEditing && postCategories) {
         categories.map((category, index) => {
-          categoryPostCollection.map((categoryPost) => {
-            if (categoryPost.get('categoryId') === category.get('id')) {
+          postCategories.map((categoryPostId) => {
+            if (categoryPostId === category.get('id')) {
               selectedCategory = category
               selectedIndex = index
             }

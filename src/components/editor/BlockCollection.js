@@ -112,7 +112,6 @@ function mapStateToProps(state, props) {
 }
 
 class BlockCollection extends PureComponent {
-
   static propTypes = {
     artistInvite: PropTypes.object,
     artistInviteId: PropTypes.string,
@@ -142,6 +141,7 @@ class BlockCollection extends PureComponent {
     order: PropTypes.object.isRequired,
     orderLength: PropTypes.number.isRequired,
     pathname: PropTypes.string.isRequired,
+    post: PropTypes.object,
     postId: PropTypes.string,
     repostContent: PropTypes.object,
     showArtistInviteSuccess: PropTypes.bool.isRequired,
@@ -167,6 +167,7 @@ class BlockCollection extends PureComponent {
     isOwnPost: false,
     isPosting: false,
     isGridMode: false,
+    post: null,
     postId: null,
     repostContent: Immutable.List(),
     submitText: 'Post',
@@ -479,8 +480,10 @@ class BlockCollection extends PureComponent {
       artistInvite, buyLink, cancelAction, collection, dragBlock, editorId, firstBlock, categoryIds,
       hasContent, hasMedia, hasMention, isComment, isLoading, isPosting, order, orderLength,
       showArtistInviteSuccess, submitText, hasComments, isOwnPost, isMobileGridStream,
-      isGridMode, isPostEditing, isPostReposting,
+      isGridMode, isPostEditing, isPostReposting, post,
     } = this.props
+
+    const postCategories = post ? post.getIn(['links', 'categories']) : null
     const { dragBlockTop, hasDragOver } = this.state
     const firstBlockIsText = firstBlock ? /text/.test(firstBlock.get('kind')) : true
     const showQuickEmoji = isComment && firstBlockIsText
@@ -550,6 +553,7 @@ class BlockCollection extends PureComponent {
             isPostEditing={isPostEditing}
             isPostReposting={isPostReposting}
             isComment={isComment}
+            postCategories={postCategories}
             postIntoCategory={postIntoCategory}
             replyAllAction={showReplyAll ? this.replyAll : null}
             submitAction={this.submit}
