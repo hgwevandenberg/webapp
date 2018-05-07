@@ -9,10 +9,10 @@ import { trackEvent } from '../../actions/analytics'
 import { updateBuyLink, updateCategoryId, clearCategoryId } from '../../actions/editor'
 import BuyLinkDialog from '../dialogs/BuyLinkDialog'
 import {
-  selectSubscribedCategories,
-  selectUnsubscribedCategories,
   selectFeaturedInCategories,
   selectPostSelectedCategories,
+  selectSubscribedCategories,
+  selectUnsubscribedCategories,
 } from '../../selectors/categories'
 import {
   ArrowIcon,
@@ -183,16 +183,15 @@ const hide = css(s.hide)
 
 function mapStateToProps(state, props) {
   return {
-    subscribedCategories: selectSubscribedCategories(state, props),
     featuredInCategories: selectFeaturedInCategories(state, props),
-    unsubscribedCategories: selectUnsubscribedCategories(state, props),
-    selectedCategories: selectPostSelectedCategories(state, props),
     innerWidth: selectInnerWidth(state),
+    selectedCategories: selectPostSelectedCategories(state, props),
+    subscribedCategories: selectSubscribedCategories(state, props),
+    unsubscribedCategories: selectUnsubscribedCategories(state, props),
   }
 }
 
 class PostActionBar extends Component {
-
   static propTypes = {
     buyLink: PropTypes.string,
     cancelAction: PropTypes.func.isRequired,
@@ -205,7 +204,9 @@ class PostActionBar extends Component {
     innerWidth: PropTypes.number.isRequired,
     isComment: PropTypes.bool.isRequired,
     isGridMode: PropTypes.bool.isRequired,
+    isPostEditing: PropTypes.bool.isRequired,
     isPostReposting: PropTypes.bool.isRequired,
+    postCategories: PropTypes.object,
     postIntoCategory: PropTypes.bool.isRequired,
     replyAllAction: PropTypes.func,
     submitAction: PropTypes.func.isRequired,
@@ -218,6 +219,7 @@ class PostActionBar extends Component {
   static defaultProps = {
     buyLink: null,
     hasMedia: false,
+    postCategories: null,
     replyAllAction: null,
   }
 
@@ -311,8 +313,10 @@ class PostActionBar extends Component {
       hasMedia,
       innerWidth,
       isGridMode,
+      isPostEditing,
       isPostReposting,
       isComment,
+      postCategories,
       postIntoCategory,
       replyAllAction,
       selectedCategories,
@@ -322,6 +326,12 @@ class PostActionBar extends Component {
     } = this.props
     const { resetCategorySelection } = this.state
     const isBuyLinked = this.props.buyLink && this.props.buyLink.length
+    let hasPostIntoCategory = false
+    if (postIntoCategory &&
+      (!isPostEditing ||
+      (isPostEditing && postCategories && postCategories.size > 0))) {
+      hasPostIntoCategory = true
+    }
 
     // post version
     if (!isComment) {
@@ -353,11 +363,13 @@ class PostActionBar extends Component {
                 <span className={labelStyle}>Sell</span>
                 <MoneyIconCircle />
               </button>
-              {postIntoCategory &&
+              {hasPostIntoCategory &&
                 <CategoryPostSelector
                   featuredInCategories={featuredInCategories}
+                  isPostEditing={isPostEditing}
                   onSelect={this.onSelectCategory}
                   onClear={this.onClearCategory}
+                  postCategories={postCategories}
                   resetSelection={resetCategorySelection}
                   selectedCategories={selectedCategories}
                   subscribedCategories={subscribedCategories}
@@ -390,11 +402,13 @@ class PostActionBar extends Component {
       // mobile post version
       return (
         <div className={wrapperStyle} id={editorId}>
-          {postIntoCategory &&
+          {hasPostIntoCategory &&
             <CategoryPostSelector
               featuredInCategories={featuredInCategories}
+              isPostEditing={isPostEditing}
               onSelect={this.onSelectCategory}
               onClear={this.onClearCategory}
+              postCategories={postCategories}
               resetSelection={resetCategorySelection}
               selectedCategories={selectedCategories}
               subscribedCategories={subscribedCategories}
