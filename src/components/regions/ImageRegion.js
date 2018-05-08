@@ -219,9 +219,16 @@ class ImageRegion extends PureComponent {
 
   onClickImageRegion = (event) => {
     const { handleImageRegionClick } = this.props
-    if (handleImageRegionClick) {
+    if (handleImageRegionClick && !event.metaKey) {
       handleImageRegionClick(event)
       return false
+    }
+    return null
+  }
+
+  onClickLightboxTriggerLink = (event) => {
+    if (!event.metaKey) {
+      return event.preventDefault()
     }
     return null
   }
@@ -578,7 +585,9 @@ class ImageRegion extends PureComponent {
           {this.renderAttachment()}
         </Link>
         {!isLightBoxImage && !isNotification &&
-          <button
+          <Link
+            to={detailPath}
+            onClick={this.onClickLightboxTriggerLink}
             className={`${lightBoxTriggerStyle} lightbox-trigger${hasBuyButton ? ' with-buy' : ''}`}
           >
             <span className="text">
@@ -587,7 +596,7 @@ class ImageRegion extends PureComponent {
             <span className="icon">
               <LightBoxTrigger />
             </span>
-          </button>
+          </Link>
         }
         {
           !isComment && buyLinkURL && buyLinkURL.length && !isLightBoxImage ?
