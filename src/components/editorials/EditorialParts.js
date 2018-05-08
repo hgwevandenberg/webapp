@@ -36,7 +36,10 @@ export const ToolButton = props => (
 
 ToolButton.propTypes = {
   children: PropTypes.node,
-  className: PropTypes.string,
+  className: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]),
   onClick: PropTypes.func,
   to: PropTypes.string,
 }

@@ -140,7 +140,7 @@ PostStream.propTypes = {
   editorialId: PropTypes.string.isRequired,
   onClickEditorial: PropTypes.func.isRequired,
   sources: PropTypes.object.isRequired,
-  position: PropTypes.string.isRequired,
+  position: PropTypes.number.isRequired,
   postStreamHref: PropTypes.string.isRequired,
   trackOptions: PropTypes.object.isRequired,
   size: PropTypes.string.isRequired,
