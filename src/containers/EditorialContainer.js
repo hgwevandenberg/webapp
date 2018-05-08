@@ -56,12 +56,17 @@ class EditorialContainer extends Component {
     isLoggedIn: PropTypes.bool.isRequired,
     editorialId: PropTypes.string.isRequired,
     editorial: PropTypes.object.isRequired,
-    isPostLoved: PropTypes.bool.isRequired,
+    isPostLoved: PropTypes.bool,
     sources: PropTypes.object.isRequired,
     post: PropTypes.object.isRequired,
     postAuthor: PropTypes.object.isRequired,
-    url: PropTypes.string.isRequired,
+    url: PropTypes.string,
     kind: PropTypes.string.isRequired,
+  }
+
+  static defaultProps = {
+    isPostLoved: false,
+    url: null,
   }
 
   static contextTypes = {
