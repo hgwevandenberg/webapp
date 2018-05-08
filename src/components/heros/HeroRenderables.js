@@ -180,7 +180,7 @@ const categoryHeadingStyle = css(
   ),
 )
 
-const mobileActionStyle = css(s.relative, s.fullWidth, s.px10, s.pb10, s.fontSize14, s.selfEnd)
+const mobileActionStyle = css(s.fullWidth, s.px10, s.pb10, s.fontSize14, s.selfEnd)
 const categoryCopyStyle = css(s.mt20)
 const subscribeHolderStyle = css(
   s.relative,
@@ -247,6 +247,12 @@ export const HeroPromotionCategory = (props) => {
             <span className="text">{name}</span>
           </h1>
           <p className={categoryCopyStyle}>{description}</p>
+          <HeroPromotionCTA
+            caption={ctaCaption}
+            isLoggedIn={isLoggedIn}
+            to={ctaHref}
+            label={ctaTrackingLabel}
+          />
           <span className={subscribeHolderStyle}>
             <span className="subscribe-inner-holder">
               {isPromo &&
@@ -262,12 +268,6 @@ export const HeroPromotionCategory = (props) => {
               />
             </span>
           </span>
-          <HeroPromotionCTA
-            caption={ctaCaption}
-            isLoggedIn={isLoggedIn}
-            to={ctaHref}
-            label={ctaTrackingLabel}
-          />
         </div>
         {creditUsername &&
           <HeroPromotionCredits
@@ -292,14 +292,14 @@ export const HeroPromotionCategory = (props) => {
             <span className="text">{name}</span>
           </h1>
           <p className={categoryCopyStyle}>{description}</p>
-        </div>
-        <div className={`HeroPromotionMobileActions ${mobileActionStyle}`}>
           <HeroPromotionCTA
             caption={ctaCaption}
             isLoggedIn={isLoggedIn}
             to={ctaHref}
             label={ctaTrackingLabel}
           />
+        </div>
+        <div className={`HeroPromotionMobileActions ${mobileActionStyle}`}>
           {creditUsername &&
             <HeroPromotionCredits
               label={creditLabel}

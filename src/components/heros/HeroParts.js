@@ -104,14 +104,7 @@ HeroPromotionCredits.propTypes = {
 // -------------------------------------
 
 const ctaStyle = css(
-  s.mt20,
   { lineHeight: 1.3 },
-  media(s.maxBreak2, parent('.HeroPromotionMobileActions >',
-    s.inlineBlock,
-    s.mt0,
-    s.alignMiddle,
-    { width: '40%', paddingRight: 5, border: 0 },
-  )),
 )
 
 const ctaTextStyle = css({ borderBottom: '1px solid' })
