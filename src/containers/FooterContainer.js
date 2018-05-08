@@ -56,7 +56,7 @@ function mapStateToProps(state, props) {
 
 class FooterContainer extends Component {
   static propTypes = {
-    availability: PropTypes.object.isRequired,
+    availability: PropTypes.object,
     dispatch: PropTypes.func.isRequired,
     formActionPath: PropTypes.string.isRequired,
     isDiscoverAll: PropTypes.bool.isRequired,
@@ -69,6 +69,10 @@ class FooterContainer extends Component {
     isPaginatoring: PropTypes.bool.isRequired,
     isPostDetail: PropTypes.bool.isRequired,
     pathname: PropTypes.string.isRequired,
+  }
+
+  static defaultProps = {
+    availability: null,
   }
 
   static childContextTypes = {
