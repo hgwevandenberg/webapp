@@ -246,7 +246,7 @@ export default class CategoryPostSelector extends PureComponent {
     isPostEditing: PropTypes.bool.isRequired,
     onSelect: PropTypes.func.isRequired,
     onClear: PropTypes.func.isRequired,
-    postCategories: PropTypes.array,
+    postCategories: PropTypes.object,
     resetSelection: PropTypes.bool.isRequired,
     selectedCategories: PropTypes.array.isRequired,
     subscribedCategories: PropTypes.array.isRequired,
