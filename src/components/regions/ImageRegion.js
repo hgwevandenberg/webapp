@@ -219,7 +219,7 @@ class ImageRegion extends PureComponent {
 
   onClickImageRegion = (event) => {
     const { handleImageRegionClick } = this.props
-    if (handleImageRegionClick) {
+    if (handleImageRegionClick && !event.metaKey) {
       handleImageRegionClick(event)
       return false
     }
