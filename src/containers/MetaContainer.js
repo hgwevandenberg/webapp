@@ -121,11 +121,11 @@ function mapStateToProps(state, props) {
 class MetaContainer extends Component {
   static propTypes = {
     canonicalUrl: PropTypes.string,
-    card: PropTypes.string.isRequired,
+    card: PropTypes.string,
     description: PropTypes.string.isRequired,
-    embeds: PropTypes.object.isRequired,
+    embeds: PropTypes.object,
     image: PropTypes.string.isRequired,
-    images: PropTypes.object.isRequired,
+    images: PropTypes.object,
     nextPage: PropTypes.string,
     pathname: PropTypes.string.isRequired,
     robots: PropTypes.string,
@@ -136,6 +136,9 @@ class MetaContainer extends Component {
 
   static defaultProps = {
     canonicalUrl: null,
+    card: null,
+    embeds: null,
+    images: null,
     nextPage: null,
     robots: null,
   }
