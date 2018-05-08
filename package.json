@@ -127,7 +127,7 @@
     "react-redux": "5.0.7",
     "react-router": "3.0.2",
     "react-router-redux": "4.0.8",
-    "react-router-scroll": "0.4.2",
+    "react-router-scroll": "0.4.4",
     "react-slick": "0.14.11",
     "react-slide": "0.3.0",
     "redux": "3.7.2",
