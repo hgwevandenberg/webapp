@@ -108,7 +108,7 @@
     "lodash": "4.17.10",
     "moment": "2.21.0",
     "mousetrap": "1.6.1",
-    "postcss": "6.0.8",
+    "postcss": "6.0.22",
     "postcss-apply": "0.8.0",
     "postcss-calc": "6.0.0",
     "postcss-color-function": "4.0.0",
