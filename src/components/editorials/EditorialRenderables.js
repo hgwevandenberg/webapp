@@ -250,11 +250,15 @@ LinkEditorial.contextTypes = {
 LinkEditorial.propTypes = {
   dpi: PropTypes.string.isRequired,
   editorial: PropTypes.object.isRequired,
-  path: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired,
+  path: PropTypes.string,
+  url: PropTypes.string,
   sources: PropTypes.object.isRequired,
   kind: PropTypes.string.isRequired,
   onClickEditorial: PropTypes.func.isRequired,
+}
+LinkEditorial.defaultProps = {
+  path: null,
+  url: null,
 }
 
 // -------------------------------------
