@@ -3,12 +3,18 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import BackgroundImage from '../assets/BackgroundImage'
 import {
+  CategorySubscribedIcon,
+  CategorySubscribeButton,
+} from '../categories/CategoryRenderables'
+import {
   HeroAppStores,
   HeroPromotionCredits,
   HeroPromotionCTA,
   HeroScrollToContentButton,
   HeroShareUserButton,
 } from './HeroParts'
+import Hint from '../hints/Hint'
+import { BadgeFeaturedIcon } from '../assets/Icons'
 import { ZeroStream } from '../zeros/Zeros'
 import UserContainer from '../../containers/UserContainer'
 import { css, media, parent, select } from '../../styles/jss'
@@ -24,7 +30,7 @@ const heroStyle = css(
   select('.isDiscoverView ~ &', { paddingTop: '160px !important' }),
   media(s.maxBreak2,
     parent('.isLoggedOut', { paddingTop: 80 }),
-    select('.isDiscoverView ~ &', { paddingTop: '120px !important' }),
+    select('.isDiscoverView ~ &', { paddingTop: '150px !important' }),
     select('.isLogged .isDiscoverView ~ &', { paddingTop: '120px !important' }),
     select('.isProfileMenuActive ~ &', s.displayNone),
   ),
@@ -134,58 +140,183 @@ const captionStyle = css(
 )
 
 const categoryCaptionStyle = css(
-  s.relative, s.py20, s.fontSize14,
-  { maxWidth: 500 },
+  s.relative,
+  s.py20,
+  s.fontSize14,
   s.mxAuto,
-  media(s.maxBreak2, s.px10, { minHeight: 200 }),
-  media(s.minBreak4, s.px0),
+  { maxWidth: 500 },
+
+  media(s.maxBreak2,
+    s.px10,
+    { minHeight: 200 },
+  ),
+  media(s.minBreak4,
+    s.px0,
+  ),
 )
 
 const categoryHeadingStyle = css(
-  s.sansBlack, s.fontSize18, { lineHeight: 1.5 }, s.center,
-  media(s.minBreak2, s.fontSize24),
+  s.sansBlack,
+  s.center,
+
+  select('& .category-check',
+    { marginTop: 2 },
+    media(s.maxBreak2,
+      { marginTop: -2 },
+    ),
+  ),
+
+  select('& .text',
+    s.inlineBlock,
+    s.fontSize18,
+    {
+      lineHeight: 1,
+      borderBottom: '2px solid',
+    },
+
+    media(s.minBreak2,
+      s.fontSize32,
+    ),
+  ),
 )
-const categoryHeadingTextStyle = css(s.inlineBlock, s.borderBottom)
-const mobileActionStyle = css(s.relative, s.fullWidth, s.px10, s.pb10, s.fontSize14, s.selfEnd)
-const categoryCopyStyle = css(s.mt40)
 
-const promotionCategoryStyle = css({ ...promotionStyle }, media(s.maxBreak2, s.flexColumn))
+const mobileActionStyle = css(s.fullWidth, s.px10, s.pb10, s.fontSize14, s.selfEnd)
+const categoryCopyStyle = css(s.mt20)
+const subscribeHolderStyle = css(
+  s.relative,
+  s.flex,
+  s.fullWidth,
+  s.justifyCenter,
+  s.mt30,
+  media(s.maxBreak2,
+    s.mt20,
+  ),
 
+  select('& .featured-badge',
+    s.absolute,
+    {
+      top: 5,
+      left: -38,
+    },
+  ),
+  select('& .subscribe-inner-holder',
+    s.relative,
+  ),
+)
+
+const subscribeHolderMobileStyle = css(
+  s.relative,
+  s.fullWidth,
+
+  select('& .subscribe-button',
+    s.fullWidth,
+    s.pt10,
+    s.pb10,
+    {
+      borderRadius: 0,
+    },
+    select('& .CheckCircleIcon',
+      s.displayNone,
+    ),
+    select('& .text',
+      s.m0,
+      s.fontSize14,
+    ),
+  ),
+)
+
+const promotionCategoryStyle = css(
+  { ...promotionStyle },
+  media(s.maxBreak2, s.flexColumn),
+)
 
 export const HeroPromotionCategory = (props) => {
-  const { creditLabel, creditSources, creditUsername, description, dpi, name, sources } = props
-  const { ctaCaption, ctaHref, isLoggedIn, isMobile } = props
-  return (
-    <div className={promotionCategoryStyle}>
-      <BackgroundImage className="hasOverlay4" dpi={dpi} sources={sources} />
-      <div className={categoryCaptionStyle}>
-        <h1 className={categoryHeadingStyle}>
-          <span className={categoryHeadingTextStyle}>{name}</span>
-        </h1>
-        <p className={categoryCopyStyle}>{description}</p>
-        {!isMobile &&
-          <HeroPromotionCTA caption={ctaCaption} isLoggedIn={isLoggedIn} to={ctaHref} />
+  const { creditLabel, creditSources, creditUsername, creditTrackingLabel } = props
+  const { description, dpi, name, sources, isPromo } = props
+  const { ctaCaption, ctaHref, ctaTrackingLabel, isLoggedIn, isMobile, isSubscribed } = props
+  const { subscribe, unsubscribe } = props
+
+  // desktop version
+  if (!isMobile) {
+    return (
+      <div className={promotionCategoryStyle}>
+        <BackgroundImage className="hasOverlay4" dpi={dpi} sources={sources} />
+        <div className={categoryCaptionStyle}>
+          <h1 className={categoryHeadingStyle}>
+            <CategorySubscribedIcon isSubscribed={isSubscribed} />
+            <span className="text">{name}</span>
+          </h1>
+          <p className={categoryCopyStyle}>{description}</p>
+          <HeroPromotionCTA
+            caption={ctaCaption}
+            isLoggedIn={isLoggedIn}
+            to={ctaHref}
+            label={ctaTrackingLabel}
+          />
+          <span className={subscribeHolderStyle}>
+            <span className="subscribe-inner-holder">
+              {isPromo &&
+                <span className="featured-badge contains-hint">
+                  <BadgeFeaturedIcon />
+                  <Hint>Featured Category</Hint>
+                </span>
+              }
+              <CategorySubscribeButton
+                subscribe={subscribe}
+                unsubscribe={unsubscribe}
+                isSubscribed={isSubscribed}
+              />
+            </span>
+          </span>
+        </div>
+        {creditUsername &&
+          <HeroPromotionCredits
+            label={creditLabel}
+            sources={creditSources}
+            username={creditUsername}
+            trackingLabel={creditTrackingLabel}
+          />
         }
       </div>
-      { isMobile &&
+    )
+  }
+
+  // mobile version
+  return (
+    <div>
+      <div className={promotionCategoryStyle}>
+        <BackgroundImage className="hasOverlay4" dpi={dpi} sources={sources} />
+        <div className={categoryCaptionStyle}>
+          <h1 className={categoryHeadingStyle}>
+            <CategorySubscribedIcon isSubscribed={isSubscribed} />
+            <span className="text">{name}</span>
+          </h1>
+          <p className={categoryCopyStyle}>{description}</p>
+          <HeroPromotionCTA
+            caption={ctaCaption}
+            isLoggedIn={isLoggedIn}
+            to={ctaHref}
+            label={ctaTrackingLabel}
+          />
+        </div>
         <div className={`HeroPromotionMobileActions ${mobileActionStyle}`}>
-          <HeroPromotionCTA caption={ctaCaption} isLoggedIn={isLoggedIn} to={ctaHref} />
           {creditUsername &&
             <HeroPromotionCredits
               label={creditLabel}
               sources={creditSources}
               username={creditUsername}
+              trackingLabel={creditTrackingLabel}
             />
           }
         </div>
-      }
-      {!isMobile && creditUsername &&
-        <HeroPromotionCredits
-          label={creditLabel}
-          sources={creditSources}
-          username={creditUsername}
+      </div>
+      <span className={subscribeHolderMobileStyle}>
+        <CategorySubscribeButton
+          subscribe={subscribe}
+          unsubscribe={unsubscribe}
+          isSubscribed={isSubscribed}
         />
-      }
+      </span>
     </div>
   )
 }
@@ -194,14 +325,20 @@ HeroPromotionCategory.propTypes = {
   creditLabel: PropTypes.string.isRequired,
   creditSources: PropTypes.object,
   creditUsername: PropTypes.string,
+  creditTrackingLabel: PropTypes.string.isRequired,
   ctaCaption: PropTypes.string,
   ctaHref: PropTypes.string,
+  ctaTrackingLabel: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   dpi: PropTypes.string.isRequired,
   isLoggedIn: PropTypes.bool.isRequired,
   isMobile: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
   sources: PropTypes.object,
+  subscribe: PropTypes.func.isRequired,
+  unsubscribe: PropTypes.func.isRequired,
+  isSubscribed: PropTypes.bool.isRequired,
+  isPromo: PropTypes.bool.isRequired,
 }
 HeroPromotionCategory.defaultProps = {
   creditSources: null,
@@ -213,7 +350,7 @@ HeroPromotionCategory.defaultProps = {
 
 // -------------------------------------
 
-const promotionHeadingStyle = css(s.sansBlack, s.fontSize18, media(s.minBreak2, s.fontSize48))
+const promotionHeadingStyle = css(s.fontSize18, media(s.minBreak2, s.fontSize48))
 const promotionSubheadingStyle = css(s.fontSize14, media(s.minBreak2, s.fontSize28))
 
 export const HeroPromotionPage = (props) => {
@@ -225,10 +362,19 @@ export const HeroPromotionPage = (props) => {
       <div className={captionStyle}>
         <h1 className={promotionHeadingStyle}>{header}</h1>
         <h2 className={promotionSubheadingStyle}>{subheader}</h2>
-        <HeroPromotionCTA caption={ctaCaption} isLoggedIn={isLoggedIn} to={ctaHref} />
+        <HeroPromotionCTA
+          caption={ctaCaption}
+          isLoggedIn={isLoggedIn}
+          to={ctaHref}
+          trackingLabel="general"
+        />
       </div>
       {creditUsername &&
-        <HeroPromotionCredits sources={creditSources} username={creditUsername} />
+        <HeroPromotionCredits
+          sources={creditSources}
+          username={creditUsername}
+          trackingLabel="general"
+        />
       }
     </div>
   )
@@ -288,10 +434,10 @@ const imageContainerStyle = css(
 )
 
 const HeroHeaderCaptionStyle = css(
-  s.absolute, s.pr20, { left: 20, top: 80 },
-  media(s.minBreak2, s.pr40, { left: 60, top: 40 }),
-  media(s.minBreak3, { left: 80, top: 110 }),
-  media(s.minBreak4, { left: 100, top: 180 }),
+  s.absolute, s.pl20, s.pr20, { width: '100%', left: 0, top: 80 },
+  media(s.minBreak2, { paddingLeft: 60, paddingRight: 60, top: 40 }),
+  media(s.minBreak3, s.containedAlignMiddle, { paddingLeft: 80, paddingRight: 80, left: 0 }),
+  media(s.minBreak4, { paddingLeft: 100, paddingRight: 100 }),
 )
 
 const HeroHeaderHeadingStyle = css(
@@ -301,8 +447,10 @@ const HeroHeaderHeadingStyle = css(
 )
 
 const HeroHeaderSubHeadingStyle = css(
-  s.sansRegular, s.fontSize24, { lineHeight: 24 },
-  media(s.minBreak2, s.fontSize24),
+  s.sansRegular,
+  s.fontSize18,
+  { lineHeight: 24, margin: 0 },
+  media(s.minBreak2, s.fontSize24, { lineHeight: 30 }),
 )
 
 export const HeroHeader = ({

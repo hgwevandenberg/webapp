@@ -12,7 +12,7 @@ export const Viewport = props =>
       'Viewport',
       { isAuthenticationView: props.isAuthenticationView },
       { isDiscoverView: props.isDiscoverView },
-      { isNavbarHidden: props.isNavbarHidden },
+      { isNavbarHidden: props.isNavbarHidden || props.isLightBoxActive },
       { isNotificationsActive: props.isNotificationsActive },
       { isOnboardingView: props.isOnboardingView },
       { isProfileMenuActive: props.isProfileMenuActive },
@@ -25,6 +25,7 @@ export const Viewport = props =>
 Viewport.propTypes = {
   isAuthenticationView: PropTypes.bool.isRequired,
   isDiscoverView: PropTypes.bool.isRequired,
+  isLightBoxActive: PropTypes.bool.isRequired,
   isNavbarHidden: PropTypes.bool.isRequired,
   isNotificationsActive: PropTypes.bool.isRequired,
   isOnboardingView: PropTypes.bool.isRequired,

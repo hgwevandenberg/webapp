@@ -49,8 +49,15 @@ function* trackEvents() {
         break
       case ACTION_TYPES.COMMENT.CREATE_REQUEST: {
         const posts = yield select(selectPosts)
-        const artistInviteId = posts.get(get(action, 'payload.postId'), Immutable.Map()).get('artistInviteId')
-        yield put(trackEventAction('published_comment', artistInviteId ? { artistInviteId } : {}))
+        const postId = get(action, 'payload.postId')
+        const artGiveawayCategoryId = '48'
+        const artistInviteId = posts.get(postId, Immutable.Map()).get('artistInviteId')
+        const giveawayPost = posts
+          .get(postId, Immutable.Map())
+          .getIn(['links', 'categories'], Immutable.List())
+          .toJS()
+          .includes(artGiveawayCategoryId)
+        yield put(trackEventAction('published_comment', { artistInviteId, giveawayPost }))
         break
       }
       case ACTION_TYPES.COMMENT.DELETE_REQUEST:
@@ -116,8 +123,19 @@ function* trackEvents() {
         yield put(trackEventAction('user-deleted-account'))
         break
       case ACTION_TYPES.PROFILE.FOLLOW_CATEGORIES_REQUEST:
-        yield put(trackEventAction('Onboarding.Settings.Categories.Completed',
-          { categories: get(action, 'payload.body.followed_category_ids', []).length },
+        if (!get(action, 'payload.body.disable_follows')) { // Onboarding
+          yield put(trackEventAction('Onboarding.Settings.Categories.Completed',
+            { categories: get(action, 'payload.body.followed_category_ids', Immutable.List()).count() },
+          ))
+        } else {
+          yield put(trackEventAction('followed-categories',
+            { categories: get(action, 'payload.body.followed_category_ids', Immutable.List()).count() },
+          ))
+        }
+        break
+      case ACTION_TYPES.PROFILE.UNFOLLOW_CATEGORIES_REQUEST:
+        yield put(trackEventAction('unfollowed-categories',
+          { categories: get(action, 'payload.body.followed_category_ids', Immutable.List()).count() },
         ))
         break
       case ACTION_TYPES.PROFILE.SIGNUP_SUCCESS:

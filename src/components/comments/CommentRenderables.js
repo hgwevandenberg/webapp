@@ -49,7 +49,16 @@ export class CommentBody extends PureComponent {
     innerHeight: PropTypes.number.isRequired,
     isGridMode: PropTypes.bool.isRequired,
     isPostDetail: PropTypes.bool.isRequired,
+    isLightBox: PropTypes.bool.isRequired,
+    resizeLightBox: PropTypes.bool.isRequired,
+    toggleLightBox: PropTypes.func.isRequired,
+    lightBoxSelectedIdPair: PropTypes.object,
   }
+
+  static defaultProps = {
+    lightBoxSelectedIdPair: null,
+  }
+
   render() {
     const {
       columnWidth,
@@ -61,12 +70,16 @@ export class CommentBody extends PureComponent {
       innerHeight,
       isGridMode,
       isPostDetail,
+      isLightBox,
+      resizeLightBox,
+      toggleLightBox,
+      lightBoxSelectedIdPair,
     } = this.props
     return (
       <div className="CommentBody" key={`CommentBody${commentId}`} >
         <RegionItems
+          postId={commentId}
           columnWidth={columnWidth}
-          commentId={commentId}
           commentOffset={commentOffset}
           content={content}
           contentWidth={contentWidth}
@@ -75,9 +88,12 @@ export class CommentBody extends PureComponent {
           isComment
           isGridMode={isGridMode}
           isPostDetail={isPostDetail}
+          isLightBox={isLightBox}
+          resizeLightBox={resizeLightBox}
+          toggleLightBox={toggleLightBox}
+          lightBoxSelectedIdPair={lightBoxSelectedIdPair}
         />
       </div>
     )
   }
 }
-

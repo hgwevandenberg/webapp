@@ -12,15 +12,29 @@
 }
 
 .editor-region {
-  min-height: 290px;
+  min-height: 230px;
   overflow: hidden;
   background-color: #f2f2f2;
   border-radius: 5px;
   transition: background-color var(--speed) ease;
 }
 
+@media (--break-2) {
+  .editor-region {
+    min-height: 290px;
+  }
+}
+
+.PostDetail .editor-region {
+  margin-top: 30px;
+}
+
 .editor.isComment {
   margin-top: 10px;
+}
+
+.PostDetail .editor.isComment .editor-region {
+  margin-top: 20px;
 }
 
 .editor.isComment .editor-region {
@@ -78,6 +92,12 @@
   white-space: pre-wrap;
   word-break: break-word; /* stylelint-disable-line */
   background: #e5e5e5;
+}
+
+.editor-block.readonly img {
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 10px;
 }
 
 .DragBlock {

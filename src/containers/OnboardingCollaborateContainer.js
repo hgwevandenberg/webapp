@@ -3,8 +3,10 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { trackEvent } from '../actions/analytics'
+import { GUI } from '../constants/action_types'
 import OnboardingCollaborate from '../components/onboarding/OnboardingCollaborate'
 import { preferenceToggleChanged } from '../helpers/junk_drawer'
+import { selectOnboardToArtistInvite } from '../selectors/gui'
 import {
   selectProfileIsCollaborateable,
   selectProfileIsHireable,
@@ -27,6 +29,7 @@ function mapStateToProps(state) {
   return {
     isCollaborateable: selectProfileIsCollaborateable(state),
     isHireable: selectProfileIsHireable(state),
+    onboardToArtistInvite: selectOnboardToArtistInvite(state),
   }
 }
 
@@ -35,6 +38,7 @@ class OnboardingCollaborateContainer extends Component {
     dispatch: PropTypes.func.isRequired,
     isCollaborateable: PropTypes.bool.isRequired,
     isHireable: PropTypes.bool.isRequired,
+    onboardToArtistInvite: PropTypes.bool.isRequired,
   }
 
   static childContextTypes = {
@@ -54,9 +58,17 @@ class OnboardingCollaborateContainer extends Component {
   }
 
   onNextClick = () => {
-    const { dispatch } = this.props
+    const { dispatch, onboardToArtistInvite } = this.props
     this.trackOnboardingEvents()
-    dispatch(push('/following'))
+    if (onboardToArtistInvite) {
+      dispatch({
+        type: GUI.COMPLETE_ONBOARD_TO_ARTIST_INVITE,
+        payload: {},
+      })
+      dispatch(push(`/artist-invites/${onboardToArtistInvite.get('slug')}`))
+    } else {
+      dispatch(push('/following'))
+    }
   }
 
   trackOnboardingEvents = () => {

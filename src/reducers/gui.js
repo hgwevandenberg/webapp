@@ -46,8 +46,11 @@ const initialNonPersistedState = Immutable.Map({
   isCompleterActive: false,
   isNotificationsActive: false,
   isProfileMenuActive: false,
+  isLightBoxActive: false,
   isTextToolsActive: false,
   notificationScrollPositions: Immutable.Map(),
+  onboardToArtistInvite: null,
+  isCompletingOnboardToArtistInvite: false,
   saidHelloTo: Immutable.List(),
   textToolsCoordinates: Immutable.Map({ top: -200, left: -666 }),
   textToolsStates: Immutable.Map(),
@@ -115,6 +118,8 @@ export default (state = initialState, action = { type: '' }) => {
       return state.set('isNavbarHidden', get(payload, 'isNavbarHidden', state.isNavbarHidden))
     case GUI.SET_IS_PROFILE_MENU_ACTIVE:
       return state.set('isProfileMenuActive', payload.isProfileMenuActive)
+    case GUI.SET_IS_LIGHT_BOX_ACTIVE:
+      return state.set('isLightBoxActive', payload.isLightBoxActive)
     case GUI.SET_LAST_ANNOUNCEMENT_SEEN:
       return state.set('lastAnnouncementSeen', payload.id)
     case GUI.SET_LAST_DISCOVER_BEACON_VERSION:
@@ -129,6 +134,14 @@ export default (state = initialState, action = { type: '' }) => {
       return state.merge(payload)
     case GUI.TOGGLE_NOTIFICATIONS:
       return state.set('isNotificationsActive', payload.isNotificationsActive)
+    case GUI.START_ONBOARD_TO_ARTIST_INVITE:
+      return state.set('onboardToArtistInvite', payload.artistInvite)
+    case GUI.COMPLETE_ONBOARD_TO_ARTIST_INVITE:
+      return state.set('onboardToArtistInvite', null)
+        .set('isCompletingOnboardToArtistInvite', true)
+    case GUI.RESET_ONBOARD_TO_ARTIST_INVITE:
+      return state.set('onboardToArtistInvite', null)
+        .set('isCompletingOnboardToArtistInvite', false)
     case HEAD_FAILURE:
       return state.set('isNotificationsUnread', false)
     case HEAD_SUCCESS:

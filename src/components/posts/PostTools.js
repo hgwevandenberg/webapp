@@ -5,31 +5,46 @@ import classNames from 'classnames'
 import { Link } from 'react-router'
 import Hint from '../hints/Hint'
 import {
+  ArtistInviteSubmissionApprovedIcon,
+  ArtistInviteSubmissionSelectedIcon,
+  BadgeFeaturedIcon,
   BoltIcon,
   BubbleIcon,
   EyeIcon,
   FlagIcon,
   HeartIcon,
+  LightBoxTriggerSmall,
   PencilIcon,
   RepostIcon,
   ShareIcon,
   XBoxIcon,
 } from '../assets/Icons'
+import { getTempAssetId } from '../regions/ImageRegion'
 import { numberToHuman } from '../../lib/number_to_human'
 
 class ViewsTool extends PureComponent {
   static propTypes = {
     detailPath: PropTypes.string.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
+    isPostDetail: PropTypes.bool.isRequired,
+    isLightBox: PropTypes.bool.isRequired,
     postViewsCountRounded: PropTypes.string.isRequired,
   }
   static contextTypes = {
     onTrackRelatedPostClick: PropTypes.func.isRequired,
   }
   render() {
-    const { detailPath, isLoggedIn, postViewsCountRounded } = this.props
+    const {
+      detailPath,
+      isLoggedIn,
+      isLightBox,
+      isPostDetail,
+      postViewsCountRounded,
+    } = this.props
+    const isPill = isLoggedIn && !isLightBox
+
     return (
-      <span className={classNames('PostTool', 'ViewsTool', { isPill: isLoggedIn })}>
+      <span className={classNames('PostTool', 'ViewsTool', { isPill, isPostDetail, isLightBox })}>
         <Link to={detailPath} onClick={this.context.onTrackRelatedPostClick}>
           <EyeIcon />
           <span className="PostToolValue">{postViewsCountRounded}</span>
@@ -65,6 +80,7 @@ class CommentTool extends PureComponent {
   static propTypes = {
     detailPath: PropTypes.string.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
+    isLightBox: PropTypes.bool.isRequired,
     postCommentsCount: PropTypes.number.isRequired,
   }
   static contextTypes = {
@@ -72,20 +88,35 @@ class CommentTool extends PureComponent {
     onTrackRelatedPostClick: PropTypes.func.isRequired,
   }
   render() {
-    const { detailPath, isLoggedIn, postCommentsCount } = this.props
+    const {
+      detailPath,
+      isLightBox,
+      isLoggedIn,
+      postCommentsCount,
+    } = this.props
     return (
-      <span className="PostTool CommentTool" data-count={postCommentsCount} >
+      <span
+        className={classNames('PostTool', 'CommentTool', { isLightBox })}
+        data-count={postCommentsCount}
+      >
         {isLoggedIn ?
-          <button onClick={this.context.onClickToggleComments} >
+          <button
+            className={classNames({ isNotZero: postCommentsCount > 0 })}
+            onClick={this.context.onClickToggleComments}
+          >
             <BubbleIcon />
-            <span className="PostToolValue" >
+            <span className={classNames('PostToolValue', { isZero: postCommentsCount < 1 })}>
               {numberToHuman(postCommentsCount, false)}
             </span>
             <Hint>Comment</Hint>
           </button> :
-          <Link to={detailPath} onClick={this.context.onTrackRelatedPostClick}>
+          <Link
+            to={detailPath}
+            className={classNames({ isNotZero: postCommentsCount > 0 })}
+            onClick={this.context.onTrackRelatedPostClick}
+          >
             <BubbleIcon />
-            <span className="PostToolValue" >
+            <span className={classNames('PostToolValue', { isZero: postCommentsCount < 1 })}>
               {numberToHuman(postCommentsCount, false)}
             </span>
             <Hint>Comment</Hint>
@@ -98,6 +129,7 @@ class CommentTool extends PureComponent {
 
 class LoveTool extends PureComponent {
   static propTypes = {
+    isLightBox: PropTypes.bool.isRequired,
     postLoved: PropTypes.bool.isRequired,
     postLovesCount: PropTypes.number.isRequired,
   }
@@ -106,12 +138,18 @@ class LoveTool extends PureComponent {
     onClickToggleLovers: PropTypes.func.isRequired,
   }
   render() {
-    const { postLoved, postLovesCount } = this.props
+    const { postLoved, postLovesCount, isLightBox } = this.props
     const { onClickLovePost, onClickToggleLovers } = this.context
     return (
-      <span className="PostTool LoveTool" data-count={postLovesCount}>
+      <span
+        className={classNames('PostTool', 'LoveTool', { isLightBox })}
+        data-count={postLovesCount}
+      >
         <button
-          className={classNames({ isActive: postLoved, hasPostToolDrawer: postLovesCount > 0 })}
+          className={classNames({
+            isActive: postLoved,
+            hasPostToolDrawer: postLovesCount > 0,
+          })}
           onClick={onClickLovePost}
         >
           <HeartIcon />
@@ -121,7 +159,7 @@ class LoveTool extends PureComponent {
           className={classNames({ isActive: postLoved }, 'PostToolDrawerButton')}
           onClick={onClickToggleLovers}
         >
-          <span className="PostToolValue" >
+          <span className={classNames('PostToolValue', { isZero: postLovesCount < 1 })}>
             {numberToHuman(postLovesCount, false)}
           </span>
         </button>
@@ -132,6 +170,7 @@ class LoveTool extends PureComponent {
 
 class RepostTool extends PureComponent {
   static propTypes = {
+    isLightBox: PropTypes.bool.isRequired,
     isOwnOriginalPost: PropTypes.bool.isRequired,
     isOwnPost: PropTypes.bool.isRequired,
     isRepostAnimating: PropTypes.bool.isRequired,
@@ -144,13 +183,23 @@ class RepostTool extends PureComponent {
   }
   render() {
     const {
-      isOwnOriginalPost, isOwnPost, isRepostAnimating, postReposted, postRepostsCount,
+      isLightBox,
+      isOwnOriginalPost,
+      isOwnPost,
+      isRepostAnimating,
+      postReposted,
+      postRepostsCount,
     } = this.props
     const { onClickRepostPost, onClickToggleReposters } = this.context
     return (
-      <span className="PostTool RepostTool" data-count={postRepostsCount}>
+      <span
+        className={classNames('PostTool', 'RepostTool', { isLightBox })}
+        data-count={postRepostsCount}
+      >
         <button
-          className={classNames({ hasPostToolDrawer: postRepostsCount > 0 })}
+          className={classNames({
+            hasPostToolDrawer: postRepostsCount > 0,
+          })}
           onClick={!isOwnPost || !isOwnOriginalPost ? onClickRepostPost : null}
           style={{ pointerEvents: isOwnPost || isOwnOriginalPost || postReposted ? 'none' : null }}
         >
@@ -161,7 +210,7 @@ class RepostTool extends PureComponent {
           className="PostToolDrawerButton"
           onClick={onClickToggleReposters}
         >
-          <span className="PostToolValue" >
+          <span className={classNames('PostToolValue', { isZero: postRepostsCount < 1 })}>
             {numberToHuman(postRepostsCount, false)}
           </span>
         </button>
@@ -195,14 +244,16 @@ export class WatchTool extends PureComponent {
 
 class ShareTool extends PureComponent {
   static propTypes = {
+    isLightBox: PropTypes.bool.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     onClickSharePost: PropTypes.func.isRequired,
   }
   render() {
+    const { isLightBox, isLoggedIn } = this.props
     return (
-      <span className={classNames('PostTool', 'ShareTool', { isPill: !this.props.isLoggedIn })}>
+      <span className={classNames('PostTool', 'ShareTool', { isPill: !isLoggedIn, isLightBox })}>
         <button onClick={this.context.onClickSharePost}>
           <ShareIcon />
           <Hint>Share</Hint>
@@ -212,13 +263,132 @@ class ShareTool extends PureComponent {
   }
 }
 
-class EditTool extends PureComponent {
+class LightBoxTriggerTool extends PureComponent {
+  static propTypes = {
+    postId: PropTypes.string.isRequired,
+    summary: PropTypes.object.isRequired,
+    toggleLightBox: PropTypes.func.isRequired,
+  }
+
+  getFirstAssetId() {
+    const { summary } = this.props
+    let firstAssetId = null
+    summary.map((region) => {
+      if ((firstAssetId === null) && (region.get('kind') === 'image')) {
+        firstAssetId = region.getIn(['links', 'assets'])
+        if (!firstAssetId) {
+          // brand new post
+          const url = region.getIn(['data', 'url'])
+          if (url) {
+            firstAssetId = getTempAssetId(url)
+          }
+        }
+        return null
+      }
+      return null
+    })
+    return firstAssetId
+  }
+
+  render() {
+    const { postId, toggleLightBox } = this.props
+    const firstAssetId = this.getFirstAssetId()
+
+    if (firstAssetId) {
+      return (
+        <span className="PostTool LightBoxTriggerTool">
+          <button onClick={() => toggleLightBox(firstAssetId, postId)}>
+            <LightBoxTriggerSmall />
+            <Hint>Lightbox</Hint>
+          </button>
+        </span>
+      )
+    }
+    return null
+  }
+}
+
+export class FeatureCategoryPostTool extends PureComponent {
+  static propTypes = {
+    status: PropTypes.string,
+    actions: PropTypes.object,
+    fireAction: PropTypes.func.isRequired,
+  }
+
+  static defaultProps = {
+    actions: null,
+    status: null,
+  }
+
+  render() {
+    const { status, actions, fireAction } = this.props
+    if (status === 'submitted' && actions && actions.get('feature')) {
+      return (
+        <button className="featured-toggle" onClick={() => fireAction(actions.get('feature'))}>
+          <BadgeFeaturedIcon color="#aaaaaa" />
+        </button>
+      )
+    } else if (status === 'featured' && actions && actions.get('unfeature')) {
+      return (
+        <button className="featured-toggle" onClick={() => fireAction(actions.get('unfeature'))}>
+          <BadgeFeaturedIcon />
+        </button>
+      )
+    } else if (status === 'featured') {
+      return (
+        <span className="featured-toggle">
+          <BadgeFeaturedIcon />
+        </span>
+      )
+    }
+    return null
+  }
+}
+
+export class ArtistInviteSubmissionStatusTool extends PureComponent {
+  static propTypes = {
+    status: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    slug: PropTypes.string.isRequired,
+  }
+
+  render() {
+    const { title, slug, status } = this.props
+    let resp = (<span />)
+    if (status === 'approved') {
+      const hint = `Accepted Submission to ${title}`
+      resp = (
+        <span className="PostTool ArtistInviteSubmissionStatusTool">
+          <Link to={`/artist-invites/${slug}`}>
+            <ArtistInviteSubmissionApprovedIcon />
+            <Hint>{hint}</Hint>
+          </Link>
+        </span>
+      )
+    }
+    if (status === 'selected') {
+      const hint = `Selected Submission to ${title}`
+      resp = (
+        <span className="PostTool ArtistInviteSubmissionStatusTool">
+          <Link to={`/artist-invites/${slug}`}>
+            <ArtistInviteSubmissionSelectedIcon />
+            <Hint>{hint}</Hint>
+          </Link>
+        </span>
+      )
+    }
+
+    return resp
+  }
+}
+
+export class EditTool extends PureComponent {
   static contextTypes = {
     onClickEditPost: PropTypes.func.isRequired,
   }
   render() {
     return (
-      <span className="PostTool EditTool ShyTool">
+      <span className="PostTool EditTool">
         <button onClick={this.context.onClickEditPost}>
           <PencilIcon />
           <Hint>Edit</Hint>
@@ -228,13 +398,13 @@ class EditTool extends PureComponent {
   }
 }
 
-class DeleteTool extends PureComponent {
+export class DeleteTool extends PureComponent {
   static contextTypes = {
     onClickDeletePost: PropTypes.func.isRequired,
   }
   render() {
     return (
-      <span className="PostTool DeleteTool ShyTool">
+      <span className="PostTool DeleteTool">
         <button onClick={this.context.onClickDeletePost}>
           <XBoxIcon />
           <Hint>Delete</Hint>
@@ -283,11 +453,18 @@ export class PostTools extends PureComponent {
     postReposted: PropTypes.bool.isRequired,
     postRepostsCount: PropTypes.number.isRequired,
     postViewsCountRounded: PropTypes.string.isRequired,
+    summary: PropTypes.object,
+    toggleLightBox: PropTypes.func,
+  }
+  static defaultProps = {
+    summary: null,
+    toggleLightBox: null,
   }
 
   render() {
     const {
       author,
+      summary,
       detailPath,
       isCommentsActive,
       isCommentsRequesting,
@@ -308,12 +485,15 @@ export class PostTools extends PureComponent {
       postReposted,
       postRepostsCount,
       postViewsCountRounded,
+      toggleLightBox,
     } = this.props
     const cells = []
     if (!isPostDetail) {
       cells.push(
         <ViewsTool
           detailPath={detailPath}
+          isLightBox={false}
+          isPostDetail={isPostDetail}
           isLoggedIn={isLoggedIn}
           key={`ViewsTool_${postId}`}
           postViewsCountRounded={postViewsCountRounded}
@@ -333,6 +513,7 @@ export class PostTools extends PureComponent {
       cells.push(
         <CommentTool
           detailPath={detailPath}
+          isLightBox={false}
           isLoggedIn={isLoggedIn}
           key={`CommentTool_${postId}`}
           postCommentsCount={postCommentsCount}
@@ -343,6 +524,7 @@ export class PostTools extends PureComponent {
       cells.push(
         <LoveTool
           key={`LoveTool_${postId}`}
+          isLightBox={false}
           postLoved={postLoved}
           postLovesCount={postLovesCount}
         />,
@@ -351,6 +533,7 @@ export class PostTools extends PureComponent {
     if (author.get('hasRepostingEnabled') && !(isOwnPost && Number(postRepostsCount) === 0)) {
       cells.push(
         <RepostTool
+          isLightBox={false}
           isOwnOriginalPost={isOwnOriginalPost}
           isOwnPost={isOwnPost}
           isRepostAnimating={isRepostAnimating}
@@ -360,17 +543,28 @@ export class PostTools extends PureComponent {
         />,
       )
     }
+    if (!isPostDetail) {
+      cells.push(
+        <LightBoxTriggerTool
+          summary={summary}
+          postId={postId}
+          toggleLightBox={toggleLightBox}
+          key={`LightBoxTriggerTool_${postId}`}
+        />,
+      )
+    }
     if (isPostDetail) {
       cells.push(
         <ViewsTool
           detailPath={detailPath}
+          isPostDetail={isPostDetail}
+          isLightBox={false}
           isLoggedIn={isLoggedIn}
           key={`ViewsTool_${postId}`}
           postViewsCountRounded={postViewsCountRounded}
         />,
       )
     }
-
     if (!isOwnPost && !isOwnOriginalPost) {
       if (isPostDetail || (!isMobile && !isGridMode)) {
         cells.push(
@@ -382,20 +576,17 @@ export class PostTools extends PureComponent {
         )
       }
     }
-
     if (author.get('hasSharingEnabled')) {
       cells.push(
         <ShareTool
+          isLightBox={false}
           isLoggedIn={isLoggedIn}
           key={`ShareTool_${postId}`}
         />,
       )
     }
     if (isLoggedIn) {
-      if (isOwnPost) {
-        cells.push(<EditTool key={`EditTool_${postId}`} />)
-        cells.push(<DeleteTool key={`DeleteTool_${postId}`} />)
-      } else {
+      if (!isOwnPost) {
         cells.push(<FlagTool key={`FlagTool_${postId}`} />)
       }
     }
@@ -403,6 +594,105 @@ export class PostTools extends PureComponent {
       <footer className={classNames('PostTools', { isCommentsRequesting }, { isCommentsActive })}>
         {cells}
       </footer>
+    )
+  }
+}
+
+export class PostToolsLightBox extends PureComponent {
+  static propTypes = {
+    author: PropTypes.object.isRequired,
+    detailPath: PropTypes.string.isRequired,
+    isCommentsRequesting: PropTypes.bool.isRequired,
+    isLoggedIn: PropTypes.bool.isRequired,
+    isMobile: PropTypes.bool.isRequired,
+    isOwnOriginalPost: PropTypes.bool.isRequired,
+    isOwnPost: PropTypes.bool.isRequired,
+    postCommentsCount: PropTypes.number.isRequired,
+    postId: PropTypes.string.isRequired,
+    postLoved: PropTypes.bool.isRequired,
+    postLovesCount: PropTypes.number.isRequired,
+    postReposted: PropTypes.bool.isRequired,
+    postRepostsCount: PropTypes.number.isRequired,
+    postViewsCountRounded: PropTypes.string.isRequired,
+  }
+
+  render() {
+    const {
+      author,
+      detailPath,
+      isCommentsRequesting,
+      isLoggedIn,
+      isMobile,
+      isOwnOriginalPost,
+      isOwnPost,
+      postCommentsCount,
+      postId,
+      postLoved,
+      postLovesCount,
+      postReposted,
+      postRepostsCount,
+      postViewsCountRounded,
+    } = this.props
+    const cells = []
+
+    if (author.get('hasCommentingEnabled')) {
+      cells.push(
+        <CommentTool
+          detailPath={detailPath}
+          isLightBox
+          isLoggedIn={isLoggedIn}
+          key={`CommentTool_${postId}`}
+          postCommentsCount={postCommentsCount}
+        />,
+      )
+    }
+    if (author.get('hasLovesEnabled')) {
+      cells.push(
+        <LoveTool
+          key={`LoveTool_${postId}`}
+          isLightBox
+          postLoved={postLoved}
+          postLovesCount={postLovesCount}
+        />,
+      )
+    }
+    if (author.get('hasRepostingEnabled') && !(isOwnPost && Number(postRepostsCount) === 0)) {
+      cells.push(
+        <RepostTool
+          isLightBox
+          isOwnOriginalPost={isOwnOriginalPost}
+          isOwnPost={isOwnPost}
+          isRepostAnimating={false}
+          key={`RepostTool_${postId}`}
+          postReposted={postReposted}
+          postRepostsCount={postRepostsCount}
+        />,
+      )
+    }
+    if ((author.get('hasSharingEnabled')) && !isMobile) {
+      cells.push(
+        <ShareTool
+          isLightBox
+          isLoggedIn={isLoggedIn}
+          key={`ShareTool_${postId}`}
+        />,
+      )
+    }
+    cells.push(
+      <ViewsTool
+        detailPath={detailPath}
+        isPostDetail={false}
+        isLightBox
+        isLoggedIn={isLoggedIn}
+        key={`ViewsTool_${postId}`}
+        postViewsCountRounded={postViewsCountRounded}
+      />,
+    )
+
+    return (
+      <header className={classNames('PostTools with-lightbox', { isCommentsRequesting })}>
+        {cells}
+      </header>
     )
   }
 }

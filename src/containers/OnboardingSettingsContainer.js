@@ -4,9 +4,10 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { trackEvent } from '../actions/analytics'
+import { GUI } from '../constants/action_types'
 import { saveAvatar, saveCover } from '../actions/profile'
 import OnboardingSettings from '../components/onboarding/OnboardingSettings'
-import { selectDPI, selectIsMobile } from '../selectors/gui'
+import { selectDPI, selectIsMobile, selectOnboardToArtistInvite } from '../selectors/gui'
 import {
   selectAvatar,
   selectCoverImage,
@@ -25,6 +26,7 @@ function mapStateToProps(state) {
   const isMobile = selectIsMobile(state)
   const isInfoFormBlank = selectIsInfoFormBlank(state)
   const isNextDisabled = isAvatarBlank && isCoverImageBlank && isInfoFormBlank
+  const onboardToArtistInvite = selectOnboardToArtistInvite(state)
   return {
     avatar,
     coverImage,
@@ -33,6 +35,7 @@ function mapStateToProps(state) {
     isCoverImageBlank,
     isMobile,
     isNextDisabled,
+    onboardToArtistInvite,
   }
 }
 
@@ -47,11 +50,13 @@ class OnboardingSettingsContainer extends PureComponent {
     isCoverImageBlank: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
     isNextDisabled: PropTypes.bool.isRequired,
+    onboardToArtistInvite: PropTypes.object,
   }
 
   static defaultProps = {
     avatar: null,
     coverImage: null,
+    onboardToArtistInvite: null,
   }
 
   static childContextTypes = {
@@ -88,10 +93,18 @@ class OnboardingSettingsContainer extends PureComponent {
   }
 
   onDoneClick = () => {
-    const { dispatch } = this.props
+    const { dispatch, onboardToArtistInvite } = this.props
     dispatch(trackEvent('Onboarding.Settings.Done.Clicked'))
     this.trackOnboardingEvents()
-    dispatch(push('/following'))
+    if (onboardToArtistInvite) {
+      dispatch({
+        type: GUI.COMPLETE_ONBOARD_TO_ARTIST_INVITE,
+        payload: {},
+      })
+      dispatch(push(`/artist-invites/${onboardToArtistInvite.get('slug')}`))
+    } else {
+      dispatch(push('/following'))
+    }
   }
 
   onNextClick = () => {

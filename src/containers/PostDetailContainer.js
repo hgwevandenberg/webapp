@@ -45,6 +45,10 @@ function mapStateToProps(state, props) {
   }
 }
 
+function getShouldInlineComments(innerWidth) {
+  return innerWidth < 960
+}
+
 class PostDetailContainer extends Component {
 
   static propTypes = {
@@ -76,25 +80,21 @@ class PostDetailContainer extends Component {
   }
 
   static childContextTypes = {
-    onClickDetailTab: PropTypes.func.isRequired,
+    onToggleInlineCommenting: PropTypes.func.isRequired,
     onClickScrollToRelatedPosts: PropTypes.func.isRequired,
   }
 
   getChildContext() {
     return {
-      onClickDetailTab: this.onClickDetailTab,
+      onToggleInlineCommenting: this.onToggleInlineCommenting,
       onClickScrollToRelatedPosts: this.onClickScrollToRelatedPosts,
     }
   }
 
   componentWillMount() {
-    const { dispatch, paramsToken, paramsUsername, post, isPostEmpty } = this.props
-    if (!isPostEmpty) {
-      this.lovesWasOpen = post.get('showLovers')
-      this.repostsWasOpen = post.get('showReposters')
-    }
-    this.state = { activeType: 'comments', renderType: POST.DETAIL_REQUEST }
-    dispatch(loadPostDetail(`~${paramsToken}`, `~${paramsUsername}`))
+    const { dispatch, paramsToken, paramsUsername } = this.props
+    this.state = { activeType: 'comments', isInlineCommenting: false, renderType: POST.DETAIL_REQUEST }
+    dispatch(loadPostDetail(paramsToken, paramsUsername))
   }
 
   componentDidMount() {
@@ -131,19 +131,19 @@ class PostDetailContainer extends Component {
     if (!nextProps.author || !nextProps.post) { return false }
     // only allow innerWidth to allow a render if we cross the break 3
     // threshold on either side since innerWidth is calculated on resize
-    if ((nextProps.innerWidth >= 960 && this.props.innerWidth < 960) ||
-        (nextProps.innerWidth < 960 && this.props.innerWidth >= 960)) { return true }
+    if (getShouldInlineComments(nextProps.innerWidth) !==
+      getShouldInlineComments(this.props.innerWidth)) {
+      return true
+    }
     return !Immutable.is(nextProps.post, this.props.post) ||
       ['hasRelatedPostsButton', 'paramsToken', 'paramsUsername'].some(prop =>
         nextProps[prop] !== this.props[prop],
       ) ||
-      ['activeType', 'renderType'].some(prop => nextState[prop] !== this.state[prop])
+      ['activeType', 'isInlineCommenting', 'renderType'].some(prop => nextState[prop] !== this.state[prop])
   }
 
-  onClickDetailTab = (vo) => {
-    if (vo.type) {
-      this.setState({ activeType: vo.type })
-    }
+  onToggleInlineCommenting = () => {
+    this.setState({ isInlineCommenting: !this.state.isInlineCommenting })
   }
 
   onClickScrollToRelatedPosts = () => {
@@ -174,7 +174,6 @@ class PostDetailContainer extends Component {
       author,
       avatar,
       columnCount,
-      innerWidth,
       hasRelatedPostsButton,
       isLoggedIn,
       isPostEmpty,
@@ -182,7 +181,7 @@ class PostDetailContainer extends Component {
       post,
       tabs,
     } = this.props
-    const { activeType, renderType } = this.state
+    const { activeType, isInlineCommenting, renderType } = this.state
     // render loading/failure if we don't have an initial post
     if (isPostEmpty) {
       if (renderType === POST.DETAIL_REQUEST) {
@@ -207,10 +206,11 @@ class PostDetailContainer extends Component {
       columnCount,
       hasEditor: author && author.get('hasCommentingEnabled') && !(post.get('isReposting') || post.get('isEditing')),
       hasRelatedPostsButton,
+      isInlineCommenting,
       isLoggedIn,
       key: `postDetail_${paramsToken}`,
       post,
-      shouldInlineComments: innerWidth < 960,
+      shouldInlineComments: getShouldInlineComments(this.props.innerWidth),
       streamAction: this.getStreamAction(),
       tabs,
     }

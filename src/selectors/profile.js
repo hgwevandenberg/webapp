@@ -1,5 +1,6 @@
 import Immutable from 'immutable'
 import { createSelector } from 'reselect'
+import { selectIsLoggedIn } from '../selectors/authentication'
 import { selectPathname } from '../selectors/routing'
 
 // state.profile.xxx
@@ -20,6 +21,7 @@ export const selectHasAutoWatchEnabled = state => state.profile.get('hasAutoWatc
 export const selectHasAvatarPresent = state => state.profile.get('hasAvatarPresent', false)
 export const selectHasCoverImagePresent = state => state.profile.get('hasCoverImagePresent', false)
 export const selectId = state => state.profile.get('id')
+export const selectIsBrand = state => state.profile.get('isBrand', false) || state.profile.get('isStaff', false)
 export const selectIsNabaroo = state => state.profile.get('isNabaroo', false)
 export const selectIsPublic = state => state.profile.get('isPublic')
 export const selectIsStaff = state => state.profile.get('isStaff', false)
@@ -38,6 +40,8 @@ export const selectWebOnboardingVersion = state => state.profile.get('webOnboard
 export const selectProfileLinksCategories = state => state.profile.getIn(['links', 'categories'], Immutable.List())
 export const selectUuid = state => state.profile.get('uuid')
 export const selectSplit = (state, props) => state.profile.getIn(['splits', props.splitName])
+export const selectSubscribedCategoryIds = state => state.profile.get('followedCategoryIds', Immutable.List())
+export const selectFeaturedInCategoryIds = state => state.profile.getIn(['links', 'categories'], Immutable.List())
 
 // Memoized selectors
 export const selectIsAvatarBlank = createSelector(
@@ -46,6 +50,11 @@ export const selectIsAvatarBlank = createSelector(
     if (avatar && avatar.get('tmp')) { return false }
     return !hasAvatarPresent || !(avatar && (avatar.get('tmp') || avatar.get('original')))
   },
+)
+
+export const selectShowCreatorTypeModal = createSelector(
+  [selectIsLoggedIn, selectWebOnboardingVersion], (isLoggedIn, webOnboardingVersion) =>
+    isLoggedIn && webOnboardingVersion < 3 && webOnboardingVersion !== null,
 )
 
 export const selectIsCoverImageBlank = createSelector(

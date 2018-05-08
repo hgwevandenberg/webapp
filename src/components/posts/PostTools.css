@@ -21,20 +21,53 @@
   transition: transform var(--speed) var(--ease);
 }
 
-/* .PostTool + .PostTool { */
-/*   margin-left: 3px; */
-/* } */
+.PostTool.isLightBox {
+  font-size: 16px;
+}
+
+.PostTool.isLightBox .SVGIcon {
+  margin-top: -2px;
+  transform: scale(1.4);
+}
+
+.PostTool.isLightBox .SVGIcon g {
+  stroke-width: 1;
+}
+
+.PostTool.isLightBox .Hint {
+  top: calc(-100% - 10px);
+}
+
+.PostTool .PostToolValue.isZero {
+  display: none;
+}
 
 .PostTool > a,
 .PostTool > button {
   padding-right: 8px;
-  padding-left: 8px;
+  padding-left: 4px;
   color: #aaa;
   transition: color var(--speed) ease;
 }
 
-.PostTool:not([data-count="0"]) > button.hasPostToolDrawer {
-  padding-right: 5px !important;
+.PostTool.isLightBox > a,
+.PostTool.isLightBox > button,
+.Posts.asList .PostTool.isLightBox > a,
+.Posts.asList .PostTool.isLightBox > button {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin: 0;
+}
+
+.PostTool > button.hasPostToolDrawer {
+  padding-right: 5px;
+}
+
+.PostTool.isLightBox > a.hasPostToolDrawer,
+.PostTool.isLightBox > button.hasPostToolDrawer,
+.Posts.asList .PostTool.isLightBox > a.hasPostToolDrawer,
+.Posts.asList .PostTool.isLightBox > button.hasPostToolDrawer {
+  padding-right: 15px;
 }
 
 .PostTool > button.PostToolDrawerButton {
@@ -56,9 +89,35 @@
   color: #000;
 }
 
+.no-touch .PostTool.isLightBox a:hover,
+.no-touch .PostTool.isLightBox button:hover {
+  color: #fff;
+}
+
 /* // Specific tools */
+.CommentTool.PostTool button.isNotZero .PostToolValue {
+  padding-left: 0;
+}
+
+.CommentTool.isLightBox.PostTool button.isNotZero .PostToolValue {
+  padding-left: 12px;
+}
+
+.CommentTool.isLightBox .Hint {
+  left: -24px;
+}
+
 .ViewsTool {
   margin-left: -8px;
+}
+
+.PostTool.isLightBox.ViewsTool {
+  margin-top: 2px;
+}
+
+.PostTool.isLightBox.ViewsTool .SVGIcon {
+  margin-top: -3px;
+  margin-right: 10px;
 }
 
 .ViewsTool.isPill {
@@ -91,12 +150,67 @@
   color: #aaa;
 }
 
+.LoveTool.isLightBox .Hint {
+  left: -6px;
+}
+
+@media (--break-2) {
+  .no-touch .LightBoxTriggerTool {
+    display: none;
+  }
+}
+
+.LightBoxTriggerTool > button svg polygon {
+  fill: currentColor;
+}
+
+.no-touch .LightBoxTriggerTool > button:hover svg polygon {
+  fill: #000;
+}
+
+.LightBoxTriggerTool svg {
+  margin-top: -3px;
+}
+
+.LightBoxTriggerTool .Hint {
+  left: -22px;
+}
+
 .PostTool .SVGIcon + .PostToolValue {
   margin-left: 5px;
 }
 
 .ViewsTool .Hint {
   left: 10px;
+}
+
+.ViewsTool.isLightBox .Hint {
+  left: 8px;
+}
+
+.ArtistInviteSubmissionStatusTool.PostTool a,
+.ArtistInviteSubmissionStatusTool.PostTool > a {
+  padding-right: 0 !important;
+}
+
+.ArtistInviteSubmissionStatusTool.PostTool .SVGIcon {
+  padding-left: 4px;
+  margin-top: -2px;
+  transform: scale(1);
+}
+
+.ArtistInviteSubmissionStatusTool.PostTool .SVGIcon g path {
+  stroke-width: 0;
+}
+
+.ArtistInviteSubmissionStatusTool.PostTool .ArtistInviteSubmissionSelectedIcon.SVGIcon {
+  padding-left: 0;
+  margin-top: -4px;
+  overflow: visible;
+}
+
+.ArtistInviteSubmissionStatusTool.PostTool .Hint {
+  left: -200px;
 }
 
 /* This is actually in the PostContainer */
@@ -141,14 +255,35 @@
   border-color: #000;
 }
 
+.PostTools.with-lightbox .ViewsTool {
+  position: absolute;
+  top: 19px;
+  right: 10px;
+}
+
 .ShareTool {
   position: absolute;
   top: 19px;
   right: -10px;
 }
 
+.PostTools.with-lightbox .ShareTool {
+  position: relative;
+  top: auto;
+  right: auto;
+  display: inline-block;
+}
+
+.PostTool.isLightBox.ShareTool .SVGIcon {
+  margin-top: -5px;
+}
+
 .ShareTool .Hint {
   left: calc(-100% - 2px);
+}
+
+.ShareTool.isLightBox .Hint {
+  left: -10px;
 }
 
 .ShareTool.isPill {
@@ -185,6 +320,14 @@
   color: #000;
   transition-delay: 0s;
   transition-duration: var(--speed);
+}
+
+.PostTool.isLightBox.RepostTool .SVGIcon {
+  margin-top: -4px;
+}
+
+.RepostTool.isLightBox .Hint {
+  left: -12px;
 }
 
 .ShyTool {
@@ -258,7 +401,18 @@
   .Posts.asList .PostTool > a,
   .Posts.asList .PostTool > button {
     padding-right: 12px;
-    padding-left: 12px;
+    padding-left: 4px;
+  }
+
+  .Posts.asList .PostTool > a.hasPostToolDrawer,
+  .Posts.asList .PostTool > button.hasPostToolDrawer {
+    padding-right: 5px;
+  }
+
+  .Posts.asList .PostTool.EditTool > button,
+  .Posts.asList .PostTool.DeleteTool > button {
+    padding-right: 5px;
+    padding-left: 5px;
   }
 
   .Posts.asList .ViewsTool.isPill {

@@ -1,5 +1,6 @@
 import { is } from 'immutable'
 import React, { Component } from 'react'
+import { browserHistory } from 'react-router'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { trackEvent } from '../actions/analytics'
@@ -29,8 +30,9 @@ const makeMapStateToProps = () => (
   (state: any, props) => {
     const editorial = selectEditorial(state, props)
     const postId = selectEditorialPostId(state, props)
+    const dpi = selectDPI(state)
     return {
-      dpi: selectDPI(state),
+      dpi,
       editorial,
       isLoggedIn: selectIsLoggedIn(state),
       isPostLoved: selectPostLoved(state, { postId }),
@@ -70,6 +72,7 @@ class EditorialContainer extends Component {
 
   static childContextTypes = {
     onClickLovePost: PropTypes.func,
+    onClickRepostEditorialPost: PropTypes.func,
     onClickOpenSignupModal: PropTypes.func,
     onClickSharePost: PropTypes.func.isRequired,
     onClickShareExternal: PropTypes.func.isRequired,
@@ -79,15 +82,11 @@ class EditorialContainer extends Component {
     const { isLoggedIn } = this.props
     return {
       onClickLovePost: isLoggedIn ? this.onClickLovePost : this.onClickOpenSignupModal,
+      onClickRepostEditorialPost: isLoggedIn ? this.onClickRepostEditorialPost : this.onClickOpenSignupModal, // eslint-disable-line
       onClickOpenSignupModal: isLoggedIn ? null : this.onClickOpenSignupModal,
       onClickSharePost: this.onClickSharePost,
       onClickShareExternal: this.onClickShareExternal,
     }
-  }
-
-  componentDidMount() {
-    const { dispatch, trackOptions } = this.props
-    dispatch(trackEvent('editorial-module-viewed', trackOptions))
   }
 
   shouldComponentUpdate(nextProps) {
@@ -104,6 +103,12 @@ class EditorialContainer extends Component {
     const { toggleLovePost } = this.context
     const trackLabel = 'editorial-module-loved'
     toggleLovePost({ isLoved: isPostLoved, post, trackLabel, trackOptions })
+  }
+
+  onClickRepostEditorialPost = (postPath) => {
+    const { dispatch, trackOptions } = this.props
+    dispatch(trackEvent('editorial-module-repost-clicked', trackOptions))
+    browserHistory.push(postPath)
   }
 
   onClickOpenSignupModal = () => {

@@ -14,7 +14,7 @@ import {
   toggleReposting,
   updatePost,
 } from '../../actions/posts'
-import { resetEditor, initializeEditor } from '../../actions/editor'
+import { resetEditor, initializeEditor, fetchEditorCategories } from '../../actions/editor'
 import { closeOmnibar } from '../../actions/omnibar'
 import BlockCollection from './BlockCollection'
 import ConfirmDialog from '../dialogs/ConfirmDialog'
@@ -78,6 +78,8 @@ class Editor extends Component {
     isPostEditing: PropTypes.bool.isRequired,
     isPostEmpty: PropTypes.bool.isRequired,
     isPostReposting: PropTypes.bool.isRequired,
+    isEditing: PropTypes.bool,
+    onCancel: PropTypes.func,
     onSubmit: PropTypes.func,
     post: PropTypes.object,
     shouldPersist: PropTypes.bool,
@@ -92,6 +94,8 @@ class Editor extends Component {
     isLoggedIn: false,
     isOwnPage: false,
     isOwnPost: false,
+    isEditing: false,
+    onCancel: null,
     onSubmit: null,
     post: null,
     shouldPersist: false,
@@ -112,7 +116,10 @@ class Editor extends Component {
   }
 
   componentWillMount() {
-    const { dispatch, shouldPersist } = this.props
+    const { dispatch, shouldPersist, isEditing, post } = this.props
+    if (post && !isEditing) {
+      dispatch(fetchEditorCategories())
+    }
     dispatch(initializeEditor(this.getEditorIdentifier(), shouldPersist))
     this.state = { showArtistInviteSuccess: false }
   }
@@ -129,7 +136,7 @@ class Editor extends Component {
     return getEditorId(post, comment, isComment, autoPopulate && !shouldPersist)
   }
 
-  submit = (data, artistInviteId) => {
+  submit = (data, artistInviteId, categoryIds) => {
     const {
       allowsAutoWatch,
       comment,
@@ -154,7 +161,8 @@ class Editor extends Component {
       } else {
         dispatch(closeOmnibar())
       }
-      dispatch(createPost(data, this.getEditorIdentifier(), null, null, artistInviteId))
+      dispatch(createPost(data, this.getEditorIdentifier(), null, null,
+        artistInviteId, categoryIds))
     } else if (post.get('isEditing')) {
       dispatch(toggleEditing(post, false))
       dispatch(updatePost(post, data, this.getEditorIdentifier()))
@@ -163,7 +171,7 @@ class Editor extends Component {
       const repostId = post.get('repostId') || post.get('id')
       const repostedFromId = post.get('repostId') ? post.get('id') : null
       dispatch(createPost(data, this.getEditorIdentifier(),
-        repostId, repostedFromId, artistInviteId),
+        repostId, repostedFromId, artistInviteId, categoryIds),
       )
     }
     if (onSubmit) { onSubmit() }
@@ -207,7 +215,7 @@ class Editor extends Component {
   }
 
   cancelConfirmed = () => {
-    const { comment, dispatch, isPostEmpty, post } = this.props
+    const { comment, dispatch, isPostEmpty, onCancel, post } = this.props
     this.closeModal()
     dispatch(resetEditor(this.getEditorIdentifier()))
     dispatch(closeOmnibar())
@@ -218,6 +226,7 @@ class Editor extends Component {
     if (comment) {
       dispatch(toggleCommentEditing(comment, false))
     }
+    if (onCancel) { onCancel() }
   }
 
   render() {

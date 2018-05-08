@@ -5,7 +5,10 @@ import { MainView } from '../views/MainView'
 
 export const Following = ({ streamAction }) =>
   (<MainView className="Following">
-    <StreamContainer action={streamAction} />
+    <StreamContainer
+      action={streamAction}
+      paginatorText="Load More"
+    />
   </MainView>)
 
 Following.propTypes = {

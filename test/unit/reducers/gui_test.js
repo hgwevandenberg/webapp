@@ -36,6 +36,7 @@ describe('gui reducer', () => {
         'isNotificationsActive',
         'isNotificationsUnread',
         'isProfileMenuActive',
+        'isLightBoxActive',
         'isTextToolsActive',
         'lastAnnouncementSeen',
         'lastDiscoverBeaconVersion',
@@ -46,6 +47,8 @@ describe('gui reducer', () => {
         'saidHelloTo',
         'textToolsCoordinates',
         'textToolsStates',
+        'onboardToArtistInvite',
+        'isCompletingOnboardToArtistInvite',
       )
     })
   })
@@ -124,6 +127,13 @@ describe('gui reducer', () => {
       const isProfileMenuActive = true
       const action = { type: GUI.SET_IS_PROFILE_MENU_ACTIVE, payload: { isProfileMenuActive } }
       expect(reducer(initialState, action)).to.have.property('isProfileMenuActive', true)
+    })
+
+    it('GUI.SET_IS_LIGHT_BOX_ACTIVE updates isLightBoxActive', () => {
+      expect(initialState).to.have.property('isLightBoxActive', false)
+      const isLightBoxActive = true
+      const action = { type: GUI.SET_IS_LIGHT_BOX_ACTIVE, payload: { isLightBoxActive } }
+      expect(reducer(initialState, action)).to.have.property('isLightBoxActive', true)
     })
 
     it('GUI.SET_LAST_ANNOUNCEMENT_SEEN updates the lastAnnouncementSeen', () => {
@@ -293,6 +303,7 @@ describe('gui reducer', () => {
       isNotificationsActive: false,
       isOmnibarActive: false,
       isProfileMenuActive: false,
+      isLightBoxActive: false,
       isTextToolsActive: false,
       saidHelloTo: [],
       textToolsCoordinates: {

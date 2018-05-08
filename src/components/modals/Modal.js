@@ -20,7 +20,7 @@ const modalStyle = css(
     s.opacity1,
     { backgroundColor: 'rgba(26, 26, 26, 0.8)' },
   ),
-  modifier('.isActive.hasOverlay9', { backgroundColor: 'rgba(26, 26, 26, 0.9)' }),
+  modifier('.isActive.hasOverlay9', s.bgcModal),
   modifier('.isActive.isDangerZone', { backgroundColor: 'rgba(255, 0, 0, 0.95)' }),
   modifier('.isDecapitated', s.zDecapitated),
   modifier('.isFlex', s.flex, s.itemsCenter, s.pt0),

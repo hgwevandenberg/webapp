@@ -115,9 +115,9 @@ const linkStyle = css(
 )
 
 const highlightingRules = {
-  '/': /^\/$|^\/discover\/trending$|^\/discover\/recent$/,
   '/following': /^\/following/,
-  '/artist-invites': /^\/artist-invites$/,
+  '/artist-invites': /(^\/artist-invites$)|^\/artist-invites(?:\/.*\.?.*)/,
+  '/discover/subscribed': /^\/discover/,
 }
 
 export const NavbarLink = ({
@@ -136,7 +136,7 @@ export const NavbarLink = ({
     className,
     `${linkStyle}`,
     {
-      isActive: highlightingRules[to] ? pathname.match(highlightingRules[to]) : pathname.match(to),
+      isActive: highlightingRules[to] ? pathname.match(highlightingRules[to]) : pathname === to,
     },
   )
   return (
@@ -381,10 +381,12 @@ const closeButtonStyle = css(
 export const NavbarProfile = ({
   artistInvitesInProfileMenu,
   avatar,
+  isBrand,
   isProfileMenuActive,
   onClickAvatar,
   onLogOut,
   username,
+  innerWidth,
 }, { onClickArtistInvites }) => {
   if (avatar && username) {
     return (
@@ -396,8 +398,13 @@ export const NavbarProfile = ({
             <Link className={profileLinkStyle} onClick={onClickArtistInvites} to="/artist-invites">Artist Invites</Link>
           }
           <Link className={profileLinkStyle} to={`/${username}/loves`}>Loves</Link>
+          { innerWidth < 500 ? <Link className={profileLinkStyle} to="/elloartgiveaways">Giveaways</Link>
+              : null }
           <Link className={profileLinkStyle} to="/invitations">Invite</Link>
           <Link className={profileLinkStyle} to="/settings">Settings</Link>
+          {isBrand &&
+            <a className={profileLinkStyle} href="/manage">Analytics</a>
+          }
           <hr className={dividerStyle} />
           <a
             className={profileLinkSmallStyle}
@@ -424,14 +431,17 @@ export const NavbarProfile = ({
 NavbarProfile.propTypes = {
   artistInvitesInProfileMenu: PropTypes.bool.isRequired,
   avatar: PropTypes.object,
+  isBrand: PropTypes.bool.isRequired,
   isProfileMenuActive: PropTypes.bool.isRequired,
   onClickAvatar: PropTypes.func.isRequired,
   onLogOut: PropTypes.func.isRequired,
   username: PropTypes.string,
+  innerWidth: PropTypes.number,
 }
 NavbarProfile.defaultProps = {
   avatar: null,
   username: null,
+  innerWidth: null,
 }
 NavbarProfile.contextTypes = {
   onClickArtistInvites: PropTypes.func.isRequired,

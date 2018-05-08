@@ -11,7 +11,7 @@ import * as s from '../../styles/jso'
 
 // -----------------
 
-const formStyle = css(s.flex, s.itemsCenter, s.leftAlign)
+const formStyle = css(s.inlineBlock, s.relative)
 
 export class FooterForm extends PureComponent {
   static propTypes = {
@@ -114,8 +114,8 @@ export class FooterLink extends PureComponent {
 // -----------------
 
 const toolStyle = css(
+  s.inlineBlock,
   s.fontSize12,
-  s.leftAlign,
   hover(s.colorBlack),
   modifier('.LayoutTool', { marginRight: -8, marginLeft: 5 }),
 )

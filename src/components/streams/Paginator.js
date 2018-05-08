@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import classNames from 'classnames'
-import { ElloMark } from '../assets/Icons'
 
 function getMessage({ hasShowMoreButton, messageText, totalPages, totalPagesRemaining }) {
   if (totalPagesRemaining === 0) {
@@ -32,7 +31,6 @@ PaginatorLink.propTypes = {
 
 const PaginatorButton = ({ loadNextPage, message }) =>
   (<button className="PaginatorButton" onClick={loadNextPage}>
-    <ElloMark className="isSpinner" />
     <span>{message}</span>
   </button>)
 PaginatorButton.propTypes = {
@@ -40,9 +38,25 @@ PaginatorButton.propTypes = {
   message: PropTypes.string.isRequired,
 }
 
+const PaginatorLinkButton = ({ loadNextPage, message, nextPagePath }) => {
+  const onClick = (e) => {
+    e.preventDefault()
+    return loadNextPage(e)
+  }
+  return (
+    <Link to={nextPagePath} className="PaginatorButton" onClick={onClick}>
+      <span>{message}</span>
+    </Link>
+  )
+}
+PaginatorLinkButton.propTypes = {
+  loadNextPage: PropTypes.func.isRequired,
+  message: PropTypes.string.isRequired,
+  nextPagePath: PropTypes.string.isRequired,
+}
+
 const PaginatorLoader = ({ message }) =>
   (<span className="PaginatorLoader">
-    <ElloMark className="isSpinner" />
     <span className="PaginatorMessage">{message}</span>
   </span>)
 PaginatorLoader.propTypes = {
@@ -59,12 +73,19 @@ export const Paginator = ({
     to,
     totalPages,
     totalPagesRemaining,
+    nextPagePath,
   }) => {
   const message = getMessage({ hasShowMoreButton, messageText, totalPages, totalPagesRemaining })
   if (!message.length) { return null }
   let el
   if (to) {
     el = <PaginatorLink message={message} to={to} />
+  } else if (hasShowMoreButton && !!nextPagePath) {
+    el = (<PaginatorLinkButton
+      loadNextPage={loadNextPage}
+      message={message}
+      nextPagePath={nextPagePath}
+    />)
   } else if (hasShowMoreButton) {
     el = <PaginatorButton loadNextPage={loadNextPage} message={message} />
   } else {
@@ -83,6 +104,7 @@ Paginator.propTypes = {
   isHidden: PropTypes.bool,
   loadNextPage: PropTypes.func,
   messageText: PropTypes.string,
+  nextPagePath: PropTypes.string,
   to: PropTypes.string,
   totalPages: PropTypes.number,
   totalPagesRemaining: PropTypes.number,
@@ -94,6 +116,7 @@ Paginator.defaultProps = {
   isHidden: true,
   loadNextPage: null,
   messageText: '',
+  nextPagePath: null,
   to: null,
   totalPages: 0,
   totalPagesRemaining: 0,

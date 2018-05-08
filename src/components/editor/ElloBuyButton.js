@@ -23,7 +23,8 @@ const buttonStyle = css(
   hover(s.colorBlack, s.bgcEA),
   select('.editable[contenteditable] + &', s.displayNone),
   parent('.EmbedRegion', { top: 10, right: 10 }),
-  parent('.RegionContent', { top: 10, right: 10 }),
+  parent('.ImageRegion', { top: 10, right: 10 }),
+  parent('.RegionContent', { top: 10, right: 10 }), // might be legacy?
   parent('.Notification', { width: 15, height: 15, lineHeight: '14px' }),
   parent('.Notification .RegionContent', { top: 5, right: 5 }),
   select('.Notification & svg', { transform: 'scale(0.7)', transformOrigin: '2px 2px' }),

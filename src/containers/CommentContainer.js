@@ -89,11 +89,19 @@ class CommentContainer extends Component {
     isNavbarHidden: PropTypes.bool.isRequired,
     isOwnComment: PropTypes.bool.isRequired,
     isPostDetail: PropTypes.bool.isRequired,
+    isLightBox: PropTypes.bool,
+    resizeLightBox: PropTypes.bool,
+    toggleLightBox: PropTypes.func.isRequired,
+    lightBoxSelectedIdPair: PropTypes.object,
     post: PropTypes.object.isRequired,
   }
 
   static defaultProps = {
     commentBody: null,
+    isLightBox: false,
+    resizeLightBox: false,
+    toggleLightBox: null,
+    lightBoxSelectedIdPair: null,
   }
 
   static contextTypes = {
@@ -127,7 +135,13 @@ class CommentContainer extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     return !Immutable.is(nextProps.comment, this.props.comment) ||
       !Immutable.is(nextProps.post, this.props.post) ||
-      ['isGridMode'].some(prop => nextProps[prop] !== this.props[prop]) ||
+      [
+        'lightBoxSelectedIdPair',
+        'resizeLightBox',
+        'isGridMode',
+      ].some(prop =>
+        nextProps[prop] !== this.props[prop],
+      ) ||
       ['isMoreToolActive'].some(prop => nextState[prop] !== this.state[prop])
   }
 
@@ -214,6 +228,10 @@ class CommentContainer extends Component {
       isLoggedIn,
       isOwnComment,
       isPostDetail,
+      isLightBox,
+      resizeLightBox,
+      toggleLightBox,
+      lightBoxSelectedIdPair,
     } = this.props
     if (!comment || !comment.get('id') || !author || !author.get('id')) { return null }
     if (isEditing && commentBody && ElloAndroidInterface.supportsNativeEditor()) {
@@ -221,7 +239,7 @@ class CommentContainer extends Component {
     }
     return (
       <div className="Comment">
-        {!isEditing ?
+        {!isEditing && !isLightBox ?
           <CommentHeader author={author} commentId={commentId} /> :
           null
         }
@@ -237,17 +255,23 @@ class CommentContainer extends Component {
             innerHeight={innerHeight}
             isGridMode={isGridMode}
             isPostDetail={isPostDetail}
+            isLightBox={isLightBox}
+            resizeLightBox={resizeLightBox}
+            toggleLightBox={toggleLightBox}
+            lightBoxSelectedIdPair={lightBoxSelectedIdPair}
           />
         }
-        <CommentTools
-          canDeleteComment={canDeleteComment}
-          commentCreatedAt={commentCreatedAt}
-          commentId={commentId}
-          isLoggedIn={isLoggedIn}
-          isMoreToolActive={this.state.isMoreToolActive}
-          isOwnComment={isOwnComment}
-          key={`CommentTools_${commentId}`}
-        />
+        {!isEditing && !isLightBox &&
+          <CommentTools
+            canDeleteComment={canDeleteComment}
+            commentCreatedAt={commentCreatedAt}
+            commentId={commentId}
+            isLoggedIn={isLoggedIn}
+            isMoreToolActive={this.state.isMoreToolActive}
+            isOwnComment={isOwnComment}
+            key={`CommentTools_${commentId}`}
+          />
+        }
       </div>
     )
   }

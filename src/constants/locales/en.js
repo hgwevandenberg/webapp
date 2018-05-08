@@ -32,11 +32,10 @@ export const FOLLOWING = {
 }
 
 export const FOOTER_LINKS = [
-  { label: 'About', to: '/wtf/about/ello/' },
-  { label: 'Help', to: '/wtf' },
+  { label: 'About', to: '/wtf/artists/' },
+  { label: 'Help', to: '/wtf/support/' },
   { label: 'Blog', to: '/elloblog' },
-  { label: 'Magazine', to: 'https://notforprint.co/' },
-  { label: 'Store', to: 'http://ello.threadless.com' },
+  { label: 'Store', to: 'https://store.ello.co' },
   { label: 'Apps', to: '/wtf/resources/apps/' },
   { label: 'Terms', to: '/wtf/policies/terms/' },
   { label: 'Privacy', to: '/wtf/policies/privacy/' },

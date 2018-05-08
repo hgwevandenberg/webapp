@@ -9,9 +9,14 @@ import { saveProfile } from '../actions/profile'
 import { selectCreatorTypeCategories } from '../selectors/categories'
 import { selectCreatorTypeCategoryIds } from '../selectors/profile'
 import { css, hover, media, modifier, parent, select } from '../styles/jss'
+import { ONBOARDING_VERSION } from '../constants/application_types'
+import { closeModal } from '../actions/modals'
+import FormButton from '../components/forms/FormButton'
+import CreatorTypesModal from '../components/modals/CreatorTypesModal'
 import * as s from '../styles/jso'
 
 const containerStyle = css(
+  s.fullWidth,
   { maxWidth: 490 },
 )
 
@@ -25,8 +30,12 @@ const headerStyle = css(
 
 const catHeaderStyle = css(
   { ...headerStyle },
-  { marginTop: 60 },
+  { marginTop: 30 },
   parent('.inSettings', s.mt20),
+)
+
+const categoriesStyle = css(
+  { marginBottom: -10 },
 )
 
 const buttonStyle = css(
@@ -34,7 +43,6 @@ const buttonStyle = css(
   s.borderA,
   s.center,
   s.colorA,
-  s.mb10,
   s.mr10,
   s.px5,
   s.truncate,
@@ -52,12 +60,19 @@ const buttonStyle = css(
 
 const catButtonStyle = css(
   { ...buttonStyle },
+  s.mb10,
   modifier('.isActive', hover(s.bgc6, { border: '1px solid #666' })),
   media('(min-width: 26.25em)', // 420 / 16 = 26.25em
     { maxWidth: 150, width: 'calc(33% - 6px)' },
     select(':nth-child(2n)', s.mr10),
     select(':nth-child(3n)', s.mr0),
   ),
+)
+
+const submitButtonStyle = css(
+  s.mt30,
+  s.hv40,
+  { lineHeight: 3 },
 )
 
 export class CategoryButton extends PureComponent {
@@ -92,10 +107,12 @@ export class CategoryButton extends PureComponent {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, props) {
+  const { classModifier } = props
   return {
     categories: selectCreatorTypeCategories(state),
     creatorTypeIds: (selectCreatorTypeCategoryIds(state) || Immutable.List()).toArray(),
+    isModal: classModifier !== 'inOnboarding' && classModifier !== 'inSettings',
   }
 }
 
@@ -106,6 +123,7 @@ class CreatorTypeContainer extends PureComponent {
     classModifier: PropTypes.string,
     creatorTypeIds: PropTypes.array,
     dispatch: PropTypes.func.isRequired,
+    isModal: PropTypes.bool.isRequired,
   }
 
   static defaultProps = {
@@ -118,7 +136,7 @@ class CreatorTypeContainer extends PureComponent {
     this.state = {
       artistActive: creatorTypeIds.length > 0,
       categoryIds: creatorTypeIds,
-      fanActive: creatorTypeIds.length === 0 && classModifier !== 'inOnboarding',
+      fanActive: creatorTypeIds.length === 0 && classModifier === 'inSettings',
     }
     this.updateCreatorTypes = debounce(this.updateCreatorTypes, 1000)
     dispatch(getCategories())
@@ -147,15 +165,27 @@ class CreatorTypeContainer extends PureComponent {
     }, this.updateCreatorTypes)
   }
 
-  updateCreatorTypes = () => {
+  onClickModalSubmit = () => {
     const { dispatch } = this.props
     const { categoryIds } = this.state
-    dispatch(saveProfile({ creator_type_category_ids: categoryIds }))
+    dispatch(
+      saveProfile({ creator_type_category_ids: categoryIds,
+        web_onboarding_version: ONBOARDING_VERSION }))
+    dispatch(closeModal(<CreatorTypesModal />))
+  }
+
+  updateCreatorTypes = () => {
+    const { isModal, dispatch } = this.props
+    const { categoryIds } = this.state
+    if (!isModal) {
+      dispatch(saveProfile({ creator_type_category_ids: categoryIds }))
+    }
   }
 
   render() {
-    const { categories, classModifier } = this.props
+    const { categories, classModifier, isModal } = this.props
     const { artistActive, categoryIds, fanActive } = this.state
+    const showSubmit = isModal && (fanActive || categoryIds.length > 0)
     return (
       <div className={`${classModifier} ${containerStyle}`}>
         <h2 className={headerStyle}>I am here as:</h2>
@@ -178,7 +208,7 @@ class CreatorTypeContainer extends PureComponent {
         {artistActive &&
           <div>
             <h2 className={catHeaderStyle}>I make:</h2>
-            <div>
+            <div className={categoriesStyle}>
               {categories.map(cat => (
                 <CategoryButton
                   category={cat}
@@ -190,6 +220,12 @@ class CreatorTypeContainer extends PureComponent {
             </div>
           </div>
         }
+        { showSubmit ? <FormButton
+          className={`FormButton Submit isRounded ${submitButtonStyle}`}
+          onClick={this.onClickModalSubmit}
+        >
+          Submit
+        </FormButton> : null }
       </div>
     )
   }

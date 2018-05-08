@@ -16,16 +16,20 @@ import {
   unwatchPost,
   watchPost,
 } from '../actions/posts'
+import { sendAdminAction } from '../actions/artist_invites'
+import { sendCategoryPostAction } from '../actions/category_posts'
 import ConfirmDialog from '../components/dialogs/ConfirmDialog'
 import FlagDialog from '../components/dialogs/FlagDialog'
 import {
+  ArtistInviteSubmissionHeader,
   CategoryHeader,
   Post,
   PostDetailAsideBottom,
   PostDetailAsideTop,
   PostBody,
+  PostBodyWithLightBox,
   PostHeader,
-  RepostHeader,
+  PostDetailHeader,
   UserModal,
 } from '../components/posts/PostRenderables'
 import { isElloAndroid } from '../lib/jello'
@@ -37,19 +41,26 @@ import {
   selectContentWidth,
   selectDeviceSize,
   selectInnerHeight,
+  selectInnerWidth,
   selectIsMobile,
 } from '../selectors/gui'
 import {
   selectPost,
   selectPostAuthor,
+  selectPostArtistInvite,
+  selectPostArtistInviteSubmission,
+  selectPostArtistInviteSubmissionStatus,
   selectPostBody,
   selectPostCategoryName,
   selectPostCategorySlug,
+  selectPostCategoryPostStatusForPath,
+  selectPostCategoryPostActionsForPath,
   selectPostCommentsCount,
   selectPostContent,
   selectPostContentWarning,
   selectPostCreatedAt,
   selectPostDetailPath,
+  selectPostIsArtistInviteSubmission,
   selectPostIsCommentsRequesting,
   selectPostIsEmpty,
   selectPostIsGridMode,
@@ -68,11 +79,13 @@ import {
   selectPostShowEditor,
   selectPostSummary,
   selectPostViewsCountRounded,
+  selectOriginalPostArtistInvite,
+  selectOriginalPostArtistInviteSubmission,
   selectPropsPostId,
 } from '../selectors/post'
 import { selectAvatar } from '../selectors/profile'
 import {
-  selectIsDiscoverRoot,
+  selectShowCategoryHeader,
   selectIsPostDetail,
   selectPathname,
   selectPreviousPath,
@@ -85,6 +98,8 @@ export function makeMapStateToProps() {
       author: selectPostAuthor(state, props),
       categoryName: selectPostCategoryName(state, props),
       categoryPath: selectPostCategorySlug(state, props),
+      categoryPostStatus: selectPostCategoryPostStatusForPath(state, props),
+      categoryPostActions: selectPostCategoryPostActionsForPath(state, props),
       columnWidth: selectColumnWidth(state),
       commentOffset: selectCommentOffset(state),
       content: selectPostContent(state, props),
@@ -93,14 +108,21 @@ export function makeMapStateToProps() {
       detailPath: selectPostDetailPath(state, props),
       deviceSize: selectDeviceSize(state),
       innerHeight: selectInnerHeight(state),
+      innerWidth: selectInnerWidth(state),
+      isArtistInviteSubmission: selectPostIsArtistInviteSubmission(state, props),
+      artistInviteSubmission: selectPostArtistInviteSubmission(state, props),
+      artistInvite: selectPostArtistInvite(state, props),
+      submissionStatus: selectPostArtistInviteSubmissionStatus(state, props),
+      originalPostArtistInviteSubmission: selectOriginalPostArtistInviteSubmission(state, props),
+      originalPostArtistInvite: selectOriginalPostArtistInvite(state, props),
       isCommentsRequesting: selectPostIsCommentsRequesting(state, props),
-      isDiscoverRoot: selectIsDiscoverRoot(state, props),
-      isGridMode: selectPostIsGridMode(state, props),
+      showCategoryHeader: selectShowCategoryHeader(state, props),
+      isGridMode: !props.isLightBox && selectPostIsGridMode(state, props),
       isLoggedIn: selectIsLoggedIn(state),
       isMobile: selectIsMobile(state),
       isOwnOriginalPost: selectPostIsOwnOriginal(state, props),
       isOwnPost: selectPostIsOwn(state, props),
-      isPostDetail: selectIsPostDetail(state, props),
+      isPostDetail: !props.isRelatedPost && selectIsPostDetail(state, props),
       isPostEmpty: selectPostIsEmpty(state, props),
       isRepost: selectPostIsRepost(state, props),
       isReposting: selectPostIsReposting(state, props),
@@ -120,7 +142,7 @@ export function makeMapStateToProps() {
       repostAuthor: selectPostRepostAuthorWithFallback(state, props),
       repostContent: selectPostRepostContent(state, props),
       showCommentEditor: selectPostShowCommentEditor(state, props),
-      showEditor: selectPostShowEditor(state, props),
+      showEditor: !props.isLightBox && selectPostShowEditor(state, props),
       summary: selectPostSummary(state, props),
     })
 }
@@ -133,6 +155,8 @@ class PostContainer extends Component {
     avatar: PropTypes.object,
     categoryName: PropTypes.string,
     categoryPath: PropTypes.string,
+    categoryPostStatus: PropTypes.string,
+    categoryPostActions: PropTypes.object,
     columnWidth: PropTypes.number.isRequired,
     commentOffset: PropTypes.number.isRequired,
     content: PropTypes.object,
@@ -142,13 +166,20 @@ class PostContainer extends Component {
     deviceSize: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired,
     innerHeight: PropTypes.number.isRequired,
+    innerWidth: PropTypes.number.isRequired,
+    artistInviteSubmission: PropTypes.object,
+    artistInvite: PropTypes.object,
+    originalPostArtistInviteSubmission: PropTypes.object,
+    originalPostArtistInvite: PropTypes.object,
+    isArtistInviteSubmission: PropTypes.bool.isRequired,
     isCommentsRequesting: PropTypes.bool.isRequired,
-    isDiscoverRoot: PropTypes.bool.isRequired,
+    showCategoryHeader: PropTypes.bool.isRequired,
     isGridMode: PropTypes.bool.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
     isOwnOriginalPost: PropTypes.bool.isRequired,
     isOwnPost: PropTypes.bool.isRequired,
+    isNarrowPostDetail: PropTypes.bool,
     isPostDetail: PropTypes.bool.isRequired,
     isPostEmpty: PropTypes.bool.isRequired,
     isPostHeaderHidden: PropTypes.bool,
@@ -156,6 +187,8 @@ class PostContainer extends Component {
     isRepost: PropTypes.bool.isRequired,
     isReposting: PropTypes.bool.isRequired,
     isWatchingPost: PropTypes.bool.isRequired,
+    isLightBox: PropTypes.bool,
+    lightBoxSelectedIdPair: PropTypes.object,
     pathname: PropTypes.string.isRequired,
     post: PropTypes.object.isRequired,
     postBody: PropTypes.object,
@@ -170,22 +203,33 @@ class PostContainer extends Component {
     previousPath: PropTypes.string,
     repostAuthor: PropTypes.object,
     repostContent: PropTypes.object,
+    resizeLightBox: PropTypes.bool,
     showCommentEditor: PropTypes.bool.isRequired,
     showEditor: PropTypes.bool.isRequired,
     submissionStatus: PropTypes.string,
     summary: PropTypes.object,
+    toggleLightBox: PropTypes.func,
     type: PropTypes.string,
   }
 
   static defaultProps = {
     adminActions: null,
+    artistInviteSubmission: null,
+    artistInvite: null,
+    originalPostArtistInviteSubmission: null,
+    originalPostArtistInvite: null,
     avatar: null,
     categoryName: null,
     categoryPath: null,
+    categoryPostStatus: null,
+    categoryPostActions: null,
     content: null,
     contentWarning: null,
+    isNarrowPostDetail: false,
     isPostHeaderHidden: false,
     isRelatedPost: false,
+    isLightBox: false,
+    lightBoxSelectedIdPair: null,
     postBody: null,
     postCommentsCount: null,
     postCreatedAt: null,
@@ -197,12 +241,15 @@ class PostContainer extends Component {
     previousPath: null,
     repostAuthor: null,
     repostContent: null,
+    resizeLightBox: false,
     submissionStatus: null,
     summary: null,
+    toggleLightBox: null,
     type: null,
   }
 
   static childContextTypes = {
+    onClickAction: PropTypes.func.isRequired,
     onClickDeletePost: PropTypes.func.isRequired,
     onClickEditPost: PropTypes.func.isRequired,
     onClickFlagPost: PropTypes.func.isRequired,
@@ -226,6 +273,7 @@ class PostContainer extends Component {
   getChildContext() {
     const { isLoggedIn } = this.props
     return {
+      onClickAction: this.onClickAction,
       onClickDeletePost: this.onClickDeletePost,
       onClickEditPost: this.onClickEditPost,
       onClickFlagPost: this.onClickFlagPost,
@@ -250,7 +298,19 @@ class PostContainer extends Component {
     if (nextProps.isPostEmpty) { return false }
     return !Immutable.is(nextProps.post, this.props.post) ||
       !Immutable.is(nextProps.adminActions, this.props.adminActions) ||
-      ['columnWidth', 'contentWidth', 'innerHeight', 'isGridMode', 'isLoggedIn', 'isMobile', 'submissionStatus'].some(prop =>
+      [
+        'columnWidth',
+        'contentWidth',
+        'innerHeight',
+        'innerWidth',
+        'isGridMode',
+        'isLoggedIn',
+        'isMobile',
+        'submissionStatus',
+        'lightBoxSelectedIdPair',
+        'resizeLightBox',
+        'categoryPostStatus',
+      ].some(prop =>
         nextProps[prop] !== this.props[prop],
       )
   }
@@ -304,10 +364,21 @@ class PostContainer extends Component {
   }
 
   onClickRepostPost = () => {
-    const { detailPath, dispatch, isRelatedPost, post, postReposted } = this.props
+    const {
+      detailPath,
+      deviceSize,
+      dispatch,
+      isGridMode,
+      isRelatedPost,
+      post,
+      postReposted,
+    } = this.props
     if (!postReposted && !isRelatedPost) {
       dispatch(toggleReposting(post, true))
       dispatch(loadEditablePost(post.get('id')))
+      if (isGridMode && deviceSize === 'mobile') {
+        dispatch(push(detailPath))
+      }
     } else {
       dispatch(push(detailPath))
       this.onTrackRelatedPostClick()
@@ -360,7 +431,6 @@ class PostContainer extends Component {
     }
   }
 
-
   onCloseModal = () => {
     const { dispatch } = this.props
     dispatch(closeModal())
@@ -374,6 +444,16 @@ class PostContainer extends Component {
   onOpenSignupModal = () => {
     const { onClickOpenRegistrationRequestDialog } = this.context
     onClickOpenRegistrationRequestDialog('post-tools')
+  }
+
+  onClickAction = (action) => {
+    const { dispatch } = this.props
+    dispatch(sendAdminAction(action))
+  }
+
+  onFireCategoryPostAction = (action) => {
+    const { dispatch } = this.props
+    dispatch(sendCategoryPostAction(action))
   }
 
   getUserModalTabs() {
@@ -392,9 +472,15 @@ class PostContainer extends Component {
     const {
       adminActions,
       author,
+      artistInvite,
+      artistInviteSubmission,
+      originalPostArtistInvite,
+      originalPostArtistInviteSubmission,
       avatar,
       categoryName,
       categoryPath,
+      categoryPostStatus,
+      categoryPostActions,
       columnWidth,
       commentOffset,
       content,
@@ -402,13 +488,16 @@ class PostContainer extends Component {
       contentWidth,
       detailPath,
       innerHeight,
+      innerWidth,
+      isArtistInviteSubmission,
       isCommentsRequesting,
-      isDiscoverRoot,
+      showCategoryHeader,
       isGridMode,
       isLoggedIn,
       isMobile,
       isOwnOriginalPost,
       isOwnPost,
+      isNarrowPostDetail,
       isPostDetail,
       isPostEmpty,
       isPostHeaderHidden,
@@ -416,6 +505,8 @@ class PostContainer extends Component {
       isRepost,
       isReposting,
       isWatchingPost,
+      isLightBox,
+      lightBoxSelectedIdPair,
       post,
       postBody,
       postCommentsCount,
@@ -428,28 +519,21 @@ class PostContainer extends Component {
       postViewsCountRounded,
       repostAuthor,
       repostContent,
+      resizeLightBox,
       showCommentEditor,
       showEditor,
       submissionStatus,
       summary,
+      toggleLightBox,
       type,
     } = this.props
     const { onLaunchNativeEditor } = this.context
     if (isPostEmpty || !author || !author.get('id')) { return null }
     let postHeader
     const headerProps = { detailPath, postCreatedAt, postId }
-    if (isRepost) {
-      postHeader = (
-        <RepostHeader
-          {...headerProps}
-          inUserDetail={isPostHeaderHidden}
-          repostAuthor={repostAuthor}
-          repostedBy={author}
-        />
-      )
-    } else if (isPostHeaderHidden) {
+    if (isLightBox || (!isRepost && isPostHeaderHidden)) {
       postHeader = null
-    } else if (isDiscoverRoot && categoryName && categoryPath) {
+    } else if (!isRepost && showCategoryHeader && categoryName && categoryPath) {
       postHeader = (
         <CategoryHeader
           {...headerProps}
@@ -458,12 +542,44 @@ class PostContainer extends Component {
           categoryPath={categoryPath}
         />
       )
+    } else if (!isRepost && showCategoryHeader && isArtistInviteSubmission) {
+      postHeader = (
+        <ArtistInviteSubmissionHeader
+          {...headerProps}
+          author={author}
+        />
+      )
+    } else if (isPostDetail) {
+      postHeader = (
+        <PostDetailHeader
+          {...headerProps}
+          author={repostAuthor || author}
+          repostedBy={repostAuthor ? author : null}
+          artistInviteSubmission={artistInviteSubmission}
+          artistInviteSubmissionStatus={submissionStatus}
+          artistInvite={artistInvite}
+          originalPostArtistInviteSubmission={originalPostArtistInviteSubmission}
+          originalPostArtistInvite={originalPostArtistInvite}
+          innerWidth={innerWidth}
+          inUserDetail={repostAuthor ? isPostHeaderHidden : null}
+          isArtistInviteSubmission={isArtistInviteSubmission}
+          isRepost={isRepost}
+          isOwnPost={isOwnPost}
+        />
+      )
     } else {
       postHeader = (
         <PostHeader
           {...headerProps}
-          author={author}
-          isPostDetail={isPostDetail}
+          author={repostAuthor || author}
+          repostedBy={repostAuthor ? author : null}
+          inUserDetail={repostAuthor ? isPostHeaderHidden : null}
+          isArtistInviteSubmission={isArtistInviteSubmission}
+          isRepost={isRepost}
+          isOwnPost={isOwnPost}
+          categoryPostStatus={categoryPostStatus}
+          categoryPostActions={categoryPostActions}
+          categoryPostFireAction={this.onFireCategoryPostAction}
         />
       )
     }
@@ -482,6 +598,7 @@ class PostContainer extends Component {
             {...{
               author,
               detailPath,
+              innerWidth,
               isCommentsActive: this.state.isCommentsActive,
               isCommentsRequesting,
               isGridMode,
@@ -501,6 +618,7 @@ class PostContainer extends Component {
               postReposted,
               postRepostsCount,
               postViewsCountRounded,
+              toggleLightBox,
             }}
           />
         )
@@ -534,6 +652,32 @@ class PostContainer extends Component {
           />
         )
       case 'PostDetailBody':
+        if (isPostDetail) {
+          return (
+            <PostBodyWithLightBox
+              {...{
+                author,
+                columnWidth,
+                commentOffset,
+                content,
+                contentWarning,
+                contentWidth,
+                detailPath,
+                innerHeight,
+                innerWidth,
+                isGridMode,
+                isPostDetail,
+                isRepost,
+                post,
+                postId,
+                repostContent,
+                showEditor,
+                summary,
+                supportsNativeEditor,
+              }}
+            />
+          )
+        }
         return (
           <PostBody
             {...{
@@ -545,6 +689,7 @@ class PostContainer extends Component {
               contentWidth,
               detailPath,
               innerHeight,
+              innerWidth,
               isGridMode,
               isPostDetail,
               isRepost,
@@ -571,6 +716,7 @@ class PostContainer extends Component {
               contentWidth,
               detailPath,
               innerHeight,
+              innerWidth,
               isCommentsActive: this.state.isCommentsActive,
               isCommentsRequesting,
               isGridMode,
@@ -578,12 +724,15 @@ class PostContainer extends Component {
               isMobile,
               isOwnOriginalPost,
               isOwnPost,
+              isNarrowPostDetail,
               isPostDetail,
               isPostHeaderHidden,
               isRelatedPost,
               isRepost,
               isRepostAnimating,
               isWatchingPost,
+              isLightBox,
+              lightBoxSelectedIdPair,
               post,
               postCommentsCount,
               postCreatedAt,
@@ -595,11 +744,13 @@ class PostContainer extends Component {
               postRepostsCount,
               postViewsCountRounded,
               repostContent,
+              resizeLightBox,
               showCommentEditor,
               showEditor,
               submissionStatus,
               summary,
               supportsNativeEditor,
+              toggleLightBox,
             }}
           />
         )

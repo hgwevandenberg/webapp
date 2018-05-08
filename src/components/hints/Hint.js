@@ -37,7 +37,11 @@ const hintStyle = css(
   parent('.no-touch', s.inlineBlock),
   parent('.no-touch a:hover >', showHintStyle),
   parent('.no-touch button:hover >', showHintStyle),
+  parent('.no-touch .contains-hint:hover >', showHintStyle),
+  parent('.PostTool.DeleteTool', { left: -16 }, s.fontSize14),
+  parent('.PostTool.EditTool', { left: -10 }, s.fontSize14),
   parent('.BlockMuteButton', { top: 5, left: 30 }, s.fontSize14),
+  parent('.featured-badge', s.zIndex3, { top: -30, left: -62 }), // category featured promo hero header
   media(s.minBreak2,
     parent('.BlockMuteButton', { top: 5, left: 30 }, s.fontSize14),
     parent('.PostDetail', modifier('.Flag', { left: -65 })),

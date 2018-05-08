@@ -6,69 +6,86 @@ import { loadEditorials } from '../actions/editorials'
 import StreamContainer from '../containers/StreamContainer'
 import { HeroHeader } from '../components/heros/HeroRenderables'
 import { MainView } from '../components/views/MainView'
-import { selectQueryPreview } from '../selectors/routing'
+import { trackPostViews } from '../actions/posts'
 import { media } from '../styles/jss'
 import { maxBreak2 } from '../styles/jso'
-import { selectDPI } from '../selectors/gui'
+import { selectQueryPreview } from '../selectors/routing'
+import { selectRandomPageHeader } from '../selectors/page_headers'
+import { selectUser } from '../selectors/user'
+import { selectHeroDPI } from '../selectors/gui'
 
 const streamStyle = media(maxBreak2, {
   paddingLeft: '0 !important',
   paddingRight: '0 !important',
 })
 
-const mapStateToProps = state => ({
-  dpi: selectDPI(state),
-  isPreview: selectQueryPreview(state) === 'true',
-})
+function mapStateToProps(state) {
+  const pageHeader = selectRandomPageHeader(state)
+  const user = pageHeader ? selectUser(state, { userId: pageHeader.get('userId') }) : null
+  return {
+    dpi: selectHeroDPI(state),
+    isPreview: selectQueryPreview(state) === 'true',
+    pageHeader,
+    user,
+  }
+}
 
 class EditorialPage extends Component {
 
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     dpi: PropTypes.string.isRequired,
-    isPreview: PropTypes.boolean,
-    sources: PropTypes.object,
-    avatarSources: PropTypes.object,
+    isPreview: PropTypes.bool,
+    pageHeader: PropTypes.object,
+    user: PropTypes.object,
   }
 
   static defaultProps = {
     isPreview: false,
-    sources: Immutable.fromJS({
-      optimized: { url: 'https://assets1.ello.co/uploads/asset/attachment/2542523/ello-optimized-c553b9c7.jpg', metadata: 'optimized' },
-      mdpi: { url: 'https://assets1.ello.co/uploads/asset/attachment/2542523/ello-mdpi-c553b9c7.jpg', metadata: 'mdpi' },
-      hdpi: { url: 'https://assets2.ello.co/uploads/asset/attachment/2542523/ello-hdpi-c553b9c7.jpg', metadata: 'hdpi' },
-      xhdpi: { url: 'https://assets0.ello.co/uploads/asset/attachment/2542523/ello-xhdpi-c553b9c7.jpg', metadata: 'xhdpi' },
-    }),
-    avatarSources: Immutable.fromJS({
-      original: { url: 'https://assets1.ello.co/uploads/user/avatar/930194/ello-b7ae736f-cb24-4994-898e-219be1b0f29d.gif', metadata: 'optimized' },
-      small: { url: 'https://assets1.ello.co/uploads/user/avatar/930194/ello-small-b851c6c6.png', metadata: 'mdpi' },
-      regular: { url: 'https://assets0.ello.co/uploads/user/avatar/930194/ello-regular-b851c6c6.png', metadata: 'hdpi' },
-      large: { url: 'https://assets0.ello.co/uploads/user/avatar/930194/ello-large-b851c6c6.png', metadata: 'xhdpi' },
-    }),
+    pageHeader: null,
+    user: null,
   }
 
-  shouldComponentUpdate() {
-    return false
+  shouldComponentUpdate(nextProps) {
+    return !Immutable.is(nextProps.pageHeader, this.props.pageHeader) ||
+      ['dpi'].some(prop =>
+        nextProps[prop] !== this.props[prop],
+      )
+  }
+
+  componentDidUpdate() {
+    const { dispatch, pageHeader } = this.props
+    if (pageHeader && pageHeader.get('postToken')) {
+      dispatch(trackPostViews([], [pageHeader.get('postToken')], 'promo'))
+    }
   }
 
   render() {
-    const { dpi, sources, avatarSources } = this.props
+    const { dpi, user, pageHeader } = this.props
+    let hero
+    if (pageHeader) {
+      const header = pageHeader.get('header', '')
+      const subheader = pageHeader.get('subheader', '')
+      const avatarSources = user.get('avatar', null)
+      const username = user.get('username', null)
+      const sources = pageHeader.get('image', null)
+      hero = (<HeroHeader
+        dpi={dpi}
+        headerText={header}
+        subHeaderText={subheader}
+        sources={sources}
+        avatarSources={avatarSources}
+        username={username}
+      />)
+    }
     return (
       <MainView className="Editorial">
-        <HeroHeader
-          dpi={dpi}
-          headerText="THE CREATORS NETWORK"
-          subHeaderText="Ello is a global <a href='https://ello.co/wtf/artists/'>community of artists</a> dedicated to creative excellence. Built by artists, for artists."
-          sources={sources}
-          avatarSources={avatarSources}
-          username="velvetspectrum"
-        />
+        { hero }
         <StreamContainer
           action={loadEditorials(this.props.isPreview)}
           className={`${streamStyle}`}
-          hasShowMoreButton
           paginatorText="Load More"
           paginatorCentered
-          shouldInfiniteScroll={false}
         />
       </MainView>
     )

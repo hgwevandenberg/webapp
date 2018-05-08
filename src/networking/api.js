@@ -3,6 +3,7 @@ import * as ENV from '../../env'
 
 const API_VERSION = 'v2'
 const PER_PAGE = 25
+const ARTIST_INVITES_PER_PAGE = 20
 const basePath = () => `${ENV.API_DOMAIN}/api`
 
 function getAPIPath(relPath, queryParams = {}) {
@@ -27,7 +28,10 @@ export function editorials(isPreview) {
 }
 // Artist Invites
 export function artistInvites(isPreview) {
-  const query = { per_page: PER_PAGE, ...getPagingQueryParams(window.location.search) }
+  const query = {
+    per_page: ARTIST_INVITES_PER_PAGE,
+    ...getPagingQueryParams(window.location.search),
+  }
   if (isPreview) { query.preview = true }
   return {
     path: getAPIPath('artist_invites', query),
@@ -149,13 +153,6 @@ export function followCategories() {
   }
 }
 // Onboarding
-export function awesomePeoplePath() {
-  const params = { per_page: PER_PAGE }
-  return {
-    path: getAPIPath('discover/users/onboarding', params),
-    params,
-  }
-}
 export function communitiesPath() {
   const params = { name: 'onboarding', per_page: PER_PAGE }
   return {
@@ -171,7 +168,7 @@ export function relationshipBatchPath() {
 // Badges
 export function badges() {
   return {
-    path: getAPIPath('badges.json'),
+    path: getAPIPath('badges.json', { timestamp: '1516732706' }),
   }
 }
 // Categories
@@ -188,18 +185,7 @@ export function categoryPosts(type) {
 }
 export function pagePromotionals() {
   return {
-    path: getAPIPath('page_promotionals'),
-  }
-}
-// Discover
-export function discoverPosts(type) {
-  const params = {
-    per_page: PER_PAGE,
-    ...getPagingQueryParams(window.location.search),
-  }
-  return {
-    path: getAPIPath(`discover/posts/${type}`, params),
-    params,
+    path: getAPIPath('page_promotionals?include_extras=true'),
   }
 }
 // Streams

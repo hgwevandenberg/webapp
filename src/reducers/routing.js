@@ -16,6 +16,7 @@ export default (state = initialState, { type, payload }) => {
         state: get(payload, 'locationBeforeTransitions.state', get(payload, 'state')),
         terms: get(payload, 'locationBeforeTransitions.query.terms', get(payload, 'query.terms', undefined)),
         preview: get(payload, 'locationBeforeTransitions.query.preview', get(payload, 'query.preview', undefined)),
+        submissionType: get(payload, 'locationBeforeTransitions.query.submissionType', get(payload, 'query.submissionType', undefined)),
       },
       locationBeforeTransitions: payload.locationBeforeTransitions || payload,
       previousPath: state.getIn(['location', 'pathname']),

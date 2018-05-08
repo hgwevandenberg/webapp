@@ -1,5 +1,5 @@
 // JavaScript Style Objects (jso)
-import { css, media } from './jss'
+import { css, media, after } from './jss'
 
 // TODO: Note web vs native properties
 // TODO: Should web only props live in cso?
@@ -21,6 +21,8 @@ export const minBreak6 = '(min-width: 130em)'     // 6: 2080 / 16 = 130em
 export const minBreak7 = '(min-width: 152.5em)'   // 7: 2440 / 16 = 152.5em
 
 export const maxBreak2 = '(max-width: 39.9375em)' // 2: 639  / 16 = 39.9375em
+export const maxBreak3 = '(max-width: 59.9375em)' // 3: 959  / 16 = 59.9375em
+export const maxBreak4 = '(max-width: 84.9375em)' // 4: 1359 / 16 = 84.9375em
 
 export const ease = 'cubic-bezier(0.23, 1, 0.32, 1)'
 export const easeInOutQuart = 'cubic-bezier(0.77, 0, 0.175, 1)'
@@ -101,7 +103,9 @@ export const overflowScrollWebY = { WebkitOverflowScrolling: 'touch', overflowX:
 export const fit = { maxWidth: '100%' }
 export const fullWidth = { width: '100%' }
 export const fullHeight = { height: '100%' }
+export const maxViewWidth = { maxWidth: 1440 }
 export const maxSiteWidth = { maxWidth: 1360 }
+export const maxSiteWidthPadded = { maxWidth: 1440, paddingLeft: 40, paddingRight: 40 }
 
 export const wv20 = { width: 20 }
 export const wv30 = { width: 30 }
@@ -252,6 +256,13 @@ export const alignBaseline = { verticalAlign: 'baseline' }
 export const alignTop = { verticalAlign: 'top' }
 export const alignMiddle = { verticalAlign: 'middle' }
 export const alignBottom = { verticalAlign: 'bottom' }
+// containedAlignMiddle - needs to be inside another container with a height
+export const containedAlignMiddle = { top: '50%', transform: 'translateY(-50%)' }
+export const containedAlignFull = {
+  top: '50%',
+  left: '50%',
+  transform: 'translateY(-50%) translateX(-50%)',
+}
 
 // -------------------------------------
 // Typography
@@ -321,6 +332,7 @@ export const nowrap = { whiteSpace: 'nowrap' }
 export const breakWord = { wordWrap: 'break-word' }
 export const ellipsis = { textOverflow: 'ellipsis' }
 export const truncate = { ...fit, ...overflowHidden, ...ellipsis, ...nowrap }
+export const resetList = { listStyleType: 'none', margin: 0 }
 
 // -------------------------------------
 // Colors, backgrounds, opacity & fills
@@ -334,9 +346,11 @@ export const colorC = { color: '#ccc' }
 export const colorWhite = { color: '#fff' }
 export const colorGreen = { color: '#00d100' }
 export const colorYellow = { color: '#ffc600' }
+export const colorRed = { color: '#c90000' }
 
 export const bgcCurrentColor = { backgroundColor: 'currentColor' }
 export const bgcTransparent = { backgroundColor: 'transparent' }
+export const bgcModal = { backgroundColor: 'rgba(26, 26, 26, 0.9)' }
 export const bgcBlack = { backgroundColor: '#000' }
 export const bgc4 = { backgroundColor: '#4d4d4d' }
 export const bgc6 = { backgroundColor: '#666' }
@@ -361,6 +375,7 @@ export const borderBottom = { borderBottom: '1px solid' }
 export const borderBlack = { border: '1px solid #000' }
 export const borderWhite = { border: '1px solid #fff' }
 export const borderGreen = { border: '1px solid #00d100' }
+export const strokeGreen = { stroke: '#00d100' }
 export const borderA = { border: '1px solid #aaa' }
 
 // -------------------------------------
@@ -392,3 +407,23 @@ export const hitarea = {
   backgroundColor: 'rgba(0, 0, 0, 0)',
 }
 
+// usually apply to :after of a container element
+export const clearFix = css(
+  after({
+    content: '""',
+    display: 'block',
+    clear: 'both',
+  }),
+)
+
+// reset input styling
+export const resetInput = css(
+  {
+    border: 'none',
+    backgroundColor: 'transparent',
+    boxShadow: 'none',
+    WebkitBoxShadow: 'none',
+    MozBoxShadow: 'none',
+    outline: 'none',
+  },
+)

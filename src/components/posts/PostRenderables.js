@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import classNames from 'classnames'
+import withLightBoxContainer from '../../containers/LightBoxContainer'
 import Avatar from '../assets/Avatar'
 import {
   ArrowIcon,
@@ -14,10 +15,17 @@ import {
 import { DismissButtonLG } from '../buttons/Buttons'
 import Editor from '../editor/Editor'
 import ContentWarningButton from '../posts/ContentWarningButton'
-import { PostTools } from '../posts/PostTools'
+import {
+  FeatureCategoryPostTool,
+  PostTools,
+  EditTool,
+  DeleteTool,
+  ArtistInviteSubmissionStatusTool,
+} from '../posts/PostTools'
 import { TabListButtons } from '../tabs/TabList'
 import RelationshipContainer from '../../containers/RelationshipContainer'
 import StreamContainer from '../../containers/StreamContainer'
+import CategoryPostHistory from '../../containers/CategoryPostHistoryContainer'
 import { RegionItems } from '../regions/RegionRenderables'
 import { loadUserDrawer } from '../../actions/user'
 import { loadComments } from '../../actions/posts'
@@ -37,6 +45,18 @@ const adminActionsStyle = css(
   s.justifyCenter,
   s.mb10,
   { marginTop: -10 },
+  // post detail instance
+  select('.header-holder &.post-admin-actions',
+    s.m0,
+    media(s.maxBreak3,
+      s.mb10,
+      s.mt10,
+      {
+        marginLeft: -10,
+        width: 'calc(100% + 20px)',
+      },
+    ),
+  ),
 )
 
 const actionButtonStyle = css(
@@ -51,6 +71,7 @@ const actionButtonStyle = css(
   select('> .SVGIcon.CheckCircleIcon', { marginTop: -2, marginRight: 7 }),
   select('> .StarIcon', { paddingTop: 2, paddingLeft: 2 }),
   select('> .XBoxIcon', s.displayNone),
+  select('.decline .XBoxIcon', s.inline),
   modifier(
     '.select',
     hover(
@@ -63,7 +84,7 @@ const actionButtonStyle = css(
     s.colorGreen,
     hover(
       select('> .CheckCircleIcon', s.displayNone),
-      after({ content: '"Unapprove"' }),
+      after({ content: '"Unaccept"' }),
     ),
     select('> .CheckCircleIcon', s.inlineBlock),
   ),
@@ -80,6 +101,8 @@ const actionButtonStyle = css(
 
 const getActionIcon = (type) => {
   switch (type) {
+    case 'decline':
+      return <XBoxIcon />
     case 'approve':
       return <CheckCircleIcon />
     case 'select':
@@ -94,17 +117,24 @@ const getActionIcon = (type) => {
 }
 
 export const PostAdminActions = ({ actions, status }, { onClickAction }) => (
-  <div className={`${adminActionsStyle} ${status}`}>
-    {actions.entrySeq().map(([type, action]) => (
-      <button
-        className={`${actionButtonStyle} ${type}`}
-        onClick={() => onClickAction(action)}
-        data-label={action.get('label')}
-        key={type}
-      >
-        {getActionIcon(type)}
-      </button>
-    ))}
+  <div className={`post-admin-actions ${adminActionsStyle} ${status}`}>
+    {actions.entrySeq().map(([type, action]) => {
+      if (!action) { return null }
+      const label = action.get('label')
+        .replace('Approved', 'Accepted')
+        .replace('Approve', 'Accept')
+
+      return (
+        <button
+          className={`${actionButtonStyle} ${type}`}
+          onClick={() => onClickAction(action)}
+          data-label={label}
+          key={type}
+        >
+          {getActionIcon(type)}
+        </button>
+      )
+    })}
   </div>
 )
 PostAdminActions.propTypes = {
@@ -124,19 +154,200 @@ PostHeaderTimeAgoLink.propTypes = {
   to: PropTypes.string.isRequired,
 }
 
+export class PostDetailHeader extends PureComponent {
+  static propTypes = {
+    author: PropTypes.object.isRequired,
+    repostedBy: PropTypes.object,
+    artistInviteSubmission: PropTypes.object,
+    artistInvite: PropTypes.object,
+    originalPostArtistInviteSubmission: PropTypes.object,
+    originalPostArtistInvite: PropTypes.object,
+    detailPath: PropTypes.string.isRequired,
+    innerWidth: PropTypes.number.isRequired,
+    inUserDetail: PropTypes.bool,
+    isOwnPost: PropTypes.bool.isRequired,
+    isRepost: PropTypes.bool.isRequired,
+    postCreatedAt: PropTypes.string.isRequired,
+    postId: PropTypes.string.isRequired,
+    artistInviteSubmissionStatus: PropTypes.string,
+  }
+
+  static defaultProps = {
+    repostedBy: null,
+    artistInvite: null,
+    artistInviteSubmission: null,
+    artistInviteSubmissionStatus: null,
+    inUserDetail: null,
+  }
+
+  render() {
+    const {
+      author,
+      repostedBy,
+      artistInvite,
+      artistInviteSubmission,
+      artistInviteSubmissionStatus,
+      originalPostArtistInvite,
+      originalPostArtistInviteSubmission,
+      detailPath,
+      innerWidth,
+      inUserDetail,
+      isOwnPost,
+      isRepost,
+      postCreatedAt,
+      postId,
+    } = this.props
+
+    const isArtistInviteSubmission = !!(artistInvite || originalPostArtistInvite)
+    const displayInvite = (artistInvite || originalPostArtistInvite)
+    const displaySubmission = (artistInviteSubmission || originalPostArtistInviteSubmission)
+    const isArtistInviteAdmin = !!artistInviteSubmission && !!artistInviteSubmission.get('actions')
+
+    return (
+      <div className="header-holder">
+        {isArtistInviteAdmin && innerWidth > 959 &&
+          <PostAdminActions
+            status={artistInviteSubmissionStatus}
+            actions={artistInviteSubmission.get('actions')}
+          />
+        }
+        <header
+          className={classNames('PostHeader PostDetailHeader', isRepost ? 'RepostHeader RepostDetailHeader' : '', { inUserDetail, isOwnPost })}
+          key={`PostHeader_${postId}`}
+        >
+          <div className="PostHeaderLeft">
+            <Link className="PostHeaderLinkAvatar" to={`/${author.get('username')}`}>
+              <Avatar
+                priority={author.get('relationshipPriority')}
+                sources={author.get('avatar')}
+                userId={`${author.get('id')}`}
+                username={author.get('username')}
+              />
+            </Link>
+            <div className="PostHeaderLinks">
+              <Link className={!isRepost ? 'FullNameLink' : 'UserNameLink RepostAuthor'} to={`/${author.get('username')}`}>
+                <span
+                  className={`DraggableUsername${!isRepost && author.get('name') ? ' PostHeaderAuthorName' : 'PostHeaderAuthorUsername'}`}
+                  data-priority={author.get('relationshipPriority') || 'inactive'}
+                  data-userid={author.get('id')}
+                  data-username={author.get('username')}
+                  draggable
+                >
+                  {!isRepost && author.get('name') ?
+                    author.get('name')
+                    :
+                    `@${author.get('username')}`
+                  }
+                  {isRepost &&
+                    <RelationshipContainer className="isInHeader" user={author} />
+                  }
+                </span>
+              </Link>
+              {!isRepost && author.get('name') &&
+                <Link className="UserNameLink" to={`/${author.get('username')}`}>
+                  <span
+                    className="DraggableUsername PostHeaderAuthorUsername"
+                    data-priority={author.get('relationshipPriority') || 'inactive'}
+                    data-userid={author.get('id')}
+                    data-username={author.get('username')}
+                    draggable
+                  >
+                    {`@${author.get('username')}`}
+                  </span>
+                </Link>
+              }
+              {isRepost &&
+                <Link className="UserNameLink" to={`/${repostedBy.get('username')}`}>
+                  <RepostIcon />
+                  <span
+                    className="DraggableUsername"
+                    data-priority={repostedBy.get('relationshipPriority') || 'inactive'}
+                    data-userid={repostedBy.get('id')}
+                    data-username={repostedBy.get('username')}
+                    draggable
+                  >
+                    {` by @${repostedBy.get('username')}`}
+                  </span>
+                </Link>
+              }
+            </div>
+          </div>
+          <div className="PostHeaderTools">
+            <PostHeaderTimeAgoLink to={detailPath} createdAt={postCreatedAt} />
+            {isOwnPost &&
+              <span>
+                <EditTool />
+                <DeleteTool />
+              </span>
+            }
+            {isArtistInviteSubmission &&
+              <span>
+                <ArtistInviteSubmissionStatusTool
+                  status={displaySubmission.get('status')}
+                  slug={displayInvite.get('slug')}
+                  title={displayInvite.get('title')}
+                />
+              </span>
+            }
+            {!repostedBy &&
+              <RelationshipContainer className="isInHeader" user={author} />
+            }
+          </div>
+        </header>
+        {isArtistInviteAdmin && innerWidth < 960 &&
+          <PostAdminActions
+            status={artistInviteSubmissionStatus}
+            actions={artistInviteSubmission.get('actions')}
+          />
+        }
+      </div>
+    )
+  }
+}
+
 export class PostHeader extends PureComponent {
   static propTypes = {
     author: PropTypes.object.isRequired,
+    categoryPostStatus: PropTypes.string,
+    categoryPostActions: PropTypes.object,
+    categoryPostFireAction: PropTypes.func.isRequired,
+    repostedBy: PropTypes.object,
     detailPath: PropTypes.string.isRequired,
-    isPostDetail: PropTypes.bool.isRequired,
+    inUserDetail: PropTypes.bool,
+    isOwnPost: PropTypes.bool.isRequired,
+    isRepost: PropTypes.bool.isRequired,
     postCreatedAt: PropTypes.string.isRequired,
     postId: PropTypes.string.isRequired,
   }
+
+  static defaultProps = {
+    categoryPostStatus: null,
+    categoryPostActions: null,
+    repostedBy: null,
+    inUserDetail: null,
+  }
+
   render() {
-    const { author, detailPath, isPostDetail, postCreatedAt, postId } = this.props
+    const {
+      author,
+      categoryPostStatus,
+      categoryPostActions,
+      categoryPostFireAction,
+      repostedBy,
+      detailPath,
+      inUserDetail,
+      isOwnPost,
+      isRepost,
+      postCreatedAt,
+      postId,
+    } = this.props
+
     return (
-      <header className="PostHeader" key={`PostHeader_${postId}`}>
-        <div className="PostHeaderAuthor">
+      <header
+        className={classNames('PostHeader', isRepost ? 'RepostHeader' : '', { inUserDetail, isOwnPost })}
+        key={`PostHeader_${postId}`}
+      >
+        <div className={`PostHeaderAuthor ${isRepost ? 'RepostHeaderAuthor' : ''}`}>
           <Link className="PostHeaderLink" to={`/${author.get('username')}`}>
             <Avatar
               priority={author.get('relationshipPriority')}
@@ -151,33 +362,81 @@ export class PostHeader extends PureComponent {
               data-username={author.get('username')}
               draggable
             >
-              {isPostDetail && author.get('name') ?
-                <span>
-                  <span className="PostHeaderAuthorName">{author.get('name')}</span>
-                </span>
-                :
-                `@${author.get('username')}`
-              }
+              {`@${author.get('username')}`}
             </span>
           </Link>
         </div>
         <RelationshipContainer className="isInHeader" user={author} />
-        {isPostDetail && author.get('name') &&
-          <div className="PostDetailHeaderUsername">
-            <Link className="PostHeaderLink" to={`/${author.get('username')}`}>
+        {isRepost &&
+          <div className="RepostHeaderReposter">
+            <Link className="PostHeaderLink" to={`/${repostedBy.get('username')}`}>
+              <RepostIcon />
               <span
-                className="DraggableUsername PostHeaderAuthorUsername"
-                data-priority={author.get('relationshipPriority') || 'inactive'}
-                data-userid={author.get('id')}
-                data-username={author.get('username')}
+                className="DraggableUsername"
+                data-priority={repostedBy.get('relationshipPriority') || 'inactive'}
+                data-userid={repostedBy.get('id')}
+                data-username={repostedBy.get('username')}
                 draggable
               >
-                {`@${author.get('username')}`}
+                {` by @${repostedBy.get('username')}`}
               </span>
             </Link>
           </div>
         }
-        <PostHeaderTimeAgoLink to={detailPath} createdAt={postCreatedAt} />
+        <div className="PostHeaderTools">
+          <PostHeaderTimeAgoLink to={detailPath} createdAt={postCreatedAt} />
+          {categoryPostActions &&
+            <FeatureCategoryPostTool
+              status={categoryPostStatus}
+              actions={categoryPostActions}
+              fireAction={categoryPostFireAction}
+            />
+          }
+        </div>
+      </header>
+    )
+  }
+}
+
+export class ArtistInviteSubmissionHeader extends PureComponent {
+  static propTypes = {
+    author: PropTypes.object.isRequired,
+    detailPath: PropTypes.string.isRequired,
+    postCreatedAt: PropTypes.string.isRequired,
+    postId: PropTypes.string.isRequired,
+  }
+  render() {
+    const { author, detailPath, postCreatedAt, postId } = this.props
+    return (
+      <header className="ArtistInviteSubmissionHeader" key={`ArtistInviteSubmissionHeader_${postId}`}>
+        <div className="ArtistInviteSubmissionHeaderAuthor">
+          <Link className="PostHeaderLink" to={`/${author.get('username')}`}>
+            <Avatar
+              priority={author.get('relationshipPriority')}
+              sources={author.get('avatar')}
+              userId={`${author.get('id')}`}
+              username={author.get('username')}
+            />
+            <span
+              className="DraggableUsername"
+              data-priority={author.get('relationshipPriority') || 'inactive'}
+              data-userid={author.get('id')}
+              data-username={author.get('username')}
+              draggable
+            >
+              {`@${author.get('username')}`}
+            </span>
+          </Link>
+        </div>
+        <RelationshipContainer className="isInHeader" user={author} />
+        <div className="ArtistInviteSubmissionHeaderInvite">
+          <Link className="PostHeaderLink" to="/artist-invites">
+            <span className="ArtistInviteSubmissionHeaderInviteName">Artist Invite Submission</span>
+          </Link>
+        </div>
+        <div className="PostHeaderTools">
+          <PostHeaderTimeAgoLink to={detailPath} createdAt={postCreatedAt} />
+        </div>
       </header>
     )
   }
@@ -222,60 +481,9 @@ export class CategoryHeader extends PureComponent {
             <span className="CategoryHeaderCategoryName">{categoryName}</span>
           </Link>
         </div>
-        <PostHeaderTimeAgoLink to={detailPath} createdAt={postCreatedAt} />
-      </header>
-    )
-  }
-}
-
-export class RepostHeader extends PureComponent {
-  static propTypes = {
-    detailPath: PropTypes.string.isRequired,
-    inUserDetail: PropTypes.bool.isRequired,
-    postCreatedAt: PropTypes.string.isRequired,
-    postId: PropTypes.string.isRequired,
-    repostAuthor: PropTypes.object.isRequired,
-    repostedBy: PropTypes.object.isRequired,
-  }
-  render() {
-    const { detailPath, inUserDetail, postCreatedAt, postId, repostAuthor, repostedBy } = this.props
-    return (
-      <header className={classNames('RepostHeader', { inUserDetail })} key={`RepostHeader_${postId}`}>
-        <div className="RepostHeaderAuthor">
-          <Link className="PostHeaderLink" to={`/${repostAuthor.get('username')}`}>
-            <Avatar
-              priority={repostAuthor.get('relationshipPriority')}
-              sources={repostAuthor.get('avatar')}
-              userId={`${repostAuthor.get('id')}`}
-              username={repostAuthor.get('username')}
-            />
-            <span
-              className="DraggableUsername"
-              data-priority={repostAuthor.get('relationshipPriority') || 'inactive'}
-              data-userid={repostAuthor.get('id')}
-              data-username={repostAuthor.get('username')}
-              draggable
-            >
-              {`@${repostAuthor.get('username')}`}
-            </span>
-          </Link>
+        <div className="PostHeaderTools">
+          <PostHeaderTimeAgoLink to={detailPath} createdAt={postCreatedAt} />
         </div>
-        <RelationshipContainer className="isInHeader" user={repostAuthor} />
-        <div className="RepostHeaderReposter">
-          <Link className="PostHeaderLink" to={`/${repostedBy.get('username')}`}>
-            <RepostIcon />
-            <span
-              className="DraggableUsername"
-              data-priority={repostedBy.get('relationshipPriority') || 'inactive'}
-              data-userid={repostedBy.get('id')}
-              data-username={repostedBy.get('username')}
-              draggable
-            >
-              {` by @${repostedBy.get('username')}`}
-            </span>
-          </Link>
-        </div>
-        <PostHeaderTimeAgoLink to={detailPath} createdAt={postCreatedAt} />
       </header>
     )
   }
@@ -293,7 +501,12 @@ export class PostBody extends PureComponent {
     innerHeight: PropTypes.number.isRequired,
     isGridMode: PropTypes.bool.isRequired,
     isPostDetail: PropTypes.bool.isRequired,
+    isPostBody: PropTypes.bool.isRequired,
     isRepost: PropTypes.bool.isRequired,
+    isLightBox: PropTypes.bool,
+    resizeLightBox: PropTypes.bool,
+    toggleLightBox: PropTypes.func,
+    lightBoxSelectedIdPair: PropTypes.object,
     post: PropTypes.object.isRequired,
     postId: PropTypes.string.isRequired,
     repostContent: PropTypes.object,
@@ -304,6 +517,9 @@ export class PostBody extends PureComponent {
   static defaultProps = {
     contentWarning: null,
     repostContent: null,
+    isPostBody: true,
+    isLightBox: false,
+    resizeLightBox: false,
   }
   render() {
     const {
@@ -317,13 +533,18 @@ export class PostBody extends PureComponent {
       innerHeight,
       isGridMode,
       isPostDetail,
+      isPostBody,
       isRepost,
+      isLightBox,
+      lightBoxSelectedIdPair,
       post,
       postId,
       repostContent,
+      resizeLightBox,
       showEditor,
       summary,
       supportsNativeEditor,
+      toggleLightBox,
     } = this.props
 
     if (showEditor && !supportsNativeEditor) {
@@ -336,6 +557,7 @@ export class PostBody extends PureComponent {
     }
 
     const regionProps = {
+      postId,
       columnWidth,
       commentOffset,
       contentWidth,
@@ -343,6 +565,11 @@ export class PostBody extends PureComponent {
       innerHeight,
       isGridMode,
       isPostDetail,
+      isPostBody,
+      isLightBox,
+      resizeLightBox,
+      toggleLightBox,
+      lightBoxSelectedIdPair,
     }
     if (isRepost) {
       // this is weird, but the post summary is
@@ -355,18 +582,23 @@ export class PostBody extends PureComponent {
         cells.push(<RegionItems {...regionProps} key={`RegionItems_${postId}`} />)
         if (content && content.size) {
           regionProps.content = content
-          cells.push(
-            <div className="PostBody RepostedBody" key={`RepostedBody_${postId}`}>
-              <Avatar
-                priority={author.get('relationshipPriority')}
-                sources={author.get('avatar')}
-                to={`/${author.get('username')}`}
-                userId={`${author.get('id')}`}
-                username={author.get('username')}
-              />
-              <RegionItems {...regionProps} />
-            </div>,
-          )
+          if (!isLightBox) {
+            cells.push(
+              <div className="PostBody RepostedBody" key={`RepostedBody_${postId}`}>
+                <Avatar
+                  priority={author.get('relationshipPriority')}
+                  sources={author.get('avatar')}
+                  to={`/${author.get('username')}`}
+                  userId={`${author.get('id')}`}
+                  username={author.get('username')}
+                />
+                <RegionItems {...regionProps} />
+              </div>,
+            )
+          }
+          if (isLightBox) {
+            cells.push(<RegionItems {...regionProps} key={`RepostedBody_${postId}`} />)
+          }
         }
       }
     } else {
@@ -382,7 +614,6 @@ export class PostBody extends PureComponent {
 }
 
 const launchCommentEditorStyle = css(
-  s.mt30,
   s.relative,
 )
 
@@ -396,12 +627,12 @@ const launchCommentEditorButtonStyle = css(
   s.colorWhite,
   s.sansRegular,
   s.ml20,
+  s.mr10,
   s.fontSize14,
   {
     borderRadius: 5,
     height: 50,
-    width: 'calc(100% - 50px)',
-    maxWidth: '640px',
+    width: 'calc(100% - 60px)',
     paddingLeft: 8,
     textAlign: 'left',
   },
@@ -419,28 +650,65 @@ const launchCommentEditorButtonStyle = css(
       borderRightColor: '#000',
     },
   ),
+  media(s.maxBreak2,
+    s.mr0,
+    { width: 'calc(100% - 50px)' },
+  ),
 )
 
-export const LaunchCommentEditorButton = ({ avatar, post }, { onLaunchNativeEditor }) =>
+// wrap post in LightBox factory
+export const PostBodyWithLightBox = withLightBoxContainer(PostBody)
+
+export const LaunchNativeCommentEditorButton = ({ avatar, post }, { onLaunchNativeEditor }) =>
+  <LaunchCommentEditorButton avatar={avatar} post={post} onLaunch={onLaunchNativeEditor} />
+
+LaunchNativeCommentEditorButton.propTypes = {
+  avatar: PropTypes.object,
+  post: PropTypes.object,
+}
+LaunchNativeCommentEditorButton.defaultProps = {
+  avatar: null,
+  post: null,
+}
+LaunchNativeCommentEditorButton.contextTypes = {
+  onLaunchNativeEditor: PropTypes.func.isRequired,
+}
+
+export const LaunchMobileCommentEditorButton = ({ avatar, post }, { onToggleInlineCommenting }) =>
+  <LaunchCommentEditorButton avatar={avatar} post={post} onLaunch={onToggleInlineCommenting} />
+
+LaunchMobileCommentEditorButton.propTypes = {
+  avatar: PropTypes.object,
+  post: PropTypes.object,
+}
+LaunchMobileCommentEditorButton.defaultProps = {
+  avatar: null,
+  post: null,
+}
+LaunchMobileCommentEditorButton.contextTypes = {
+  onToggleInlineCommenting: PropTypes.func.isRequired,
+}
+
+const LaunchCommentEditorButton = ({ avatar, post, onLaunch }) =>
   (<div className={launchCommentEditorStyle}>
     <Avatar className={`${launchCommentEditorAvatarStyle}`} sources={avatar} />
     <button
       className={launchCommentEditorButtonStyle}
-      onClick={() => onLaunchNativeEditor(post, true, null)}
+      onClick={() => onLaunch(post, true, null)}
     >
       Comment...
     </button>
   </div>)
+
 LaunchCommentEditorButton.propTypes = {
   avatar: PropTypes.object,
   post: PropTypes.object,
+  onLaunch: PropTypes.func,
 }
 LaunchCommentEditorButton.defaultProps = {
   avatar: null,
   post: null,
-}
-LaunchCommentEditorButton.contextTypes = {
-  onLaunchNativeEditor: PropTypes.func.isRequired,
+  onLaunch: null,
 }
 
 const relatedPostButtonStyle = css(
@@ -489,6 +757,8 @@ export const Post = ({
   isRepost,
   isRepostAnimating,
   isWatchingPost,
+  isLightBox,
+  lightBoxSelectedIdPair,
   post,
   postCommentsCount,
   postCreatedAt,
@@ -500,71 +770,140 @@ export const Post = ({
   postRepostsCount,
   postViewsCountRounded,
   repostContent,
+  resizeLightBox,
   showCommentEditor,
   showEditor,
   submissionStatus,
   summary,
   supportsNativeEditor,
+  toggleLightBox,
 }) => (
   <div className={classNames('Post', { isPostHeaderHidden: isPostHeaderHidden && !isRepost })}>
     {postHeader}
-    {adminActions &&
+    {adminActions && !isLightBox &&
       <PostAdminActions
         actions={adminActions}
         status={submissionStatus}
       />
     }
-    <PostBody
-      {...{
-        author,
-        columnWidth,
-        commentOffset,
-        content,
-        contentWarning,
-        contentWidth,
-        detailPath,
-        innerHeight,
-        isGridMode,
-        isPostDetail,
-        isRepost,
-        post,
-        postId,
-        repostContent,
-        showEditor,
-        summary,
-        supportsNativeEditor,
-      }}
-    />
-    <PostTools
-      {...{
-        author,
-        detailPath,
-        isCommentsActive,
-        isCommentsRequesting,
-        isGridMode,
-        isLoggedIn,
-        isMobile,
-        isOwnOriginalPost,
-        isOwnPost,
-        isPostDetail,
-        isRelatedPost,
-        isRepostAnimating,
-        isWatchingPost,
-        postCreatedAt,
-        postCommentsCount,
-        postId,
-        postLoved,
-        postLovesCount,
-        postReposted,
-        postRepostsCount,
-        postViewsCountRounded,
-      }}
-    />
-    {isLoggedIn && showCommentEditor && supportsNativeEditor &&
-      <LaunchCommentEditorButton avatar={avatar} post={post} />
+    {isLightBox &&
+      <PostBody
+        {...{
+          author,
+          columnWidth,
+          commentOffset,
+          content,
+          contentWarning,
+          contentWidth,
+          detailPath,
+          innerHeight,
+          isGridMode,
+          isPostDetail,
+          isRepost,
+          isLightBox,
+          lightBoxSelectedIdPair,
+          post,
+          postId,
+          repostContent,
+          resizeLightBox,
+          showEditor,
+          summary,
+          supportsNativeEditor,
+          toggleLightBox,
+        }}
+      />
     }
-    {showCommentEditor && !supportsNativeEditor && <Editor post={post} isComment />}
-    {showCommentEditor &&
+    {!isLightBox && isPostDetail &&
+      <PostBodyWithLightBox
+        {...{
+          author,
+          columnWidth,
+          commentOffset,
+          content,
+          contentWarning,
+          contentWidth,
+          detailPath,
+          innerHeight,
+          isGridMode,
+          isPostDetail,
+          isRepost,
+          lightBoxSelectedIdPair,
+          post,
+          postId,
+          repostContent,
+          resizeLightBox,
+          showEditor,
+          summary,
+          supportsNativeEditor,
+        }}
+      />
+    }
+    {!isLightBox && !isPostDetail &&
+      <PostBodyWithLightBox
+        {...{
+          author,
+          columnWidth,
+          commentOffset,
+          content,
+          contentWarning,
+          contentWidth,
+          detailPath,
+          innerHeight,
+          isGridMode,
+          isPostDetail,
+          isRepost,
+          lightBoxSelectedIdPair,
+          post,
+          postId,
+          repostContent,
+          resizeLightBox,
+          showEditor,
+          summary,
+          supportsNativeEditor,
+          toggleLightBox,
+        }}
+      />
+    }
+    {!isLightBox &&
+      <PostTools
+        {...{
+          author,
+          detailPath,
+          isCommentsActive,
+          isCommentsRequesting,
+          isGridMode,
+          isLoggedIn,
+          isMobile,
+          isOwnOriginalPost,
+          isOwnPost,
+          isPostDetail,
+          isRelatedPost,
+          isRepostAnimating,
+          isWatchingPost,
+          postCreatedAt,
+          postCommentsCount,
+          postId,
+          postLoved,
+          postLovesCount,
+          postReposted,
+          postRepostsCount,
+          postViewsCountRounded,
+          summary,
+          toggleLightBox,
+        }}
+      />
+    }
+    {!isLightBox && isPostDetail && innerWidth < 960 &&
+      <CategoryPostHistory
+        key={`CategoryPostHistory_${postId}`}
+        postId={postId}
+      />
+    }
+    {isLoggedIn && showCommentEditor && supportsNativeEditor && !isLightBox &&
+      <LaunchNativeCommentEditorButton avatar={avatar} post={post} />
+    }
+    {showCommentEditor && !supportsNativeEditor && !isLightBox && <Editor post={post} isComment />}
+    {showCommentEditor && !isLightBox &&
       <StreamContainer
         action={loadComments(postId)}
         className="TabListStreamContainer isFullWidth"
@@ -600,6 +939,8 @@ Post.propTypes = {
   isRepost: PropTypes.bool.isRequired,
   isRepostAnimating: PropTypes.bool.isRequired,
   isWatchingPost: PropTypes.bool.isRequired,
+  isLightBox: PropTypes.bool,
+  lightBoxSelectedIdPair: PropTypes.object,
   post: PropTypes.object.isRequired,
   postCommentsCount: PropTypes.number,
   postCreatedAt: PropTypes.string,
@@ -611,11 +952,13 @@ Post.propTypes = {
   postRepostsCount: PropTypes.number,
   postViewsCountRounded: PropTypes.string,
   repostContent: PropTypes.object,
+  resizeLightBox: PropTypes.bool,
   showCommentEditor: PropTypes.bool.isRequired,
   showEditor: PropTypes.bool.isRequired,
   submissionStatus: PropTypes.string,
   summary: PropTypes.object,
   supportsNativeEditor: PropTypes.bool.isRequired,
+  toggleLightBox: PropTypes.func,
 }
 
 export const PostDetailAsideTop = ({
@@ -699,6 +1042,7 @@ PostDetailAsideTop.propTypes = {
 export const PostDetailAsideBottom = ({
   author,
   detailPath,
+  innerWidth,
   isCommentsActive,
   isCommentsRequesting,
   isGridMode,
@@ -718,6 +1062,7 @@ export const PostDetailAsideBottom = ({
   postReposted,
   postRepostsCount,
   postViewsCountRounded,
+  toggleLightBox,
 }) => (
   <div className="PostDetailAsideBottom">
     <PostTools
@@ -743,13 +1088,21 @@ export const PostDetailAsideBottom = ({
         postReposted,
         postRepostsCount,
         postViewsCountRounded,
+        toggleLightBox,
       }}
     />
+    {isPostDetail && innerWidth > 959 &&
+      <CategoryPostHistory
+        key={`CategoryPostHistory_${postId}`}
+        postId={postId}
+      />
+    }
   </div>
 )
 PostDetailAsideBottom.propTypes = {
   author: PropTypes.object.isRequired,
   detailPath: PropTypes.string.isRequired,
+  innerWidth: PropTypes.number.isRequired,
   isCommentsActive: PropTypes.bool.isRequired,
   isCommentsRequesting: PropTypes.bool.isRequired,
   isGridMode: PropTypes.bool.isRequired,
@@ -769,6 +1122,10 @@ PostDetailAsideBottom.propTypes = {
   postReposted: PropTypes.bool,
   postRepostsCount: PropTypes.number,
   postViewsCountRounded: PropTypes.string,
+  toggleLightBox: PropTypes.func,
+}
+PostDetailAsideBottom.defaultProps = {
+  toggleLightBox: null,
 }
 
 const userModalStyle = css(
@@ -844,4 +1201,3 @@ UserModal.propTypes = {
   postId: PropTypes.string.isRequired,
   tabs: PropTypes.array.isRequired,
 }
-

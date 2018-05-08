@@ -30,6 +30,7 @@ import {
   selectName,
   selectRegistrationId,
   selectShortBio,
+  selectShowCreatorTypeModal,
   selectUsername,
   selectWebOnboardingVersion,
   selectProfileIsFeatured,
@@ -58,7 +59,11 @@ describe('profile selectors', () => {
       registrationId: '1234',
       webOnboardingVersion: '1',
     })
-    state = { json, profile: Immutable.fromJS(profile) }
+    state = {
+      authentication: Immutable.fromJS({ isLoggedIn: true }),
+      json,
+      profile: Immutable.fromJS(profile),
+    }
   })
 
   afterEach(() => {
@@ -233,6 +238,22 @@ describe('profile selectors', () => {
       state.change = 1
       expect(selectIsAvatarBlank(state)).to.equal(false)
       expect(selectIsAvatarBlank.recomputations()).to.equal(1)
+    })
+  })
+
+  context('#selectShowCreatorTypeModal', () => {
+    it('returns a memoized version of weather or not to show the creator types', () => {
+      expect(selectShowCreatorTypeModal(state)).to.equal(true)
+      state.change = 1
+      expect(selectShowCreatorTypeModal(state)).to.equal(true)
+      expect(selectShowCreatorTypeModal.recomputations()).to.equal(1)
+      state = {
+        ...state,
+        profile: state.profile.set('webOnboardingVersion', '3'),
+        json: state.json.setIn(['users', '1', 'webOnboardingVersion'], '3'),
+      }
+      expect(selectShowCreatorTypeModal(state)).to.equal(false)
+      expect(selectShowCreatorTypeModal.recomputations()).to.equal(2)
     })
   })
 

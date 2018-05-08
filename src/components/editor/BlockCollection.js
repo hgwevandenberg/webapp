@@ -27,14 +27,16 @@ import { closeOmnibar } from '../../actions/omnibar'
 import * as ACTION_TYPES from '../../constants/action_types'
 import { addDragObject, removeDragObject } from '../../interactions/Drag'
 import { scrollToLastTextBlock } from '../../lib/jello'
-import { selectIsMobileGridStream, selectIsNavbarHidden } from '../../selectors/gui'
+import { selectIsMobileGridStream, selectIsNavbarHidden, selectIsGridMode } from '../../selectors/gui'
+import { selectEditorCategoryIds } from '../../selectors/editor'
 import { selectPropsPostId } from '../../selectors/post'
 import { selectIsPostDetail, selectPathname } from '../../selectors/routing'
 import { css, hover, media, parent, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
 const editorWrapperStyle = css(
-  { maxWidth: 1440 },
+  s.mxAuto,
+  s.maxViewWidth,
   parent('.Omnibar',
     s.p10,
     s.mxAuto,
@@ -88,6 +90,7 @@ function mapStateToProps(state, props) {
   return {
     artistInvite,
     artistInviteId: artistInvite ? artistInvite.get('id') : props.post.get('artistInviteId'),
+    categoryIds: selectEditorCategoryIds(state, props),
     buyLink,
     collection,
     dragBlock: editor.get('dragBlock'),
@@ -100,6 +103,7 @@ function mapStateToProps(state, props) {
     isPosting: editor.get('isPosting'),
     isMobileGridStream: selectIsMobileGridStream(state),
     isNavbarHidden: selectIsNavbarHidden(state),
+    isGridMode: selectIsGridMode(state),
     order,
     orderLength: order ? order.size : 0,
     pathname: selectPathname(state),
@@ -108,10 +112,10 @@ function mapStateToProps(state, props) {
 }
 
 class BlockCollection extends PureComponent {
-
   static propTypes = {
     artistInvite: PropTypes.object,
     artistInviteId: PropTypes.string,
+    categoryIds: PropTypes.array.isRequired,
     blocks: PropTypes.object,
     buyLink: PropTypes.string,
     cancelAction: PropTypes.func.isRequired,
@@ -133,9 +137,11 @@ class BlockCollection extends PureComponent {
     isPostEditing: PropTypes.bool.isRequired,
     isPostReposting: PropTypes.bool.isRequired,
     isPosting: PropTypes.bool,
+    isGridMode: PropTypes.bool,
     order: PropTypes.object.isRequired,
     orderLength: PropTypes.number.isRequired,
     pathname: PropTypes.string.isRequired,
+    post: PropTypes.object,
     postId: PropTypes.string,
     repostContent: PropTypes.object,
     showArtistInviteSuccess: PropTypes.bool.isRequired,
@@ -160,6 +166,8 @@ class BlockCollection extends PureComponent {
     isNavbarHidden: false,
     isOwnPost: false,
     isPosting: false,
+    isGridMode: false,
+    post: null,
     postId: null,
     repostContent: Immutable.List(),
     submitText: 'Post',
@@ -341,7 +349,7 @@ class BlockCollection extends PureComponent {
   }
 
   getBlockElement(block) {
-    const { editorId } = this.props
+    const { editorId, isGridMode } = this.props
     const blockProps = {
       data: block.get('data'),
       editorId,
@@ -350,6 +358,7 @@ class BlockCollection extends PureComponent {
       linkURL: block.get('linkUrl'),
       onRemoveBlock: this.remove,
       uid: block.get('uid'),
+      isGridMode,
     }
     switch (block.get('kind')) {
       case 'block':
@@ -417,8 +426,8 @@ class BlockCollection extends PureComponent {
   }
 
   submit = () => {
-    const { artistInviteId, submitAction } = this.props
-    submitAction(this.serialize(), artistInviteId)
+    const { artistInviteId, submitAction, categoryIds } = this.props
+    submitAction(this.serialize(), artistInviteId, categoryIds)
   }
 
   serialize() {
@@ -468,10 +477,13 @@ class BlockCollection extends PureComponent {
 
   render() {
     const {
-      artistInvite, buyLink, cancelAction, collection, dragBlock, editorId, firstBlock,
+      artistInvite, buyLink, cancelAction, collection, dragBlock, editorId, firstBlock, categoryIds,
       hasContent, hasMedia, hasMention, isComment, isLoading, isPosting, order, orderLength,
       showArtistInviteSuccess, submitText, hasComments, isOwnPost, isMobileGridStream,
+      isGridMode, isPostEditing, isPostReposting, post,
     } = this.props
+
+    const postCategories = post ? post.getIn(['links', 'categories']) : null
     const { dragBlockTop, hasDragOver } = this.state
     const firstBlockIsText = firstBlock ? /text/.test(firstBlock.get('kind')) : true
     const showQuickEmoji = isComment && firstBlockIsText
@@ -484,6 +496,7 @@ class BlockCollection extends PureComponent {
       isComment,
       isLoading,
       isPosting,
+      isPostReposting,
     })
     if (showArtistInviteSuccess) {
       return (
@@ -502,6 +515,8 @@ class BlockCollection extends PureComponent {
       )
     }
     const showReplyAll = hasComments && isComment && isOwnPost && !isMobileGridStream
+    const postIntoCategory = !isComment
+
     return (
       <div className={editorWrapperStyle}>
         {artistInvite &&
@@ -529,10 +544,17 @@ class BlockCollection extends PureComponent {
           <PostActionBar
             buyLink={buyLink}
             cancelAction={cancelAction}
+            categoryIds={categoryIds}
             disableSubmitAction={isPosting || isLoading || !hasContent}
             editorId={editorId}
             handleFileAction={this.handleFiles}
             hasMedia={hasMedia}
+            isGridMode={isGridMode}
+            isPostEditing={isPostEditing}
+            isPostReposting={isPostReposting}
+            isComment={isComment}
+            postCategories={postCategories}
+            postIntoCategory={postIntoCategory}
             replyAllAction={showReplyAll ? this.replyAll : null}
             submitAction={this.submit}
             submitText={submitText}

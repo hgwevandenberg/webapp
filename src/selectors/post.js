@@ -3,22 +3,30 @@ import { createSelector } from 'reselect'
 import get from 'lodash/get'
 import { selectPages } from './pages'
 import { selectParamsToken } from './params'
-import { selectCategoryCollection } from './categories'
+import {
+  selectCategoryCollection,
+  selectCategoryForPath,
+  selectCategoryPostCollection,
+} from './categories'
 import { LOAD_STREAM_REQUEST } from '../constants/action_types'
 import { COMMENTS, POSTS } from '../constants/mapping_types'
 import { selectIsPostDetail } from './routing'
-import { selectAssets } from './assets'
 import { numberToHuman } from '../lib/number_to_human'
 import { selectIsLoggedIn } from './authentication'
 import { selectIsGridMode, selectIsMobile } from './gui'
 import { selectId as selectProfileId } from './profile'
 import { selectStreamType, selectStreamMappingType, selectStreamPostIdOrToken } from './stream'
 import { selectUsers } from './user'
+import {
+  selectArtistInviteSubmissions,
+  selectArtistInvites,
+} from './artist_invites'
 
 const countProtector = count => (count < 0 ? 0 : count)
 
 export const selectPropsPostId = (state, props) =>
   get(props, 'postId') || get(props, 'post', Immutable.Map()).get('id')
+export const selectPropsPostIds = (state, props) => get(props, 'postIds')
 
 export const selectPropsPostIsRelated = (state, props) => get(props, 'isRelatedPost', false)
 export const selectPropsLocationStateFrom = (state, props) => get(props, ['location', 'state', 'from'], null)
@@ -37,31 +45,11 @@ export const selectPost = createSelector(
   },
 )
 
-export const addAssetToRegion = (region, assets) => {
-  if (region.get('kind') === 'image') {
-    let assetId = region.getIn(['links', 'assets'], -1)
-    if (assetId < 0) {
-      const assetMatch = region.getIn(['content', 'url'], '').match(/asset\/attachment\/(\d+)\//)
-      if (assetMatch) {
-        assetId = `${assetMatch[1]}`
-      }
-    }
-    const asset = assets.get(assetId)
-    if (asset) {
-      return region.set('asset', asset)
-    }
-  }
-  return region
-}
-
 // Properties on the post reducer
 export const selectPostAuthorId = createSelector([selectPost], post => post.get('authorId'))
 export const selectPostBody = createSelector([selectPost], post => post.get('body'))
 export const selectPostCommentsCount = createSelector([selectPost], post => countProtector(post.get('commentsCount')))
-export const selectPostContent = createSelector(
-  [selectPost, selectAssets], (post, assets) =>
-    (post.get('content') || Immutable.Map()).map(region => addAssetToRegion(region, assets)),
-)
+export const selectPostContent = createSelector([selectPost], post => (post.get('content') || Immutable.Map()))
 export const selectPostContentWarning = createSelector([selectPost], post => post.get('contentWarning'))
 export const selectPostCreatedAt = createSelector([selectPost], post => post.get('createdAt'))
 export const selectPostHref = createSelector([selectPost], post => post.get('href'))
@@ -70,18 +58,12 @@ export const selectPostIsAdultContent = createSelector([selectPost], post => pos
 export const selectPostMetaAttributes = createSelector([selectPost], post => post.get('metaAttributes', Immutable.Map()))
 export const selectPostLoved = createSelector([selectPost], post => post.get('loved'))
 export const selectPostLovesCount = createSelector([selectPost], post => countProtector(post.get('lovesCount')))
-export const selectPostRepostContent = createSelector(
-  [selectPost, selectAssets], (post, assets) =>
-    (post.get('repostContent') || Immutable.Map()).map(region => addAssetToRegion(region, assets)),
-)
+export const selectPostRepostContent = createSelector([selectPost], post => (post.get('repostContent') || Immutable.Map()))
 export const selectPostRepostId = createSelector([selectPost], post => post.get('repostId'))
 export const selectPostReposted = createSelector([selectPost], post => post.get('reposted'))
 export const selectPostRepostsCount = createSelector([selectPost], post => countProtector(post.get('repostsCount')))
 export const selectPostShowComments = createSelector([selectPost], post => post.get('showComments', false))
-export const selectPostSummary = createSelector(
-  [selectPost, selectAssets], (post, assets) =>
-    (post.get('summary') || Immutable.Map()).map(region => addAssetToRegion(region, assets)),
-)
+export const selectPostSummary = createSelector([selectPost], post => (post.get('summary') || Immutable.Map()))
 export const selectPostToken = createSelector([selectPost], post => post.get('token'))
 export const selectPostViewsCount = createSelector([selectPost], post => countProtector(post.get('viewsCount')))
 export const selectPostViewsCountRounded = createSelector(
@@ -156,8 +138,8 @@ export const selectPostCategories = createSelector(
 )
 
 export const selectPostCategory = createSelector(
-  [selectCategoryCollection, selectPostCategories], (collection, categories) =>
-    (collection && collection.get(categories ? `${categories.first()}` : null)),
+  [selectCategoryCollection, selectPostCategories], (collection, categoryIds) =>
+    (collection && collection.get(categoryIds ? `${categoryIds.first()}` : null)),
 )
 
 export const selectPostCategoryName = createSelector(
@@ -168,8 +150,52 @@ export const selectPostCategorySlug = createSelector(
   [selectPostCategory], category => (category ? `/discover/${category.get('slug')}` : null),
 )
 
+export const selectPostCategoryPostIds = createSelector(
+  [selectPost], post => post.getIn(['links', 'categoryPosts'], Immutable.List()))
+
+export const selectPostCategoryPosts = createSelector(
+  [selectCategoryPostCollection, selectPostCategoryPostIds], (collection, cpIds) =>
+    (collection && cpIds.map(id => collection.get(id))))
+
+export const selectPostCategoryPostForPath = createSelector(
+  [selectPostCategoryPosts, selectCategoryForPath], (categoryPosts, category) =>
+    !!category && categoryPosts.find(cp => cp.get('categoryId') === category.get('id')))
+
+export const selectPostCategoryPostStatusForPath = createSelector(
+  [selectPostCategoryPostForPath], categoryPost => categoryPost && categoryPost.get('status'))
+
+export const selectPostCategoryPostActionsForPath = createSelector(
+  [selectPostCategoryPostForPath], categoryPost => categoryPost && categoryPost.get('actions'))
+
 export const selectPostDetailPath = createSelector(
   [selectPostAuthorUsername, selectPostToken], (username, token) => `/${username}/post/${token}`,
+)
+
+export const selectPostIsArtistInviteSubmission = createSelector(
+  [selectPost], post => post && !!post.get('artistInviteId'),
+)
+
+export const selectPostArtistInviteSubmissionId = createSelector(
+  [selectPost], post => post && post.get('artistInviteSubmissionId'),
+)
+
+export const selectPostArtistInviteSubmission = createSelector(
+  [selectPostArtistInviteSubmissionId, selectArtistInviteSubmissions],
+  (id, submissions) => id && submissions.get(id),
+)
+
+export const selectPostArtistInviteSubmissionStatus = createSelector(
+  [selectPostArtistInviteSubmissionId, selectArtistInviteSubmissions],
+  (id, submissions) => id && submissions.getIn([id, 'status']),
+)
+
+export const selectPostArtistInviteId = createSelector(
+  [selectPost], post => post && post.get('artistInviteId'),
+)
+
+export const selectPostArtistInvite = createSelector(
+  [selectPostArtistInviteId, selectArtistInvites],
+  (id, invites) => id && invites.get(id, null),
 )
 
 export const selectPostIsCommentsRequesting = createSelector(
@@ -278,3 +304,18 @@ export const selectPostFirstImage = createSelector(
       .first()
   },
 )
+
+// Proxy selectors from the repost to the original post.
+
+export const selectOriginalPostId = createSelector([selectPost], post =>
+  post.getIn(['links', 'repostedSource', 'id'], null))
+
+export const selectOriginalPostArtistInviteSubmission = (state, props) => {
+  const postId = selectOriginalPostId(state, props)
+  return postId && selectPostArtistInviteSubmission(state, { postId })
+}
+
+export const selectOriginalPostArtistInvite = (state, props) => {
+  const postId = selectOriginalPostId(state, props)
+  return postId && selectPostArtistInvite(state, { postId })
+}

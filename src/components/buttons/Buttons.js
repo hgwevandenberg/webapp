@@ -80,25 +80,6 @@ export const categoryLinkTextStyle = css(
     select('& .CheckIconSM', { top: 5 }),
 )
 
-export const CategoryLink = ({ children, imageUrl, to }) => (
-  <Link
-    className={categoryLinkStyle}
-    to={to}
-    style={imageUrl ? { backgroundImage: `url("${imageUrl}")` } : null}
-  >
-    <span className={categoryLinkTextStyle}>{children}</span>
-  </Link>
-)
-CategoryLink.propTypes = {
-  children: PropTypes.node.isRequired,
-  imageUrl: PropTypes.string,
-  to: PropTypes.string.isRequired,
-}
-
-CategoryLink.defaultProps = {
-  imageUrl: null,
-}
-
 // -------------------------------------
 
 const dismissButtonStyle = css(
@@ -110,11 +91,22 @@ const dismissButtonStyle = css(
   media(s.minBreak2, { top: 10, right: 10 }),
 )
 
+const dismissButtonStyleReverse = css(
+  s.colorWhite,
+  hover(s.colorA),
+)
+
 export const DismissButton = () =>
   <button className={`CloseModal ${dismissButtonStyle}`}><XIcon /></button>
 
 export const DismissButtonLG = () =>
   <button className={`CloseModal ${dismissButtonStyle}`}><XIconLG /></button>
+
+export const DismissButtonLGReverse = ({ onClick }) =>
+  <button className={`CloseModal ${dismissButtonStyle} ${dismissButtonStyleReverse}`} onClick={onClick}><XIconLG /></button>
+DismissButtonLGReverse.propTypes = {
+  onClick: PropTypes.func,
+}
 
 // -------------------------------------
 
@@ -200,6 +192,13 @@ const roundedRectStyle = css(
     s.colorGreen,
     hover(s.colorBlack, s.borderBlack),
   ),
+  modifier('.BlackBorder',
+    s.bgcWhite,
+    s.borderBlack,
+    s.colorBlack,
+    { opacity: 0.4 },
+    hover(s.colorBlack, s.borderBlack),
+  ),
   modifier(
     '.isXL',
     s.fontSize24,
@@ -225,3 +224,38 @@ RoundedRect.defaultProps = {
   className: null,
 }
 
+const roundedRectLinkStyle = css(
+  { ...roundedRectStyle },
+  s.inlineBlock,
+  s.fontSize14,
+  s.bgcBlack,
+  s.colorWhite,
+  s.center,
+  s.pr20,
+  s.pl20,
+  {
+    border: 'none',
+    width: 'auto',
+  },
+  hover(s.colorWhite, s.bgc6),
+  media(s.maxBreak2,
+    s.hv30,
+    s.lh30,
+    s.pr10,
+    s.pl10,
+  ),
+)
+
+export const RoundedRectLink = ({ children, className, to, ...rest }) => (
+  <Link className={`RoundedRect ${roundedRectLinkStyle} ${className}`} to={to} {...rest}>
+    {children}
+  </Link>
+)
+RoundedRectLink.propTypes = {
+  children: PropTypes.node.isRequired,
+  className: PropTypes.string,
+  to: PropTypes.string.isRequired,
+}
+RoundedRectLink.defaultProps = {
+  className: null,
+}

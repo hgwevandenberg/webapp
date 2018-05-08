@@ -1,6 +1,16 @@
 import { createSelector } from 'reselect'
 import { selectParamsUsername } from './params'
-import { selectPathname, selectPropsQueryType } from './routing'
+import {
+  selectPathname,
+  selectPropsQueryType,
+  selectViewNameFromRoute,
+} from './routing'
+import { selectIsLoggedIn } from './authentication'
+import {
+  selectLastDiscoverBeaconVersion as discoverBeaconVersion,
+  selectLastFollowingBeaconVersion as followingBeaconVersion,
+} from './gui'
+import { DISCOVER, FOLLOWING } from '../constants/locales/en'
 
 // state.gui.xxx
 export const selectActiveNotificationsType = state => state.gui.get('activeNotificationsType')
@@ -15,6 +25,7 @@ export const selectIsNavbarHidden = state => state.gui.get('isNavbarHidden')
 export const selectIsNotificationsActive = state => state.gui.get('isNotificationsActive')
 export const selectIsNotificationsUnread = state => state.gui.get('isNotificationsUnread')
 export const selectIsProfileMenuActive = state => state.gui.get('isProfileMenuActive')
+export const selectIsLightBoxActive = state => state.gui.get('isLightBoxActive')
 export const selectIsTextToolsActive = state => state.gui.get('isTextToolsActive')
 export const selectLastAnnouncementSeen = state => state.gui.get('lastAnnouncementSeen')
 export const selectLastDiscoverBeaconVersion = state => state.gui.get('lastDiscoverBeaconVersion') // eslint-disable-line
@@ -24,6 +35,8 @@ export const selectNotificationScrollPositions = state => state.gui.get('notific
 export const selectSaidHelloTo = state => state.gui.get('saidHelloTo')
 export const selectTextToolsCoordinates = state => state.gui.get('textToolsCoordinates')
 export const selectTextToolsStates = state => state.gui.get('textToolsStates')
+export const selectOnboardToArtistInvite = state => state.gui.get('onboardToArtistInvite')
+export const selectIsCompletingOnboardingWithArtistInvite = state => state.gui.get('isCompletingOnboardToArtistInvite')
 
 // Memoized selectors
 export const selectActiveNotificationScrollPosition = createSelector(
@@ -79,12 +92,19 @@ export const selectContentWidth = createSelector(
 // Primarily used for background images in Heros
 export const selectDPI = createSelector(
   [selectInnerWidth], (innerWidth) => {
-    if (innerWidth < 750) {
-      return 'hdpi'
-    } else if (innerWidth >= 750 && innerWidth < 1920) {
-      return 'xhdpi'
+    if (innerWidth <= 400) {
+      return 'mdpi'
     }
-    return 'optimized'
+    return 'hdpi'
+  },
+)
+
+export const selectHeroDPI = createSelector(
+  [selectInnerWidth], (innerWidth) => {
+    if (innerWidth <= 1200) {
+      return 'hdpi'
+    }
+    return 'xhdpi'
   },
 )
 
@@ -112,5 +132,18 @@ export const selectIsLayoutToolHidden = createSelector(
   [selectPathname, selectPropsQueryType], (pathname, queryType) => {
     const isUserSearch = queryType === 'users' && /^\/search\b/.test(pathname)
     return isUserSearch || NO_LAYOUT_TOOLS.some(pagex => pagex.test(pathname))
+  },
+)
+
+export const selectBroadcast = createSelector(
+  [selectIsLoggedIn, selectViewNameFromRoute, discoverBeaconVersion, followingBeaconVersion],
+  (isLoggedIn, viewName, lastDiscoverBeaconVersion, lastFollowingBeaconVersion) => {
+    if (!isLoggedIn) { return null }
+    if (viewName === 'discover') {
+      return lastDiscoverBeaconVersion !== DISCOVER.BEACON_VERSION ? DISCOVER.BEACON_TEXT : null
+    } else if (viewName === 'following') {
+      return lastFollowingBeaconVersion !== FOLLOWING.BEACON_VERSION ? FOLLOWING.BEACON_TEXT : null
+    }
+    return null
   },
 )

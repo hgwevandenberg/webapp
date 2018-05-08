@@ -20,6 +20,7 @@ describe('routing reducer', () => {
         state: undefined,
         terms: undefined,
         preview: undefined,
+        submissionType: undefined,
       },
       locationBeforeTransitions: { pathname: '/discover/trending' },
       previousPath: undefined,
@@ -41,6 +42,12 @@ describe('routing reducer', () => {
       const action = { type: LOCATION_CHANGE, payload: { query: { terms: 'terms' } } }
       const state = reducer(initialState, action)
       expect(state.getIn(['location', 'terms'])).to.equal('terms')
+    })
+
+    it('LOCATION_CHANGE updates the query.submissionType from payload', () => {
+      const action = { type: LOCATION_CHANGE, payload: { query: { submissionType: 'approvedSubmissions' } } }
+      const state = reducer(initialState, action)
+      expect(state.getIn(['location', 'submissionType'])).to.equal('approvedSubmissions')
     })
 
     it('LOCATION_CHANGE resets the terms to undefined when missing', () => {

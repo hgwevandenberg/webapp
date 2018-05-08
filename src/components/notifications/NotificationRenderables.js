@@ -65,6 +65,23 @@ PostTextLink.defaultProps = {
   text: 'post',
 }
 
+const ArtistInviteTextLink = ({ title, slug }) => {
+  if (!title || !slug) { return null }
+  return (
+    <Link to={`/artist-invites/${slug}`}>
+      {title}
+    </Link>
+  )
+}
+ArtistInviteTextLink.propTypes = {
+  title: PropTypes.string,
+  slug: PropTypes.string,
+}
+ArtistInviteTextLink.defaultProps = {
+  title: null,
+  slug: null,
+}
+
 const announcementNotificationStyle = css(
   s.relative,
   s.p10,
@@ -163,7 +180,7 @@ AnnouncementNotification.propTypes = {
   body: PropTypes.string,
   ctaCaption: PropTypes.string,
   ctaHref: PropTypes.string,
-  isStaffPreview: PropTypes.boolean,
+  isStaffPreview: PropTypes.bool,
   src: PropTypes.string,
   title: PropTypes.string,
 }
@@ -204,6 +221,43 @@ ApprovedAristInviteSubmissionNotification.propTypes = {
 }
 ApprovedAristInviteSubmissionNotification.defaultProps = {
   subject: null,
+  createdAt: null,
+}
+
+export const ApprovedArtistInviteSubmissionFromFollowingNotification = (props) => {
+  const { createdAt, subject, postActionPost, postActionAuthor } = props
+  const activityPath = getActivityPath(postActionAuthor, postActionPost)
+  const artistInviteSlug = subject.get('inviteSlug')
+  const artistInviteTitle = subject.get('inviteTitle')
+  const summary = parseSummary(postActionPost, activityPath)
+
+  return (
+    <Notification
+      activityPath={activityPath}
+      className="ApprovedArtistInviteSubmissionFromFollowingNotification"
+      createdAt={createdAt}
+      summary={summary}
+      notifier={postActionAuthor}
+    >
+      <p>
+        <UserTextLink user={postActionAuthor} />
+        {"'s submission to"}
+        <ArtistInviteTextLink title={artistInviteTitle} slug={artistInviteSlug} />
+        {' was accepted'}
+      </p>
+    </Notification>
+  )
+}
+ApprovedArtistInviteSubmissionFromFollowingNotification.propTypes = {
+  subject: PropTypes.object,
+  postActionPost: PropTypes.object,
+  postActionAuthor: PropTypes.object,
+  createdAt: PropTypes.string,
+}
+ApprovedArtistInviteSubmissionFromFollowingNotification.defaultProps = {
+  subject: null,
+  postActionPost: null,
+  postActionAuthor: null,
   createdAt: null,
 }
 

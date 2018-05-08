@@ -2,6 +2,7 @@
 
 .PostHeader,
 .CategoryHeader,
+.ArtistInviteSubmissionHeader,
 .RepostHeader {
   position: relative;
   height: 60px;
@@ -9,11 +10,27 @@
   color: #aaa;
 }
 
+.PostDetailHeader {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.PostDetailHeader .PostHeaderLeft {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  overflow: hidden;
+}
+
 .PostHeaderAuthor,
 .CategoryHeaderAuthor,
+.ArtistInviteSubmissionHeaderAuthor,
 .RepostHeaderAuthor,
 .CategoryHeaderCategory,
+.ArtistInviteSubmissionHeaderInvite,
 .PostDetailHeaderUsername,
+.OwnPostTools,
 .RepostHeaderReposter {
   position: relative;
 }
@@ -21,32 +38,47 @@
 .PostHeaderAuthor,
 .RepostHeaderAuthor,
 .CategoryHeaderAuthor,
+.ArtistInviteSubmissionHeaderAuthor,
 .PostHeader .RelationshipContainer,
 .CategoryHeader .RelationshipContainer,
-.RepostHeader .RelationshipContainer {
+.RepostHeader .RelationshipContainer,
+.ArtistInviteSubmissionHeader .RelationshipContainer,
+.OwnPostTools {
   display: inline-block;
   vertical-align: middle;
 }
 
 .PostHeaderAuthor,
 .CategoryHeaderAuthor,
+.ArtistInviteSubmissionHeaderAuthor,
 .RepostHeaderAuthor {
   max-width: calc(100% - 80px);
 }
 
+.PostDetailHeader .PostHeaderAuthor {
+  width: 100%;
+}
+
+.PostDetailHeader.isOwnPost .PostHeaderAuthor {
+  max-width: calc(100% - 120px);
+}
+
 .PostHeader .RelationshipContainer,
 .CategoryHeader .RelationshipContainer,
+.ArtistInviteSubmission .RelationshipContainer,
 .RepostHeader .RelationshipContainer {
   margin-top: -2px;
   margin-left: 10px;
 }
 
-.PostHeaderLink {
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  vertical-align: middle;
+.PostDetailHeader .RelationshipContainer {
+  margin-top: -2px;
+  margin-right: 2px;
+  margin-left: 0;
+}
+
+.PostHeaderLinkAvatar {
+  left: 20px;
 }
 
 .PostHeaderAuthor {
@@ -54,18 +86,60 @@
   line-height: 60px;
 }
 
-.PostDetail .PostHeader > .PostHeaderAuthor {
+.PostDetailHeader .PostHeaderLinks {
+  flex: none;
+  width: calc(100% - 40px);
+  padding-left: 10px;
+}
+
+.FullNameLink,
+.UserNameLink {
+  width: 100%;
+  padding-right: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.FullNameLink .DraggableUsername,
+.UserNameLink .DraggableUsername {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.PostDetailHeader .UserNameLink.RepostAuthor {
+  width: calc(100% - 20px);
+}
+
+/* stylelint-disable selector-max-specificity, selector-max-compound-selectors */
+.PostDetailHeader .UserNameLink.RepostAuthor .PostHeaderAuthorUsername {
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: -8px;
+}
+/* stylelint-enable selector-max-specificity, selector-max-compound-selectors */
+
+.PostDetailHeader.RepostDetailHeader .RelationshipContainer {
+  position: absolute;
+  margin: -1px 0 0 4px;
+}
+
+.PostDetailHeader > .PostHeaderAuthor {
   line-height: 45px;
 }
 
 .CategoryHeaderAuthor,
+.ArtistInviteSubmissionHeaderAuthor,
 .RepostHeaderAuthor {
   padding-left: 40px;
   line-height: 45px;
 }
 
 .CategoryHeaderCategory,
-.PostDetailHeaderUsername,
+.ArtistInviteSubmissionHeaderInvite,
 .RepostHeaderReposter {
   max-width: calc(100% - 120px);
   margin-top: -12px;
@@ -73,7 +147,13 @@
   line-height: 15px;
 }
 
-.CategoryHeaderCategoryName {
+.PostDetailHeader.isOwnPost .PostDetailHeaderUsername,
+.PostDetailHeader.isOwnPost .RepostHeaderReposter {
+  max-width: calc(100% - 160px);
+}
+
+.CategoryHeaderCategoryName,
+.ArtistInviteSubmissionHeaderInviteName {
   text-decoration: underline;
 }
 
@@ -84,6 +164,10 @@
   vertical-align: middle;
 }
 
+.PostDetailHeader .PostHeaderAuthorName {
+  margin-right: 0;
+}
+
 .no-touch .PostHeaderLink:hover {
   color: #535353;
 }
@@ -92,10 +176,56 @@
   color: currentColor;
 }
 
-.PostHeaderTimeAgoLink {
+.PostHeaderTools {
   position: absolute;
   top: 20px;
   right: 0;
+}
+
+.PostDetailAsideTop .PostHeaderTools {
+  right: 20px;
+}
+
+.PostDetailHeader .PostHeaderTools {
+  position: relative;
+  top: auto;
+  right: auto;
+  display: block;
+  flex: none;
+}
+
+.PostHeaderTools > a,
+.PostHeaderTools > span {
+  float: right;
+}
+
+.PostHeaderTools .PostTool > button {
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
+.PostHeaderTools .PostTool .SVGIcon {
+  transform: scale(1.5);
+}
+
+.PostHeaderTools .SVGIcon > g {
+  stroke-width: 0.9375;
+}
+
+.PostHeaderTools .SVGIcon line {
+  stroke-width: 1;
+}
+
+.PostHeaderTools .featured-toggle {
+  width: 24px;
+  height: 24px;
+  margin-top: -3px;
+  margin-right: 10px;
+  overflow: hidden;
+}
+
+.PostHeaderTimeAgoLink {
+  padding-left: 5px;
 }
 
 .no-touch .PostHeaderTimeAgoLink:hover {
@@ -115,6 +245,7 @@
 }
 
 .RepostHeader.inUserDetail > .CategoryHeaderAuthor,
+.RepostHeader.inUserDetail > .ArtistInviteSubmissionHeaderAuthor,
 .RepostHeader.inUserDetail > .RepostHeaderAuthor {
   padding-left: 65px;
   line-height: 60px;
@@ -124,8 +255,21 @@
 @media (--break-2) {
   .PostHeader,
   .CategoryHeader,
+  .ArtistInviteSubmissionHeader,
   .RepostHeader {
     height: 80px;
+  }
+
+  .PostHeaderTools {
+    top: 30px;
+  }
+
+  .PostHeaderLinks {
+    padding-left: 60px;
+  }
+
+  .PostDetailHeader .PostHeaderLinks {
+    padding-left: 20px;
   }
 
   .PostHeaderAuthor {
@@ -133,17 +277,25 @@
     line-height: 80px;
   }
 
-  .PostDetail .PostHeader > .PostHeaderAuthor {
+  .PostDetailHeader .PostHeaderAuthor {
     line-height: 60px;
   }
 
+  .PostDetailHeader .PostHeaderAuthorName {
+    padding-top: 1px;
+    margin-right: 0;
+    margin-bottom: -1px;
+  }
+
   .CategoryHeaderAuthor,
+  .ArtistInviteSubmissionHeaderAuthor,
   .RepostHeaderAuthor {
     padding-left: 60px;
     line-height: 60px;
   }
 
   .CategoryHeaderCategory,
+  .ArtistInviteSubmissionHeaderInvite,
   .PostDetailHeaderUsername,
   .RepostHeaderReposter {
     margin-top: -20px;
@@ -151,11 +303,8 @@
     line-height: 20px;
   }
 
-  .PostHeaderTimeAgoLink {
-    top: 30px;
-  }
-
   .RepostHeader.inUserDetail > .CategoryHeaderAuthor,
+  .RepostHeader.inUserDetail > .ArtistInviteSubmissionHeaderAuthor,
   .RepostHeader.inUserDetail > .RepostHeaderAuthor {
     padding-left: 75px;
     line-height: 80px;
@@ -171,6 +320,10 @@
 @media (--break-3) {
   .Posts.asList .PostHeaderTimeAgoLink {
     display: none;
+  }
+
+  .PostHeaderLinks {
+    padding-left: 60px;
   }
 }
 
@@ -189,6 +342,7 @@
   .Posts.asGrid .PostHeaderTimeAgoLink,
   .Posts.asGrid .PostHeader .RelationshipContainer,
   .Posts.asGrid .CategoryHeader .RelationshipContainer,
+  .Posts.asGrid .ArtistInviteSubmissionHeader .RelationshipContainer,
   .Posts.asGrid .RepostHeader .RelationshipContainer {
     display: none;
   }
@@ -196,9 +350,29 @@
   .Posts.asGrid .PostHeaderAuthor,
   .Posts.asGrid .CategoryHeaderAuthor,
   .Posts.asGrid .CategoryHeaderCategory,
+  .Posts.asGrid .ArtistInviteSubmissionHeaderAuthor,
+  .Posts.asGrid .ArtistInviteSubmissionHeaderInvite,
   .Posts.asGrid .RepostHeaderAuthor,
   .Posts.asGrid .RepostHeaderReposter {
     max-width: 100%;
+  }
+
+  .PostHeaderLinks {
+    max-width: calc(100% - 110px);
+    padding-top: 2px;
+    line-height: 16px;
+  }
+
+  .PostDetailHeader .PostHeaderLinks {
+    width: calc(100% - 30px);
+    max-width: 100%;
+    padding-left: 10px;
+    line-height: 18px;
+  }
+
+  .FullNameLink,
+  .UserNameLink {
+    line-height: 14px;
   }
 }
 

@@ -16,4 +16,4 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/ello/w
 Ello Web Application is released under the [MIT License](/LICENSE.txt)
 
 :metal::skull::metal:
-
+:peace:

@@ -12,7 +12,7 @@ import { NavbarLoggedIn, NavbarLoggedOut } from '../components/navbar/NavbarRend
 import { ADD_NEW_IDS_TO_RESULT, SET_LAYOUT_MODE } from '../constants/action_types'
 import { scrollToPosition } from '../lib/jello'
 import * as ElloAndroidInterface from '../lib/android_interface'
-import { selectCategoryTabs } from '../selectors/categories'
+import { selectCategoryTabs, selectAreCategoriesSubscribed } from '../selectors/categories'
 import { selectIsLoggedIn } from '../selectors/authentication'
 import {
   selectActiveNotificationsType,
@@ -20,14 +20,14 @@ import {
   selectInnerWidth,
   selectIsGridMode,
   selectIsLayoutToolHidden,
+  selectIsLightBoxActive,
   selectIsNotificationsActive,
   selectIsNotificationsUnread,
   selectIsProfileMenuActive,
 } from '../selectors/gui'
 import { selectAnnouncementHasBeenViewed } from '../selectors/notifications'
 import { selectPage } from '../selectors/pages'
-import { selectParamsType } from '../selectors/params'
-import { selectAvatar, selectUsername } from '../selectors/profile'
+import { selectAvatar, selectUsername, selectIsBrand } from '../selectors/profile'
 import { selectPathname, selectViewNameFromRoute } from '../selectors/routing'
 
 function mapStateToProps(state, props) {
@@ -35,12 +35,13 @@ function mapStateToProps(state, props) {
   const isLoggedIn = selectIsLoggedIn(state)
   const pathname = selectPathname(state)
   const pageResult = selectPage(state)
-  const paramsType = selectParamsType(state, props)
   const hasLoadMoreButton = !!(pageResult && pageResult.get('morePostIds'))
   const viewName = selectViewNameFromRoute(state)
-  const categoryTabs = viewName === 'discover' && paramsType !== 'all' ? selectCategoryTabs(state) : null
+  const categoryTabs = viewName === 'discover' ? selectCategoryTabs(state) : null
+  const areCategoriesSubscribed = selectAreCategoriesSubscribed(state)
   const isUnread = selectIsNotificationsUnread(state) || !selectAnnouncementHasBeenViewed(state)
   const isGridMode = selectIsGridMode(state)
+  const isLightBoxActive = selectIsLightBoxActive(state)
   const deviceSize = selectDeviceSize(state)
 
   if (isLoggedIn) {
@@ -49,9 +50,11 @@ function mapStateToProps(state, props) {
       artistInvitesInProfileMenu: (innerWidth <= 700 && innerWidth >= 640) || innerWidth < 372,
       avatar: selectAvatar(state),
       categoryTabs,
+      areCategoriesSubscribed,
       deviceSize,
       hasLoadMoreButton,
       isGridMode,
+      isLightBoxActive,
       isLayoutToolHidden: selectIsLayoutToolHidden(state, props),
       isLoggedIn,
       isNotificationsActive: selectIsNotificationsActive(state),
@@ -59,14 +62,18 @@ function mapStateToProps(state, props) {
       isProfileMenuActive: selectIsProfileMenuActive(state),
       pathname,
       username: selectUsername(state),
+      isBrand: selectIsBrand(state),
       viewName,
+      innerWidth,
     }
   }
   return {
     categoryTabs,
+    areCategoriesSubscribed,
     deviceSize,
     hasLoadMoreButton,
     isGridMode,
+    isLightBoxActive,
     isLoggedIn,
     pathname,
     viewName,
@@ -74,23 +81,25 @@ function mapStateToProps(state, props) {
 }
 
 class NavbarContainer extends PureComponent {
-
   static propTypes = {
     activeTabType: PropTypes.string,
     dispatch: PropTypes.func.isRequired,
     isGridMode: PropTypes.bool.isRequired,
+    isLightBoxActive: PropTypes.bool.isRequired,
     isProfileMenuActive: PropTypes.bool.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
     isNotificationsActive: PropTypes.bool.isRequired,
     pathname: PropTypes.string.isRequired,
     params: PropTypes.object.isRequired,
     viewName: PropTypes.string.isRequired,
+    innerWidth: PropTypes.number,
   }
 
   static defaultProps = {
     activeTabType: '',
     isProfileMenuActive: false,
     isNotificationsActive: false,
+    innerWidth: null,
   }
 
   static contextTypes = {
@@ -257,7 +266,7 @@ class NavbarContainer extends PureComponent {
   }
 
   render() {
-    const { isLoggedIn } = this.props
+    const { isLoggedIn, isLightBoxActive, innerWidth } = this.props
     if (isLoggedIn) {
       return (
         <NavbarLoggedIn
@@ -275,6 +284,8 @@ class NavbarContainer extends PureComponent {
           onDragOverStreamLink={this.onDragOverStreamLink}
           onDropStreamLink={this.onDropStreamLink}
           onLogOut={this.onLogOut}
+          isLightBoxActive={isLightBoxActive}
+          innerWidth={innerWidth}
         />
       )
     }

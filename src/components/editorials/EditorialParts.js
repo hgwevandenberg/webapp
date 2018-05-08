@@ -75,8 +75,7 @@ export const EditorialTools = (props, context) => (
     </ToolButton>
     <ToolButton
       className={leftSpacer}
-      onClick={context.onClickOpenSignupModal}
-      to={context.onClickOpenSignupModal ? null : props.postPath}
+      onClick={() => context.onClickRepostEditorialPost(props.postPath)}
     >
       <RepostIcon />
     </ToolButton>
@@ -88,8 +87,10 @@ export const EditorialTools = (props, context) => (
     </ToolButton>
   </div>
 )
+
 EditorialTools.contextTypes = {
   onClickLovePost: PropTypes.func,
+  onClickRepostEditorialPost: PropTypes.func,
   onClickOpenSignupModal: PropTypes.func,
   onClickSharePost: PropTypes.func.isRequired,
 }

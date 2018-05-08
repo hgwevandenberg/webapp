@@ -8,7 +8,7 @@ import {
   ArtistInviteGrid,
 } from '../components/artist_invites/ArtistInviteRenderables'
 import { getEditorId } from '../components/editor/Editor'
-import { EDITOR } from '../constants/action_types'
+import { EDITOR, GUI } from '../constants/action_types'
 import * as ElloAndroidInterface from '../lib/android_interface'
 import { scrollToPosition } from '../lib/jello'
 import {
@@ -29,7 +29,7 @@ import {
   selectTitle,
 } from '../selectors/artist_invites'
 import { selectIsLoggedIn } from '../selectors/authentication'
-import { selectDPI } from '../selectors/gui'
+import { selectDPI, selectIsCompletingOnboardingWithArtistInvite } from '../selectors/gui'
 
 function mapStateToProps(state, props) {
   return {
@@ -38,7 +38,6 @@ function mapStateToProps(state, props) {
     closedAt: selectClosedAt(state, props),
     description: selectDescription(state, props),
     guide: selectGuide(state, props),
-    hasSubmissions: document.querySelectorAll('.ArtistInviteSubmission').length > 0,
     headerImage: selectHeaderImage(state, props),
     id: selectId(state, props),
     inviteType: selectInviteType(state, props),
@@ -53,6 +52,7 @@ function mapStateToProps(state, props) {
     // other
     dpi: selectDPI(state),
     isLoggedIn: selectIsLoggedIn(state),
+    isCompletingOnboarding: selectIsCompletingOnboardingWithArtistInvite(state),
   }
 }
 
@@ -64,7 +64,6 @@ class ArtistInviteContainer extends PureComponent {
     dispatch: PropTypes.func.isRequired,
     dpi: PropTypes.string.isRequired,
     guide: PropTypes.object.isRequired,
-    hasSubmissions: PropTypes.bool,
     headerImage: PropTypes.object.isRequired,
     inviteType: PropTypes.string.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
@@ -77,13 +76,11 @@ class ArtistInviteContainer extends PureComponent {
     status: PropTypes.string.isRequired,
     submissionBodyBlock: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
-  }
-
-  static defaultProps = {
-    hasSubmissions: false,
+    isCompletingOnboarding: PropTypes.bool.isRequired,
   }
 
   static contextTypes = {
+    onClickOpenRegistrationRequestDialog: PropTypes.func.isRequired,
     onLaunchNativeEditor: PropTypes.func.isRequired,
   }
 
@@ -101,6 +98,24 @@ class ArtistInviteContainer extends PureComponent {
     }
   }
 
+  componentWillMount() {
+    this.state = {
+      hasSubmissions: false,
+      hasLoaded: false,
+    }
+  }
+
+  componentDidUpdate() {
+    const { dispatch, isCompletingOnboarding, kind } = this.props
+    if (isCompletingOnboarding && kind === 'detail') {
+      this.openArtistInviteOmnibar()
+      dispatch({
+        type: GUI.RESET_ONBOARD_TO_ARTIST_INVITE,
+        payload: {},
+      })
+    }
+  }
+
   onClickArtistInviteDetail = () => {
     const { dispatch, slug } = this.props
     dispatch(trackEvent('clicked_artist_invite_detail', { slug }))
@@ -111,6 +126,22 @@ class ArtistInviteContainer extends PureComponent {
   }
 
   onClickSubmit = () => {
+    const { artistInvite, dispatch, isLoggedIn } = this.props
+    if (isLoggedIn) {
+      this.openArtistInviteOmnibar()
+    } else {
+      const { onClickOpenRegistrationRequestDialog } = this.context
+      dispatch({
+        type: GUI.START_ONBOARD_TO_ARTIST_INVITE,
+        payload: {
+          artistInvite,
+        },
+      })
+      onClickOpenRegistrationRequestDialog('artist-invites')
+    }
+  }
+
+  openArtistInviteOmnibar = () => {
     const { artistInvite, dispatch } = this.props
     const editorId = getEditorId()
     dispatch({
@@ -129,13 +160,26 @@ class ArtistInviteContainer extends PureComponent {
     }
   }
 
+  handleResultStatus = (numberResults) => {
+    let hasSubmissions = false
+    const hasLoaded = (numberResults !== null)
+
+    if (numberResults > 0) {
+      hasSubmissions = true
+    }
+
+    this.setState({
+      hasSubmissions,
+      hasLoaded,
+    })
+  }
+
   render() {
     const {
       closedAt,
       description,
       dpi,
       guide,
-      hasSubmissions,
       headerImage,
       inviteType,
       isLoggedIn,
@@ -157,7 +201,9 @@ class ArtistInviteContainer extends PureComponent {
             description={description}
             dpi={dpi}
             guide={guide}
-            hasSubmissions={hasSubmissions}
+            hasSubmissions={this.state.hasSubmissions}
+            hasLoaded={this.state.hasLoaded}
+            sendResultStatus={numberResults => this.handleResultStatus(numberResults)}
             headerImage={headerImage}
             inviteType={inviteType}
             isLoggedIn={isLoggedIn}

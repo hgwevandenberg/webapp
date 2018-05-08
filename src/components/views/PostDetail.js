@@ -5,14 +5,14 @@ import PostContainer from '../../containers/PostContainer'
 import StreamContainer from '../../containers/StreamContainer'
 import { MainView } from '../views/MainView'
 import { loadRelatedPosts } from '../../actions/posts'
-import { LaunchCommentEditorButton } from '../posts/PostRenderables'
+import { LaunchMobileCommentEditorButton, LaunchNativeCommentEditorButton } from '../posts/PostRenderables'
 import { css, hover, media, modifier, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 import * as ElloAndroidInterface from '../../lib/android_interface'
 
 const postDetailStyle = css(
   s.relative,
-  select('& .ViewsTool.isPill > a', s.colorA, { backgroundColor: 'transparent' }, hover({ backgroundColor: 'transparent' })),
+  select('& .ViewsTool.isPill.isPostDetail > a', s.colorA, { backgroundColor: 'transparent' }, hover({ backgroundColor: 'transparent' })),
   select('& .PostDetails.Posts.asList aside .PostDetailAsideTop',
     select('& header', s.px20, { borderBottom: '1px solid #f2f2f2' }),
     select('& footer', s.px20, { borderBottom: '1px solid #f2f2f2' }),
@@ -28,48 +28,84 @@ const postDetailStyle = css(
       ),
     ),
     select('& .PostTools',
-      s.flex, s.justifySpaceBetween, s.itemsCenter, s.p0, { maxWidth: 310 },
-      media(s.minBreak3, s.px10, { maxWidth: 640 }),
+      s.flex,
+      s.justifySpaceBetween,
+      s.itemsCenter,
+      s.p0,
+      media(s.minBreak3, s.pr10, { paddingLeft: 15, maxWidth: 640 }),
       select('& .ShyTool',
         s.absolute,
         s.pointerAuto,
         s.opacity1,
         { top: -50 },
-        modifier('.EditTool', { right: 110 }),
-        modifier('.DeleteTool', { right: 70 }),
+        modifier('.EditTool', { right: 0 }),
+        modifier('.DeleteTool', { right: 0 }),
       ),
       select('& .SVGIcon', { transform: 'scale(1.5)' }, select('& > g', { strokeWidth: 0.9375 })),
       select('& .CommentTool', s.displayNone),
       select('& .WatchTool', s.displayNone),
       select('& .FlagTool', s.displayNone),
       select('& .TimeAgoTool', s.displayNone),
+      select('& .CategoryHistory', s.displayNone),
       select('& .ShareTool', { position: 'static' }),
       select('& .ViewsTool', s.pointerNone, modifier('.isPill', { marginRight: '0 !important' })),
     ),
   ),
+  select('& .PostDetails.Posts.asList .PostList > .Post',
+    select('& .PostTools',
+      s.pt30,
+      s.pb40,
+      { height: 'auto' },
+    ),
+  ),
+  select('> .PostDetails.Posts.asList', s.relative),
   select('& .PostDetails.Posts.asList .PostDetailAsideBottom',
-    select('& .PostTools', s.px0, s.mt40, s.flex, s.justifyStart, media(s.minBreak3, s.justifyEnd, s.px10)),
+    select('& .PostTools',
+      s.px0,
+      s.pt0,
+      s.flex,
+      s.justifyStart,
+      {
+        paddingBottom: 15,
+        height: 'auto',
+      },
+      media(s.minBreak3, s.justifyEnd, s.px10),
+    ),
     select('& .PostTool', s.displayNone,
       modifier('.WatchTool', s.block),
       modifier('.FlagTool', s.block, s.opacity1, s.pointerAuto),
     ),
+    select('& .CategoryHistory',
+      s.pl20,
+      s.pr20,
+    ),
+  ),
+  media(
+    s.maxBreak2,
+    select('&.PostDetail.MainView', { paddingBottom: 0 }), // select override because of legacy css
   ),
 )
 
-const streamStyle = css(
+const listStyle = css(
   s.px10,
-  s.overflowScroll,
-  { height: 'calc(100vh - 80px)', paddingBottom: 80 },
   media(
-    s.minBreak2,
+    s.minBreak3,
+    s.overflowScrollWebY,
+    { height: '100vh', paddingBottom: 40 },
     s.px20,
   ),
   media(
     s.minBreak3,
-    { width: 'calc(100vw - 360px)' },
+    { width: 'calc(100vw - 420px)' },
     select('& .PostBody > div', s.flex, s.flexColumn, s.justifyCenter, s.itemsCenter, s.pt20),
   ),
   select('.PostDetails & .TabListStreamContainer', s.px0),
+  select('& .StreamContainer.empty',
+    media(
+      s.minBreak3,
+      { paddingBottom: 42 },
+    ),
+  ),
 )
 
 const relatedPostsStyle = css(
@@ -84,9 +120,16 @@ const relatedPostsStyle = css(
 
 const asideStyle = css(
   s.absolute,
-  s.fullHeight,
-  { width: 360, borderLeft: '1px solid #f2f2f2', top: 0, right: 0, overflowY: 'scroll', paddingBottom: 80 },
-  select('& .CommentContent', s.m20),
+  s.overflowScrollWebY,
+  { height: '100vh', paddingBottom: 160, width: 420, borderLeft: '1px solid #f2f2f2', top: 0, right: 0 },
+  select('& .CommentContent',
+    s.m20,
+    select('& .Paginator',
+      s.m0,
+      s.mt30,
+      s.fullWidth,
+    ),
+  ),
   select('.PostDetails & .TabListStreamContainer', s.px0),
   select('& .UserProfileCard',
     media(s.minBreak3, s.mt20, { width: 'calc(100% - 40px)' }),
@@ -94,47 +137,74 @@ const asideStyle = css(
 )
 
 const CommentContent = (
-  { activeType, avatar, hasEditor, isLoggedIn, post, streamAction }) => (
-    <div className="CommentContent">
-      {hasEditor && activeType === 'comments' && !ElloAndroidInterface.supportsNativeEditor() && <Editor post={post} isComment />}
-      {isLoggedIn && ElloAndroidInterface.supportsNativeEditor() &&
-        <LaunchCommentEditorButton avatar={avatar} post={post} />
-      }
-      {streamAction &&
-        <StreamContainer
-          action={streamAction}
-          className="TabListStreamContainer"
-          key={`TabListStreamContainer_${activeType}`}
-          paginatorText="Load More"
-          shouldInfiniteScroll={false}
-        />
-      }
-    </div>
-  )
+  { activeType, avatar, hasEditor, isInlineCommenting, isLoggedIn, post, streamAction },
+  { onToggleInlineCommenting },
+  ) => {
+  let editorOrButton = null
+  if (isLoggedIn && ElloAndroidInterface.supportsNativeEditor()) {
+    editorOrButton = <LaunchNativeCommentEditorButton avatar={avatar} post={post} />
+  } else if (hasEditor && activeType === 'comments') {
+    if (isInlineCommenting) {
+      editorOrButton = <Editor post={post} isComment onCancel={onToggleInlineCommenting} />
+    } else {
+      editorOrButton = <LaunchMobileCommentEditorButton avatar={avatar} post={post} />
+    }
+  }
+
+  if (isLoggedIn) {
+    return (
+      <div className="CommentContent">
+        {editorOrButton}
+        {streamAction &&
+          <StreamContainer
+            action={streamAction}
+            className="TabListStreamContainer"
+            key={`TabListStreamContainer_${activeType}`}
+            paginatorText="Load More"
+            shouldInfiniteScroll={false}
+          />
+        }
+      </div>
+    )
+  }
+  return null
+}
 CommentContent.propTypes = {
   activeType: PropTypes.string.isRequired,
   avatar: PropTypes.object,
   hasEditor: PropTypes.bool.isRequired,
+  isInlineCommenting: PropTypes.bool,
   isLoggedIn: PropTypes.bool.isRequired,
   post: PropTypes.object.isRequired,
   streamAction: PropTypes.object,
 }
 CommentContent.defaultProps = {
   avatar: null,
+  isInlineCommenting: false,
   streamAction: null,
 }
 CommentContent.contextTypes = {
-  onClickDetailTab: PropTypes.func.isRequired,
+  onToggleInlineCommenting: PropTypes.func.isRequired,
 }
 
 // TODO: Remove references to the PostDetailStreamContainer styles
 export const PostDetail = (props) => {
-  const { columnCount, post, shouldInlineComments } = props
+  const {
+    columnCount,
+    post,
+    shouldInlineComments,
+    toggleLightBox,
+  } = props
   return (
     <MainView className={`PostDetail ${postDetailStyle}`}>
       <div className="PostDetails Posts asList">
-        <article className={`PostList ${streamStyle}`} id={`Post_${post.get('id')}`}>
-          <PostContainer type={shouldInlineComments ? null : 'PostDetailBody'} postId={post.get('id')} />
+        <article className={`PostList ${listStyle}`} id={`Post_${post.get('id')}`}>
+          <PostContainer
+            isNarrowPostDetail={shouldInlineComments}
+            postId={post.get('id')}
+            toggleLightBox={shouldInlineComments ? toggleLightBox : null}
+            type={shouldInlineComments ? null : 'PostDetailBody'}
+          />
           {shouldInlineComments && <CommentContent {...props} />}
           <StreamContainer
             action={loadRelatedPosts(`~${post.get('token')}`, columnCount > 2 ? columnCount - 1 : columnCount)}
@@ -144,9 +214,9 @@ export const PostDetail = (props) => {
           {shouldInlineComments && <PostContainer type="PostDetailAsideBottom" postId={post.get('id')} />}
         </article>
         {!shouldInlineComments &&
-          <aside className={asideStyle}>
+          <aside className={`PostSideBar ${asideStyle}`}>
             <PostContainer type="PostDetailAsideTop" postId={post.get('id')} />
-            <CommentContent {...props} />
+            <CommentContent {...props} isInlineCommenting />
             <PostContainer type="PostDetailAsideBottom" postId={post.get('id')} />
           </aside>
         }
@@ -158,9 +228,10 @@ PostDetail.propTypes = {
   columnCount: PropTypes.number.isRequired,
   post: PropTypes.object.isRequired,
   shouldInlineComments: PropTypes.bool.isRequired,
+  toggleLightBox: PropTypes.func,
 }
-PostDetail.contextTypes = {
-  onLaunchNativeEditor: PropTypes.func.isRequired,
+PostDetail.defaultProps = {
+  toggleLightBox: null,
 }
 
 export const PostDetailError = ({ children }) =>

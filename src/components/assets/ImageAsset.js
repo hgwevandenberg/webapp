@@ -19,6 +19,8 @@ export default class ImageAsset extends PureComponent {
   static propTypes = {
     onLoadSuccess: PropTypes.func,
     onLoadFailure: PropTypes.func,
+    isPostBody: PropTypes.bool,
+    onScreenDimensions: PropTypes.func,
     src: PropTypes.string,
     srcSet: PropTypes.string,
   }
@@ -26,6 +28,8 @@ export default class ImageAsset extends PureComponent {
   static defaultProps = {
     onLoadSuccess: null,
     onLoadFailure: null,
+    isPostBody: false,
+    onScreenDimensions: null,
     src: null,
     srcSet: null,
   }
@@ -38,6 +42,7 @@ export default class ImageAsset extends PureComponent {
     if (!this.img && prevProps.src !== this.props.src) {
       this.createLoader()
     }
+    this.getDimensionsOnScreen()
   }
 
   componentWillUnmount() {
@@ -45,6 +50,8 @@ export default class ImageAsset extends PureComponent {
   }
 
   onLoadSuccess = () => {
+    this.getDimensionsOnScreen()
+
     if (typeof this.props.onLoadSuccess === 'function') {
       this.props.onLoadSuccess(this.img)
     }
@@ -55,6 +62,18 @@ export default class ImageAsset extends PureComponent {
     this.disposeLoader()
     if (typeof this.props.onLoadFailure === 'function') {
       this.props.onLoadFailure()
+    }
+  }
+
+  getDimensionsOnScreen = () => {
+    const { isPostBody } = this.props
+
+    if (isPostBody) {
+      const onScreenDimensions = {
+        width: this.imgOnScreen.clientWidth,
+        height: this.imgOnScreen.clientHeight,
+      }
+      this.props.onScreenDimensions(onScreenDimensions)
     }
   }
 
@@ -83,6 +102,8 @@ export default class ImageAsset extends PureComponent {
     const elementProps = { ...this.props }
     delete elementProps.onLoadFailure
     delete elementProps.onLoadSuccess
+    delete elementProps.isPostBody
+    delete elementProps.onScreenDimensions
     if (elementProps.isBackgroundImage) {
       const style = elementProps.src ? { backgroundImage: `url(${elementProps.src})` } : null
       delete elementProps.src
@@ -92,8 +113,11 @@ export default class ImageAsset extends PureComponent {
       )
     }
     return (
-      <img alt="" {...elementProps} />
+      <img
+        alt=""
+        {...elementProps}
+        ref={(imgOnScreen) => { this.imgOnScreen = imgOnScreen }}
+      />
     )
   }
 }
-

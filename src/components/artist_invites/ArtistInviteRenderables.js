@@ -1,5 +1,5 @@
 /* eslint-disable react/no-danger */
-import React from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { Link } from 'react-router'
@@ -12,36 +12,39 @@ import { RoundedRect } from '../buttons/Buttons'
 import ArtistInviteSubmissionsContainer from '../../containers/ArtistInviteSubmissionsContainer'
 
 const gridContainerStyle = css(
-  s.alignTop,
+  s.block,
+  s.mr20,
+  s.ml20,
+  s.mb40,
   s.bgcF2,
   s.fontSize14,
-  s.fullWidth,
-  s.mb10,
   s.sansRegular,
   s.transitionBgColor,
+  { width: 'calc(50% - 40px)' },
   media(
-    s.minBreak2,
-    s.mr20,
+    s.maxBreak4,
+    s.mr10,
+    s.ml10,
     s.mb20,
-    // .1 is MS Edge not calc-ing rems correctly
-    { width: 'calc(50% - 10.1px)' },
-    select(':nth-child(2n)', s.mr0),
+    { width: 'calc(50% - 20px)' },
   ),
   media(
-    s.minBreak4,
-    s.mr40,
-    s.mb40,
-    { width: 'calc(50% - 20.2px)' },
+    s.maxBreak2,
+    s.mr0,
+    s.ml0,
+    s.mb10,
+    s.fullWidth,
   ),
   hover(s.bgcE5),
 )
 
 const imageContainerStyle = css(
+  s.maxViewWidth,
   s.flex,
   s.justifyCenter,
   s.itemsCenter,
   s.relative,
-  { height: 235 },
+  { height: 235, margin: '0 auto' },
   media(s.minBreak2, { height: 220 }, parent('.ArtistInvitesDetail', s.mb40, { height: 555 }, media(s.minBreak3, s.mb60))),
   parent('a:hover', select('> .BackgroundImage::before', { backgroundColor: 'rgba(0, 0, 0, 0.5)' })),
   parent('.ArtistInvitesDetail', s.mb20),
@@ -55,18 +58,27 @@ const logoImageStyle = css(
 )
 
 const contentContainerStyle = css(
-  { height: 305 },
   s.p10,
   s.relative,
-  media(s.minBreak3, s.py30, s.px20),
-  media(s.minBreak4, { height: 250 }),
+  media(s.maxBreak2, s.relative),
+  media(s.minBreak3, s.py20, s.px20),
+)
+
+const detailsStyle = css(
+  s.block,
+  s.fullWidth,
+  s.clearFix,
 )
 
 const titleStyle = css(
+  s.block,
   s.sansBlack,
   s.fontSize24,
-  s.truncate,
   media(s.minBreak3, s.mb20),
+  parent(
+    '.ArtistInvites',
+    s.truncate,
+  ),
   parent(
     '.ArtistInvitesDetail',
     media(s.minBreak2, { marginTop: -5 }),
@@ -77,12 +89,21 @@ const titleStyle = css(
 const inviteTypeStyle = css(
   s.colorA,
   s.my0,
-  s.truncate,
-  media(s.minBreak3, { maxWidth: 'calc(100% - 220px)' }),
+  media(s.minBreak3, { width: 'calc(100% - 210px)', float: 'left' }),
+  media(s.maxBreak3, s.mb10),
+  parent(
+    '.ArtistInvites',
+    s.truncate,
+  ),
   parent(
     '.ArtistInvitesDetail',
     s.fontSize24,
     s.sansLight,
+    s.fullWidth,
+    {
+      float: 'none',
+      clear: 'both',
+    },
     media(s.minBreak3, s.fontSize38, s.fit),
   ),
 )
@@ -97,13 +118,38 @@ const textStatusStyle = css(
   modifier('.preview', { color: '#0409fe' }),
   modifier('.selecting', { color: '#ffb100' }),
   modifier('.upcoming', { color: '#c000ff' }),
-  parent('.ArtistInvitesDetail', s.sansLight, media(s.minBreak3, s.fontSize38)),
+  parent(
+    '.ArtistInvitesDetail',
+    s.sansLight,
+    s.fullWidth,
+    {
+      float: 'none',
+      clear: 'both',
+    },
+    media(
+      s.minBreak3,
+      s.fontSize38,
+    ),
+  ),
+  media(
+    s.maxBreak3,
+    s.fullWidth,
+  ),
 )
 
 const bulletStatusStyle = css(
   { ...textStatusStyle },
+  { float: 'left', width: '210px' },
   s.fontSize14,
-  s.mt10,
+  s.mt0,
+  media(
+    s.maxBreak3,
+    s.fullWidth,
+    {
+      float: 'none',
+      clear: 'both',
+    },
+  ),
   before(
     {
       borderRadius: 5,
@@ -119,26 +165,41 @@ const bulletStatusStyle = css(
   modifier('.preview', before({ backgroundColor: '#0409fe' })),
   modifier('.selecting', before({ backgroundColor: '#ffb100' })),
   modifier('.upcoming', before({ backgroundColor: '#c000ff' })),
-  media(s.minBreak3, s.absolute, s.mt0, { left: 'calc(100% - 230px)', top: 85 }),
 )
 
 const dateRangeStyle = css(
   s.colorA,
   s.my0,
   s.truncate,
-  media(s.minBreak3, s.absolute, { left: 'calc(100% - 200px)', top: 105 }),
+  { float: 'right', width: '180px' },
+  media(
+    s.maxBreak3,
+    s.fullWidth,
+    {
+      float: 'none',
+      clear: 'both',
+    },
+  ),
   parent(
     '.ArtistInvitesDetail',
+    s.fullWidth,
+    {
+      float: 'none',
+      clear: 'both',
+    },
     s.fontSize24,
     s.sansLight,
-    { left: 'auto', position: 'inherit', top: 'auto' },
     media(s.minBreak3, s.fontSize38),
   ),
 
 )
 
 const shortDescriptionStyle = css(
-  media(s.minBreak3, s.mt40),
+  s.block,
+  s.mt20,
+  select('& br', { display: 'none' }),
+  select('& p:last-child', s.mb0),
+  media(s.maxBreak3, s.mt20),
 )
 
 const getStatusText = (status) => {
@@ -170,6 +231,79 @@ const renderBulletStatus = status => (
   </p>
 )
 
+function getSecondsRemaining(closedAt) {
+  const remaining = moment(closedAt).unix() - moment().unix()
+  return remaining < 0 ? 0 : remaining
+}
+
+class ArtistInviteCountDown extends PureComponent {
+  static propTypes = {
+    status: PropTypes.string.isRequired,
+    openedAt: PropTypes.string.isRequired,
+    closedAt: PropTypes.string.isRequired,
+    className: PropTypes.object.isRequired,
+  }
+
+  constructor(props) {
+    super(props)
+    this.state = { secondsRemaining: getSecondsRemaining(props.closedAt) }
+    this.timer = 0;
+  }
+
+  componentDidMount() {
+    const { status } = this.props
+    if (status === 'open') {
+      this.interval = setInterval(this.tick, 1000)
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.interval) {
+      clearInterval(this.interval)
+    }
+  }
+
+  tick = () => {
+    const { closedAt } = this.props
+    this.setState({ secondsRemaining: getSecondsRemaining(closedAt) })
+  }
+
+  countDown() {
+    const { secondsRemaining } = this.state
+    const pad = n => `${n}`.padStart(2, '0')
+    const r = moment.duration(secondsRemaining, 'seconds')
+    if (r.asDays() > 2.0) {
+      return `${Math.floor(r.asDays())} Days Remaining`
+    }
+    return `${pad(Math.floor(r.asHours()))}:${pad(r.minutes())}:${pad(r.seconds())} Remaining`
+  }
+
+  renderByStatus() {
+    const { status, openedAt } = this.props
+    switch (status) {
+      case 'preview':
+      case 'upcoming':
+        return ''
+      case 'open':
+        return this.countDown()
+      case 'selecting':
+        return 'Hold Tight'
+      case 'closed':
+        return moment(openedAt).format('MMMM YYYY')
+      default:
+        return ''
+    }
+  }
+
+  render() {
+    const { className } = this.props
+    return (
+      <p className={className}>{this.renderByStatus()}</p>
+    )
+  }
+
+}
+
 export const ArtistInviteGrid = ({
   closedAt,
   dpi,
@@ -183,21 +317,27 @@ export const ArtistInviteGrid = ({
   title,
 }, { onClickArtistInviteDetail }) => (
   <Link to={`/artist-invites/${slug}`} onClick={onClickArtistInviteDetail} className={gridContainerStyle}>
-    <article>
-      <div className={imageContainerStyle}>
-        <BackgroundImage className="hasOverlay3" dpi={dpi} sources={headerImage} />
-        <ImageAsset className={logoImageStyle} src={logoImage.getIn(['optimized', 'url'])} />
-      </div>
-      <div className={contentContainerStyle}>
-        <h2 className={titleStyle}>{title}</h2>
+    <div className={imageContainerStyle}>
+      <BackgroundImage className="hasOverlay3" dpi={dpi} sources={headerImage} />
+      <ImageAsset className={logoImageStyle} src={logoImage.getIn(['optimized', 'url'])} />
+    </div>
+    <div className={contentContainerStyle}>
+      <h2 className={titleStyle}>{title}</h2>
+      <div className={detailsStyle}>
         <p className={inviteTypeStyle}>{inviteType}</p>
         {renderBulletStatus(status)}
-        <p className={dateRangeStyle}>{`${moment(openedAt).format('MMM D')} — ${moment(closedAt).format('MMM D, YYYY')}`}</p>
-        <div className={shortDescriptionStyle}>
-          <p dangerouslySetInnerHTML={{ __html: shortDescription }} />
-        </div>
+        <ArtistInviteCountDown
+          className={dateRangeStyle}
+          status={status}
+          openedAt={openedAt}
+          closedAt={closedAt}
+        />
       </div>
-    </article>
+      <div
+        className={shortDescriptionStyle}
+        dangerouslySetInnerHTML={{ __html: shortDescription }}
+      />
+    </div>
   </Link>
 )
 ArtistInviteGrid.propTypes = {
@@ -217,7 +357,7 @@ ArtistInviteGrid.contextTypes = {
 }
 
 const detailContainerStyle = css(
-  s.maxSiteWidth,
+  s.fullWidth,
   s.px10,
   s.mxAuto,
   media(s.minBreak2, s.px20),
@@ -237,6 +377,16 @@ const detailContainerStyle = css(
       modifier('.SubmitButton', { marginBottom: 50 }),
     ),
   ),
+)
+
+const upcomingDetailContainerStyle = css(
+  { ...detailContainerStyle },
+  { paddingBottom: 60 },
+)
+
+const detailContentContainerStyle = css(
+  s.maxSiteWidthPadded, { margin: '0 auto' },
+  media(s.maxBreak4, s.pr0, s.pl0),
 )
 
 const contentColumnStyle = css(
@@ -271,6 +421,8 @@ export const ArtistInviteDetail = ({
   dpi,
   guide,
   hasSubmissions,
+  hasLoaded,
+  sendResultStatus,
   headerImage,
   inviteType,
   isLoggedIn,
@@ -286,29 +438,37 @@ export const ArtistInviteDetail = ({
   onClickSubmit,
 }) => (
   <div>
-    <article className={detailContainerStyle}>
+    <article className={(status === 'upcoming') ? upcomingDetailContainerStyle : detailContainerStyle}>
       <div className={imageContainerStyle}>
         <BackgroundImage className="hasOverlay3" dpi={dpi} sources={headerImage} />
         <ImageAsset className={logoImageStyle} src={logoImage.getIn(['optimized', 'url'])} />
       </div>
-      <div>
+      <div className={detailContentContainerStyle}>
         <div className={contentColumnStyle}>
           <h1 className={titleStyle}>{title}</h1>
           <p className={inviteTypeStyle}>{inviteType}</p>
           {renderTextStatus(status)}
-          <p className={dateRangeStyle}>{`${moment(openedAt).format('MMM D')} — ${moment(closedAt).format('MMM D, YYYY')}`}</p>
-          {links.size !== 0 && hasSubmissions &&
+          <ArtistInviteCountDown
+            className={dateRangeStyle}
+            status={status}
+            openedAt={openedAt}
+            closedAt={closedAt}
+          />
+          {status !== 'upcoming' && hasLoaded &&
             <RoundedRect className="ScrollButton GreenBorder" onClick={onClickScrollToContent}>
               <ArrowIcon />
               See Submissions
             </RoundedRect>
           }
-          <div>
-            <p dangerouslySetInnerHTML={{ __html: description }} />
-          </div>
+          {status !== 'upcoming' && !hasLoaded &&
+            <RoundedRect className="ScrollButton BlackBorder" onClick={onClickScrollToContent}>
+              Loading Submissions…
+            </RoundedRect>
+          }
+          <div dangerouslySetInnerHTML={{ __html: description }} />
         </div>
         <div className={contentColumnStyle}>
-          {status === 'open' && isLoggedIn &&
+          {status === 'open' &&
             <RoundedRect className="SubmitButton Green isXL" onClick={onClickSubmit}>
               SUBMIT
             </RoundedRect>
@@ -322,7 +482,17 @@ export const ArtistInviteDetail = ({
         </div>
       </div>
     </article>
-    <ArtistInviteSubmissionsContainer links={links} slug={slug} status={status} />
+    {status !== 'upcoming' &&
+      <ArtistInviteSubmissionsContainer
+        links={links}
+        slug={slug}
+        status={status}
+        isLoggedIn={isLoggedIn}
+        sendResultStatus={sendResultStatus}
+        hasSubmissions={hasSubmissions}
+        hasLoaded={hasLoaded}
+      />
+    }
   </div>
 )
 ArtistInviteDetail.propTypes = {
@@ -331,6 +501,8 @@ ArtistInviteDetail.propTypes = {
   dpi: PropTypes.string.isRequired,
   guide: PropTypes.object.isRequired,
   hasSubmissions: PropTypes.bool.isRequired,
+  hasLoaded: PropTypes.bool.isRequired,
+  sendResultStatus: PropTypes.func.isRequired,
   headerImage: PropTypes.object.isRequired,
   inviteType: PropTypes.string.isRequired,
   isLoggedIn: PropTypes.bool.isRequired,
