@@ -45,7 +45,10 @@ class PostStreamContainer extends Component {
   static propTypes = {
     dpi: PropTypes.string.isRequired,
     detailPath: PropTypes.string.isRequired,
-    fallbackSources: PropTypes.string.isRequired,
+    fallbackSources: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.string,
+    ]).isRequired,
     onClickEditorial: PropTypes.func.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
     isPostLoved: PropTypes.bool.isRequired,

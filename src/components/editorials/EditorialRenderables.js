@@ -183,7 +183,10 @@ export const CuratedPost = props => (
 CuratedPost.propTypes = {
   dpi: PropTypes.string.isRequired,
   detailPath: PropTypes.string.isRequired,
-  fallbackSources: PropTypes.string.isRequired,
+  fallbackSources: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]).isRequired,
   isPostLoved: PropTypes.bool.isRequired,
   onClickEditorial: PropTypes.func.isRequired,
   sources: PropTypes.object.isRequired,
