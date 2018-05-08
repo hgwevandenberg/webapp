@@ -96,7 +96,7 @@
     }
   },
   "dependencies": {
-    "babel-polyfill": "6.23.0",
+    "babel-polyfill": "6.26.0",
     "classnames": "2.2.5",
     "exif-js": "2.2.1",
     "glamor": "3.0.0-1",
