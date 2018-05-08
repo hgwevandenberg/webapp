@@ -18,12 +18,16 @@ const Row = props => (
     {props.children}
   </div>
 )
+Row.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array,
+  ]),
+}
 Row.defaultProps = {
   children: null,
 }
-Row.propTypes = {
-  children: PropTypes.object,
-}
+
 
 // -------------------------------------
 // Cells
@@ -44,10 +48,15 @@ const Cell = props =>
   </div>)
 
 Cell.propTypes = {
-  className: PropTypes.string,
-  children: PropTypes.object,
+  className: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]),
+  children: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array,
+  ]),
 }
-
 Cell.defaultProps = {
   className: null,
   children: null,
