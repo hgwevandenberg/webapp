@@ -111,7 +111,7 @@
     "postcss": "6.0.22",
     "postcss-apply": "0.8.0",
     "postcss-calc": "6.0.1",
-    "postcss-color-function": "4.0.0",
+    "postcss-color-function": "4.0.1",
     "postcss-custom-media": "6.0.0",
     "postcss-custom-properties": "6.1.0",
     "postcss-import": "10.0.0",
