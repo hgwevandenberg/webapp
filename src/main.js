@@ -38,14 +38,6 @@ function shouldScroll(prevRouterProps, currentRouterProps) {
   return location.action !== 'REPLACE'
 }
 
-// ONLY FOR PERFORMANCE TESTING!
-// if (process.env.NODE_ENV !== 'production') {
-//   const { Perf } = require('react-addons-perf')
-//   const { whyDidYouUpdate } = require('why-did-you-update')
-//   window.Perf = Perf
-//   whyDidYouUpdate(React)
-// }
-
 if (ENV.HONEYBADGER_API_KEY && ENV.HONEYBADGER_ENVIRONMENT) {
   Honeybadger.configure({
     api_key: ENV.HONEYBADGER_API_KEY,
