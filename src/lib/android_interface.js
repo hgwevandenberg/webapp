@@ -42,7 +42,10 @@ export const exposeAndroidMethods = (dispatch) => {
     }
     window.updateStateFromNative = (state) => {
       const immutableState = {}
-      Object.keys(state).forEach(key => (immutableState[key] = Immutable.fromJS(state[key])))
+      Object.keys(state).forEach((key) => {
+        immutableState[key] = Immutable.fromJS(state[key])
+        return immutableState[key]
+      })
       dispatch({ type: UPDATE_STATE_FROM_NATIVE, payload: immutableState })
     }
     window.trackAndroidEvent = (name, options) => {

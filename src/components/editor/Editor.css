@@ -2,7 +2,7 @@
 
 .isDragging,
 .isDragging .editor-block {
-  user-select: none;
+  user-select: none; /* stylelint-disable-line */
 }
 
 .editor {
