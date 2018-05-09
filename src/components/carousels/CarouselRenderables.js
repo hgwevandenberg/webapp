@@ -52,7 +52,10 @@ export class SlickCarousel extends PureComponent {
           autoplay
           arrows={false}
           infinite
-          ref={comp => (this.slider = comp)}
+          ref={(comp) => {
+            this.slider = comp
+            return this.slider
+          }}
         >
           {postIds.map(id => (
             <div className={itemBaseStyle} key={`curatedEditorial_post_${id}`}>
