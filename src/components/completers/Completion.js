@@ -24,7 +24,6 @@ const buttonStyle = css(
 const labelStyle = css(s.ml10)
 
 export default class Completion extends PureComponent {
-
   static propTypes = {
     asset: PropTypes.element.isRequired,
     className: PropTypes.string.isRequired,
