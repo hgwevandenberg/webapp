@@ -30,7 +30,6 @@ function mapStateToProps(state) {
 }
 
 class ArtistInvitesPage extends Component {
-
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     dpi: PropTypes.string.isRequired,

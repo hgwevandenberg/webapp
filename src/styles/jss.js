@@ -1,48 +1,43 @@
-// @flow
 import { css } from 'glamor'
-
-type JSO = {
-  [key: string]: string | number | null,
-}
 
 export { css }
 
-export const combine = (...styles: Array<string>) =>
+export const combine = (...styles) =>
   styles.join(' ')
 
-export const media = (query: string, ...styles:Array<JSO>) =>
+export const media = (query, ...styles) =>
   css({ [`@media ${query}`]: styles })
 
-export const parent = (selector: string, ...styles:Array<JSO>) =>
+export const parent = (selector, ...styles) =>
   css({ [`${selector} &`]: styles })
 
-export const modifier = (selector: string, ...styles:Array<JSO>) =>
+export const modifier = (selector, ...styles) =>
   css({ [`&${selector}`]: styles })
 
-export const select = (selector: string, ...styles:Array<JSO>) =>
+export const select = (selector, ...styles) =>
   css({ [selector]: styles })
 
-export const hover = (...styles:Array<JSO>) =>
+export const hover = (...styles) =>
   select('.no-touch &:hover', ...styles)
 
-export const active = (...styles:Array<JSO>) =>
+export const active = (...styles) =>
   select(':active', ...styles)
 
-export const focus = (...styles:Array<JSO>) =>
+export const focus = (...styles) =>
   select(':focus', ...styles)
 
-export const firstChild = (...styles:Array<JSO>) =>
+export const firstChild = (...styles) =>
   select(':first-child', ...styles)
 
-export const before = (...styles:Array<JSO>) =>
+export const before = (...styles) =>
   select('::before', ...styles)
 
-export const after = (...styles:Array<JSO>) =>
+export const after = (...styles) =>
   select('::after', ...styles)
 
-export const placeholder = (...styles:Array<JSO>) =>
+export const placeholder = (...styles) =>
   select('::placeholder', ...styles)
 
-export const disabled = (...styles:Array<JSO>) =>
+export const disabled = (...styles) =>
   modifier('[disabled]', ...styles)
 

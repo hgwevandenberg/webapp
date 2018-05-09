@@ -1,6 +1,5 @@
 /* eslint-disable react/no-danger */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable javascript/flow */
 
 import React from 'react'
 import PropTypes from 'prop-types'
@@ -23,14 +22,7 @@ const buttonStyle = css(
   ),
 )
 
-type ToolButtonProps = {
-  children?: React.Element<*> | null,
-  className?: string | null,
-  onClick?: () => {} | null,
-  to?: string | null,
-}
-
-export const ToolButton = (props: ToolButtonProps) => (
+export const ToolButton = props => (
   props.to ?
     <Link className={`${buttonStyle} ${props.className || ''}`} to={props.to}>
       {props.children}
@@ -40,6 +32,16 @@ export const ToolButton = (props: ToolButtonProps) => (
       {props.children}
     </button>
 )
+
+ToolButton.propTypes = {
+  children: PropTypes.node,
+  className: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]),
+  onClick: PropTypes.func,
+  to: PropTypes.string,
+}
 
 ToolButton.defaultProps = {
   children: null,
@@ -58,19 +60,7 @@ const toolsStyle = css(
 const alignEnd = css(s.mlAuto)
 const leftSpacer = css(s.ml20)
 
-type ToolProps = {
-  postPath: string,
-  isPostLoved: boolean,
-}
-
-type ToolContext = {
-  onClickLovePost?: () => {},
-  onClickRepostEditorialPost?: () => {},
-  onClickOpenSignupModal?: () => {},
-  onClickSharePost: () => {},
-}
-
-export const EditorialTools = (props: ToolProps, context: ToolContext) => (
+export const EditorialTools = (props, context) => (
   <div className={toolsStyle}>
     <ToolButton
       className={props.isPostLoved ? 'isActive' : null}
@@ -106,6 +96,10 @@ EditorialTools.contextTypes = {
   onClickOpenSignupModal: PropTypes.func,
   onClickSharePost: PropTypes.func.isRequired,
 }
+EditorialTools.propTypes = {
+  postPath: PropTypes.string.isRequired,
+  isPostLoved: PropTypes.bool.isRequired,
+}
 
 // -------------------------------------
 
@@ -117,18 +111,20 @@ const titleStyle = css(
   media(s.minBreak2, { fontSize: 38, lineHeight: 42 }),
 )
 
-export const EditorialTitle = ({ label }: { label: string }) => (
+export const EditorialTitle = ({ label }) => (
   <h2 className={titleStyle}>{label}</h2>
 )
+EditorialTitle.propTypes = { label: PropTypes.string.isRequired }
 
 const usernameTitleStyle = css(
   { ...titleStyle },
   s.truncate,
 )
 
-export const EditorialUsernameTitle = ({ label }: { label: string }) => (
+export const EditorialUsernameTitle = ({ label }) => (
   <h2 className={usernameTitleStyle}>{label}</h2>
 )
+EditorialUsernameTitle.propTypes = { label: PropTypes.string.isRequired }
 
 // -------------------------------------
 

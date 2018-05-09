@@ -1,9 +1,7 @@
-// @flow
 import { Map } from 'immutable'
 import { createSelector } from 'reselect'
 import get from 'lodash/get'
 import { EDITORIALS } from '../constants/mapping_types'
-// import type { EditorialProps } from '../types/flowtypes'
 
 const selectPropsSize = (state, props) =>
   get(props, 'size', '1x1')
@@ -11,10 +9,10 @@ const selectPropsSize = (state, props) =>
 const selectPropsPosition = (state, props) =>
   get(props, 'position')
 
-export const selectPropsEditorialId = (state: any, props: any) =>
+export const selectPropsEditorialId = (state, props) =>
   get(props, 'editorialId') || get(props, 'editorial', Map()).get('id')
 
-export const selectEditorials = (state: any) => state.json.get(EDITORIALS, Map())
+export const selectEditorials = state => state.json.get(EDITORIALS, Map())
 
 // Memoized selectors
 

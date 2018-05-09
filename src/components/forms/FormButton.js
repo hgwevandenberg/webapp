@@ -1,5 +1,5 @@
-// @flow
 import React from 'react'
+import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { css, media, modifier, parent, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
@@ -43,12 +43,7 @@ const buttonStyle = css(
   parent('.InvitationsForm', { float: 'right', marginTop: -60 }),
 )
 
-type Props = {
-  children?: React.Element<*>,
-  className?: string,
-}
-
-const FormButton = ({ children, className, ...rest }: Props) =>
+const FormButton = ({ children, className, ...rest }) =>
   (<button className={classNames(`${buttonStyle}`, className)} {...rest}>
     {children}
   </button>)
@@ -56,6 +51,11 @@ const FormButton = ({ children, className, ...rest }: Props) =>
 FormButton.defaultProps = {
   children: null,
   className: null,
+}
+
+FormButton.propTypes = {
+  children: PropTypes.object,
+  className: PropTypes.string,
 }
 
 export default FormButton

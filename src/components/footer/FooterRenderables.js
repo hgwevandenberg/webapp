@@ -1,4 +1,3 @@
-// @flow
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
@@ -125,32 +124,6 @@ const rssStyle = css(
   select('.no-touch &:hover rect', { fill: '#000' }),
 )
 
-type LinkType = {
-  label: string,
-  to: string,
-}
-
-type FooterPropTypes = {
-  formActionPath: string,
-  formMessage: string,
-  formStatus: string,
-  isEditorial: boolean,
-  isPostDetail: boolean,
-  isDiscoverAll: boolean,
-  isFormDisabled: boolean,
-  isGridMode: boolean,
-  isLayoutToolHidden: boolean,
-  isLoggedIn: boolean,
-  isMobile: boolean,
-  isPaginatoring: boolean,
-  links: Array<LinkType>,
-}
-
-type FooterContextTypes = {
-  onClickScrollToTop: () => void,
-  onClickToggleLayoutMode: () => void,
-}
-
 export const Footer = ({
   formActionPath,
   formMessage,
@@ -165,10 +138,10 @@ export const Footer = ({
   isFormDisabled,
   isPaginatoring,
   links,
-}: FooterPropTypes, {
+}, {
   onClickScrollToTop,
   onClickToggleLayoutMode,
-}: FooterContextTypes) =>
+}) =>
   (<footer
     className={classNames(`Footer${isPostDetail || isDiscoverAll ? ' hide' : ''} ${baseStyle}`, { isPaginatoring })}
     role="contentinfo"
@@ -226,6 +199,22 @@ export const Footer = ({
 Footer.contextTypes = {
   onClickScrollToTop: PropTypes.func.isRequired,
   onClickToggleLayoutMode: PropTypes.func.isRequired,
+}
+
+Footer.propTypes = {
+  formActionPath: PropTypes.string.isRequired,
+  formMessage: PropTypes.string.isRequired,
+  formStatus: PropTypes.string.isRequired,
+  isDiscoverAll: PropTypes.bool.isRequired,
+  isEditorial: PropTypes.bool.isRequired,
+  isFormDisabled: PropTypes.bool.isRequired,
+  isGridMode: PropTypes.bool.isRequired,
+  isLayoutToolHidden: PropTypes.bool.isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
+  isMobile: PropTypes.bool.isRequired,
+  isPaginatoring: PropTypes.bool.isRequired,
+  isPostDetail: PropTypes.bool.isRequired,
+  links: PropTypes.array.isRequired,
 }
 
 export default Footer

@@ -1,18 +1,8 @@
-// @flow
 import React from 'react'
+import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 
-type DefaultTagProps = {
-  description: string,
-  image: string,
-  nextPage?: string | null,
-  pathname: string,
-  robots?: string | null,
-  title: string,
-  url: string,
-}
-
-export const DefaultTags = (props: DefaultTagProps) =>
+export const DefaultTags = props =>
   (<Helmet>
     <title>{props.title}</title>,
     <meta name="apple-itunes-app" content="app-id=953614327" appArgument={props.pathname} />,
@@ -34,30 +24,19 @@ DefaultTags.defaultProps = {
   robots: null,
 }
 
+DefaultTags.propTypes = {
+  description: PropTypes.string.isRequired,
+  image: PropTypes.string.isRequired,
+  nextPage: PropTypes.string,
+  pathname: PropTypes.string.isRequired,
+  robots: PropTypes.string,
+  title: PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired,
+}
+
 // -------------------------------------
 
-type ImageTagProps = {
-  openGraphImages: Array<Object>,
-  schemaImages: Array<Object>,
-}
-
-type EmbedTagProps = {
-  openGraphEmbeds: Array<Object>,
-}
-
-type PostDetailProps = {
-  canonicalUrl?: string | null,
-  card: string,
-  description: string,
-  embeds: EmbedTagProps,
-  images: ImageTagProps,
-  pathname: string,
-  robots?: string | null,
-  title: string,
-  url: string,
-}
-
-export const PostDetailTags = (props: PostDetailProps) =>
+export const PostDetailTags = props =>
   (<Helmet>
     <title>{props.title}</title>
     <meta name="apple-itunes-app" content="app-id=953614327" appArgument={props.pathname} />
@@ -85,5 +64,17 @@ export const PostDetailTags = (props: PostDetailProps) =>
 PostDetailTags.defaultProps = {
   canonicalUrl: null,
   robots: null,
+}
+
+PostDetailTags.propTypes = {
+  canonicalUrl: PropTypes.string,
+  card: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  embeds: PropTypes.object.isRequired,
+  images: PropTypes.object.isRequired,
+  pathname: PropTypes.string.isRequired,
+  robots: PropTypes.string,
+  title: PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired,
 }
 

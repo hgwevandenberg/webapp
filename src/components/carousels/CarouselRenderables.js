@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react'
+import PropTypes from 'prop-types'
 import Slider from 'react-slick'
 import { NextPaddle, PrevPaddle } from './CarouselParts'
 import PostStreamContainer from '../../containers/PostStreamContainer'
@@ -28,13 +29,11 @@ const itemBaseStyle = css(
   media(s.minBreak2, s.px40, s.py40),
 )
 
-type SlickCarouselProps = {
-  postIds: Array<string>,
-  renderProps: any,
-}
-
 export class SlickCarousel extends PureComponent {
-  props: SlickCarouselProps
+  static propTypes = {
+    postIds: PropTypes.object.isRequired,
+    renderProps: PropTypes.object.isRequired,
+  }
 
   next = () => {
     this.slider.slickNext()

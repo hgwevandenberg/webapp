@@ -1,5 +1,5 @@
-// @flow
 import React from 'react'
+import PropTypes from 'prop-types'
 import OnboardingNavbar from './OnboardingNavbar'
 import Preference from '../forms/Preference'
 import { MainView } from '../views/MainView'
@@ -11,18 +11,7 @@ const preferencesStyle = css(
   media(s.minBreak2, s.flex, s.justifyCenter, s.itemsCenter, s.mt0, { height: 'calc(100vh - 80px)' }),
 )
 
-type PreferenceType = {
-  desc: string,
-  id: string,
-  term: string,
-}
-
-type Props = {
-  onToggleChange: Function,
-  prefs: Array<PreferenceType>,
-}
-
-const OnboardingCollaborate = (props: Props) =>
+const OnboardingCollaborate = props =>
   (<MainView className="Onboarding OnboardingCollaborate">
     <div className={preferencesStyle}>
       {props.prefs.map(pref =>
@@ -37,6 +26,11 @@ const OnboardingCollaborate = (props: Props) =>
     </div>
     <OnboardingNavbar />
   </MainView>)
+
+OnboardingCollaborate.propTypes = {
+  onToggleChange: PropTypes.func.isRequired,
+  prefs: PropTypes.array.isRequired,
+}
 
 export default OnboardingCollaborate
 
