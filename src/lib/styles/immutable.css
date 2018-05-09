@@ -16,7 +16,7 @@
 }
 
 .unselectable {
-  user-select: none;
+  user-select: none; /* stylelint-disable-line */
 }
 
 .disabled {
