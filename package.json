@@ -75,14 +75,17 @@
   },
   "stylelint": {
     "extends": "stylelint-config-primer",
+    "plugins": [
+      "stylelint-no-unsupported-browser-features"
+    ],
     "rules": {
       "comment-empty-line-before": null,
       "selector-class-pattern": null,
-      "selector-no-type": null,
-      "no-unsupported-browser-features": [
+      "selector-max-type": null,
+      "plugin/no-unsupported-browser-features": [
         true,
         {
-          "browsers": "> 5%, last 2 firefox versions, last 2 chrome versions, last 2 safari versions, last 2 edge versions, ie 11, not OperaMini all",
+          "browsers": "> 5%, last 2 firefox versions, last 2 chrome versions, last 2 safari versions, last 2 edge versions, last 0 ie versions, not OperaMini all",
           "ignore": [
             "calc",
             "flexbox",
@@ -135,6 +138,7 @@
     "redux-persist-transform-immutable": "4.3.0",
     "redux-saga": "0.15.6",
     "reselect": "3.0.1",
+    "stylelint-no-unsupported-browser-features": "^3.0.0",
     "transit-immutable-js": "0.7.0",
     "trunc-html": "1.1.2",
     "tween.js": "16.6.0",
@@ -177,8 +181,8 @@
     "sinon-chai": "3.0.0",
     "source-map-support": "0.4.15",
     "style-loader": "0.18.2",
-    "stylelint": "7.12.0",
-    "stylelint-config-primer": "1.4.0",
+    "stylelint": "9.2.0",
+    "stylelint-config-primer": "2.2.5",
     "webpack": "3.4.1",
     "webpack-dev-middleware": "1.12.0",
     "webpack-hot-middleware": "2.22.1",
