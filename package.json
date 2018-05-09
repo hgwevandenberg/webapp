@@ -7,7 +7,6 @@
     "build": "yarn run clean && NODE_ENV=production node ./node_modules/webpack/bin/webpack.js -p --progress --config=webpack.prod.config.js --env.commitsha=`git rev-parse HEAD`",
     "dev": "DEBUG=express:* NODE_ENV=development babel-node src/server/dev.js",
     "start": "yarn dev",
-    "flow": "flow",
     "lint": "yarn lint:js && yarn lint:css",
     "lint:css": "stylelint 'src/**/*.css'",
     "lint:js": "eslint src test",
