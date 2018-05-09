@@ -387,7 +387,10 @@ export default class CategoryPostSelector extends PureComponent {
       })
     }
 
-    return this.setState({ selectedIndex: null })
+    return this.setState({
+      selectedCategory: null,
+      selectedIndex: null,
+    })
   }
 
   setWrapperRef(node) {

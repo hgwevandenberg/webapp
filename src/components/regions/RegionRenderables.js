@@ -26,6 +26,7 @@ export class RegionItems extends PureComponent {
     isGridMode: PropTypes.bool.isRequired,
     isPostDetail: PropTypes.bool.isRequired,
     isComment: PropTypes.bool,
+    isRelatedPost: PropTypes.bool,
     isLightBox: PropTypes.bool,
     resizeLightBox: PropTypes.bool,
     toggleLightBox: PropTypes.func,
@@ -35,6 +36,7 @@ export class RegionItems extends PureComponent {
   static defaultProps = {
     isComment: false,
     isLightBox: false,
+    isRelatedPost: false,
     resizeLightBox: false,
     toggleLightBox: null,
     lightBoxSelectedIdPair: null,
@@ -66,6 +68,7 @@ export class RegionItems extends PureComponent {
       isComment,
       isGridMode,
       isPostDetail,
+      isRelatedPost,
       isLightBox,
       resizeLightBox,
       toggleLightBox,
@@ -123,6 +126,7 @@ export class RegionItems extends PureComponent {
               isComment={isComment}
               isGridMode={isGridMode}
               isPostDetail={isPostDetail}
+              isRelatedPost={isRelatedPost}
               isLightBoxImage={isLightBox}
               isLightBoxSelected={isLightBox ? this.getLightBoxSelected(assetId) : null}
               resizeLightBoxImage={resizeLightBox}
