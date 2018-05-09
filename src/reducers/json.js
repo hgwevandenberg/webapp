@@ -15,6 +15,8 @@ import postMethods from './posts'
 import relationshipMethods from './relationships'
 import v3Reducer from './v3_reducer'
 
+const { OrderedSet } = Immutable;
+
 // adding methods and accessing them from this object
 // allows the unit tests to stub methods in this module
 const methods = {}
@@ -62,7 +64,9 @@ methods.appendPageId = (state, pageName, mappingType, id) => {
   if (page) {
     const ids = page.get('ids', Immutable.List())
     if (!ids.includes(`${id}`)) {
-      return state.setIn([MAPPING_TYPES.PAGES, pageName, 'ids'], ids.unshift(`${id}`))
+      const newIds = OrderedSet.isOrderedSet(ids) ? OrderedSet([`${id}`]).merge(ids) :
+        ids.unshift(`${id}`)
+      return state.setIn([MAPPING_TYPES.PAGES, pageName, 'ids'], newIds)
     }
   }
   return state.setIn([MAPPING_TYPES.PAGES, pageName], Immutable.fromJS({
@@ -72,7 +76,9 @@ methods.appendPageId = (state, pageName, mappingType, id) => {
 
 methods.removePageId = (state, pageName, id) => {
   let existingIds = state.getIn([MAPPING_TYPES.PAGES, pageName, 'ids'])
-  if (existingIds) {
+  if (existingIds && OrderedSet.isOrderedSet(existingIds)) {
+    return state.setIn([MAPPING_TYPES.PAGES, pageName, 'ids'], existingIds.delete(`${id}`))
+  } else if (existingIds) {
     const index = existingIds.indexOf(`${id}`)
     if (index !== -1) {
       existingIds = existingIds.splice(index, 1)

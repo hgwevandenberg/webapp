@@ -1,4 +1,3 @@
-// @flow
 // JavaScript Style Objects (jso)
 import { css, media, after } from './jss'
 

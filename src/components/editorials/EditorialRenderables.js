@@ -1,4 +1,3 @@
-// @flow
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
@@ -18,7 +17,6 @@ import {
 } from './EditorialParts'
 import { css, media, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
-import type { EditorialProps } from '../../types/flowtypes'
 
 const baseStyle = css(
   s.relative,
@@ -67,7 +65,7 @@ const linkTextStyle = css(s.hidden)
 
 // -------------------------------------
 
-export const PostEditorial = (props: EditorialProps) => (
+export const PostEditorial = props => (
   <div className={baseStyle}>
     { props.postPath &&
       <Link
@@ -101,6 +99,15 @@ export const PostEditorial = (props: EditorialProps) => (
   </div>
 )
 
+PostEditorial.propTypes = {
+  editorial: PropTypes.object.isRequired,
+  isPostLoved: PropTypes.bool.isRequired,
+  onClickEditorial: PropTypes.func.isRequired,
+  postPath: PropTypes.string.isRequired,
+  dpi: PropTypes.string.isRequired,
+  sources: PropTypes.object.isRequired,
+}
+
 // -------------------------------------
 
 const postStreamBaseStyle = css(
@@ -109,7 +116,7 @@ const postStreamBaseStyle = css(
   select('& .ElloMark.isSpinner > .SmileShape', { fill: '#fff !important' }),
 )
 
-export const PostStream = (props: EditorialProps) => (
+export const PostStream = props => (
   <div className={postStreamBaseStyle}>
     { props.postStreamHref &&
       <StreamContainer
@@ -128,15 +135,15 @@ export const PostStream = (props: EditorialProps) => (
   </div>
 )
 
-type PostProps = {
-  dpi: string,
-  detailPath: string,
-  fallbackSources: string,
-  isPostLoved: boolean,
-  onClickEditorial: () => {},
-  sources: any,
-  title: string,
-  username: string,
+PostStream.propTypes = {
+  editorial: PropTypes.object.isRequired,
+  editorialId: PropTypes.string.isRequired,
+  onClickEditorial: PropTypes.func.isRequired,
+  sources: PropTypes.object.isRequired,
+  position: PropTypes.number.isRequired,
+  postStreamHref: PropTypes.string.isRequired,
+  trackOptions: PropTypes.object.isRequired,
+  size: PropTypes.string.isRequired,
 }
 
 const postHeaderStyle = css(
@@ -144,7 +151,7 @@ const postHeaderStyle = css(
   media(s.minBreak2, { width: 'calc(100% - 35px)' }),
 )
 
-export const CuratedPost = (props: PostProps) => (
+export const CuratedPost = props => (
   <div className={baseStyle}>
     { props.detailPath &&
       <Link
@@ -173,13 +180,23 @@ export const CuratedPost = (props: PostProps) => (
   </div>
 )
 
-// -------------------------------------
-
-type ExternalEditorialContext = {
-  onClickShareExternal: () => {},
+CuratedPost.propTypes = {
+  dpi: PropTypes.string.isRequired,
+  detailPath: PropTypes.string.isRequired,
+  fallbackSources: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]).isRequired,
+  isPostLoved: PropTypes.bool.isRequired,
+  onClickEditorial: PropTypes.func.isRequired,
+  sources: PropTypes.object.isRequired,
+  title: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired,
 }
 
-export const LinkEditorial = (props: EditorialProps, context: ExternalEditorialContext) => (
+// -------------------------------------
+
+export const LinkEditorial = (props, context) => (
   <div className={baseStyle}>
     {props.path && props.kind === 'internal' &&
       <Link
@@ -233,6 +250,19 @@ export const LinkEditorial = (props: EditorialProps, context: ExternalEditorialC
 LinkEditorial.contextTypes = {
   onClickShareExternal: PropTypes.func.isRequired,
 }
+LinkEditorial.propTypes = {
+  dpi: PropTypes.string.isRequired,
+  editorial: PropTypes.object.isRequired,
+  path: PropTypes.string,
+  url: PropTypes.string,
+  sources: PropTypes.object.isRequired,
+  kind: PropTypes.string.isRequired,
+  onClickEditorial: PropTypes.func.isRequired,
+}
+LinkEditorial.defaultProps = {
+  path: null,
+  url: null,
+}
 
 // -------------------------------------
 
@@ -273,7 +303,7 @@ const joinStyle = css(
   select('& h2', s.fontSize16),
 )
 
-export const JoinEditorial = (props: EditorialProps) => (
+export const JoinEditorial = props => (
   <div className={joinStyle}>
     <BackgroundImage
       className="hasOverlay6"
@@ -284,6 +314,11 @@ export const JoinEditorial = (props: EditorialProps) => (
     <RegistrationRequestForm inEditorial />
   </div>
 )
+
+JoinEditorial.propTypes = {
+  dpi: PropTypes.number.isRequired,
+  sources: PropTypes.object.isRequired,
+}
 
 // -------------------------------------
 
@@ -299,7 +334,7 @@ const inviteStyle = css(
   select('& .BatchEmailControlSuggestions', s.colorWhite, s.mb30),
 )
 
-export const InviteEditorial = (props: EditorialProps) => (
+export const InviteEditorial = props => (
   <div className={inviteStyle}>
     <BackgroundImage
       className="hasOverlay6"
@@ -314,4 +349,9 @@ export const InviteEditorial = (props: EditorialProps) => (
     <InvitationFormContainer inEditorial />
   </div>
 )
+
+InviteEditorial.propTypes = {
+  dpi: PropTypes.number.isRequired,
+  sources: PropTypes.object.isRequired,
+}
 

@@ -1,4 +1,3 @@
-// @flow
 import { is } from 'immutable'
 import { createSelector } from 'reselect'
 import React, { Component } from 'react'
@@ -18,21 +17,6 @@ import {
   selectPostLoved,
 } from '../selectors/post'
 
-type Props = {
-  dpi: string,
-  detailPath: string,
-  fallbackSources: string,
-  onClickEditorial: () => {},
-  isLoggedIn: boolean,
-  isPostLoved: boolean,
-  post: any,
-  postAuthor: any,
-  sources: any,
-  title: string,
-  trackOptions: any,
-  username: string,
-}
-
 const selectEditorialTrackOptions = (state, props) => props.editorialTrackOptions || {}
 
 const selectTrackOptions = createSelector(
@@ -43,7 +27,7 @@ const selectTrackOptions = createSelector(
 )
 
 const makeMapStateToProps = () => (
-  (state: any, props: any) => ({
+  (state, props) => ({
     detailPath: selectPostDetailPath(state, props),
     dpi: selectDPI(state),
     isLoggedIn: selectIsLoggedIn(state),
@@ -58,7 +42,23 @@ const makeMapStateToProps = () => (
 )
 
 class PostStreamContainer extends Component {
-  props: Props
+  static propTypes = {
+    dpi: PropTypes.string.isRequired,
+    detailPath: PropTypes.string.isRequired,
+    fallbackSources: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.string,
+    ]).isRequired,
+    onClickEditorial: PropTypes.func.isRequired,
+    isLoggedIn: PropTypes.bool.isRequired,
+    isPostLoved: PropTypes.bool.isRequired,
+    post: PropTypes.object.isRequired,
+    postAuthor: PropTypes.object.isRequired,
+    sources: PropTypes.object.isRequired,
+    title: PropTypes.string.isRequired,
+    trackOptions: PropTypes.object.isRequired,
+    username: PropTypes.string.isRequired,
+  }
 
   static contextTypes = {
     onClickOpenSignupModal: PropTypes.func,
@@ -80,7 +80,7 @@ class PostStreamContainer extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps: Props) {
+  shouldComponentUpdate(nextProps) {
     if (nextProps.isPostEmpty) { return false }
     return !is(nextProps.post, this.props.post)
   }
