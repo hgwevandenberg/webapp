@@ -381,5 +381,9 @@ CategoryTabBar.propTypes = {
   deviceSize: PropTypes.string.isRequired,
 }
 
-export default CategoryTabBar
+CategoryTabBar.propTypes = {
+  pathname: PropTypes.string.isRequired,
+  tabs: PropTypes.array.isRequired,
+}
 
+export default CategoryTabBar

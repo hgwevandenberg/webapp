@@ -1,4 +1,3 @@
-// @flow
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
@@ -9,19 +8,23 @@ import * as s from '../../styles/jso'
 // -------------------------------------
 // Shapes for building icons
 
-type Props = {
-  className?: string,
-}
-
-const FillShapeForty = (props: Props) =>
+const FillShapeForty = props =>
   <path className={props.className} d="M0 0h40v40h-40z" />
+
+FillShapeForty.propTypes = {
+  className: PropTypes.string,
+}
 
 FillShapeForty.defaultProps = {
   className: 'svg-fill',
 }
 
-const FillShapeSixty = (props: Props) =>
+const FillShapeSixty = props =>
   <path className={props.className} d="M0 0h60v60h-60z" />
+
+FillShapeSixty.propTypes = {
+  className: PropTypes.string,
+}
 
 FillShapeSixty.defaultProps = {
   className: 'svg-fill',
@@ -42,7 +45,7 @@ const CheckShape = () =>
 
 // -------------------------------------
 // Ello icons 40 x 40
-export const ElloLogoType = (props: Props) => (
+export const ElloLogoType = props => (
   <SVGBox className={classNames('ElloLogoType', props.className)} width="60" height="20">
     <g fill="#000">
       <polygon points="0.553093412 18.8839646 13.0829656 18.8839646 13.0829656 14.3044562 5.9500649 14.3044562 5.9500649 12.3233353 12.5311465 12.3233353 12.5311465 7.78481023 5.9500649 7.78481023 5.9500649 5.80368928 13.0829656 5.80368928 13.0829656 1.20372861 0.553093412 1.20372861" />
@@ -53,12 +56,19 @@ export const ElloLogoType = (props: Props) => (
   </SVGBox>
 )
 
-export const ElloMark = (props: Props) =>
+ElloLogoType.propTypes = {
+  className: PropTypes.string,
+}
+
+export const ElloMark = props =>
   (<SVGBox className={classNames('ElloMark', props.className)}>
     <FillShapeForty className="SVGBoxBG" />
     <SmileShapeForty />
   </SVGBox>)
 
+ElloMark.propTypes = {
+  className: PropTypes.string,
+}
 
 export const ElloBoxMark = () =>
   (<SVGBox className="ElloBoxMark">
@@ -138,16 +148,12 @@ BadgeFeaturedIcon.defaultProps = {
 // -------------------------------------
 // SVG icons 20 x 20
 
-type ArrowProps = {
-  isAnimated?: boolean,
-}
-
 const arrowStrokeAnimationStyle = css(
   { fill: '#fff' },
   { animation: `animateUploaderMover 0.666s infinite ${s.easeInOutCubic}` },
 )
 
-export const ArrowIcon = (props: ArrowProps) =>
+export const ArrowIcon = props =>
   (<SVGIcon className="ArrowIcon">
     <g>
       <line x1="14.5" x2="4.5" y1="10" y2="10" />
@@ -159,6 +165,10 @@ export const ArrowIcon = (props: ArrowProps) =>
       <polyline points="10,5.5 14.5,10 10,14.5" />
     </g>
   </SVGIcon>)
+
+ArrowIcon.propTypes = {
+  isAnimated: PropTypes.boolean,
+}
 
 export const BoltIcon = () =>
   (<SVGIcon className="BoltIcon">

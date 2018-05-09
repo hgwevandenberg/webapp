@@ -1,4 +1,3 @@
-// @flow
 import React from 'react'
 import { ArrowIcon } from '../assets/Icons'
 import { css, hover, select } from '../../styles/jss'
@@ -16,7 +15,7 @@ const nextPaddleStyle = css(
   { ...paddleStyle },
 )
 
-export const NextPaddle = (props: any) => (
+export const NextPaddle = props => (
   <button className={nextPaddleStyle} type="button" {...props} >
     <ArrowIcon />
   </button>
@@ -27,7 +26,7 @@ const prevPaddleStyle = css(
   select('& > .ArrowIcon', s.rotate180),
 )
 
-export const PrevPaddle = (props: any) => (
+export const PrevPaddle = props => (
   <button className={prevPaddleStyle} type="button" {...props} >
     <ArrowIcon />
   </button>

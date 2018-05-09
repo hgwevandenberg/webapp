@@ -141,6 +141,7 @@ class ImageRegion extends PureComponent {
     isPostBody: PropTypes.bool,
     isGridMode: PropTypes.bool.isRequired,
     isPostDetail: PropTypes.bool,
+    isRelatedPost: PropTypes.bool,
     isNotification: PropTypes.bool,
     isLightBoxImage: PropTypes.bool,
     isLightBoxSelected: PropTypes.bool,
@@ -164,6 +165,7 @@ class ImageRegion extends PureComponent {
     isGridMode: false,
     isLightBoxImage: false,
     isLightBoxSelected: false,
+    isRelatedPost: false,
     resizeLightBoxImage: false,
     handleImageRegionClick: null,
   }
@@ -644,9 +646,14 @@ class ImageRegion extends PureComponent {
   }
 
   render() {
-    const { isGridMode, isLightBoxImage, detailPath } = this.props
+    const {
+      isGridMode,
+      isLightBoxImage,
+      isRelatedPost,
+      detailPath,
+    } = this.props
     const { status } = this.state
-    const asLink = isGridMode && detailPath && !isLightBoxImage
+    const asLink = !isLightBoxImage && ((isGridMode && detailPath) || (isRelatedPost && detailPath))
     return (
       <div className={`${classNames('ImageRegion', status)} ${imageRegionStyle}`} >
         {asLink ? this.renderRegionAsLink() : this.renderRegionAsStatic()}

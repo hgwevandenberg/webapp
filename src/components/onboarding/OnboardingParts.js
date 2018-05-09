@@ -1,13 +1,8 @@
-// @flow
 /* eslint-disable import/prefer-default-export */
 import React from 'react'
+import PropTypes from 'prop-types'
 import { css, media } from '../../styles/jss'
 import * as s from '../../styles/jso'
-
-type TitleProps = {
-  text1: string,
-  text2: string,
-}
 
 const titleStyle = css(
   { maxWidth: 480, paddingBottom: 23 },
@@ -21,10 +16,15 @@ const titleStyle = css(
 const text1Style = css(s.colorBlack)
 const text2Style = css(s.colorA)
 
-export const Title = (props: TitleProps) => (
+export const Title = props => (
   <h1 className={titleStyle}>
     <span className={text1Style}>{props.text1}</span>
     <span className={text2Style}>{props.text2}</span>
   </h1>
 )
+
+Title.propTypes = {
+  text1: PropTypes.string.isRequired,
+  text2: PropTypes.string.isRequired,
+}
 

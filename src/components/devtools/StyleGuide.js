@@ -1,4 +1,3 @@
-// @flow
 import React from 'react'
 import { MainView } from '../views/MainView'
 // import StyleGuideIcons from './StyleGuideIcons'

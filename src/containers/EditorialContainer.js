@@ -1,4 +1,3 @@
-// @flow
 import { is } from 'immutable'
 import React, { Component } from 'react'
 import { browserHistory } from 'react-router'
@@ -26,10 +25,9 @@ import {
 } from '../selectors/editorial'
 import { selectDPI } from '../selectors/gui'
 import { selectPost, selectPostAuthor, selectPostDetailPath, selectPostLoved } from '../selectors/post'
-import type { EditorialProps } from '../types/flowtypes'
 
 const makeMapStateToProps = () => (
-  (state: any, props: EditorialProps) => {
+  (state: any, props) => {
     const editorial = selectEditorial(state, props)
     const postId = selectEditorialPostId(state, props)
     const dpi = selectDPI(state)
@@ -52,7 +50,24 @@ const makeMapStateToProps = () => (
 )
 
 class EditorialContainer extends Component {
-  props: EditorialProps
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    trackOptions: PropTypes.object.isRequired,
+    isLoggedIn: PropTypes.bool.isRequired,
+    editorialId: PropTypes.string.isRequired,
+    editorial: PropTypes.object.isRequired,
+    isPostLoved: PropTypes.bool,
+    sources: PropTypes.object.isRequired,
+    post: PropTypes.object.isRequired,
+    postAuthor: PropTypes.object.isRequired,
+    url: PropTypes.string,
+    kind: PropTypes.string.isRequired,
+  }
+
+  static defaultProps = {
+    isPostLoved: false,
+    url: null,
+  }
 
   static contextTypes = {
     onClickOpenRegistrationRequestDialog: PropTypes.func.isRequired,

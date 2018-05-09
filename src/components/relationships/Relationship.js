@@ -1,21 +1,15 @@
-// @flow
 import React from 'react'
+import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { css, modifier } from '../../styles/jss'
 import * as s from '../../styles/jso'
-
-type Props = {
-  children: React.Element<*>,
-  className: string,
-  relationshipPriority: string,
-}
 
 const relationshipStyle = css(
   modifier('.inUserProfile', s.inlineBlock, s.alignTop),
   modifier('.inUserProfileCard', s.inlineBlock, s.alignTop),
 )
 
-const Relationship = (props: Props) => (
+const Relationship = props => (
   <div
     className={classNames(`RelationshipContainer ${relationshipStyle}`, props.className)}
     data-priority={props.relationshipPriority}
@@ -24,5 +18,10 @@ const Relationship = (props: Props) => (
   </div>
 )
 
-export default Relationship
+Relationship.propTypes = {
+  children: PropTypes.node.isRequired,
+  className: PropTypes.string.isRequired,
+  relationshipPriority: PropTypes.string.isRequired,
+}
 
+export default Relationship
