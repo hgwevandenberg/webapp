@@ -74,15 +74,24 @@ export class CategoryPostHistoryRecord extends Component {
     const {
       status,
       featuredByUsername,
+      submittedByUsername,
+      categoryName,
+      categorySlug,
     } = this.props
-    if (status === 'featured' && featuredByUsername) {
+    const featuredBy = status === 'featured' ? featuredByUsername || 'ello' : null
+    if (status === 'featured' && featuredBy === submittedByUsername) {
       return (
         <span>
-          Featured by <Link to={`/${featuredByUsername}`}>@{featuredByUsername}</Link>.
+          Featured by <Link to={`/${featuredBy}`}>@{featuredBy}</Link> in&nbsp;
+          <Link to={`/discover/${categorySlug}`}>{categoryName}</Link>.
         </span>
       )
     } else if (status === 'featured') {
-      return <span>Featured by <Link to="/ello">@ello</Link>.</span>
+      return (
+        <span>
+          Featured by <Link to={`/${featuredBy}`}>@{featuredBy}</Link>.
+        </span>
+      )
     }
     return null
   }
@@ -90,6 +99,7 @@ export class CategoryPostHistoryRecord extends Component {
   submittedElement() {
     const {
       submittedByUsername,
+      featuredByUsername,
       authorUsername,
       categorySlug,
       categoryName,
@@ -101,14 +111,16 @@ export class CategoryPostHistoryRecord extends Component {
           <Link to={`/discover/${categorySlug}`}>{categoryName}</Link>.
         </span>
       )
+    } else if (submittedByUsername !== featuredByUsername) {
+      return (
+        <span>
+          Added to&nbsp;
+          <Link to={`/discover/${categorySlug}`}>{categoryName}</Link> by&nbsp;
+          <Link to={`/${submittedByUsername}`}>{submittedByUsername}</Link>.
+        </span>
+      )
     }
-    return (
-      <span>
-        Nominated to
-        <Link to={`/discover/${categorySlug}`}>{categoryName}</Link> by
-        <Link to={`/${submittedByUsername}`}>{submittedByUsername}</Link>.
-      </span>
-    )
+    return null
   }
 
   render() {
