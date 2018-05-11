@@ -342,7 +342,7 @@ export class FeatureCategoryPostTool extends PureComponent {
       )
     } else if (status === 'featured' && actions && actions.get('unfeature')) {
       return (
-        <button className="featured-toggle" onClick={() => fireAction(actions.get('unfeature'))}>
+        <button className="featured-toggle featured" onClick={() => fireAction(actions.get('unfeature'))}>
           {categoryPostActions ?
             <CurateIcon />
           :

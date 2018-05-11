@@ -224,6 +224,14 @@
   overflow: hidden;
 }
 
+.PostHeaderTools .featured-toggle:hover path {
+  fill: #000;
+}
+
+.PostHeaderTools .featured-toggle.featured:hover path {
+  fill: #16a905;
+}
+
 .PostHeaderTimeAgoLink {
   padding-left: 5px;
 }
