@@ -224,6 +224,7 @@
   overflow: hidden;
 }
 
+/* stylelint-disable selector-max-specificity */
 .PostHeaderTools .featured-toggle:hover path {
   fill: #000;
 }
@@ -231,6 +232,7 @@
 .PostHeaderTools .featured-toggle.featured:hover path {
   fill: #16a905;
 }
+/* stylelint-enable selector-max-specificity */
 
 .PostHeaderTimeAgoLink {
   padding-left: 5px;
