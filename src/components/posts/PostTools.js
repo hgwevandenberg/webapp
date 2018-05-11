@@ -10,6 +10,7 @@ import {
   BadgeFeaturedIcon,
   BoltIcon,
   BubbleIcon,
+  CurateIcon,
   EyeIcon,
   FlagIcon,
   HeartIcon,
@@ -310,28 +311,43 @@ class LightBoxTriggerTool extends PureComponent {
 
 export class FeatureCategoryPostTool extends PureComponent {
   static propTypes = {
-    status: PropTypes.string,
     actions: PropTypes.object,
+    categoryPostActions: PropTypes.bool,
     fireAction: PropTypes.func.isRequired,
+    status: PropTypes.string,
   }
 
   static defaultProps = {
     actions: null,
+    categoryPostActions: false,
     status: null,
   }
 
   render() {
-    const { status, actions, fireAction } = this.props
+    const {
+      actions,
+      categoryPostActions,
+      fireAction,
+      status,
+    } = this.props
     if (status === 'submitted' && actions && actions.get('feature')) {
       return (
         <button className="featured-toggle" onClick={() => fireAction(actions.get('feature'))}>
-          <BadgeFeaturedIcon color="#aaaaaa" />
+          {categoryPostActions ?
+            <CurateIcon color="#aaaaaa" />
+          :
+            <BadgeFeaturedIcon color="#aaaaaa" />
+          }
         </button>
       )
     } else if (status === 'featured' && actions && actions.get('unfeature')) {
       return (
         <button className="featured-toggle" onClick={() => fireAction(actions.get('unfeature'))}>
-          <BadgeFeaturedIcon />
+          {categoryPostActions ?
+            <CurateIcon />
+          :
+            <BadgeFeaturedIcon />
+          }
         </button>
       )
     } else if (status === 'featured') {
