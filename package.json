@@ -71,6 +71,13 @@
     "extends": "ello",
     "globals": {
       "AndroidInterface": false
+    },
+    "rules": {
+      "react/default-props-match-prop-types": 0,
+      "react/require-default-props": 0,
+      "react/no-unused-state": 0,
+      "switch-colon-spacing": 0,
+      "indent": 0
     }
   },
   "stylelint": {
