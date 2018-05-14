@@ -387,9 +387,10 @@ export class PostHeader extends PureComponent {
           <PostHeaderTimeAgoLink to={detailPath} createdAt={postCreatedAt} />
           {categoryPostActions &&
             <FeatureCategoryPostTool
-              status={categoryPostStatus}
+              categoryPostActions
               actions={categoryPostActions}
               fireAction={categoryPostFireAction}
+              status={categoryPostStatus}
             />
           }
         </div>
