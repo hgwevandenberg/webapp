@@ -42,7 +42,7 @@ const navbarStyle = css(
     }),
   parent('.isOmnibarActive', s.overflowHidden, s.pointerNone, s.bgcTransparent, s.opacity0),
   select('.isOnboardingView ~ &', s.displayNone),
-  media(s.minBreak2,
+  media(s.minBreak3,
     select('.no-touch .isNavbarHidden ~ .Discover + &:hover .navbar-content', { transitionDelay: '1.5s' }),
   ),
 )
@@ -68,7 +68,7 @@ const grabberStyle = css(
   select(
     '.Navbar.hide &',
     { height: 15, marginTop: 0 },
-    media(s.maxBreak2,
+    media(s.maxBreak3,
       { display: 'none' },
     ),
   ),
@@ -83,7 +83,7 @@ const wrapperStyle = css(
   { height: 80, margin: 0 },
   select('.isNavbarHidden ~ .Navbar &', { transform: 'translate3d(0, 0, 0)' }),
   select('.Navbar.hide &', { transform: 'translate3d(0, 0, 0)' }),
-  media(s.minBreak2,
+  media(s.minBreak3,
     s.p20,
     { borderBottom: '1px solid #f2f2f2' },
   ),
@@ -107,7 +107,7 @@ const linksStyle = css(
   s.absolute,
   { top: 0, left: 0 },
   s.nowrap,
-  media(s.minBreak2,
+  media(s.minBreak3,
     parent('.isLoggedIn', { top: 'calc(50% + 5px)', right: 200, left: 'auto', marginTop: -20 }),
     parent('.isLoggedOut', { top: 'calc(50% + 5px)', right: 175, left: 'auto', marginTop: -20 }),
     parent('.isOmnibarActive .Navbar >', s.absolute, { transform: 'translate3d(400px, 0, 0)' }),
@@ -123,77 +123,81 @@ export const NavbarLoggedOut = ({
   onClickLoadMorePosts,
   onClickNavbarMark,
   pathname,
-}, { onClickArtistInvites, onClickLogin, onClickSignup }) =>
-  (<nav className={`Navbar ${navbarStyle}`} >
-    <div className={`navbar-content ${wrapperStyle}`}>
-      <div className={`navbar-container ${containerStyle}`}>
-        <div className={`NavbarMain ${mainStyle}`}>
-          <NavbarMark onClick={onClickNavbarMark} />
-          {hasLoadMoreButton ? <NavbarMorePostsButton onClick={onClickLoadMorePosts} /> : null}
-          <div className={`NavbarLinks ${linksStyle}`}>
-            { deviceSize === 'mobile' &&
+}, { onClickArtistInvites, onClickLogin, onClickSignup }) => {
+  const isTruncatedHeader = deviceSize === 'mobile' || deviceSize === 'tablet'
+  return (
+    <nav className={`Navbar ${navbarStyle}`} >
+      <div className={`navbar-content ${wrapperStyle}`}>
+        <div className={`navbar-container ${containerStyle}`}>
+          <div className={`NavbarMain ${mainStyle}`}>
+            <NavbarMark onClick={onClickNavbarMark} />
+            {hasLoadMoreButton ? <NavbarMorePostsButton onClick={onClickLoadMorePosts} /> : null}
+            <div className={`NavbarLinks ${linksStyle}`}>
+              {isTruncatedHeader &&
+                <NavbarLink
+                  className="LabelOnly"
+                  label="Editorial"
+                  pathname={pathname}
+                  to="/"
+                />
+              }
               <NavbarLink
                 className="LabelOnly"
-                label="Editorial"
+                label="Artist Invites"
+                onClick={onClickArtistInvites}
                 pathname={pathname}
-                to="/"
+                to="/artist-invites"
               />
-            }
+              <NavbarLink
+                className="LabelOnly"
+                icon={<SparklesIcon />}
+                label="Discover"
+                pathname={pathname}
+                to="/discover"
+              />
+              <NavbarLink
+                className="LabelOnly"
+                label="Giveaways"
+                pathname={pathname}
+                to="/elloartgiveaways"
+              />
+              <NavbarLink
+                className="IconOnly"
+                icon={<SearchIcon />}
+                label="Search"
+                pathname={pathname}
+                to="/search"
+              />
+            </div>
             <NavbarLink
-              className="LabelOnly"
-              label="Artist Invites"
-              onClick={onClickArtistInvites}
+              className="LabelOnly isLogin"
+              label="Login"
+              onClick={onClickLogin}
               pathname={pathname}
-              to="/artist-invites"
+              to="/enter"
             />
             <NavbarLink
-              className="LabelOnly"
-              icon={<SparklesIcon />}
-              label="Discover"
+              className="LabelOnly isSignUp"
+              label="Sign Up"
+              onClick={onClickSignup}
               pathname={pathname}
-              to="/discover"
-            />
-            <NavbarLink
-              className="LabelOnly"
-              label="Giveaways"
-              pathname={pathname}
-              to="/elloartgiveaways"
-            />
-            <NavbarLink
-              className="IconOnly"
-              icon={<SearchIcon />}
-              label="Search"
-              pathname={pathname}
-              to="/search"
+              to="/join"
             />
           </div>
-          <NavbarLink
-            className="LabelOnly isLogin"
-            label="Login"
-            onClick={onClickLogin}
-            pathname={pathname}
-            to="/enter"
-          />
-          <NavbarLink
-            className="LabelOnly isSignUp"
-            label="Sign Up"
-            onClick={onClickSignup}
-            pathname={pathname}
-            to="/join"
-          />
         </div>
+        {categoryTabs && !isLightBoxActive &&
+          <CategoryTabBar
+            pathname={pathname}
+            tabs={categoryTabs}
+            areCategoriesSubscribed={areCategoriesSubscribed}
+            subscribed={false}
+            deviceSize={deviceSize}
+          />
+        }
       </div>
-      {categoryTabs && !isLightBoxActive &&
-        <CategoryTabBar
-          pathname={pathname}
-          tabs={categoryTabs}
-          areCategoriesSubscribed={areCategoriesSubscribed}
-          subscribed={false}
-          deviceSize={deviceSize}
-        />
-      }
-    </div>
-  </nav>)
+    </nav>
+  )
+}
 
 NavbarLoggedOut.propTypes = {
   categoryTabs: PropTypes.array,
@@ -245,108 +249,112 @@ export const NavbarLoggedIn = ({
   pathname,
   username,
   innerWidth,
-}, { onClickArtistInvites }) =>
-  (<nav className={`Navbar ${navbarStyle}`}>
-    <div className={`navbar-content ${wrapperStyle}`}>
-      <div className={`navbar-container ${containerStyle}`}>
-        <div className={`NavbarMain ${mainStyle}`}>
-          <NavbarMark onClick={onClickNavbarMark} />
-          {hasLoadMoreButton ? <NavbarMorePostsButton onClick={onClickLoadMorePosts} /> : null}
-          <div className={`NavbarLinks ${linksStyle}`}>
-            { deviceSize === 'mobile' &&
-              <NavbarLink
-                className="LabelOnly"
-                label="Editorial"
-                pathname={pathname}
-                to="/"
-              />
-            }
-            { !artistInvitesInProfileMenu &&
-              <NavbarLink
-                className="LabelOnly"
-                label="Artist Invites"
-                onClick={onClickArtistInvites}
-                pathname={pathname}
-                to="/artist-invites"
-              />
-            }
-            <NavbarLink
-              className="LabelOnly"
-              icon={<SparklesIcon />}
-              label="Discover"
-              pathname={pathname}
-              to="/discover/subscribed"
-            />
-            <NavbarLink
-              className="LabelOnly"
-              icon={<CircleIcon />}
-              label="Following"
-              onDragLeave={onDragLeaveStreamLink}
-              onDragOver={onDragOverStreamLink}
-              onDrop={onDropStreamLink}
-              pathname={pathname}
-              to="/following"
-            />
-            { innerWidth > 500
-                ? <NavbarLink
+}, { onClickArtistInvites }) => {
+  const isTruncatedHeader = deviceSize === 'mobile' || deviceSize === 'tablet'
+  return (
+    <nav className={`Navbar ${navbarStyle}`}>
+      <div className={`navbar-content ${wrapperStyle}`}>
+        <div className={`navbar-container ${containerStyle}`}>
+          <div className={`NavbarMain ${mainStyle}`}>
+            <NavbarMark onClick={onClickNavbarMark} />
+            {hasLoadMoreButton ? <NavbarMorePostsButton onClick={onClickLoadMorePosts} /> : null}
+            <div className={`NavbarLinks ${linksStyle}`}>
+              {isTruncatedHeader &&
+                <NavbarLink
                   className="LabelOnly"
-                  label="Giveaways"
+                  label="Editorial"
                   pathname={pathname}
-                  to="/elloartgiveaways"
-                /> : null }
-            <NavbarLink
-              className={classNames('IconOnly', { isNotificationsUnread })}
-              icon={<BoltIcon />}
-              label="Notifications"
-              onClick={isElloAndroid() || deviceSize === 'mobile' ? null : onClickNotification}
-              pathname={pathname}
-              to={`/notifications${notificationCategory}`}
+                  to="/"
+                />
+              }
+              {!artistInvitesInProfileMenu &&
+                <NavbarLink
+                  className="LabelOnly"
+                  label="Artist Invites"
+                  onClick={onClickArtistInvites}
+                  pathname={pathname}
+                  to="/artist-invites"
+                />
+              }
+              <NavbarLink
+                className="LabelOnly"
+                icon={<SparklesIcon />}
+                label="Discover"
+                pathname={pathname}
+                to="/discover/subscribed"
+              />
+              <NavbarLink
+                className="LabelOnly"
+                icon={<CircleIcon />}
+                label="Following"
+                onDragLeave={onDragLeaveStreamLink}
+                onDragOver={onDragOverStreamLink}
+                onDrop={onDropStreamLink}
+                pathname={pathname}
+                to="/following"
+              />
+              {innerWidth > 500
+                  ? <NavbarLink
+                    className="LabelOnly"
+                    label="Giveaways"
+                    pathname={pathname}
+                    to="/elloartgiveaways"
+                  /> : null }
+              <NavbarLink
+                className={classNames('IconOnly', { isNotificationsUnread })}
+                icon={<BoltIcon />}
+                label="Notifications"
+                onClick={isElloAndroid() || isTruncatedHeader ? null : onClickNotification}
+                pathname={pathname}
+                to={`/notifications${notificationCategory}`}
+              />
+              <NavbarLink
+                className="IconOnly"
+                icon={<SearchIcon />}
+                label="Search"
+                pathname={pathname}
+                to="/search"
+              />
+            </div>
+            <NavbarProfile
+              artistInvitesInProfileMenu={artistInvitesInProfileMenu}
+              avatar={avatar}
+              isBrand={isBrand}
+              isProfileMenuActive={isProfileMenuActive}
+              onClickAvatar={onClickAvatar}
+              onLogOut={onLogOut}
+              username={username}
+              innerWidth={innerWidth}
             />
-            <NavbarLink
-              className="IconOnly"
-              icon={<SearchIcon />}
-              label="Search"
-              pathname={pathname}
-              to="/search"
+            {isTruncatedHeader && !isLayoutToolHidden ?
+              <NavbarLayoutTool
+                icon={isGridMode ? <ListIcon /> : <GridIcon />}
+                onClick={onClickToggleLayoutMode}
+              /> : null
+            }
+            <NavbarOmniButton
+              onClick={onClickOmniButton}
+              onDragOver={onDragOverOmniButton}
             />
+            {isTruncatedHeader && isNotificationsActive ?
+              <NotificationsContainer isModal /> : null
+            }
           </div>
-          <NavbarProfile
-            artistInvitesInProfileMenu={artistInvitesInProfileMenu}
-            avatar={avatar}
-            isBrand={isBrand}
-            isProfileMenuActive={isProfileMenuActive}
-            onClickAvatar={onClickAvatar}
-            onLogOut={onLogOut}
-            username={username}
-            innerWidth={innerWidth}
-          />
-          {deviceSize === 'mobile' && !isLayoutToolHidden ?
-            <NavbarLayoutTool
-              icon={isGridMode ? <ListIcon /> : <GridIcon />}
-              onClick={onClickToggleLayoutMode}
-            /> : null
-          }
-          <NavbarOmniButton
-            onClick={onClickOmniButton}
-            onDragOver={onDragOverOmniButton}
-          />
-          {deviceSize !== 'mobile' && isNotificationsActive ?
-            <NotificationsContainer isModal /> : null
-          }
         </div>
+        {categoryTabs && !isLightBoxActive &&
+          <CategoryTabBar
+            pathname={pathname}
+            tabs={categoryTabs}
+            areCategoriesSubscribed={areCategoriesSubscribed}
+            subscribed
+            deviceSize={deviceSize}
+          />
+        }
       </div>
-      {categoryTabs && !isLightBoxActive &&
-        <CategoryTabBar
-          pathname={pathname}
-          tabs={categoryTabs}
-          areCategoriesSubscribed={areCategoriesSubscribed}
-          subscribed
-          deviceSize={deviceSize}
-        />
-      }
-    </div>
-    <div className={`grabber ${grabberStyle}`} />
-  </nav>)
+      <div className={`grabber ${grabberStyle}`} />
+    </nav>
+  )
+}
 
 NavbarLoggedIn.propTypes = {
   artistInvitesInProfileMenu: PropTypes.bool.isRequired,
