@@ -20,7 +20,8 @@ import {
   selectEditorialKind,
   selectEditorialPath,
   selectEditorialPostId,
-  selectEditorialPostStreamHref,
+  selectEditorialPostStreamQuery,
+  selectEditorialPostStreamVariables,
   selectEditorialUrl,
 } from '../selectors/editorial'
 import { selectDPI } from '../selectors/gui'
@@ -41,7 +42,8 @@ const makeMapStateToProps = () => (
       post: selectPost(state, { postId }),
       postAuthor: selectPostAuthor(state, { postId }),
       postPath: selectPostDetailPath(state, { postId }),
-      postStreamHref: selectEditorialPostStreamHref(state, props),
+      postStreamQuery: selectEditorialPostStreamQuery(state, props),
+      postStreamVariables: selectEditorialPostStreamVariables(state, props),
       sources: selectEditorialImageSource(state, props),
       url: selectEditorialUrl(state, props),
       trackOptions: selectEditorialAnalyticsOptions(state, props),

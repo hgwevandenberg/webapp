@@ -17,15 +17,6 @@ function getAPIPath(relPath, queryParams = {}) {
   }
   return path
 }
-// Editorials
-export function editorials(isPreview) {
-  const params = isPreview ?
-    { preview: true, ...getPagingQueryParams(window.location.search) } :
-    { ...getPagingQueryParams(window.location.search) }
-  return {
-    path: getAPIPath('editorials', params),
-  }
-}
 // Artist Invites
 export function artistInvites(isPreview) {
   const query = {

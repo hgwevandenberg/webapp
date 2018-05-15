@@ -60,11 +60,12 @@ export const commentsAsList = commentIds => (
 )
 
 // EDITORIAL: chunk layouts into pages of 24 editorials
-export const editorials = editorialIds => (
-  Immutable.Range(0, editorialIds.size - 1, 24)
-    .map(chunkStart => editorialIds.slice(chunkStart, chunkStart + 24))
+export const editorials = (editorialIds) => {
+  const eIds = editorialIds.toList()
+  return Immutable.Range(0, eIds.size - 1, 24)
+    .map(chunkStart => eIds.slice(chunkStart, chunkStart + 24))
     .map(pageIds => <EditorialLayout key={pageIds} ids={pageIds} />)
-)
+}
 
 export const postsAsPostStream = (postIds, columnCount, isPostHeaderHidden, renderProps) => (
   <SlickCarousel postIds={postIds} renderProps={renderProps} />

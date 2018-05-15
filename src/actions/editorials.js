@@ -1,17 +1,19 @@
 import React from 'react'
-import { LOAD_STREAM } from '../constants/action_types'
-import { EDITORIALS, POSTS } from '../constants/mapping_types'
-import { editorials as editorialsApi } from '../networking/api'
+import { V3 } from '../constants/action_types'
 import { editorials as editorialRenderable, postsAsPostStream } from '../components/streams/StreamRenderables'
 import { ErrorStateEditorial } from '../components/errors/Errors'
 import { ZeroStateEditorial } from '../components/zeros/Zeros'
+import { editorialStreamQuery } from '../queries/editorialStreamQueries'
+import { findPostsQuery } from '../queries/findPosts'
 
-export const loadEditorials = isPreview => (
+export const loadEditorials = (isPreview, before) => (
   {
-    type: LOAD_STREAM,
-    payload: { endpoint: editorialsApi(isPreview) },
+    type: V3.LOAD_STREAM,
+    payload: {
+      query: editorialStreamQuery,
+      variables: { preview: isPreview, before },
+    },
     meta: {
-      mappingType: EDITORIALS,
       renderStream: {
         asList: editorialRenderable,
         asGrid: editorialRenderable,
@@ -20,12 +22,19 @@ export const loadEditorials = isPreview => (
   }
 )
 
-export const loadPostStream = ({ endpointPath, resultKey, ...props }) => (
-  {
-    type: LOAD_STREAM,
-    payload: { endpoint: { path: endpointPath } },
+export const loadPostStream = ({ query: queryName, variables, resultKey, ...props }) => {
+  let query
+  switch (queryName) {
+    case 'findPosts':
+      query = findPostsQuery
+      break
+    default:
+      query = findPostsQuery
+  }
+  return {
+    type: V3.POST.LOAD_MANY,
+    payload: { query, variables },
     meta: {
-      mappingType: POSTS,
       renderProps: { ...props },
       renderStream: {
         asList: postsAsPostStream,
@@ -36,5 +45,5 @@ export const loadPostStream = ({ endpointPath, resultKey, ...props }) => (
       resultKey,
     },
   }
-)
+}
 
