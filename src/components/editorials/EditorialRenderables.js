@@ -191,9 +191,13 @@ CuratedPost.propTypes = {
   ]).isRequired,
   isPostLoved: PropTypes.bool.isRequired,
   onClickEditorial: PropTypes.func.isRequired,
-  sources: PropTypes.object.isRequired,
+  sources: PropTypes.object,
   title: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
+}
+
+CuratedPost.defaultProps = {
+  sources: null,
 }
 
 // -------------------------------------

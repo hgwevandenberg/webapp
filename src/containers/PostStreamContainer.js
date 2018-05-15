@@ -54,10 +54,14 @@ class PostStreamContainer extends Component {
     isPostLoved: PropTypes.bool.isRequired,
     post: PropTypes.object.isRequired,
     postAuthor: PropTypes.object.isRequired,
-    sources: PropTypes.object.isRequired,
+    sources: PropTypes.object,
     title: PropTypes.string.isRequired,
     trackOptions: PropTypes.object.isRequired,
     username: PropTypes.string.isRequired,
+  }
+
+  static defaultProps = {
+    sources: null,
   }
 
   static contextTypes = {
