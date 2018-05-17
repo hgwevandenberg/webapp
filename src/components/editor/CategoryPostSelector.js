@@ -115,7 +115,7 @@ const categoriesSelectionsStyle = css(
         { right: 18 },
       ),
     ),
-    select('& button span.text', s.displayNone),
+    select('& button span.label', s.displayNone),
   ),
 )
 
@@ -627,7 +627,7 @@ export default class CategoryPostSelector extends PureComponent {
               </b>
               {!isPostEditing &&
                 <button onClick={() => this.clearLocal()}>
-                  <span className="text">Remove</span>
+                  <span className="label">Remove</span>
                   <span className="icon">
                     <XIcon />
                   </span>
