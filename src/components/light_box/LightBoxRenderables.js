@@ -182,7 +182,7 @@ const navButtonStyle = css(
   ),
 
   // style icon
-  select('& .text', s.displayNone),
+  select('& .label', s.displayNone),
   select('& .icon',
     s.block,
     {
@@ -270,7 +270,7 @@ const LightBox = ({
             className={`prev ${navButtonStyle}`}
             onClick={() => { advance('prev') }}
           >
-            <span className="text">
+            <span className="label">
               Previous
             </span>
             <span className="icon">
@@ -283,7 +283,7 @@ const LightBox = ({
             className={`next ${navButtonStyle}`}
             onClick={() => { advance('next') }}
           >
-            <span className="text">
+            <span className="label">
               Next
             </span>
             <span className="icon">
