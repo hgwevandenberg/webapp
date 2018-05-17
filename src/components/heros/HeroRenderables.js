@@ -166,7 +166,7 @@ const categoryHeadingStyle = css(
     ),
   ),
 
-  select('& .text',
+  select('& .label',
     s.inlineBlock,
     s.fontSize18,
     {
@@ -218,7 +218,7 @@ const subscribeHolderMobileStyle = css(
     select('& .CheckCircleIcon',
       s.displayNone,
     ),
-    select('& .text',
+    select('& .label',
       s.m0,
       s.fontSize14,
     ),
@@ -244,7 +244,7 @@ export const HeroPromotionCategory = (props) => {
         <div className={categoryCaptionStyle}>
           <h1 className={categoryHeadingStyle}>
             <CategorySubscribedIcon isSubscribed={isSubscribed} />
-            <span className="text">{name}</span>
+            <span className="label">{name}</span>
           </h1>
           <p className={categoryCopyStyle}>{description}</p>
           <HeroPromotionCTA
@@ -289,7 +289,7 @@ export const HeroPromotionCategory = (props) => {
         <div className={categoryCaptionStyle}>
           <h1 className={categoryHeadingStyle}>
             <CategorySubscribedIcon isSubscribed={isSubscribed} />
-            <span className="text">{name}</span>
+            <span className="label">{name}</span>
           </h1>
           <p className={categoryCopyStyle}>{description}</p>
           <HeroPromotionCTA
