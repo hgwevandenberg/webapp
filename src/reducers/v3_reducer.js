@@ -35,8 +35,7 @@ function parseList(state, list, parser) {
   return list.reduce(parser, state)
 }
 
-function parsePagination(state, stream, pathname, query, variables) {
-  const { posts: models, next, isLastPage } = stream
+function parsePagination(state, models, next, isLastPage, pathname, query, variables) {
   const mergedState = state.mergeDeepIn(['pages', pathname], Immutable.fromJS({
     pagination: Immutable.fromJS({ next, query, variables, isLastPage }),
   }))
@@ -274,20 +273,64 @@ function parsePost(state, post) {
   }))
 }
 
+function editorialLinks(editorial) {
+  const links = {}
+  const postId = deepGet(editorial, ['post', 'id'])
+  if (postId) { links.post = { id: postId, type: 'post' } }
+
+  const { query, ...variables } = editorial.stream || {}
+  if (query) { links.postStream = { query, variables } }
+
+  return links
+}
+
+function parseEditorial(state, editorial) {
+  if (!editorial) { return state }
+  const state1 = parsePost(state, editorial.post)
+  return smartMergeDeepIn(state1, ['editorials', editorial.id], Immutable.fromJS({
+    id: editorial.id,
+    kind: editorial.kind ? editorial.kind.toLowerCase() : null,
+    title: editorial.title,
+    renderedSubtitle: editorial.subtitle,
+    oneByOneImage: editorial.oneByOneImage,
+    oneByTwoImage: editorial.oneByTwoImage,
+    twoByOneImage: editorial.twoByOneImage,
+    twoByTwoImage: editorial.twoByTwoImage,
+    links: editorialLinks(editorial),
+  }))
+}
 
 function parsePostDetail(state, { payload: { response: { data: { post } } } }) {
   return parsePost(state, post)
 }
 
-function parseQueryType(state, stream, pathname, query, variables) {
-  const { posts } = stream
-  const state1 = parseList(state, posts, parsePost)
-  return parsePagination(state1, stream, pathname, query, variables)
+function parseQueryType(state, type, stream, pathname, query, variables) {
+  const { next, isLastPage } = stream
+  let models
+  let parser
+  switch (type) {
+    case 'categoryPostStream':
+    case 'subscribedPostStream':
+    case 'userPostStream':
+      models = stream.posts
+      parser = parsePost
+      break;
+    case 'editorialStream':
+      models = stream.editorials
+      parser = parseEditorial
+      break;
+    default:
+      models = null
+      parser = null
+
+  }
+  const state1 = parseList(state, models, parser)
+  return parsePagination(state1, models, next, isLastPage, pathname, query, variables)
 }
 
 function parseStream(state, { payload: { response: { data }, pathname, query, variables } }) {
   return Object.keys(data).reduce((s, key) =>
-    parseQueryType(s, data[key], pathname, query, variables),
+    parseQueryType(s, key, data[key], pathname, query, variables),
     state,
   )
 }
@@ -298,6 +341,18 @@ function parseCategoryQueries(state, { payload: { response: { data } } }) {
 
 function parsePageHeaders(state, { payload: { response: { data: { pageHeaders } } } }) {
   return parseList(state, pageHeaders, parsePageHeader)
+}
+
+function parseLoadManyPosts(state, action) {
+  const { meta, payload: { response: { data: { findPosts: posts } } } } = action
+  const state1 = parseList(state, posts, parsePost)
+  if (meta.resultKey) {
+    return state1.mergeDeepIn(['pages', meta.resultKey], Immutable.fromJS({
+      pagination: { isLastPage: true },
+      ids: Immutable.OrderedSet(posts.map(p => p.id)),
+    }))
+  }
+  return state1
 }
 
 // Dispatch different graphql response types for parsing (reducing)
@@ -313,6 +368,8 @@ export default function (state, action) {
       return parsePageHeaders(state, action)
     case ACTION_TYPES.V3.POST.DETAIL_SUCCESS:
       return parsePostDetail(state, action)
+    case ACTION_TYPES.V3.POST.LOAD_MANY_SUCCESS:
+      return parseLoadManyPosts(state, action)
     case ACTION_TYPES.PROFILE.FOLLOW_CATEGORIES_SUCCESS:
     case ACTION_TYPES.PROFILE.UNFOLLOW_CATEGORIES_SUCCESS:
       return resetSubscribedStreamPagination(state)

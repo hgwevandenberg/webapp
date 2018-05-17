@@ -118,11 +118,12 @@ const postStreamBaseStyle = css(
 
 export const PostStream = props => (
   <div className={postStreamBaseStyle}>
-    { props.postStreamHref &&
+    { props.postStreamQuery &&
       <StreamContainer
         className="inEditorial"
         action={loadPostStream({
-          endpointPath: props.postStreamHref,
+          query: props.postStreamQuery,
+          variables: props.postStreamVariables,
           editorialTrackOptions: props.trackOptions,
           fallbackSources: props.sources,
           onClickEditorial: props.onClickEditorial,
@@ -141,7 +142,8 @@ PostStream.propTypes = {
   onClickEditorial: PropTypes.func.isRequired,
   sources: PropTypes.object.isRequired,
   position: PropTypes.number.isRequired,
-  postStreamHref: PropTypes.string.isRequired,
+  postStreamQuery: PropTypes.string.isRequired,
+  postStreamVariables: PropTypes.object.isRequired,
   trackOptions: PropTypes.object.isRequired,
   size: PropTypes.string.isRequired,
 }
@@ -189,9 +191,13 @@ CuratedPost.propTypes = {
   ]).isRequired,
   isPostLoved: PropTypes.bool.isRequired,
   onClickEditorial: PropTypes.func.isRequired,
-  sources: PropTypes.object.isRequired,
+  sources: PropTypes.object,
   title: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
+}
+
+CuratedPost.defaultProps = {
+  sources: null,
 }
 
 // -------------------------------------

@@ -9,7 +9,7 @@ import { MainView } from '../components/views/MainView'
 import { trackPostViews } from '../actions/posts'
 import { media } from '../styles/jss'
 import { maxBreak2 } from '../styles/jso'
-import { selectQueryPreview } from '../selectors/routing'
+import { selectQueryPreview, selectPropsQueryBefore } from '../selectors/routing'
 import { selectRandomPageHeader } from '../selectors/page_headers'
 import { selectUser } from '../selectors/user'
 import { selectHeroDPI } from '../selectors/gui'
@@ -19,12 +19,13 @@ const streamStyle = media(maxBreak2, {
   paddingRight: '0 !important',
 })
 
-function mapStateToProps(state) {
+function mapStateToProps(state, props) {
   const pageHeader = selectRandomPageHeader(state)
   const user = pageHeader ? selectUser(state, { userId: pageHeader.get('userId') }) : null
   return {
     dpi: selectHeroDPI(state),
     isPreview: selectQueryPreview(state) === 'true',
+    before: selectPropsQueryBefore(state, props),
     pageHeader,
     user,
   }
@@ -36,6 +37,7 @@ class EditorialPage extends Component {
     dispatch: PropTypes.func.isRequired,
     dpi: PropTypes.string.isRequired,
     isPreview: PropTypes.bool,
+    before: PropTypes.string,
     pageHeader: PropTypes.object,
     user: PropTypes.object,
   }
@@ -44,6 +46,7 @@ class EditorialPage extends Component {
     isPreview: false,
     pageHeader: null,
     user: null,
+    before: null,
   }
 
   shouldComponentUpdate(nextProps) {
@@ -61,7 +64,7 @@ class EditorialPage extends Component {
   }
 
   render() {
-    const { dpi, user, pageHeader } = this.props
+    const { dpi, user, pageHeader, before } = this.props
     let hero
     if (pageHeader) {
       const header = pageHeader.get('header', '')
@@ -82,7 +85,7 @@ class EditorialPage extends Component {
       <MainView className="Editorial">
         { hero }
         <StreamContainer
-          action={loadEditorials(this.props.isPreview)}
+          action={loadEditorials(this.props.isPreview, before)}
           className={`${streamStyle}`}
           paginatorText="Load More"
           paginatorCentered
