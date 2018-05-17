@@ -30,7 +30,7 @@ const tabStyle = css(
     ),
   ),
 
-  select('& .text',
+  select('& .label',
     s.block,
     s.mt20,
     s.fullWidth,
@@ -49,7 +49,7 @@ const tabStyle = css(
     ),
   ),
 
-  modifier('.isActive', select('& .text', s.colorBlack)),
+  modifier('.isActive', select('& .label', s.colorBlack)),
   modifier('.approvedSubmissions', hover(select('& .label', s.colorGreen))),
   modifier('.selectedSubmissions', hover(select('& .label', s.colorYellow))),
   modifier('.unapprovedSubmissions', hover(select('& .label', s.colorBlack))),
@@ -151,7 +151,7 @@ const SelectionTabSwitcher = ({
             </button>
           }
         </span>
-        <span className={`text${explainerIsOpen ? ' open' : ''}`}>
+        <span className={`label${explainerIsOpen ? ' open' : ''}`}>
           {explainerText}
         </span>
       </a>
