@@ -309,6 +309,7 @@ function parseQueryType(state, type, stream, pathname, query, variables) {
   let models
   let parser
   switch (type) {
+    case 'globalPostStream':
     case 'categoryPostStream':
     case 'subscribedPostStream':
     case 'userPostStream':
