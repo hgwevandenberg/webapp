@@ -18,8 +18,8 @@
     "test:watch": "NODE_ENV=test mocha test/unit --recursive --watch"
   },
   "engines": {
-    "node": ">=7.5.0",
-    "npm": ">=4.1.2"
+    "node": ">=10.1.0",
+    "npm": ">=5.6.0"
   },
   "browserlist": "> 5%, last 2 firefox versions, last 2 chrome versions, last 2 safari versions, last 2 edge versions, ie 11, not OperaMini all",
   "babel": {
