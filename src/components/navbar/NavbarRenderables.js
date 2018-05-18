@@ -336,7 +336,7 @@ export const NavbarLoggedIn = ({
               onClick={onClickOmniButton}
               onDragOver={onDragOverOmniButton}
             />
-            {isTruncatedHeader && isNotificationsActive ?
+            {!isTruncatedHeader && isNotificationsActive ?
               <NotificationsContainer isModal /> : null
             }
           </div>
