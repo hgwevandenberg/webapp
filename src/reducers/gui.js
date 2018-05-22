@@ -114,6 +114,8 @@ export default (state = initialState, action = { type: '' }) => {
       return state.set('discoverKeyType', payload.type)
     case GUI.NOTIFICATIONS_TAB:
       return state.set('activeNotificationsType', payload.activeTabType)
+    case GUI.SET_IS_CATEGORY_DRAWER_OPEN:
+      return state.set('isCategoryDrawerOpen', payload.isCategoryDrawerOpen)
     case GUI.SET_IS_NAVBAR_HIDDEN:
       return state.set('isNavbarHidden', get(payload, 'isNavbarHidden', state.isNavbarHidden))
     case GUI.SET_IS_PROFILE_MENU_ACTIVE:

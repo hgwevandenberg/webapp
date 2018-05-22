@@ -122,6 +122,13 @@ describe('gui reducer', () => {
       expect(reducer(initialState, action)).to.have.property('activeNotificationsType', 'comments')
     })
 
+    it('GUI.SET_IS_CATEGORY_DRAWER_OPEN updates isCategoryDrawerOpen', () => {
+      expect(initialState).to.have.property('isCategoryDrawerOpen', false)
+      const isCategoryDrawerOpen = true
+      const action = { type: GUI.SET_IS_LIGHT_BOX_ACTIVE, payload: { isCategoryDrawerOpen } }
+      expect(reducer(initialState, action)).to.have.property('isCategoryDrawerOpen', true)
+    })
+
     it('GUI.SET_IS_PROFILE_MENU_ACTIVE updates isProfileMenuActive', () => {
       expect(initialState).to.have.property('isProfileMenuActive', false)
       const isProfileMenuActive = true
@@ -299,6 +306,7 @@ describe('gui reducer', () => {
       innerWidth: 303,
       isNavbarHidden: false,
       hasLaunchedSignupModal: false,
+      isCategoryDrawerOpen: false,
       isCompleterActive: false,
       isNotificationsActive: false,
       isOmnibarActive: false,
