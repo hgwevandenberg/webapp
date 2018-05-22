@@ -9,6 +9,7 @@
 }
 
 @media (--break-3) {
+  /* stylelint-disable no-unsupported-browser-features */
   .isCategoryDrawerOpen ~ .MainView.Discover {
     display: grid;
     grid-template-columns: repeat(4, [col-start] 1fr);
@@ -28,6 +29,7 @@
     grid-column: col-start / span 3;
     grid-row: 2;
   }
+  /* stylelint-enable no-unsupported-browser-features */
 }
 
 .isModalActive .MainView {

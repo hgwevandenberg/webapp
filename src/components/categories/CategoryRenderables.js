@@ -545,11 +545,8 @@ export function CategoryInfo({
   }
   return (
     <aside className="sidebar">
-      <p>
-        {name} Info here
-      </p>
       <button
-        title={`${name} info`}
+        title={`Close ${name} info`}
         onClick={handleTriggerClick}
       >
         <span className="label">
@@ -559,8 +556,29 @@ export function CategoryInfo({
           X
         </span>
       </button>
-      <p>Jean shorts bicycle rights shabby chic squid, leggings chicharrones you probably haven't heard of them. Umami beard bitters subway tile small batch man braid hoodie +1 disrupt mumblecore sriracha celiac. Godard art party trust fund, cred tote bag unicorn shoreditch mlkshk chartreuse. Viral affogato tilde health goth photo booth mumblecore. Subway tile selvage pinterest lo-fi pop-up enamel pin. Cray raw denim before they sold out pug.</p>
-      <p>Biodiesel gentrify master cleanse marfa iPhone vegan hashtag authentic listicle readymade crucifix lo-fi whatever air plant. Pug umami wolf squid helvetica. 90's drinking vinegar meh crucifix, tote bag food truck hell of prism. Blog kinfolk pok pok franzen XOXO asymmetrical.</p>
+      <h2>
+        Info
+      </h2>
+      <article className="description">
+        <h3>Rules</h3>
+        <p>
+          Discover a diverse range of visual and performance work that explores many forms,
+          genres, and styles including traditional techniques such as painting, drawing,
+          and sculpting, as well as more contemporary forms such as site specific art, digital,
+          and virtual reality.
+        </p>
+      </article>
+      <section className="moderators-curators">
+        <h4>Moderators</h4>
+        <ul className="moderators">
+          <li>i am moderator</li>
+        </ul>
+
+        <h4>Curators</h4>
+        <ul className="curators">
+          <li>i am curator</li>
+        </ul>
+      </section>
     </aside>
   )
 }
