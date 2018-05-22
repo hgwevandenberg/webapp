@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import CategoryInfoContainer from '../../containers/CategoryInfoContainer'
 import StreamContainer from '../../containers/StreamContainer'
 import { CategorySubNav } from '../categories/CategoryRenderables'
 import { MainView } from '../views/MainView'
@@ -7,6 +8,7 @@ import { MainView } from '../views/MainView'
 export const Discover = ({ streamAction, kind, stream }) => (
   <MainView className="Discover">
     <CategorySubNav stream={stream} kind={kind} />
+    <CategoryInfoContainer />
     <StreamContainer
       action={streamAction}
       paginatorText="Load More"

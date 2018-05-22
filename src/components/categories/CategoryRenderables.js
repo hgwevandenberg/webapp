@@ -465,3 +465,107 @@ export const CategoryAllFooter = () => (
   </footer>
 )
 
+const categoryInfoCollapsedStyle = css(
+  s.absolute,
+  s.m0,
+  s.pt20,
+  { top: 0, right: 0 },
+
+  media(s.minBreak2,
+    s.pt40,
+  ),
+
+  select('& a',
+    s.fontSize16,
+    s.colorA,
+    {
+      border: 'none',
+    },
+
+    media(s.minBreak2,
+      s.fontSize18,
+    ),
+  ),
+
+  // style mobile-specific version
+  // media(s.maxBreak2,
+  //   s.flex,
+  //   s.flexNoWrap,
+  //   s.pr10,
+  //   s.pl10,
+
+  //   select('& li',
+  //     s.relative,
+  //     s.inlineBlock,
+  //     s.fullWidth,
+  //     s.m0,
+  //     s.center,
+  //     s.borderBottom,
+  //     {
+  //       borderColor: '#aaa',
+  //     },
+  //     select('& a',
+  //       s.fontSize14,
+  //       { borderWidth: '0' },
+  //     ),
+  //     select('&.selected',
+  //       { borderColor: '#000' },
+  //       select('& a',
+  //         { borderWidth: '0' },
+  //       ),
+  //     ),
+  //   ),
+  //   select('&.global li',
+  //     { width: '33.3333333%' },
+  //   ),
+  // ),
+)
+
+export function CategoryInfo({
+  collapsed,
+  handleTriggerClick,
+  name,
+}) {
+  if (collapsed) {
+    return (
+      <p className={categoryInfoCollapsedStyle}>
+        <button
+          title={`${name} info`}
+          onClick={handleTriggerClick}
+        >
+          <span className="label">
+            Info trigger
+          </span>
+          <span className="icon">
+            &lt;
+          </span>
+        </button>
+      </p>
+    )
+  }
+  return (
+    <aside className="sidebar">
+      <p>
+        {name} Info here
+      </p>
+      <button
+        title={`${name} info`}
+        onClick={handleTriggerClick}
+      >
+        <span className="label">
+          Close
+        </span>
+        <span className="icon">
+          X
+        </span>
+      </button>
+      <p>Jean shorts bicycle rights shabby chic squid, leggings chicharrones you probably haven't heard of them. Umami beard bitters subway tile small batch man braid hoodie +1 disrupt mumblecore sriracha celiac. Godard art party trust fund, cred tote bag unicorn shoreditch mlkshk chartreuse. Viral affogato tilde health goth photo booth mumblecore. Subway tile selvage pinterest lo-fi pop-up enamel pin. Cray raw denim before they sold out pug.</p>
+      <p>Biodiesel gentrify master cleanse marfa iPhone vegan hashtag authentic listicle readymade crucifix lo-fi whatever air plant. Pug umami wolf squid helvetica. 90's drinking vinegar meh crucifix, tote bag food truck hell of prism. Blog kinfolk pok pok franzen XOXO asymmetrical.</p>
+    </aside>
+  )
+}
+CategoryInfo.propTypes = {
+  collapsed: PropTypes.bool.isRequired,
+  handleTriggerClick: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+}

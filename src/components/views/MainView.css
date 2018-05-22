@@ -4,6 +4,32 @@
   background-color: #fff;
 }
 
+.MainView.Discover {
+  position: relative;
+}
+
+@media (--break-3) {
+  .isCategoryDrawerOpen ~ .MainView.Discover {
+    display: grid;
+    grid-template-columns: repeat(4, [col-start] 1fr);
+  }
+
+  .isCategoryDrawerOpen ~ .MainView.Discover .category-sub-nav {
+    grid-column: col-start / span 3;
+    grid-row: 1;
+  }
+
+  .isCategoryDrawerOpen ~ .MainView.Discover .sidebar {
+    grid-column: 4 / span 1;
+    grid-row: 1 / span 2;
+  }
+
+  .isCategoryDrawerOpen ~ .MainView.Discover .StreamContainer {
+    grid-column: col-start / span 3;
+    grid-row: 2;
+  }
+}
+
 .isModalActive .MainView {
   pointer-events: none;
 }
