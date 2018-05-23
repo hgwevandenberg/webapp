@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import {
   BadgeFeaturedIcon,
   CheckCircleIcon,
+  ChevronIcon,
   XIcon,
 } from '../assets/Icons'
 import { RoundedRectLink } from '../buttons/Buttons'
@@ -470,21 +471,32 @@ const categoryInfoCollapsedStyle = css(
   s.absolute,
   s.m0,
   s.pt20,
-  { top: 0, right: 0 },
+  { top: 0, right: 20 },
 
   media(s.minBreak2,
     s.pt40,
+    { right: 40 },
   ),
 
-  select('& a',
+  select('& .label',
     s.fontSize16,
     s.colorA,
-    {
-      border: 'none',
-    },
 
     media(s.minBreak2,
       s.fontSize18,
+    ),
+  ),
+  select('& .icon',
+    s.inlineBlock,
+    s.rotate180,
+    s.ml10,
+    {
+      paddingBottom: 18,
+      width: 16,
+      height: 16,
+    },
+    select('& svg polyline',
+      { stroke: '#aaa' },
     ),
   ),
 
@@ -609,10 +621,10 @@ export function CategoryInfo({
           onClick={handleTriggerClick}
         >
           <span className="label">
-            Info trigger
+            Info
           </span>
           <span className="icon">
-            &lt;
+            <ChevronIcon />
           </span>
         </button>
       </p>
