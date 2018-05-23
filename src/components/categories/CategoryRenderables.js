@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import {
   BadgeFeaturedIcon,
   CheckCircleIcon,
+  XIcon,
 } from '../assets/Icons'
 import { RoundedRectLink } from '../buttons/Buttons'
 import { before, css, hover, media, select } from '../../styles/jss'
@@ -521,6 +522,80 @@ const categoryInfoCollapsedStyle = css(
   // ),
 )
 
+const categoryInfoExpandedStyle = css(
+  s.relative,
+  s.pr20,
+  s.pl20,
+  s.mt40,
+  s.mb20,
+  { borderLeft: '1px solid #f2f2f2' },
+
+  select('& h2',
+    s.m0,
+    s.mb20,
+    s.fullWidth,
+    s.fontSize16,
+    s.colorA,
+    {
+      paddingBottom: 5,
+      borderBottom: '1px solid #f2f2f2',
+    },
+
+    media(s.minBreak2,
+      s.fontSize18,
+    ),
+  ),
+
+  select('& h3, & h4',
+    s.pt10,
+    s.sansBlack,
+    s.fontSize14,
+    s.colorA,
+  ),
+
+  select('& h4',
+    s.mb10,
+  ),
+
+  select('& .description',
+    s.mb20,
+    { borderBottom: '1px solid #f2f2f2' },
+    select('& p',
+      s.colorA,
+    ),
+  ),
+
+  select('& .moderators, & .curators',
+    s.resetList,
+    s.mb20,
+    {
+      paddingBottom: 15,
+      borderBottom: '1px solid #f2f2f2',
+    },
+
+    select('& li',
+      s.m0,
+      s.p0,
+    ),
+  ),
+
+  select('& .close-trigger',
+    s.absolute,
+    {
+      top: 0,
+      right: 20,
+      width: 16,
+      height: 16,
+    },
+    select('& .label',
+      s.displayNone,
+    ),
+    select('& .icon svg line',
+      { stroke: '#aaa' },
+    ),
+  ),
+)
+
 export function CategoryInfo({
   collapsed,
   handleTriggerClick,
@@ -544,8 +619,9 @@ export function CategoryInfo({
     )
   }
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${categoryInfoExpandedStyle}`}>
       <button
+        className="close-trigger"
         title={`Close ${name} info`}
         onClick={handleTriggerClick}
       >
@@ -553,7 +629,7 @@ export function CategoryInfo({
           Close
         </span>
         <span className="icon">
-          X
+          <XIcon />
         </span>
       </button>
       <h2>
