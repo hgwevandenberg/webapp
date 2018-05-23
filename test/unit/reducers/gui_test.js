@@ -30,6 +30,7 @@ describe('gui reducer', () => {
         'hasLaunchedSignupModal',
         'innerHeight',
         'innerWidth',
+        'isCategoryDrawerOpen',
         'isCompleterActive',
         'isGridMode',
         'isNavbarHidden',
@@ -125,7 +126,7 @@ describe('gui reducer', () => {
     it('GUI.SET_IS_CATEGORY_DRAWER_OPEN updates isCategoryDrawerOpen', () => {
       expect(initialState).to.have.property('isCategoryDrawerOpen', false)
       const isCategoryDrawerOpen = true
-      const action = { type: GUI.SET_IS_LIGHT_BOX_ACTIVE, payload: { isCategoryDrawerOpen } }
+      const action = { type: GUI.SET_IS_CATEGORY_DRAWER_OPEN, payload: { isCategoryDrawerOpen } }
       expect(reducer(initialState, action)).to.have.property('isCategoryDrawerOpen', true)
     })
 

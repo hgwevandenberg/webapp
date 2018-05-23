@@ -43,6 +43,7 @@ const getIsGridMode = (state) => {
 
 const initialNonPersistedState = Immutable.Map({
   hasLaunchedSignupModal: false,
+  isCategoryDrawerOpen: false,
   isCompleterActive: false,
   isNotificationsActive: false,
   isProfileMenuActive: false,
