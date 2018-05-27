@@ -607,34 +607,21 @@ export function CategoryInfo({
   if (collapsed) {
     return (
       <p className={categoryInfoCollapsedStyle}>
-        <button
-          title={`${name} info`}
-          onClick={handleTriggerClick}
-        >
-          <span className="label">
-            Info
-          </span>
-          <span className="icon">
-            <ChevronIcon />
-          </span>
-        </button>
+        <CategoryInfoTrigger
+          collapsed={collapsed}
+          handleTriggerClick={handleTriggerClick}
+          name={name}
+        />
       </p>
     )
   }
   return (
     <aside className={`sidebar ${categoryInfoExpandedStyle}`}>
-      <button
-        className="close-trigger"
-        title={`Close ${name} info`}
-        onClick={handleTriggerClick}
-      >
-        <span className="label">
-          Close
-        </span>
-        <span className="icon">
-          <XIcon />
-        </span>
-      </button>
+      <CategoryInfoTrigger
+        collapsed={collapsed}
+        handleTriggerClick={handleTriggerClick}
+        name={name}
+      />
       <h2>
         Info
       </h2>
@@ -662,6 +649,47 @@ export function CategoryInfo({
   )
 }
 CategoryInfo.propTypes = {
+  collapsed: PropTypes.bool.isRequired,
+  handleTriggerClick: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+}
+
+export function CategoryInfoTrigger({
+  collapsed,
+  handleTriggerClick,
+  name,
+}) {
+  if (collapsed) {
+    return (
+      <button
+        title={`${name} info`}
+        onClick={handleTriggerClick}
+      >
+        <span className="label">
+          Info
+        </span>
+        <span className="icon">
+          <ChevronIcon />
+        </span>
+      </button>
+    )
+  }
+  return (
+    <button
+      className="close-trigger"
+      title={`Close ${name} info`}
+      onClick={handleTriggerClick}
+    >
+      <span className="label">
+        Close
+      </span>
+      <span className="icon">
+        <XIcon />
+      </span>
+    </button>
+  )
+}
+CategoryInfoTrigger.propTypes = {
   collapsed: PropTypes.bool.isRequired,
   handleTriggerClick: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
