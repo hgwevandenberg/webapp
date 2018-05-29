@@ -3,6 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import BackgroundImage from '../assets/BackgroundImage'
 import {
+  CategoryInfoTrigger,
   CategorySubscribedIcon,
   CategorySubscribeButton,
 } from '../categories/CategoryRenderables'
@@ -228,13 +229,77 @@ const subscribeHolderMobileStyle = css(
 const promotionCategoryStyle = css(
   { ...promotionStyle },
   media(s.maxBreak2, s.flexColumn),
+  // category info trigger style (only shows on mobile header)
+  select('& .category-info',
+    s.absolute,
+    s.m0,
+    s.p0,
+    s.bgcModal,
+    {
+      padding: '10px 20px 10px 20px',
+      bottom: 10,
+      left: 10,
+      borderRadius: 40,
+    },
+    select('& .label',
+      s.block,
+      s.fontSize14,
+      s.colorWhite,
+      s.p0,
+      {
+        lineHeight: 14,
+      },
+    ),
+    select('& .icon', s.displayNone),
+
+    // close version
+    select('&.close-trigger',
+      s.p0,
+      {
+        top: 10,
+        right: 10,
+        left: 'auto',
+        bottom: 'auto',
+        width: 30,
+        height: 30,
+      },
+      select('& .label',
+        s.displayNone,
+      ),
+      select('& .icon',
+        s.block,
+        s.p0,
+        { marginTop: -2 },
+        select('& svg line',
+          { stroke: '#fff' },
+        ),
+      ),
+    ),
+  ),
 )
 
 export const HeroPromotionCategory = (props) => {
-  const { creditLabel, creditSources, creditUsername, creditTrackingLabel } = props
-  const { description, dpi, name, sources, isPromo } = props
-  const { ctaCaption, ctaHref, ctaTrackingLabel, isLoggedIn, isMobile, isSubscribed } = props
-  const { subscribe, unsubscribe } = props
+  const {
+    creditLabel,
+    creditSources,
+    creditUsername,
+    creditTrackingLabel,
+    description,
+    dpi,
+    name,
+    sources,
+    isPromo,
+    ctaCaption,
+    ctaHref,
+    ctaTrackingLabel,
+    handleCategoryInfoTriggerClick,
+    isLoggedIn,
+    isMobile,
+    isInfoCollapsed,
+    isSubscribed,
+    subscribe,
+    unsubscribe,
+  } = props
 
   // desktop version
   if (!isMobile) {
@@ -309,6 +374,11 @@ export const HeroPromotionCategory = (props) => {
             />
           }
         </div>
+        <CategoryInfoTrigger
+          collapsed={isInfoCollapsed}
+          handleTriggerClick={handleCategoryInfoTriggerClick}
+          name={name}
+        />
       </div>
       <span className={subscribeHolderMobileStyle}>
         <CategorySubscribeButton
@@ -331,6 +401,8 @@ HeroPromotionCategory.propTypes = {
   ctaTrackingLabel: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   dpi: PropTypes.string.isRequired,
+  handleCategoryInfoTriggerClick: PropTypes.func.isRequired,
+  isInfoCollapsed: PropTypes.bool.isRequired,
   isLoggedIn: PropTypes.bool.isRequired,
   isMobile: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,

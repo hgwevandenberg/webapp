@@ -8,8 +8,10 @@ import {
   HeroPromotionPage,
   HeroPromotionAuth,
 } from '../components/heros/HeroRenderables'
+import { setIsCategoryDrawerOpen } from '../actions/gui'
 import {
   selectHeroDPI,
+  selectIsCategoryDrawerOpen,
   selectIsMobile,
 } from '../selectors/gui'
 import { selectIsLoggedIn } from '../selectors/authentication'
@@ -27,6 +29,7 @@ function mapStateToProps(state, props) {
   const isLoggedIn = selectIsLoggedIn(state)
   const categoryId = pageHeader ? pageHeader.get('categoryId') : null
   const category = categoryId ? selectCategoryForPath(state, props) : null
+  const isInfoCollapsed = !selectIsCategoryDrawerOpen(state)
   const subscribedIds = selectSubscribedCategoryIds(state, props)
   const isSubscribed = !!categoryId && !!isLoggedIn && subscribedIds.includes(categoryId)
   const isPromo = category ? category.get('level') === 'promo' : false
@@ -36,6 +39,7 @@ function mapStateToProps(state, props) {
     user,
     dpi,
     isMobile,
+    isInfoCollapsed,
     isLoggedIn,
     isSubscribed,
     isPromo,
@@ -50,6 +54,7 @@ class HeroPageHeaderContainer extends Component {
     user: PropTypes.object,
     dpi: PropTypes.string.isRequired,
     isMobile: PropTypes.bool.isRequired,
+    isInfoCollapsed: PropTypes.bool.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
     isSubscribed: PropTypes.bool.isRequired,
     isPromo: PropTypes.bool.isRequired,
@@ -95,8 +100,24 @@ class HeroPageHeaderContainer extends Component {
     dispatch(followCategories(catIds, true))
   }
 
+  handleCategoryInfoTriggerClick(e) {
+    e.preventDefault()
+
+    const { isInfoCollapsed } = this.props
+    this.props.dispatch(setIsCategoryDrawerOpen({ isOpen: isInfoCollapsed }))
+  }
+
   render() {
-    const { pageHeader, user, dpi, isMobile, isLoggedIn, isSubscribed, isPromo } = this.props
+    const {
+      pageHeader,
+      user,
+      dpi,
+      isMobile,
+      isInfoCollapsed,
+      isLoggedIn,
+      isSubscribed,
+      isPromo,
+    } = this.props
     if (!pageHeader) { return null }
     switch (pageHeader.get('kind')) {
       case 'CATEGORY':
@@ -113,7 +134,9 @@ class HeroPageHeaderContainer extends Component {
             creditLabel="Posted by"
             creditTrackingLabel={pageHeader.get('slug')}
             dpi={dpi}
+            handleCategoryInfoTriggerClick={e => this.handleCategoryInfoTriggerClick(e)}
             isMobile={isMobile}
+            isInfoCollapsed={isInfoCollapsed}
             isLoggedIn={isLoggedIn}
             isSubscribed={isSubscribed}
             isPromo={isPromo}

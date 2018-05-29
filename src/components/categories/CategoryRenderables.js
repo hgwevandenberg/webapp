@@ -500,29 +500,8 @@ const categoryInfoCollapsedStyle = css(
     ),
   ),
 
-  // style mobile-specific version
-  media(s.maxBreak2,
-    s.p0,
-    s.m0,
-    {
-      top: -45,
-      right: 'auto',
-      left: 10,
-    },
-
-    select('& .label',
-      s.block,
-      s.fontSize14,
-      s.colorWhite,
-      s.bgcModal,
-      {
-        padding: '10px 20px 10px 20px',
-        lineHeight: 14,
-        borderRadius: 40,
-      },
-    ),
-    select('& .icon', s.displayNone),
-  ),
+  // hide on mobile
+  media(s.maxBreak2, s.displayNone),
 )
 
 const categoryInfoExpandedStyle = css(
@@ -596,6 +575,8 @@ const categoryInfoExpandedStyle = css(
     select('& .icon svg line',
       { stroke: '#aaa' },
     ),
+    // hide on mobile
+    media(s.maxBreak2, s.displayNone),
   ),
 )
 
@@ -662,6 +643,7 @@ export function CategoryInfoTrigger({
   if (collapsed) {
     return (
       <button
+        className="category-info open-trigger"
         title={`${name} info`}
         onClick={handleTriggerClick}
       >
@@ -676,7 +658,7 @@ export function CategoryInfoTrigger({
   }
   return (
     <button
-      className="close-trigger"
+      className="category-info close-trigger"
       title={`Close ${name} info`}
       onClick={handleTriggerClick}
     >
