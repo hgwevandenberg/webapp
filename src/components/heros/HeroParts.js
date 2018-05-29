@@ -28,6 +28,10 @@ const creditsStyle = css(
   s.absolute,
   { right: 10, bottom: 10 },
   s.zIndex1,
+)
+
+const creditsStyleExpanded = css(
+  { ...creditsStyle },
   s.fontSize14,
   s.colorWhite,
   { transition: 'color 0.2s ease, opacity 0.2s ease' },
@@ -78,11 +82,24 @@ const creditsByStyle = media(s.maxBreak2,
   parent('.HeroPromotionCredits', s.inlineBlock),
 )
 
-export const HeroPromotionCredits = ({ label, sources, username, trackingLabel }, context) => {
+export const HeroPromotionCredits = ({
+  collapsed,
+  label,
+  sources,
+  username,
+  trackingLabel,
+}, context) => {
   const { onClickTrackCredits } = context
   const track = () => onClickTrackCredits(trackingLabel)
+  if (collapsed) {
+    return (
+      <Link className={`HeroPromotionCredits ${creditsStyle}`} onClick={track} to={`/${username}`}>
+        <Avatar className="inHeroPromotionCredits" sources={sources} username={username} />
+      </Link>
+    )
+  }
   return (
-    <Link className={`HeroPromotionCredits ${creditsStyle}`} onClick={track} to={`/${username}`}>
+    <Link className={`HeroPromotionCredits ${creditsStyleExpanded}`} onClick={track} to={`/${username}`}>
       {label && <span className={creditsByStyle}>{label}</span>}
       <span className={`${creditsAuthorStyle}${label ? ' with-label' : ''}`}>@{username}</span>
       <Avatar className="inHeroPromotionCredits" sources={sources} username={username} />
@@ -95,10 +112,14 @@ HeroPromotionCredits.contextTypes = {
 }
 
 HeroPromotionCredits.propTypes = {
+  collapsed: PropTypes.bool,
   label: PropTypes.string,
   sources: PropTypes.object,
   username: PropTypes.string,
   trackingLabel: PropTypes.string,
+}
+HeroPromotionCredits.defaultTypes = {
+  collapsed: false,
 }
 
 // -------------------------------------

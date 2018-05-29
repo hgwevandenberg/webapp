@@ -20,10 +20,6 @@ class CategoryInfoContainer extends PureComponent {
     name: PropTypes.string.isRequired,
   }
 
-  // static defaultProps = {
-  //   tileImageUrl: null,
-  // }
-
   handleTriggerClick(e) {
     e.preventDefault()
 

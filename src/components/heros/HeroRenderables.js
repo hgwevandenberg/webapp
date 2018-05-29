@@ -247,7 +247,7 @@ const promotionCategoryStyle = css(
       s.colorWhite,
       s.p0,
       {
-        lineHeight: 14,
+        lineHeight: 12,
       },
     ),
     select('& .icon', s.displayNone),
@@ -367,6 +367,7 @@ export const HeroPromotionCategory = (props) => {
         <div className={`HeroPromotionMobileActions ${mobileActionStyle}`}>
           {creditUsername &&
             <HeroPromotionCredits
+              collapsed={isInfoCollapsed}
               label={creditLabel}
               sources={creditSources}
               username={creditUsername}
