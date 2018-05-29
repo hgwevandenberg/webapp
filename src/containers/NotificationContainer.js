@@ -20,6 +20,9 @@ import {
   NewFollowedUserPost,
   PostMentionNotification,
   RepostNotification,
+  UserAddedAsFeaturedNotification,
+  UserAddedAsCuratorNotification,
+  UserAddedAsModeratorNotification,
   WatchNotification,
   WatchCommentNotification,
   WatchOnOriginalPostNotification,
@@ -52,6 +55,9 @@ const NOTIFICATION_KIND = {
   CATEGORY_POST_FEATURED: 'category_post_featured',
   CATEGORY_REPOST_FEATURED: 'category_repost_featured',
   CATEGORY_POST_VIA_REPOST_FEATURED: 'category_post_via_repost_featured',
+  USER_ADDED_AS_FEATURED: 'user_added_as_featured_notification',
+  USER_ADDED_AS_CURATOR: 'user_added_as_curator_notification',
+  USER_ADDED_AS_MODERATOR: 'user_added_as_moderator_notification',
 }
 
 const SUBJECT_TYPE = {
@@ -61,6 +67,7 @@ const SUBJECT_TYPE = {
   WATCH: 'watch',
   ARTIST_INVITE_SUBMISSION: 'artistinvitesubmission',
   CATEGORY_POST: 'categorypost',
+  CATEGORY_USER: 'categoryuser',
 }
 
 function mapStateToProps(state, ownProps) {
@@ -71,6 +78,7 @@ function mapStateToProps(state, ownProps) {
   // postActions are used for loves/watches
   let postActionPost = null
   let postActionAuthor = null
+  let postActionCategory = null
   let postActionUser = null
 
   let postAuthor = null
@@ -132,15 +140,35 @@ function mapStateToProps(state, ownProps) {
       json.getIn([MAPPING_TYPES.USERS, postActionPost.get('authorId')])
   }
 
+  // subject is a category user
+  let identifier
+  if (subjectType === SUBJECT_TYPE.CATEGORY_USER) {
+    switch (notification.get('kind')) {
+      case 'user_added_as_featured_notification':
+        identifier = 'featuredBy'
+        break;
+      case 'user_added_as_curator_notification':
+        identifier = 'curatorBy'
+        break;
+      case 'user_added_as_moderator_notification':
+        identifier = 'moderatorBy'
+        break;
+      default:
+        break;
+    }
+    postActionUser = getLinkObject(subject, identifier, json)
+    postActionCategory = getLinkObject(subject, 'category', json)
+  }
+
   // subject can be a user as well but we don't
   // need to add any additional properties
-
   return {
     createdAt: notification.get('createdAt'),
     kind: notification.get('kind'),
     parentPost,
     parentPostAuthor,
     postActionAuthor,
+    postActionCategory,
     postActionPost,
     postActionUser,
     postAuthor,
@@ -159,6 +187,7 @@ class NotificationParser extends Component {
     parentPost: PropTypes.object,
     parentPostAuthor: PropTypes.object,
     postActionAuthor: PropTypes.object,
+    postActionCategory: PropTypes.object,
     postActionPost: PropTypes.object,
     postActionUser: PropTypes.object,
     postAuthor: PropTypes.object,
@@ -173,6 +202,7 @@ class NotificationParser extends Component {
     parentPost: null,
     parentPostAuthor: null,
     postActionAuthor: null,
+    postActionCategory: null,
     postActionPost: null,
     postActionUser: null,
     postAuthor: null,
@@ -193,6 +223,7 @@ class NotificationParser extends Component {
       parentPost,
       parentPostAuthor,
       postActionAuthor,
+      postActionCategory,
       postActionPost,
       postActionUser,
       postAuthor,
@@ -341,6 +372,30 @@ class NotificationParser extends Component {
             author={postAuthor}
             createdAt={createdAt}
             post={subject}
+          />
+        )
+      case NOTIFICATION_KIND.USER_ADDED_AS_FEATURED:
+        return (
+          <UserAddedAsFeaturedNotification
+            category={postActionCategory}
+            featuredBy={postActionUser}
+            createdAt={createdAt}
+          />
+        )
+      case NOTIFICATION_KIND.USER_ADDED_AS_CURATOR:
+        return (
+          <UserAddedAsCuratorNotification
+            category={postActionCategory}
+            curatorBy={postActionUser}
+            createdAt={createdAt}
+          />
+        )
+      case NOTIFICATION_KIND.USER_ADDED_AS_MODERATOR:
+        return (
+          <UserAddedAsModeratorNotification
+            category={postActionCategory}
+            moderatorBy={postActionUser}
+            createdAt={createdAt}
           />
         )
       case NOTIFICATION_KIND.WATCH:
