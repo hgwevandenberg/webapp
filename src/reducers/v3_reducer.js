@@ -296,6 +296,8 @@ function parseEditorial(state, editorial) {
     oneByTwoImage: editorial.oneByTwoImage,
     twoByOneImage: editorial.twoByOneImage,
     twoByTwoImage: editorial.twoByTwoImage,
+    url: editorial.url,
+    path: editorial.path,
     links: editorialLinks(editorial),
   }))
 }
