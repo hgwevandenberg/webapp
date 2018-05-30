@@ -126,12 +126,16 @@ HeroPromotionAuth.defaultProps = {
 const promotionStyle = css(
   s.relative,
   s.flex,
-  s.itemsCenter,
   s.fullWidth,
   { minHeight: 240 },
   s.overflowHidden,
   s.colorWhite,
-  media(s.minBreak2, { minHeight: 380 }),
+  media(s.minBreak2,
+    s.itemsCenter,
+    {
+      minHeight: 380,
+    },
+  ),
 )
 
 const captionStyle = css(
@@ -144,44 +148,69 @@ const categoryCaptionStyle = css(
   s.relative,
   s.py20,
   s.fontSize14,
-  s.mxAuto,
   { maxWidth: 500 },
 
   media(s.maxBreak2,
     s.px10,
     { minHeight: 200 },
   ),
+  media(s.minBreak2,
+    s.px0,
+    s.mxAuto,
+  ),
   media(s.minBreak4,
     s.px0,
   ),
 )
 
+const categoryCaptionCollapsedStyle = css(
+  { ...categoryCaptionStyle },
+  s.flex,
+  s.itemsCenter,
+)
+
 const categoryHeadingStyle = css(
   s.sansBlack,
-  s.center,
 
-  select('& .category-check',
-    { marginTop: 2 },
-    media(s.maxBreak2,
-      { marginTop: -2 },
+  // desktop version
+  media(s.minBreak2,
+    s.center,
+    select('& .label',
+      s.inlineBlock,
+      s.fontSize32,
+      {
+        lineHeight: 1,
+        borderBottom: '2px solid',
+      },
+    ),
+    select('& .category-check',
+      { marginTop: 2 },
     ),
   ),
 
-  select('& .label',
-    s.inlineBlock,
-    s.fontSize18,
-    {
-      lineHeight: 1,
-      borderBottom: '2px solid',
-    },
-
-    media(s.minBreak2,
-      s.fontSize32,
+  // mobile version
+  media(s.maxBreak2,
+    select('& .label',
+      s.fontSize56,
+      {
+        lineHeight: 1,
+      },
+    ),
+    select('& .category-check',
+      {
+        marginLeft: 0,
+        marginTop: -2,
+        width: 26,
+        transform: 'scale(1.25)',
+      },
+      select('& svg .svg-stroke-bevel, & svg circle',
+        { stroke: '#fff' },
+      ),
     ),
   ),
 )
 
-const mobileActionStyle = css(s.fullWidth, s.px10, s.pb10, s.fontSize14, s.selfEnd)
+const mobileActionStyle = css(s.fullWidth, s.p0, s.fontSize14, s.selfEnd)
 const categoryCopyStyle = css(s.mt20)
 const subscribeHolderStyle = css(
   s.relative,
@@ -202,27 +231,6 @@ const subscribeHolderStyle = css(
   ),
   select('& .subscribe-inner-holder',
     s.relative,
-  ),
-)
-
-const subscribeHolderMobileStyle = css(
-  s.relative,
-  s.fullWidth,
-
-  select('& .subscribe-button',
-    s.fullWidth,
-    s.pt10,
-    s.pb10,
-    {
-      borderRadius: 0,
-    },
-    select('& .CheckCircleIcon',
-      s.displayNone,
-    ),
-    select('& .label',
-      s.m0,
-      s.fontSize14,
-    ),
   ),
 )
 
@@ -275,6 +283,14 @@ const promotionCategoryStyle = css(
         ),
       ),
     ),
+  ),
+)
+
+const promotionCategoryCollapsedStyle = css(
+  { ...promotionCategoryStyle },
+  media(s.maxBreak2,
+    s.flex,
+    s.justifyCenter,
   ),
 )
 
@@ -349,20 +365,33 @@ export const HeroPromotionCategory = (props) => {
   // mobile version
   return (
     <div>
-      <div className={promotionCategoryStyle}>
+      <div className={isInfoCollapsed ? promotionCategoryCollapsedStyle : promotionCategoryStyle}>
         <BackgroundImage className="hasOverlay4" dpi={dpi} sources={sources} />
-        <div className={categoryCaptionStyle}>
+        <div className={isInfoCollapsed ? categoryCaptionCollapsedStyle : categoryCaptionStyle}>
           <h1 className={categoryHeadingStyle}>
-            <CategorySubscribedIcon isSubscribed={isSubscribed} />
             <span className="label">{name}</span>
+            {isInfoCollapsed &&
+              <CategorySubscribedIcon isSubscribed={isSubscribed} />
+            }
           </h1>
-          <p className={categoryCopyStyle}>{description}</p>
-          <HeroPromotionCTA
-            caption={ctaCaption}
-            isLoggedIn={isLoggedIn}
-            to={ctaHref}
-            label={ctaTrackingLabel}
-          />
+          {!isInfoCollapsed &&
+            <CategorySubscribeButton
+              subscribe={subscribe}
+              unsubscribe={unsubscribe}
+              isSubscribed={isSubscribed}
+            />
+          }
+          {!isInfoCollapsed &&
+            <p className={categoryCopyStyle}>{description}</p>
+          }
+          {!isInfoCollapsed &&
+            <HeroPromotionCTA
+              caption={ctaCaption}
+              isLoggedIn={isLoggedIn}
+              to={ctaHref}
+              label={ctaTrackingLabel}
+            />
+          }
         </div>
         <div className={`HeroPromotionMobileActions ${mobileActionStyle}`}>
           {creditUsername &&
@@ -381,13 +410,6 @@ export const HeroPromotionCategory = (props) => {
           name={name}
         />
       </div>
-      <span className={subscribeHolderMobileStyle}>
-        <CategorySubscribeButton
-          subscribe={subscribe}
-          unsubscribe={unsubscribe}
-          isSubscribed={isSubscribed}
-        />
-      </span>
     </div>
   )
 }

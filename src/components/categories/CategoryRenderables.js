@@ -512,6 +512,10 @@ const categoryInfoExpandedStyle = css(
   s.mb20,
   { borderLeft: '1px solid #f2f2f2' },
 
+  media(s.maxBreak2,
+    s.mt20,
+  ),
+
   select('& h2',
     s.m0,
     s.mb20,
@@ -525,6 +529,10 @@ const categoryInfoExpandedStyle = css(
 
     media(s.minBreak2,
       s.fontSize18,
+    ),
+
+    media(s.maxBreak2,
+      s.displayNone,
     ),
   ),
 
@@ -544,6 +552,13 @@ const categoryInfoExpandedStyle = css(
     { borderBottom: '1px solid #f2f2f2' },
     select('& p',
       s.colorA,
+    ),
+
+    select('& .main',
+      select('& p',
+        s.sansBlack,
+        s.colorBlack,
+      ),
     ),
   ),
 
@@ -607,6 +622,15 @@ export function CategoryInfo({
         Info
       </h2>
       <article className="description">
+        <aside className="main">
+          <p>
+            Discover a diverse range of visual and performance work that explores many forms,
+            genres, and styles including traditional techniques such as painting, drawing,
+            and sculpting, as well as more contemporary forms such as site specific art, digital,
+            and virtual reality.
+          </p>
+        </aside>
+
         <h3>Rules</h3>
         <p>
           Discover a diverse range of visual and performance work that explores many forms,

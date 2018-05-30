@@ -321,6 +321,7 @@ export const fontSize28 = { fontSize: 28 }
 export const fontSize32 = { fontSize: 32 }
 export const fontSize38 = { fontSize: 38 }
 export const fontSize48 = { fontSize: 48 }
+export const fontSize56 = { fontSize: 56 }
 
 export const leftAlign = { textAlign: 'left' }
 export const center = { textAlign: 'center' }
