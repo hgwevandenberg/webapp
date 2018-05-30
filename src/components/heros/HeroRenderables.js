@@ -195,6 +195,10 @@ const categoryHeadingStyle = css(
       {
         lineHeight: 1,
       },
+      select('&.open',
+        s.inlineBlock,
+        s.pb10,
+      ),
     ),
     select('& .category-check',
       {
@@ -237,6 +241,10 @@ const subscribeHolderStyle = css(
 const promotionCategoryStyle = css(
   { ...promotionStyle },
   media(s.maxBreak2, s.flexColumn),
+  media(s.minBreak2,
+    s.flex,
+    s.alignCenter,
+  ),
   // category info trigger style (only shows on mobile header)
   select('& .category-info',
     s.absolute,
@@ -369,7 +377,7 @@ export const HeroPromotionCategory = (props) => {
         <BackgroundImage className="hasOverlay4" dpi={dpi} sources={sources} />
         <div className={isInfoCollapsed ? categoryCaptionCollapsedStyle : categoryCaptionStyle}>
           <h1 className={categoryHeadingStyle}>
-            <span className="label">{name}</span>
+            <span className={`label ${isInfoCollapsed ? 'collapsed' : 'open'}`}>{name}</span>
             {isInfoCollapsed &&
               <CategorySubscribedIcon isSubscribed={isSubscribed} />
             }
@@ -379,17 +387,6 @@ export const HeroPromotionCategory = (props) => {
               subscribe={subscribe}
               unsubscribe={unsubscribe}
               isSubscribed={isSubscribed}
-            />
-          }
-          {!isInfoCollapsed &&
-            <p className={categoryCopyStyle}>{description}</p>
-          }
-          {!isInfoCollapsed &&
-            <HeroPromotionCTA
-              caption={ctaCaption}
-              isLoggedIn={isLoggedIn}
-              to={ctaHref}
-              label={ctaTrackingLabel}
             />
           }
         </div>
