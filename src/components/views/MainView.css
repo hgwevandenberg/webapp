@@ -10,22 +10,22 @@
 
 @media (--break-3) {
   /* stylelint-disable no-unsupported-browser-features */
-  .isCategoryDrawerOpen ~ .MainView.Discover {
+  .isCategoryDrawerOpen ~ .MainView.show-info {
     display: grid;
     grid-template-columns: repeat(4, [col-start] 1fr);
   }
 
-  .isCategoryDrawerOpen ~ .MainView.Discover .category-sub-nav {
+  .isCategoryDrawerOpen ~ .MainView.show-info .category-sub-nav {
     grid-column: col-start / span 3;
     grid-row: 1;
   }
 
-  .isCategoryDrawerOpen ~ .MainView.Discover .sidebar {
+  .isCategoryDrawerOpen ~ .MainView.show-info .sidebar {
     grid-column: 4 / span 1;
     grid-row: 1 / span 2;
   }
 
-  .isCategoryDrawerOpen ~ .MainView.Discover .StreamContainer {
+  .isCategoryDrawerOpen ~ .MainView.show-info .StreamContainer {
     grid-column: col-start / span 3;
     grid-row: 2;
   }
