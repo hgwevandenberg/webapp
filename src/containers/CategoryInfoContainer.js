@@ -3,11 +3,16 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { setIsCategoryDrawerOpen } from '../actions/gui'
 import { selectIsCategoryDrawerOpen } from '../selectors/gui'
-import { selectCategoryName } from '../selectors/categories'
+import { selectCategoryForPath, selectCategoryName, selectCategoryUsers } from '../selectors/categories'
 import { CategoryInfo } from '../components/categories/CategoryRenderables'
 
 function mapStateToProps(state, props) {
+  const category = selectCategoryForPath(state, props)
+  const categoryId = category.get('id')
+
   return {
+    category,
+    categoryUsers: selectCategoryUsers(state, { categoryId }),
     collapsed: !selectIsCategoryDrawerOpen(state),
     name: selectCategoryName(state, props),
   }
@@ -15,6 +20,8 @@ function mapStateToProps(state, props) {
 
 class CategoryInfoContainer extends PureComponent {
   static propTypes = {
+    category: PropTypes.object.isRequired,
+    categoryUsers: PropTypes.object.isRequired,
     collapsed: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
     name: PropTypes.string.isRequired,
@@ -28,9 +35,17 @@ class CategoryInfoContainer extends PureComponent {
   }
 
   render() {
-    const { collapsed, name } = this.props
+    const {
+      category,
+      categoryUsers,
+      collapsed,
+      name,
+    } = this.props
+
     return (
       <CategoryInfo
+        category={category}
+        categoryUsers={categoryUsers}
         collapsed={collapsed}
         handleTriggerClick={e => this.handleTriggerClick(e)}
         name={name}

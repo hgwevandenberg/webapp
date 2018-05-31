@@ -80,7 +80,7 @@ function reduceAssets(assets) {
 function parseCategoryUser(state, categoryUser) {
   if (!categoryUser) { return state }
   const state1 = parseUser(state, categoryUser.user)
-  return smartMergeDeepIn(state1, ['categoryUser', categoryUser.id], Immutable.fromJS({
+  return smartMergeDeepIn(state1, ['categoryUsers', categoryUser.id], Immutable.fromJS({
     id: categoryUser.id,
     role: categoryUser.role,
     userId: deepGet(categoryUser, ['user', 'id']),

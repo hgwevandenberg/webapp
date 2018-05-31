@@ -15,12 +15,17 @@ export const selectPropsCategoryId = (state, props) => get(props, 'categoryId')
 // state.json.categories.xxx
 export const selectCategoryCollection = state => state.json.get(CATEGORIES, Map())
 export const selectCategoryPostCollection = state => state.json.get('categoryPosts', Map())
+export const selectCategoryUsersCollection = state => state.json.get('categoryUsers', Map())
 
 // Requires `categoryId` to be found in props
 export const selectCategory = createSelector(
   [selectPropsCategoryId, selectCategoryCollection], (id, categories) =>
     categories.get(id, Map()),
 )
+
+export const selectCategoryUsers = createSelector(
+  [selectPropsCategoryId, selectCategoryUsersCollection], (id, categoryUsers) =>
+    categoryUsers.filter(categoryUser => categoryUser.get('categoryId') === id).toArray())
 
 export const selectCategoryName = createSelector([selectCategory], category => category.get('name'))
 export const selectCategorySlug = createSelector([selectCategory], category => category.get('slug'))

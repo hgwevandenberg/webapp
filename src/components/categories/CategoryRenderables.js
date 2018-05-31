@@ -596,10 +596,15 @@ const categoryInfoExpandedStyle = css(
 )
 
 export function CategoryInfo({
+  category,
+  categoryUsers,
   collapsed,
   handleTriggerClick,
   name,
 }) {
+  const categoryCurators = categoryUsers.filter(categoryUser => categoryUser.get('role') === 'CURATOR')
+  const categoryModerators = categoryUsers.filter(categoryUser => categoryUser.get('role') === 'MODERATOR')
+
   if (collapsed) {
     return (
       <p className={categoryInfoCollapsedStyle}>
@@ -624,10 +629,7 @@ export function CategoryInfo({
       <article className="description">
         <aside className="main">
           <p>
-            Discover a diverse range of visual and performance work that explores many forms,
-            genres, and styles including traditional techniques such as painting, drawing,
-            and sculpting, as well as more contemporary forms such as site specific art, digital,
-            and virtual reality.
+            {category.get('description')}
           </p>
         </aside>
 
@@ -640,23 +642,55 @@ export function CategoryInfo({
         </p>
       </article>
       <section className="moderators-curators">
-        <h4>Moderators</h4>
-        <ul className="moderators">
-          <li>i am moderator</li>
-        </ul>
-
-        <h4>Curators</h4>
-        <ul className="curators">
-          <li>i am curator</li>
-        </ul>
+        <CategoryUsers categoryModerators={categoryModerators} />
+        <CategoryUsers categoryCurators={categoryCurators} />
       </section>
     </aside>
   )
 }
 CategoryInfo.propTypes = {
+  category: PropTypes.object.isRequired,
+  categoryUsers: PropTypes.object.isRequired,
   collapsed: PropTypes.bool.isRequired,
   handleTriggerClick: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
+}
+
+const CategoryUsers = ({ categoryCurators, categoryModerators }) => {
+  const kind = categoryCurators ? 'curators' : 'moderators'
+  const title = kind === 'curators' ? 'Curators' : 'Moderators'
+  const categoryUsers = categoryCurators || categoryModerators
+
+  if (!categoryUsers.length > 0) {
+    return null
+  }
+
+  return (
+    <nav className={`${kind}-holder`}>
+      <h4>{title}</h4>
+      <ul className={kind}>
+        {categoryUsers.map((categoryUser) => {
+          const key = categoryUser.get('id')
+          const role = categoryUser.get('role')
+          const userId = categoryUser.get('userId')
+
+          return (
+            <li key={key}>
+              i am {kind} ({role}): {key} / {userId}
+            </li>
+          )
+        })}
+      </ul>
+    </nav>
+  )
+}
+CategoryUsers.propTypes = {
+  categoryCurators: PropTypes.object,
+  categoryModerators: PropTypes.object,
+}
+CategoryUsers.defaultProps = {
+  categoryCurators: null,
+  categoryModerators: null,
 }
 
 export function CategoryInfoTrigger({
