@@ -191,7 +191,7 @@ export const selectDiscoverMetaData = createSelector(
         break
       default: {
         description = category && category.get('description') ?
-          trunc(category.get('description'), 160).text : META.DESCRIPTION
+          category.get('description') : META.DESCRIPTION
         break
       }
     }
