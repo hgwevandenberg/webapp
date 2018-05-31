@@ -548,6 +548,11 @@ const categoryInfoExpandedStyle = css(
     s.mb10,
   ),
 
+  select('& .subscribe-button',
+    s.mb20,
+    media(s.maxBreak2, s.displayNone),
+  ),
+
   select('& .description',
     s.mb20,
     { borderBottom: '1px solid #f2f2f2' },
@@ -601,7 +606,10 @@ export function CategoryInfo({
   categoryUsers,
   collapsed,
   handleTriggerClick,
+  isSubscribed,
   name,
+  subscribe,
+  unsubscribe,
 }) {
   const categoryCurators = categoryUsers.filter(categoryUser => categoryUser.get('role') === 'CURATOR')
   const categoryModerators = categoryUsers.filter(categoryUser => categoryUser.get('role') === 'MODERATOR')
@@ -629,6 +637,11 @@ export function CategoryInfo({
       <h2>
         Info
       </h2>
+      <CategorySubscribeButton
+        subscribe={subscribe}
+        unsubscribe={unsubscribe}
+        isSubscribed={isSubscribed}
+      />
       {(description || showRules) &&
         <article className="description">
           {description &&
@@ -664,7 +677,10 @@ CategoryInfo.propTypes = {
   categoryUsers: PropTypes.object.isRequired,
   collapsed: PropTypes.bool.isRequired,
   handleTriggerClick: PropTypes.func.isRequired,
+  isSubscribed: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
+  subscribe: PropTypes.func.isRequired,
+  unsubscribe: PropTypes.func.isRequired,
 }
 
 const categoryUsersStyle = css(
@@ -676,7 +692,7 @@ const categoryUsersStyle = css(
 
     media(s.minBreak2,
       s.mb10,
-      select('&:last-child',
+      select(':last-child',
         s.m0,
       ),
     ),

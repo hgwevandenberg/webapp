@@ -235,6 +235,10 @@ const subscribeHolderStyle = css(
   ),
   select('& .subscribe-inner-holder',
     s.relative,
+
+    select('& .subscribe-button',
+      media(s.minBreak2, s.displayNone),
+    ),
   ),
 )
 
