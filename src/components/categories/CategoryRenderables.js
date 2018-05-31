@@ -606,7 +606,7 @@ export function CategoryInfo({
   const categoryCurators = categoryUsers.filter(categoryUser => categoryUser.get('role') === 'CURATOR')
   const categoryModerators = categoryUsers.filter(categoryUser => categoryUser.get('role') === 'MODERATOR')
   const description = category.get('description')
-  const showRules = false
+  const showRules = false // hide this for now
 
   if (collapsed) {
     return (
@@ -667,6 +667,22 @@ CategoryInfo.propTypes = {
   name: PropTypes.string.isRequired,
 }
 
+const categoryUsersStyle = css(
+  select('& li.category-user',
+    s.mb0,
+    select('& .UserCompact',
+      s.m0,
+    ),
+
+    media(s.minBreak2,
+      s.mb10,
+      select('&:last-child',
+        s.m0,
+      ),
+    ),
+  ),
+)
+
 const CategoryUsers = ({ categoryCurators, categoryModerators }) => {
   const kind = categoryCurators ? 'curators' : 'moderators'
   const title = kind === 'curators' ? 'Curators' : 'Moderators'
@@ -679,14 +695,16 @@ const CategoryUsers = ({ categoryCurators, categoryModerators }) => {
   return (
     <nav className={`${kind}-holder`}>
       <h4>{title}</h4>
-      <ul className={kind}>
+      <ul className={`${kind} ${categoryUsersStyle}`}>
         {categoryUsers.map((categoryUser) => {
           const key = categoryUser.get('id')
-          const role = categoryUser.get('role')
           const userId = categoryUser.get('userId')
 
           return (
-            <li key={key}>
+            <li
+              key={key}
+              className="category-user"
+            >
               <UserContainer userId={userId} type="compact" />
             </li>
           )
