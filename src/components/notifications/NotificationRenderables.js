@@ -263,7 +263,7 @@ ApprovedArtistInviteSubmissionFromFollowingNotification.defaultProps = {
 
 // Category Users
 export const UserAddedAsFeaturedNotification = (props) => {
-  const { createdAt, category } = props
+  const { createdAt, category, featuredBy } = props
   const path = `/discover/${category.get('slug')}`
 
   return (
@@ -273,7 +273,8 @@ export const UserAddedAsFeaturedNotification = (props) => {
       createdAt={createdAt}
     >
       <p>
-        { 'Congrats! You are now featured in ' }
+        <UserTextLink user={featuredBy} />
+        {' has featured you in '}
         <Link to={`/discover/${category.get('slug')}`}>
           {category.get('name')}
         </Link>
@@ -287,10 +288,12 @@ export const UserAddedAsFeaturedNotification = (props) => {
 }
 UserAddedAsFeaturedNotification.propTypes = {
   category: PropTypes.object,
+  featuredBy: PropTypes.object,
   createdAt: PropTypes.string,
 }
 UserAddedAsFeaturedNotification.defaultProps = {
   category: null,
+  featuredBy: null,
   createdAt: null,
 }
 
