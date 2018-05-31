@@ -604,6 +604,8 @@ export function CategoryInfo({
 }) {
   const categoryCurators = categoryUsers.filter(categoryUser => categoryUser.get('role') === 'CURATOR')
   const categoryModerators = categoryUsers.filter(categoryUser => categoryUser.get('role') === 'MODERATOR')
+  const description = category.get('description')
+  const showRules = false
 
   if (collapsed) {
     return (
@@ -626,21 +628,29 @@ export function CategoryInfo({
       <h2>
         Info
       </h2>
-      <article className="description">
-        <aside className="main">
-          <p>
-            {category.get('description')}
-          </p>
-        </aside>
+      {(description || showRules) &&
+        <article className="description">
+          {description &&
+            <section className="main">
+              <p>
+                {description}
+              </p>
+            </section>
+          }
 
-        <h3>Rules</h3>
-        <p>
-          Discover a diverse range of visual and performance work that explores many forms,
-          genres, and styles including traditional techniques such as painting, drawing,
-          and sculpting, as well as more contemporary forms such as site specific art, digital,
-          and virtual reality.
-        </p>
-      </article>
+          {showRules &&
+            <section className="sub-section">
+              <h3>Rules</h3>
+              <p>
+                Discover a diverse range of visual and performance work that explores many forms,
+                genres, and styles including traditional techniques such as painting, drawing,
+                and sculpting, as well as more contemporary forms such as site specific art,
+                digital, and virtual reality.
+              </p>
+            </section>
+          }
+        </article>
+      }
       <section className="moderators-curators">
         <CategoryUsers categoryModerators={categoryModerators} />
         <CategoryUsers categoryCurators={categoryCurators} />
