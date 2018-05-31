@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import classNames from 'classnames'
+import UserContainer from '../../containers/UserContainer'
 import {
   BadgeFeaturedIcon,
   CheckCircleIcon,
@@ -686,7 +687,7 @@ const CategoryUsers = ({ categoryCurators, categoryModerators }) => {
 
           return (
             <li key={key}>
-              i am {kind} ({role}): {key} / {userId}
+              <UserContainer userId={userId} type="compact" />
             </li>
           )
         })}
