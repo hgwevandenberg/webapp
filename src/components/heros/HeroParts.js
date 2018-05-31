@@ -28,6 +28,9 @@ const creditsStyle = css(
   s.absolute,
   { right: 10, bottom: 10 },
   s.zIndex1,
+  media(s.minBreak2,
+    { right: 20, bottom: 20 },
+  ),
 )
 
 const creditsStyleExpanded = css(
@@ -44,7 +47,6 @@ const creditsStyleExpanded = css(
     parent('.HeroHeader', { right: 40 }),
     parent('.AuthenticationFormDialog.inModal', { right: 30 }),
   ),
-  media(s.minBreak4, { right: 40 }, parent('.HeroHeader', { right: 60 })),
   media(s.maxBreak2,
     s.flex,
     s.justifyEnd,
@@ -91,17 +93,16 @@ export const HeroPromotionCredits = ({
 }, context) => {
   const { onClickTrackCredits } = context
   const track = () => onClickTrackCredits(trackingLabel)
-  if (collapsed) {
-    return (
-      <Link className={`HeroPromotionCredits ${creditsStyle}`} onClick={track} to={`/${username}`}>
-        <Avatar className="inHeroPromotionCredits" sources={sources} username={username} />
-      </Link>
-    )
-  }
   return (
-    <Link className={`HeroPromotionCredits ${creditsStyleExpanded}`} onClick={track} to={`/${username}`}>
-      {label && <span className={creditsByStyle}>{label}</span>}
-      <span className={`${creditsAuthorStyle}${label ? ' with-label' : ''}`}>@{username}</span>
+    <Link
+      className={`HeroPromotionCredits ${collapsed ? creditsStyle : creditsStyleExpanded}`}
+      onClick={track}
+      to={`/${username}`}
+    >
+      {!collapsed && label && <span className={creditsByStyle}>{label}</span>}
+      {!collapsed &&
+        <span className={`${creditsAuthorStyle}${label ? ' with-label' : ''}`}>@{username}</span>
+      }
       <Avatar className="inHeroPromotionCredits" sources={sources} username={username} />
     </Link>
   )

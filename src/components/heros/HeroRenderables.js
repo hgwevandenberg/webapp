@@ -364,6 +364,7 @@ export const HeroPromotionCategory = (props) => {
         </div>
         {creditUsername &&
           <HeroPromotionCredits
+            collapsed={isInfoCollapsed}
             label={creditLabel}
             sources={creditSources}
             username={creditUsername}
