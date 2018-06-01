@@ -22,9 +22,12 @@ function mapStateToProps(state, props) {
 class CategoryInfoContainer extends PureComponent {
   static propTypes = {
     category: PropTypes.object.isRequired,
-    categoryUsers: PropTypes.object.isRequired,
+    categoryUsers: PropTypes.array.isRequired,
     collapsed: PropTypes.bool.isRequired,
-    name: PropTypes.string.isRequired,
+    name: PropTypes.string,
+  }
+  static defaultProps = {
+    name: 'Category',
   }
 
   render() {

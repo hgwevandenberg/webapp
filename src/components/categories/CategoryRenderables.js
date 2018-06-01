@@ -422,7 +422,7 @@ export const CategoryCard = ({
   </li>
 )
 CategoryCard.propTypes = {
-  categoryId: PropTypes.number.isRequired,
+  categoryId: PropTypes.string.isRequired,
   imageUrl: PropTypes.string,
   isSubscribed: PropTypes.bool.isRequired,
   isPromo: PropTypes.bool.isRequired,
@@ -512,6 +512,8 @@ const categoryInfoExpandedStyle = css(
   { borderLeft: '1px solid #f2f2f2' },
 
   media(s.maxBreak2,
+    s.pr10,
+    s.pl10,
     s.mt20,
   ),
 
@@ -560,19 +562,26 @@ const categoryInfoExpandedStyle = css(
 
     select('& .main',
       select('& p',
-        s.sansBlack,
         s.colorBlack,
       ),
     ),
   ),
 
-  select('& .moderators, & .curators',
-    s.resetList,
+  select('& .users-holder',
     s.mb20,
     {
       paddingBottom: 15,
       borderBottom: '1px solid #f2f2f2',
     },
+    select(':last-child',
+      s.mb0,
+      s.pb0,
+      { borderBottomWidth: 0 },
+    ),
+  ),
+
+  select('& .moderators, & .curators',
+    s.resetList,
 
     select('& li',
       s.m0,
@@ -663,7 +672,7 @@ export function CategoryInfo({
 }
 CategoryInfo.propTypes = {
   category: PropTypes.object.isRequired,
-  categoryUsers: PropTypes.object.isRequired,
+  categoryUsers: PropTypes.array.isRequired,
   collapsed: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
 }
@@ -694,7 +703,7 @@ const CategoryUsers = ({ categoryCurators, categoryModerators }) => {
   }
 
   return (
-    <nav className={`${kind}-holder`}>
+    <nav className={`${kind}-holder users-holder`}>
       <h4>{title}</h4>
       <ul className={`${kind} ${categoryUsersStyle}`}>
         {categoryUsers.map((categoryUser) => {

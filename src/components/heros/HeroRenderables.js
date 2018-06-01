@@ -409,7 +409,7 @@ export const HeroPromotionCategory = (props) => {
 }
 
 HeroPromotionCategory.propTypes = {
-  categoryId: PropTypes.number.isRequired,
+  categoryId: PropTypes.string.isRequired,
   creditLabel: PropTypes.string.isRequired,
   creditSources: PropTypes.object,
   creditUsername: PropTypes.string,
