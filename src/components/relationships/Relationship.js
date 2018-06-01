@@ -21,7 +21,10 @@ const Relationship = props => (
 Relationship.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string.isRequired,
-  relationshipPriority: PropTypes.string.isRequired,
+  relationshipPriority: PropTypes.string,
+}
+Relationship.defaultProps = {
+  relationshipPriority: null,
 }
 
 export default Relationship

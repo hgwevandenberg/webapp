@@ -8,7 +8,6 @@ import {
   HeroPromotionPage,
   HeroPromotionAuth,
 } from '../components/heros/HeroRenderables'
-import { setIsCategoryDrawerOpen } from '../actions/gui'
 import {
   selectHeroDPI,
   selectIsCategoryDrawerOpen,
@@ -79,13 +78,6 @@ class HeroPageHeaderContainer extends Component {
     }
   }
 
-  handleCategoryInfoTriggerClick(e) {
-    e.preventDefault()
-
-    const { isInfoCollapsed } = this.props
-    this.props.dispatch(setIsCategoryDrawerOpen({ isOpen: isInfoCollapsed }))
-  }
-
   render() {
     const {
       categoryId,
@@ -111,7 +103,6 @@ class HeroPageHeaderContainer extends Component {
             creditLabel="Posted by"
             creditTrackingLabel={pageHeader.get('slug')}
             dpi={dpi}
-            handleCategoryInfoTriggerClick={e => this.handleCategoryInfoTriggerClick(e)}
             isMobile={isMobile}
             isInfoCollapsed={isInfoCollapsed}
             isSubscribed={isSubscribed}

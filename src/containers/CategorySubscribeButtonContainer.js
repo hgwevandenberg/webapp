@@ -19,7 +19,7 @@ function mapStateToProps(state, props) {
 
 class CategorySubscribeButtonContainer extends PureComponent {
   static propTypes = {
-    categoryId: PropTypes.number.isRequired,
+    categoryId: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
     isSubscribed: PropTypes.bool.isRequired,

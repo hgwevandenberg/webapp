@@ -2,11 +2,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import BackgroundImage from '../assets/BackgroundImage'
+import CategoryInfoTriggerContainer from '../../containers/CategoryInfoTriggerContainer'
 import CategorySubscribeButtonContainer from '../../containers/CategorySubscribeButtonContainer'
-import {
-  CategoryInfoTrigger,
-  CategorySubscribedIcon,
-} from '../categories/CategoryRenderables'
+import { CategorySubscribedIcon } from '../categories/CategoryRenderables'
 import {
   HeroAppStores,
   HeroPromotionCredits,
@@ -334,7 +332,6 @@ export const HeroPromotionCategory = (props) => {
     name,
     sources,
     isPromo,
-    handleCategoryInfoTriggerClick,
     isMobile,
     isInfoCollapsed,
     isSubscribed,
@@ -403,9 +400,7 @@ export const HeroPromotionCategory = (props) => {
             />
           }
         </div>
-        <CategoryInfoTrigger
-          collapsed={isInfoCollapsed}
-          handleTriggerClick={handleCategoryInfoTriggerClick}
+        <CategoryInfoTriggerContainer
           name={name}
         />
       </div>
@@ -420,7 +415,6 @@ HeroPromotionCategory.propTypes = {
   creditUsername: PropTypes.string,
   creditTrackingLabel: PropTypes.string.isRequired,
   dpi: PropTypes.string.isRequired,
-  handleCategoryInfoTriggerClick: PropTypes.func.isRequired,
   isInfoCollapsed: PropTypes.bool.isRequired,
   isMobile: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import classNames from 'classnames'
 import UserContainer from '../../containers/UserContainer'
+import CategoryInfoTriggerContainer from '../../containers/CategoryInfoTriggerContainer'
 import CategorySubscribeButtonContainer from '../../containers/CategorySubscribeButtonContainer'
 import {
   BadgeFeaturedIcon,
@@ -602,7 +603,6 @@ export function CategoryInfo({
   category,
   categoryUsers,
   collapsed,
-  handleTriggerClick,
   name,
 }) {
   const categoryCurators = categoryUsers.filter(categoryUser => categoryUser.get('role') === 'CURATOR')
@@ -614,9 +614,7 @@ export function CategoryInfo({
   if (collapsed) {
     return (
       <p className={categoryInfoCollapsedStyle}>
-        <CategoryInfoTrigger
-          collapsed={collapsed}
-          handleTriggerClick={handleTriggerClick}
+        <CategoryInfoTriggerContainer
           name={name}
         />
       </p>
@@ -624,9 +622,7 @@ export function CategoryInfo({
   }
   return (
     <aside className={`sidebar ${categoryInfoExpandedStyle}`}>
-      <CategoryInfoTrigger
-        collapsed={collapsed}
-        handleTriggerClick={handleTriggerClick}
+      <CategoryInfoTriggerContainer
         name={name}
       />
       <h2>
@@ -669,7 +665,6 @@ CategoryInfo.propTypes = {
   category: PropTypes.object.isRequired,
   categoryUsers: PropTypes.object.isRequired,
   collapsed: PropTypes.bool.isRequired,
-  handleTriggerClick: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
 }
 
@@ -720,8 +715,8 @@ const CategoryUsers = ({ categoryCurators, categoryModerators }) => {
   )
 }
 CategoryUsers.propTypes = {
-  categoryCurators: PropTypes.object,
-  categoryModerators: PropTypes.object,
+  categoryCurators: PropTypes.array,
+  categoryModerators: PropTypes.array,
 }
 CategoryUsers.defaultProps = {
   categoryCurators: null,

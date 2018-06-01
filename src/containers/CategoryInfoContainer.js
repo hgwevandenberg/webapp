@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { setIsCategoryDrawerOpen } from '../actions/gui'
 import { selectIsCategoryDrawerOpen } from '../selectors/gui'
 import { selectCategoryForPath, selectCategoryUsers } from '../selectors/categories'
 import { CategoryInfo } from '../components/categories/CategoryRenderables'
@@ -25,15 +24,7 @@ class CategoryInfoContainer extends PureComponent {
     category: PropTypes.object.isRequired,
     categoryUsers: PropTypes.object.isRequired,
     collapsed: PropTypes.bool.isRequired,
-    dispatch: PropTypes.func.isRequired,
     name: PropTypes.string.isRequired,
-  }
-
-  handleTriggerClick(e) {
-    e.preventDefault()
-
-    const { collapsed } = this.props
-    this.props.dispatch(setIsCategoryDrawerOpen({ isOpen: collapsed }))
   }
 
   render() {
@@ -49,7 +40,6 @@ class CategoryInfoContainer extends PureComponent {
         category={category}
         categoryUsers={categoryUsers}
         collapsed={collapsed}
-        handleTriggerClick={e => this.handleTriggerClick(e)}
         name={name}
       />
     )
