@@ -148,7 +148,6 @@ const categoryCaptionStyle = css(
   s.relative,
   s.py20,
   s.fontSize14,
-  { maxWidth: 500 },
 
   media(s.maxBreak2,
     s.px10,
@@ -171,20 +170,46 @@ const categoryCaptionCollapsedStyle = css(
 
 const categoryHeadingStyle = css(
   s.sansBlack,
+  select('& .category-check',
+    select('& svg .svg-stroke-bevel, & svg circle',
+      { stroke: '#fff' },
+    ),
+    select('& svg circle',
+      {
+        fill: '#00d100',
+        stroke: '#00d100',
+      },
+    ),
+  ),
+  select('&.unsubscribed',
+    select('& .category-check',
+      select('& svg circle',
+        {
+          stroke: '#fff',
+          fill: 'none',
+        },
+      ),
+    ),
+  ),
 
   // desktop version
   media(s.minBreak2,
+    s.inlineBlock,
     s.center,
-    select('& .label',
-      s.inlineBlock,
-      s.fontSize32,
+    select('& .category-check',
       {
-        lineHeight: 1,
-        borderBottom: '2px solid',
+        marginLeft: 15,
+        marginTop: -2,
+        width: 30,
+        transform: 'scale(1.75)',
       },
     ),
-    select('& .category-check',
-      { marginTop: 2 },
+    select('& .label',
+      {
+        fontSize: 144,
+        lineHeight: 1,
+        borderBottom: '8px solid',
+      },
     ),
   ),
 
@@ -207,9 +232,6 @@ const categoryHeadingStyle = css(
         width: 26,
         transform: 'scale(1.25)',
       },
-      select('& svg .svg-stroke-bevel, & svg circle',
-        { stroke: '#fff' },
-      ),
     ),
   ),
 )
@@ -335,17 +357,10 @@ export const HeroPromotionCategory = (props) => {
       <div className={promotionCategoryStyle}>
         <BackgroundImage className="hasOverlay4" dpi={dpi} sources={sources} />
         <div className={categoryCaptionStyle}>
-          <h1 className={categoryHeadingStyle}>
-            <CategorySubscribedIcon isSubscribed={isSubscribed} />
+          <h1 className={`${isSubscribed ? 'subscribed' : 'unsubscribed'} ${categoryHeadingStyle}`}>
             <span className="label">{name}</span>
+            <CategorySubscribedIcon isSubscribed />
           </h1>
-          <p className={categoryCopyStyle}>{description}</p>
-          <HeroPromotionCTA
-            caption={ctaCaption}
-            isLoggedIn={isLoggedIn}
-            to={ctaHref}
-            label={ctaTrackingLabel}
-          />
           <span className={subscribeHolderStyle}>
             <span className="subscribe-inner-holder">
               {isPromo &&
@@ -381,10 +396,10 @@ export const HeroPromotionCategory = (props) => {
       <div className={isInfoCollapsed ? promotionCategoryCollapsedStyle : promotionCategoryStyle}>
         <BackgroundImage className="hasOverlay4" dpi={dpi} sources={sources} />
         <div className={isInfoCollapsed ? categoryCaptionCollapsedStyle : categoryCaptionStyle}>
-          <h1 className={categoryHeadingStyle}>
+          <h1 className={`${isSubscribed ? 'subscribed' : 'unsubscribed'} ${categoryHeadingStyle}`}>
             <span className={`label ${isInfoCollapsed ? 'collapsed' : 'open'}`}>{name}</span>
             {isInfoCollapsed &&
-              <CategorySubscribedIcon isSubscribed={isSubscribed} />
+              <CategorySubscribedIcon isSubscribed />
             }
           </h1>
           {!isInfoCollapsed &&
