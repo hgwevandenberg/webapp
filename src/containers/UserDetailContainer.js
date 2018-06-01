@@ -92,13 +92,13 @@ class UserDetailContainer extends Component {
   componentWillMount() {
     const { dispatch, username } = this.props
     this.state = { renderType: USER.DETAIL_REQUEST }
-    dispatch(loadUserDetail(`~${username}`))
+    dispatch(loadUserDetail({ username }))
   }
 
   componentWillReceiveProps(nextProps) {
     const { dispatch, username } = this.props
     if (username !== nextProps.username) {
-      dispatch(loadUserDetail(`~${nextProps.username}`))
+      dispatch(loadUserDetail({ username: nextProps.username }))
     }
     switch (nextProps.streamType) {
       case USER.DETAIL_FAILURE:

@@ -58,7 +58,7 @@ export const selectUserMetaAttributes = createSelector([selectUser], user => use
 export const selectUserName = createSelector([selectUser], user => user.get('name'))
 export const selectUserPostsAdultContent = createSelector([selectUser], user => user.get('postsAdultContent'))
 export const selectUserPostsCount = createSelector([selectUser], user => user.get('postsCount', 0))
-export const selectUserRelationshipPriority = createSelector([selectUser], user => user.get('relationshipPriority'))
+export const selectUserRelationshipPriority = createSelector([selectUser], user => user.get('relationshipPriority', null))
 export const selectUserTotalViewsCount = createSelector([selectUser], (user) => {
   const count = user.get('totalViewsCount')
   return count ? numberToHuman(count, false) : undefined
