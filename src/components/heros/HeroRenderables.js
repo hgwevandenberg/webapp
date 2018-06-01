@@ -237,7 +237,6 @@ const categoryHeadingStyle = css(
 )
 
 const mobileActionStyle = css(s.fullWidth, s.p0, s.fontSize14, s.selfEnd)
-const categoryCopyStyle = css(s.mt20)
 const subscribeHolderStyle = css(
   s.relative,
   s.flex,
@@ -334,16 +333,11 @@ export const HeroPromotionCategory = (props) => {
     creditSources,
     creditUsername,
     creditTrackingLabel,
-    description,
     dpi,
     name,
     sources,
     isPromo,
-    ctaCaption,
-    ctaHref,
-    ctaTrackingLabel,
     handleCategoryInfoTriggerClick,
-    isLoggedIn,
     isMobile,
     isInfoCollapsed,
     isSubscribed,
@@ -436,14 +430,9 @@ HeroPromotionCategory.propTypes = {
   creditSources: PropTypes.object,
   creditUsername: PropTypes.string,
   creditTrackingLabel: PropTypes.string.isRequired,
-  ctaCaption: PropTypes.string,
-  ctaHref: PropTypes.string,
-  ctaTrackingLabel: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
   dpi: PropTypes.string.isRequired,
   handleCategoryInfoTriggerClick: PropTypes.func.isRequired,
   isInfoCollapsed: PropTypes.bool.isRequired,
-  isLoggedIn: PropTypes.bool.isRequired,
   isMobile: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
   sources: PropTypes.object,
@@ -455,8 +444,6 @@ HeroPromotionCategory.propTypes = {
 HeroPromotionCategory.defaultProps = {
   creditSources: null,
   creditUsername: null,
-  ctaCaption: null,
-  ctaHref: null,
   sources: null,
 }
 

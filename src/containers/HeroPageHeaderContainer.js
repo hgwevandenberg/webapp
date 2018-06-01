@@ -124,10 +124,6 @@ class HeroPageHeaderContainer extends Component {
         return (
           <HeroPromotionCategory
             name={pageHeader.get('header', '')}
-            description={pageHeader.get('subheader', '')}
-            ctaCaption={pageHeader.getIn(['ctaLink', 'text'])}
-            ctaHref={pageHeader.getIn(['ctaLink', 'url'])}
-            ctaTrackingLabel={pageHeader.get('slug')}
             sources={pageHeader.get('image')}
             creditSources={user.get('avatar', null)}
             creditUsername={user.get('username', null)}
@@ -137,7 +133,6 @@ class HeroPageHeaderContainer extends Component {
             handleCategoryInfoTriggerClick={e => this.handleCategoryInfoTriggerClick(e)}
             isMobile={isMobile}
             isInfoCollapsed={isInfoCollapsed}
-            isLoggedIn={isLoggedIn}
             isSubscribed={isSubscribed}
             isPromo={isPromo}
             subscribe={this.subscribe}
