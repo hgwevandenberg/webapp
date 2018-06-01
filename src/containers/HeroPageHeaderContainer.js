@@ -19,7 +19,6 @@ import { selectSubscribedCategoryIds } from '../selectors/profile'
 import { selectCategoryForPath } from '../selectors/categories'
 import { selectRandomPageHeader } from '../selectors/page_headers'
 import { trackPostViews } from '../actions/posts'
-import { followCategories } from '../actions/profile'
 
 function mapStateToProps(state, props) {
   const pageHeader = selectRandomPageHeader(state)
@@ -58,7 +57,6 @@ class HeroPageHeaderContainer extends Component {
     isLoggedIn: PropTypes.bool.isRequired,
     isSubscribed: PropTypes.bool.isRequired,
     isPromo: PropTypes.bool.isRequired,
-    subscribedIds: PropTypes.object,
     categoryId: PropTypes.string,
     dispatch: PropTypes.func.isRequired,
   }
@@ -81,25 +79,6 @@ class HeroPageHeaderContainer extends Component {
     }
   }
 
-  subscribe = (e) => {
-    const { isLoggedIn, categoryId, dispatch, subscribedIds } = this.props
-    e.preventDefault()
-    if (!isLoggedIn) {
-      const { onClickOpenRegistrationRequestDialog } = this.context
-      onClickOpenRegistrationRequestDialog('subscribe-from-page-header')
-    } else {
-      const catIds = subscribedIds.push(categoryId)
-      dispatch(followCategories(catIds, true))
-    }
-  }
-
-  unsubscribe = (e) => {
-    const { categoryId, dispatch, subscribedIds } = this.props
-    e.preventDefault()
-    const catIds = subscribedIds.filter(id => id !== categoryId)
-    dispatch(followCategories(catIds, true))
-  }
-
   handleCategoryInfoTriggerClick(e) {
     e.preventDefault()
 
@@ -109,20 +88,22 @@ class HeroPageHeaderContainer extends Component {
 
   render() {
     const {
-      pageHeader,
-      user,
+      categoryId,
       dpi,
       isMobile,
       isInfoCollapsed,
       isLoggedIn,
       isSubscribed,
       isPromo,
+      pageHeader,
+      user,
     } = this.props
     if (!pageHeader) { return null }
     switch (pageHeader.get('kind')) {
       case 'CATEGORY':
         return (
           <HeroPromotionCategory
+            categoryId={categoryId}
             name={pageHeader.get('header', '')}
             sources={pageHeader.get('image')}
             creditSources={user.get('avatar', null)}
@@ -135,8 +116,6 @@ class HeroPageHeaderContainer extends Component {
             isInfoCollapsed={isInfoCollapsed}
             isSubscribed={isSubscribed}
             isPromo={isPromo}
-            subscribe={this.subscribe}
-            unsubscribe={this.unsubscribe}
           />
         )
       case 'GENERIC':

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import classNames from 'classnames'
 import UserContainer from '../../containers/UserContainer'
+import CategorySubscribeButtonContainer from '../../containers/CategorySubscribeButtonContainer'
 import {
   BadgeFeaturedIcon,
   CheckCircleIcon,
@@ -392,13 +393,12 @@ const categoryCardStyle = css(
 )
 
 export const CategoryCard = ({
-  name,
+  categoryId,
   imageUrl,
-  to,
   isSubscribed,
   isPromo,
-  subscribe,
-  unsubscribe,
+  name,
+  to,
 }) => (
   <li className={categoryCardStyle}>
     <CategoryCardLink imageUrl={imageUrl} to={to}>
@@ -413,23 +413,20 @@ export const CategoryCard = ({
         isSubscribed={isSubscribed}
       />
       <span className="button-holder">
-        <CategorySubscribeButton
-          subscribe={subscribe}
-          unsubscribe={unsubscribe}
-          isSubscribed={isSubscribed}
+        <CategorySubscribeButtonContainer
+          categoryId={categoryId}
         />
       </span>
     </CategoryCardLink>
   </li>
 )
 CategoryCard.propTypes = {
-  name: PropTypes.string.isRequired,
+  categoryId: PropTypes.number.isRequired,
   imageUrl: PropTypes.string,
-  to: PropTypes.string.isRequired,
   isSubscribed: PropTypes.bool.isRequired,
   isPromo: PropTypes.bool.isRequired,
-  subscribe: PropTypes.func.isRequired,
-  unsubscribe: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  to: PropTypes.string.isRequired,
 }
 
 CategoryCard.defaultProps = {
@@ -606,13 +603,11 @@ export function CategoryInfo({
   categoryUsers,
   collapsed,
   handleTriggerClick,
-  isSubscribed,
   name,
-  subscribe,
-  unsubscribe,
 }) {
   const categoryCurators = categoryUsers.filter(categoryUser => categoryUser.get('role') === 'CURATOR')
   const categoryModerators = categoryUsers.filter(categoryUser => categoryUser.get('role') === 'MODERATOR')
+  const categoryId = category.get('id')
   const description = category.get('description')
   const showRules = false // hide this for now
 
@@ -637,10 +632,8 @@ export function CategoryInfo({
       <h2>
         Info
       </h2>
-      <CategorySubscribeButton
-        subscribe={subscribe}
-        unsubscribe={unsubscribe}
-        isSubscribed={isSubscribed}
+      <CategorySubscribeButtonContainer
+        categoryId={categoryId}
       />
       {(description || showRules) &&
         <article className="description">
@@ -677,10 +670,7 @@ CategoryInfo.propTypes = {
   categoryUsers: PropTypes.object.isRequired,
   collapsed: PropTypes.bool.isRequired,
   handleTriggerClick: PropTypes.func.isRequired,
-  isSubscribed: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
-  subscribe: PropTypes.func.isRequired,
-  unsubscribe: PropTypes.func.isRequired,
 }
 
 const categoryUsersStyle = css(

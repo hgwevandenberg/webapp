@@ -2,10 +2,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import BackgroundImage from '../assets/BackgroundImage'
+import CategorySubscribeButtonContainer from '../../containers/CategorySubscribeButtonContainer'
 import {
   CategoryInfoTrigger,
   CategorySubscribedIcon,
-  CategorySubscribeButton,
 } from '../categories/CategoryRenderables'
 import {
   HeroAppStores,
@@ -256,10 +256,6 @@ const subscribeHolderStyle = css(
   ),
   select('& .subscribe-inner-holder',
     s.relative,
-
-    select('& .subscribe-button',
-      media(s.minBreak2, s.displayNone),
-    ),
   ),
 )
 
@@ -329,6 +325,7 @@ const promotionCategoryCollapsedStyle = css(
 
 export const HeroPromotionCategory = (props) => {
   const {
+    categoryId,
     creditLabel,
     creditSources,
     creditUsername,
@@ -341,8 +338,6 @@ export const HeroPromotionCategory = (props) => {
     isMobile,
     isInfoCollapsed,
     isSubscribed,
-    subscribe,
-    unsubscribe,
   } = props
 
   // desktop version
@@ -363,11 +358,6 @@ export const HeroPromotionCategory = (props) => {
                   <Hint>Featured Category</Hint>
                 </span>
               }
-              <CategorySubscribeButton
-                subscribe={subscribe}
-                unsubscribe={unsubscribe}
-                isSubscribed={isSubscribed}
-              />
             </span>
           </span>
         </div>
@@ -397,10 +387,8 @@ export const HeroPromotionCategory = (props) => {
             }
           </h1>
           {!isInfoCollapsed &&
-            <CategorySubscribeButton
-              subscribe={subscribe}
-              unsubscribe={unsubscribe}
-              isSubscribed={isSubscribed}
+            <CategorySubscribeButtonContainer
+              categoryId={categoryId}
             />
           }
         </div>
@@ -426,6 +414,7 @@ export const HeroPromotionCategory = (props) => {
 }
 
 HeroPromotionCategory.propTypes = {
+  categoryId: PropTypes.number.isRequired,
   creditLabel: PropTypes.string.isRequired,
   creditSources: PropTypes.object,
   creditUsername: PropTypes.string,
@@ -436,8 +425,6 @@ HeroPromotionCategory.propTypes = {
   isMobile: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
   sources: PropTypes.object,
-  subscribe: PropTypes.func.isRequired,
-  unsubscribe: PropTypes.func.isRequired,
   isSubscribed: PropTypes.bool.isRequired,
   isPromo: PropTypes.bool.isRequired,
 }
