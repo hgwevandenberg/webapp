@@ -261,6 +261,106 @@ ApprovedArtistInviteSubmissionFromFollowingNotification.defaultProps = {
   createdAt: null,
 }
 
+// Category Users
+export const UserAddedAsFeaturedNotification = (props) => {
+  const { createdAt, category, featuredBy } = props
+  const path = `/discover/${category.get('slug')}`
+
+  return (
+    <Notification
+      activityPath={path}
+      className="UserAddedAsFeaturedNotification"
+      createdAt={createdAt}
+    >
+      <p>
+        <UserTextLink user={featuredBy} />
+        {' has featured you in '}
+        <Link to={`/discover/${category.get('slug')}`}>
+          {category.get('name')}
+        </Link>
+        {'. '}
+        <Link to={'https://ello.co/wtf/support/featured-members/'}>
+          {'Learn more here.'}
+        </Link>
+      </p>
+    </Notification>
+  )
+}
+UserAddedAsFeaturedNotification.propTypes = {
+  category: PropTypes.object,
+  featuredBy: PropTypes.object,
+  createdAt: PropTypes.string,
+}
+UserAddedAsFeaturedNotification.defaultProps = {
+  category: null,
+  featuredBy: null,
+  createdAt: null,
+}
+
+export const UserAddedAsCuratorNotification = (props) => {
+  const { createdAt, category, curatorBy } = props
+  const path = `/discover/${category.get('slug')}`
+
+  return (
+    <Notification
+      activityPath={path}
+      className="UserAddedAsCuratorNotification"
+      createdAt={createdAt}
+    >
+      <p>
+        <UserTextLink user={curatorBy} />
+        {' has invited you to help curate '}
+        <Link to={`/discover/${category.get('slug')}`}>
+          {category.get('name')}
+        </Link>
+        {'.'}
+      </p>
+    </Notification>
+  )
+}
+UserAddedAsCuratorNotification.propTypes = {
+  category: PropTypes.object,
+  createdAt: PropTypes.string,
+  curatorBy: PropTypes.object,
+}
+UserAddedAsCuratorNotification.defaultProps = {
+  category: null,
+  createdAt: null,
+  curatorBy: null,
+}
+
+export const UserAddedAsModeratorNotification = (props) => {
+  const { createdAt, category, moderatorBy } = props
+  const path = `/discover/${category.get('slug')}`
+
+  return (
+    <Notification
+      activityPath={path}
+      className="UserAddedAsModeratorNotification"
+      createdAt={createdAt}
+    >
+      <p>
+        <UserTextLink user={moderatorBy} />
+        {' has invited you to help moderate '}
+        <Link to={`/discover/${category.get('slug')}`}>
+          {category.get('name')}
+        </Link>
+        {'.'}
+      </p>
+    </Notification>
+  )
+}
+UserAddedAsModeratorNotification.propTypes = {
+  category: PropTypes.object,
+  createdAt: PropTypes.string,
+  moderatorBy: PropTypes.object,
+}
+UserAddedAsModeratorNotification.defaultProps = {
+  category: null,
+  createdAt: null,
+  moderatorBy: null,
+}
+
 // Category Posts
 export const FeaturedCategoryPostNotification = (props) => {
   const { createdAt, subject, postActionPost, postActionAuthor, postActionUser } = props
