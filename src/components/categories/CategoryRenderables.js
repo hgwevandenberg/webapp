@@ -12,6 +12,7 @@ import {
   XIcon,
 } from '../assets/Icons'
 import { RoundedRectLink } from '../buttons/Buttons'
+import { HeroPromotionCTA } from './../heros/HeroParts'
 import { before, css, hover, media, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
@@ -610,8 +611,12 @@ const categoryInfoExpandedStyle = css(
 
 export function CategoryInfo({
   category,
+  ctaCaption,
+  ctaHref,
+  ctaTrackingLabel,
   categoryUsers,
   collapsed,
+  isLoggedIn,
   name,
 }) {
   const categoryCurators = categoryUsers.filter(categoryUser => categoryUser.get('role') === 'CURATOR')
@@ -647,6 +652,14 @@ export function CategoryInfo({
               <p>
                 {description}
               </p>
+              <p>
+                <HeroPromotionCTA
+                  caption={ctaCaption}
+                  isLoggedIn={isLoggedIn}
+                  to={ctaHref}
+                  label={ctaTrackingLabel}
+                />
+              </p>
             </section>
           }
 
@@ -674,7 +687,17 @@ CategoryInfo.propTypes = {
   category: PropTypes.object.isRequired,
   categoryUsers: PropTypes.array.isRequired,
   collapsed: PropTypes.bool.isRequired,
+  ctaCaption: PropTypes.string,
+  ctaHref: PropTypes.string,
+  ctaTrackingLabel: PropTypes.string,
+  isLoggedIn: PropTypes.bool,
   name: PropTypes.string.isRequired,
+}
+CategoryInfo.defaultProps = {
+  ctaCaption: null,
+  ctaHref: null,
+  ctaTrackingLabel: null,
+  isLoggedIn: false,
 }
 
 const categoryUsersStyle = css(

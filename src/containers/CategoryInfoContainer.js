@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { selectIsCategoryDrawerOpen } from '../selectors/gui'
 import { selectCategoryForPath, selectCategoryUsers } from '../selectors/categories'
+import { selectRandomPageHeader } from '../selectors/page_headers'
 import { CategoryInfo } from '../components/categories/CategoryRenderables'
 
 function mapStateToProps(state, props) {
@@ -16,6 +17,7 @@ function mapStateToProps(state, props) {
     categoryUsers: selectCategoryUsers(state, { categoryId }),
     collapsed: !selectIsCategoryDrawerOpen(state),
     name: categoryName,
+    pageHeader: selectRandomPageHeader(state),
   }
 }
 
@@ -25,9 +27,11 @@ class CategoryInfoContainer extends PureComponent {
     categoryUsers: PropTypes.array.isRequired,
     collapsed: PropTypes.bool.isRequired,
     name: PropTypes.string,
+    pageHeader: PropTypes.object,
   }
   static defaultProps = {
     name: 'Category',
+    pageHeader: null,
   }
 
   render() {
@@ -36,13 +40,23 @@ class CategoryInfoContainer extends PureComponent {
       categoryUsers,
       collapsed,
       name,
+      pageHeader,
     } = this.props
+
+    let ctaCaption = null
+    let ctaHref = null
+    if (pageHeader) {
+      ctaCaption = pageHeader.getIn(['ctaLink', 'text'])
+      ctaHref = pageHeader.getIn(['ctaLink', 'url'])
+    }
 
     return (
       <CategoryInfo
         category={category}
         categoryUsers={categoryUsers}
         collapsed={collapsed}
+        ctaCaption={ctaCaption}
+        ctaHref={ctaHref}
         name={name}
       />
     )
