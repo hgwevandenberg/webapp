@@ -81,7 +81,7 @@ function parseCategoryUser(state, categoryUser) {
   if (!categoryUser) { return state }
   const state1 = parseUser(state, categoryUser.user)
   const state2 = parseCategory(state1, categoryUser.category)
-  return smartMergeDeepIn(state2, ['categoryUser', categoryUser.id], Immutable.fromJS({
+  return smartMergeDeepIn(state2, ['categoryUsers', categoryUser.id], Immutable.fromJS({
     id: categoryUser.id,
     role: categoryUser.role,
     userId: categoryUser.userId || deepGet(categoryUser, ['user', 'id']),

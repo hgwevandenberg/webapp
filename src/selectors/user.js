@@ -84,10 +84,27 @@ export const selectUserMetaTitle = createSelector(
   [selectUserMetaAttributes], metaAttributes => metaAttributes.get('title'),
 )
 
+export const selectUserCategoryUsers = createSelector(
+  [selectUser, selectJson], (user, json) =>
+    json.get('categoryUsers').filter(cu => cu.userId === user.id)
+)
+
 // Derived or additive properties
 export const selectUserCategories = createSelector(
   [selectUser, selectJson], (user, json) =>
     getLinkArray(user, 'categories', json) || Immutable.List(),
+)
+
+export const selectUserFeaturedCategoryUsers = createSelector(
+  [selectUserCategoryUsers], cus => cus.filter(cu => cu.role === 'FEATURED')
+)
+
+export const selectUserCuratorCategoryUsers = createSelector(
+  [selectUserCategoryUsers], cus => cus.filter(cu => cu.role === 'CURATOR')
+)
+
+export const selectUserModeratorCategoryUsers = createSelector(
+  [selectUserCategoryUsers], cus => cus.filter(cu => cu.role === 'MODERATOR')
 )
 
 export const selectUserIsEmpty = createSelector(
