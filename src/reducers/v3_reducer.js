@@ -296,6 +296,8 @@ function parseEditorial(state, editorial) {
     oneByTwoImage: editorial.oneByTwoImage,
     twoByOneImage: editorial.twoByOneImage,
     twoByTwoImage: editorial.twoByTwoImage,
+    url: editorial.url,
+    path: editorial.path,
     links: editorialLinks(editorial),
   }))
 }
@@ -309,6 +311,7 @@ function parseQueryType(state, type, stream, pathname, query, variables) {
   let models
   let parser
   switch (type) {
+    case 'globalPostStream':
     case 'categoryPostStream':
     case 'subscribedPostStream':
     case 'userPostStream':
