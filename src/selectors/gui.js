@@ -47,9 +47,9 @@ export const selectActiveNotificationScrollPosition = createSelector(
 export const selectDeviceSize = createSelector(
   [selectColumnCount, selectInnerWidth], (columnCount, innerWidth) => {
     // deviceSize could be anything: baby, momma, poppa bear would work too.
-    if (columnCount >= 4) {
+    if (innerWidth > 959) {
       return 'desktop'
-    } else if (columnCount >= 2 && innerWidth >= 640) {
+    } else if (innerWidth >= 640 && innerWidth <= 959) {
       return 'tablet'
     }
     return 'mobile'

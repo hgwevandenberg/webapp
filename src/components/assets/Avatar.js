@@ -73,7 +73,7 @@ const baseStyle = css(
     ),
   ),
   media(
-    s.minBreak2,
+    s.minBreak3,
     { width: 40, height: 40 },
     modifier('.inUserProfile', s.absolute, s.my0, { top: 0, left: 0, width: 260, height: 260 }),
     modifier('.inUserProfileCard:not(.isMiniProfileCard)', { width: 200, height: 200 }),

@@ -261,6 +261,227 @@ ApprovedArtistInviteSubmissionFromFollowingNotification.defaultProps = {
   createdAt: null,
 }
 
+// Category Users
+export const UserAddedAsFeaturedNotification = (props) => {
+  const { createdAt, category, featuredBy } = props
+  const path = `/discover/${category.get('slug')}`
+
+  return (
+    <Notification
+      activityPath={path}
+      className="UserAddedAsFeaturedNotification"
+      createdAt={createdAt}
+    >
+      <p>
+        <UserTextLink user={featuredBy} />
+        {' has featured you in '}
+        <Link to={`/discover/${category.get('slug')}`}>
+          {category.get('name')}
+        </Link>
+        {'. '}
+        <Link to={'https://ello.co/wtf/support/featured-members/'}>
+          {'Learn more here.'}
+        </Link>
+      </p>
+    </Notification>
+  )
+}
+UserAddedAsFeaturedNotification.propTypes = {
+  category: PropTypes.object,
+  featuredBy: PropTypes.object,
+  createdAt: PropTypes.string,
+}
+UserAddedAsFeaturedNotification.defaultProps = {
+  category: null,
+  featuredBy: null,
+  createdAt: null,
+}
+
+export const UserAddedAsCuratorNotification = (props) => {
+  const { createdAt, category, curatorBy } = props
+  const path = `/discover/${category.get('slug')}`
+
+  return (
+    <Notification
+      activityPath={path}
+      className="UserAddedAsCuratorNotification"
+      createdAt={createdAt}
+    >
+      <p>
+        <UserTextLink user={curatorBy} />
+        {' has invited you to help curate '}
+        <Link to={`/discover/${category.get('slug')}`}>
+          {category.get('name')}
+        </Link>
+        {'.'}
+      </p>
+    </Notification>
+  )
+}
+UserAddedAsCuratorNotification.propTypes = {
+  category: PropTypes.object,
+  createdAt: PropTypes.string,
+  curatorBy: PropTypes.object,
+}
+UserAddedAsCuratorNotification.defaultProps = {
+  category: null,
+  createdAt: null,
+  curatorBy: null,
+}
+
+export const UserAddedAsModeratorNotification = (props) => {
+  const { createdAt, category, moderatorBy } = props
+  const path = `/discover/${category.get('slug')}`
+
+  return (
+    <Notification
+      activityPath={path}
+      className="UserAddedAsModeratorNotification"
+      createdAt={createdAt}
+    >
+      <p>
+        <UserTextLink user={moderatorBy} />
+        {' has invited you to help moderate '}
+        <Link to={`/discover/${category.get('slug')}`}>
+          {category.get('name')}
+        </Link>
+        {'.'}
+      </p>
+    </Notification>
+  )
+}
+UserAddedAsModeratorNotification.propTypes = {
+  category: PropTypes.object,
+  createdAt: PropTypes.string,
+  moderatorBy: PropTypes.object,
+}
+UserAddedAsModeratorNotification.defaultProps = {
+  category: null,
+  createdAt: null,
+  moderatorBy: null,
+}
+
+// Category Posts
+export const FeaturedCategoryPostNotification = (props) => {
+  const { createdAt, subject, postActionPost, postActionAuthor, postActionUser } = props
+  const activityPath = getActivityPath(postActionAuthor, postActionPost)
+  const summary = parseSummary(postActionPost, activityPath)
+
+  return (
+    <Notification
+      activityPath={activityPath}
+      className="FeaturedCategoryPostNotification"
+      createdAt={createdAt}
+      summary={summary}
+      notifier={postActionUser}
+    >
+      <p>
+        <UserTextLink user={postActionUser} />
+        {' featured your '}
+        <PostTextLink author={postActionAuthor} post={postActionPost} />
+        {' in '}
+        <Link to={`/discover/${subject.get('categorySlug')}`}>
+          {subject.get('categoryName')}
+        </Link>
+      </p>
+    </Notification>
+  )
+}
+FeaturedCategoryPostNotification.propTypes = {
+  subject: PropTypes.object,
+  postActionPost: PropTypes.object,
+  postActionAuthor: PropTypes.object,
+  postActionUser: PropTypes.object,
+  createdAt: PropTypes.string,
+}
+FeaturedCategoryPostNotification.defaultProps = {
+  subject: null,
+  postActionPost: null,
+  postActionAuthor: null,
+  postActionUser: null,
+  createdAt: null,
+}
+
+export const FeaturedCategoryRepostNotification = (props) => {
+  const { createdAt, subject, postActionPost, postActionAuthor, postActionUser } = props
+  const activityPath = getActivityPath(postActionAuthor, postActionPost)
+  const summary = parseSummary(postActionPost, activityPath)
+
+  return (
+    <Notification
+      activityPath={activityPath}
+      className="FeaturedCategoryRepostNotification"
+      createdAt={createdAt}
+      summary={summary}
+      notifier={postActionUser}
+    >
+      <p>
+        <UserTextLink user={postActionUser} />
+        {' featured your '}
+        <PostTextLink author={postActionAuthor} post={postActionPost} text="repost" />
+        {' in '}
+        <Link to={`/discover/${subject.get('categorySlug')}`}>
+          {subject.get('categoryName')}
+        </Link>
+      </p>
+    </Notification>
+  )
+}
+FeaturedCategoryRepostNotification.propTypes = {
+  subject: PropTypes.object,
+  postActionPost: PropTypes.object,
+  postActionAuthor: PropTypes.object,
+  postActionUser: PropTypes.object,
+  createdAt: PropTypes.string,
+}
+FeaturedCategoryRepostNotification.defaultProps = {
+  subject: null,
+  postActionPost: null,
+  postActionAuthor: null,
+  postActionUser: null,
+  createdAt: null,
+}
+
+export const FeaturedCategoryPostViaRepostNotification = (props) => {
+  const { createdAt, subject, postActionPost, postActionAuthor, postActionUser } = props
+  const activityPath = getActivityPath(postActionAuthor, postActionPost)
+  const summary = parseSummary(postActionPost, activityPath)
+
+  return (
+    <Notification
+      activityPath={activityPath}
+      className="FeaturedCategoryPostViaRepostNotification"
+      createdAt={createdAt}
+      summary={summary}
+      notifier={postActionUser}
+    >
+      <p>
+        <UserTextLink user={postActionUser} />
+        {' featured a '}
+        <PostTextLink author={postActionAuthor} post={postActionPost} text="repost" />
+        {' of your post in '}
+        <Link to={`/discover/${subject.get('categorySlug')}`}>
+          {subject.get('categoryName')}
+        </Link>
+      </p>
+    </Notification>
+  )
+}
+FeaturedCategoryPostViaRepostNotification.propTypes = {
+  subject: PropTypes.object,
+  postActionPost: PropTypes.object,
+  postActionAuthor: PropTypes.object,
+  postActionUser: PropTypes.object,
+  createdAt: PropTypes.string,
+}
+FeaturedCategoryPostViaRepostNotification.defaultProps = {
+  subject: null,
+  postActionPost: null,
+  postActionAuthor: null,
+  postActionUser: null,
+  createdAt: null,
+}
+
 // COMMENTS
 export const CommentNotification = (props) => {
   const { author, comment, createdAt, parentPost, parentPostAuthor } = props

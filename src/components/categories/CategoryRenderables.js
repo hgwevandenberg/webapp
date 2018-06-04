@@ -65,7 +65,7 @@ const categorySubscribeButtonStyle = css(
     s.bgcA,
     hover(s.bgcBlack),
   ),
-  select('& .text',
+  select('& .label',
     s.fontSize12,
     s.inlineBlock,
     s.pl10,
@@ -81,7 +81,7 @@ export function CategorySubscribeButton({ isSubscribed, subscribe, unsubscribe }
       onClick={!isSubscribed ? subscribe : unsubscribe}
     >
       <CheckCircleIcon />
-      <span className="text">
+      <span className="label">
         {!isSubscribed ? 'Subscribe' : 'Subscribed'}
       </span>
     </button>
@@ -294,7 +294,7 @@ const categoryCardTitleStyle = css(
 const CategoryCardTitle = ({ name, isSubscribed }) => (
   <span className={`${categoryCardTitleStyle} title-holder`}>
     <CategorySubscribedIcon isSubscribed={isSubscribed} />
-    <span className="text">{name}</span>
+    <span className="label">{name}</span>
   </span>
 )
 CategoryCardTitle.propTypes = {

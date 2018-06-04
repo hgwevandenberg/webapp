@@ -55,13 +55,13 @@ const rightStyle = css(
   select('& button + button', s.ml10),
   select('& button:first-child', s.ml0),
   // manage cancel buttons
-  select('.PostDetail & .isComment.forCancel.text', s.displayNone),
+  select('.PostDetail & .isComment.forCancel.label', s.displayNone),
   media(s.minBreak2,
-    select('.PostGrid & .isComment.forCancel.text', s.displayNone),
-    select('.PostDetail & .isComment.forCancel.text', s.inlineBlock),
+    select('.PostGrid & .isComment.forCancel.label', s.displayNone),
+    select('.PostDetail & .isComment.forCancel.label', s.inlineBlock),
   ),
   media('(max-width: 20em)',
-    select('& .isPost.forCancel.text', s.displayNone),
+    select('& .isPost.forCancel.label', s.displayNone),
   ),
 )
 
@@ -341,7 +341,7 @@ class PostActionBar extends Component {
         return (
           <div className={wrapperStyle} id={editorId}>
             <div className={leftStyle}>
-              <button className={`PostActionButton forCancel text ${cancelTextButtonStyle}`} onClick={this.cancel}>
+              <button className={`PostActionButton forCancel label ${cancelTextButtonStyle}`} onClick={this.cancel}>
                 <span>Cancel</span>
               </button>
             </div>
@@ -444,7 +444,7 @@ class PostActionBar extends Component {
           </div>
 
           <div className={rightStyle}>
-            <button className={`PostActionButton isPost forCancel text ${cancelTextButtonStyle}`} onClick={this.cancel}>
+            <button className={`PostActionButton isPost forCancel label ${cancelTextButtonStyle}`} onClick={this.cancel}>
               <span>Cancel</span>
             </button>
             <button
@@ -498,7 +498,7 @@ class PostActionBar extends Component {
         </div>
 
         <div className={rightStyle}>
-          <button className={`PostActionButton isComment forCancel text ${cancelTextButtonStyle}`} onClick={this.cancel}>
+          <button className={`PostActionButton isComment forCancel label ${cancelTextButtonStyle}`} onClick={this.cancel}>
             <span>Cancel</span>
           </button>
           <button

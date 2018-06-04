@@ -102,7 +102,7 @@ const lightBoxTriggerStyle = css(
     { right: 60 },
   ),
 
-  select('& .text', s.displayNone),
+  select('& .label', s.displayNone),
   select('& .icon',
     s.block,
     {
@@ -592,7 +592,7 @@ class ImageRegion extends PureComponent {
             onClick={this.onClickLightboxTriggerLink}
             className={`${lightBoxTriggerStyle} lightbox-trigger${hasBuyButton ? ' with-buy' : ''}`}
           >
-            <span className="text">
+            <span className="label">
               Open Lightbox
             </span>
             <span className="icon">
@@ -627,7 +627,7 @@ class ImageRegion extends PureComponent {
             <button
               className={`${lightBoxTriggerStyle} lightbox-trigger${hasBuyButton ? ' with-buy' : ''}`}
             >
-              <span className="text">
+              <span className="label">
                 Open Lightbox
               </span>
               <span className="icon">

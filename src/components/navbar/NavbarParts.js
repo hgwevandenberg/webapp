@@ -102,7 +102,7 @@ const linkStyle = css(
   select('[data-dragging-priority="inactive"] &.hasDragOver[href="/following"]', { backgroundColor: '#cfc' }),
   select('.isLoggedOut &[href^="/enter"]', s.absolute, s.m0, { top: 0, left: 'auto', right: 110 }),
   select('.NavbarLinks > & + &', s.ml30),
-  media(s.maxBreak2,
+  media(s.maxBreak3,
     s.mt30,
     select('.isLoggedOut .NavbarLinks > & + &', { marginLeft: 18 }),
     select('.isLoggedIn &[href^="/notifications"]', s.absolute, s.m0, { top: -3, left: 55 }),
@@ -111,7 +111,7 @@ const linkStyle = css(
     select('.isLoggedOut &[href^="/join"]', s.absolute, s.m0, { top: 0, left: 'auto', right: 0 }),
     select('.isLoggedOut &[href^="/enter"]', { top: -5, right: 100 }),
   ),
-  media(s.minBreak2, modifier('.isSignUp', s.hv40, s.lh40)),
+  media(s.minBreak3, modifier('.isSignUp', s.hv40, s.lh40)),
 )
 
 const highlightingRules = {
@@ -179,7 +179,7 @@ const markStyle = css(
   s.relative,
   parent('.isLoggedIn', s.displayNone),
   parent('.isLoggedOut', s.inlineBlock),
-  media(s.minBreak2,
+  media(s.minBreak3,
     { marginTop: 8 },
     parent('.isLoggedIn', s.inlineBlock),
   ),
@@ -220,17 +220,15 @@ const moreButtonStyle = css(
   parent('.isLoggedIn', { right: 90 }),
   parent('.isLoggedOut', s.displayNone),
   hover(s.color6),
-  media(s.minBreak2,
+  media(s.minBreak3,
     s.wv40, s.hv40, s.lh40,
     parent('.isLoggedIn', { right: 'auto', left: 80 }),
     parent('.isLoggedOut', s.inlineBlock, { left: 80 }),
   ),
-  media(s.minBreak3,
-    { width: 'auto', paddingRight: 20, paddingLeft: 15, borderRadius: 20 },
-  ),
   media(s.minBreak4,
     parent('.isLoggedIn'),
     parent('.isLoggedOut', { left: 140 }),
+    { width: 'auto', paddingRight: 20, paddingLeft: 15, borderRadius: 20 },
   ),
 )
 
@@ -263,7 +261,7 @@ const omniButtonStyle = css(
   s.bgcBlack,
   { transition: 'background-color 0.2s ease' },
   hover(s.bgc6),
-  media(s.minBreak2,
+  media(s.minBreak3,
     { width: 100 },
     s.hv40,
     s.lh40,
@@ -289,10 +287,10 @@ const profilePopStyle = css(
   s.zIndex4,
   s.transitionTransform,
   // wtf...?
-  media(s.maxBreak2,
+  media(s.maxBreak3,
     select('.isProfileMenuActive ~ .Navbar .NavbarMain > *:not(.NavbarProfile)', s.displayNone),
   ),
-  media(s.minBreak2,
+  media(s.minBreak3,
     { top: 0, left: 'auto', right: 130 },
     s.zIndex3,
     hover(before(
@@ -319,14 +317,14 @@ const profileLinksStyle = css(
   s.opacity0,
   s.transitionOpacity,
   modifier('.isActive', s.pointerAuto, s.opacity1),
-  media(s.maxBreak2, {
+  media(s.maxBreak3, {
     top: -10,
     left: -10,
     width: '100vw',
     height: '100vh',
     padding: 0,
   }),
-  media(s.minBreak2,
+  media(s.minBreak3,
     {
       top: 40,
       right: 0,
@@ -344,7 +342,7 @@ const profileLinkStyle = css(
   s.fontSize14,
   s.truncate,
   hover(s.colorBlack),
-  media(s.maxBreak2,
+  media(s.maxBreak3,
     { height: 50, lineHeight: 50, textIndent: 10 },
     s.colorBlack,
     s.borderBottom,
@@ -358,7 +356,7 @@ const profileLinkSmallStyle = css(
   s.truncate,
   s.colorC,
   hover(s.colorBlack),
-  media(s.maxBreak2,
+  media(s.maxBreak3,
     { textIndent: 10 },
     s.hv30,
     s.lh30,
@@ -368,14 +366,14 @@ const profileLinkSmallStyle = css(
 
 const dividerStyle = css(
   { margin: '4px -10px', borderColor: '#ccc' },
-  media(s.maxBreak2, { borderColor: 'transparent' }),
+  media(s.maxBreak3, { borderColor: 'transparent' }),
 )
 
 const closeButtonStyle = css(
   s.displayNone,
   s.absolute,
   { top: 5, right: 5 },
-  media(s.maxBreak2, s.block),
+  media(s.maxBreak3, s.block),
 )
 
 export const NavbarProfile = ({

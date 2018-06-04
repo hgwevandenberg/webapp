@@ -166,7 +166,7 @@ export const postStream = `
   }
 `
 
-export const postStreamAllFragments = `
+export const postSummaryAllFragments = `
   ${imageVersionProps}
   ${responsiveImageVersions}
   ${tshirtImageVersions}
@@ -176,6 +176,10 @@ export const postStreamAllFragments = `
   ${categoryPostSummary}
   ${artistInviteSubmissionSummary}
   ${postSummary}
+`
+
+export const postStreamAllFragments = `
+  ${postSummaryAllFragments}
   ${postStream}
 `
 
