@@ -86,7 +86,10 @@ export const selectUserMetaTitle = createSelector(
 
 export const selectUserCategoryUsers = createSelector(
   [selectUser, selectJson], (user, json) =>
-    json.get('categoryUsers', Immutable.Map()).filter(cu => cu.userId === user.id).valueSeq().toList()
+    json.get('categoryUsers', Immutable.Map())
+      .filter(cu => cu.userId === user.id)
+      .valueSeq()
+      .toList(),
 )
 
 // Derived or additive properties
@@ -96,41 +99,37 @@ export const selectUserCategories = createSelector(
 )
 
 export const selectUserFeaturedCategoryUsers = createSelector(
-  [selectUserCategoryUsers], cus => cus.filter(cu => cu.get('role') === 'FEATURED')
+  [selectUserCategoryUsers], cus => cus.filter(cu => cu.get('role') === 'FEATURED'),
 )
 
 export const selectUserCuratorCategoryUsers = createSelector(
-  [selectUserCategoryUsers], cus => cus.filter(cu => cu.get('role') === 'CURATOR')
+  [selectUserCategoryUsers], cus => cus.filter(cu => cu.get('role') === 'CURATOR'),
 )
 
 export const selectUserModeratorCategoryUsers = createSelector(
-  [selectUserCategoryUsers], cus => cus.filter(cu => cu.get('role') === 'MODERATOR')
+  [selectUserCategoryUsers], cus => cus.filter(cu => cu.get('role') === 'MODERATOR'),
 )
 
 export const selectUserFeaturedCategories = createSelector(
   [selectUserFeaturedCategoryUsers, selectJson], (cus, json) => cus.map(
-    cu => json.getIn(['categories', cu.get('categoryId')]), []
-  )
+    cu => json.getIn(['categories', cu.get('categoryId')]), [],
+  ),
 )
 
 export const selectUserCuratorCategories = createSelector(
   [selectUserCuratorCategoryUsers, selectJson], (cus, json) => cus.map(
-    cu => json.getIn(['categories', cu.get('categoryId')]), []
-  )
+    cu => json.getIn(['categories', cu.get('categoryId')]), [],
+  ),
 )
 
 export const selectUserModeratorCategories = createSelector(
   [selectUserModeratorCategoryUsers, selectJson], (cus, json) => cus.map(
-    cu => json.getIn(['categories', cu.get('categoryId')]), []
-  )
+    cu => json.getIn(['categories', cu.get('categoryId')]), [],
+  ),
 )
 
 export const selectUserIsEmpty = createSelector(
   [selectUser], user => user.isEmpty(),
-)
-
-export const selectUserIsFeatured = createSelector(
-  [selectUserCategories], categories => !categories.isEmpty(),
 )
 
 // TODO: Evaluate against profile.id and user.id instead?
@@ -164,7 +163,8 @@ export const selectUserProfileCardBadges = createSelector(
 )
 
 export const selectUserBadgeSummary = createSelector(
-  [selectUserBadges, selectBadges, selectUserFeaturedCategories], (userBadges, storeBadges, categories) =>
+  [selectUserBadges, selectBadges, selectUserFeaturedCategories],
+  (userBadges, storeBadges, categories) =>
     userBadges.map((userBadge) => {
       let badge = storeBadges.find(storeBadge => storeBadge.get('slug') === userBadge)
       if (badge && userBadge === 'featured') {
