@@ -8,8 +8,30 @@
   position: relative;
 }
 
+/* stylelint-disable no-unsupported-browser-features */
+@media (--break-2) {
+  .isCategoryDrawerOpen ~ .MainView.show-info {
+    display: grid;
+    grid-template-columns: repeat(3, [col-start] 1fr);
+  }
+
+  .isCategoryDrawerOpen ~ .MainView.show-info .category-sub-nav {
+    grid-column: col-start / span 2;
+    grid-row: 1;
+  }
+
+  .isCategoryDrawerOpen ~ .MainView.show-info .sidebar {
+    grid-column: 3 / span 1;
+    grid-row: 1 / span 2;
+  }
+
+  .isCategoryDrawerOpen ~ .MainView.show-info .StreamContainer {
+    grid-column: col-start / span 2;
+    grid-row: 2;
+  }
+}
+
 @media (--break-3) {
-  /* stylelint-disable no-unsupported-browser-features */
   .isCategoryDrawerOpen ~ .MainView.show-info {
     display: grid;
     grid-template-columns: repeat(4, [col-start] 1fr);
@@ -29,8 +51,62 @@
     grid-column: col-start / span 3;
     grid-row: 2;
   }
-  /* stylelint-enable no-unsupported-browser-features */
 }
+
+@media (--break-5) {
+  .isCategoryDrawerOpen ~ .MainView.show-info {
+    grid-template-columns: repeat(5, [col-start] 1fr);
+  }
+
+  .isCategoryDrawerOpen ~ .MainView.show-info .category-sub-nav {
+    grid-column: col-start / span 4;
+  }
+
+  .isCategoryDrawerOpen ~ .MainView.show-info .sidebar {
+    grid-column: 5 / span 1;
+  }
+
+  .isCategoryDrawerOpen ~ .MainView.show-info .StreamContainer {
+    grid-column: col-start / span 4;
+  }
+}
+
+@media (--break-6) {
+  .isCategoryDrawerOpen ~ .MainView.show-info {
+    grid-template-columns: repeat(6, [col-start] 1fr);
+  }
+
+  .isCategoryDrawerOpen ~ .MainView.show-info .category-sub-nav {
+    grid-column: col-start / span 5;
+  }
+
+  .isCategoryDrawerOpen ~ .MainView.show-info .sidebar {
+    grid-column: 6 / span 1;
+  }
+
+  .isCategoryDrawerOpen ~ .MainView.show-info .StreamContainer {
+    grid-column: col-start / span 5;
+  }
+}
+
+@media (--break-7) {
+  .isCategoryDrawerOpen ~ .MainView.show-info {
+    grid-template-columns: repeat(7, [col-start] 1fr);
+  }
+
+  .isCategoryDrawerOpen ~ .MainView.show-info .category-sub-nav {
+    grid-column: col-start / span 6;
+  }
+
+  .isCategoryDrawerOpen ~ .MainView.show-info .sidebar {
+    grid-column: 7 / span 1;
+  }
+
+  .isCategoryDrawerOpen ~ .MainView.show-info .StreamContainer {
+    grid-column: col-start / span 6;
+  }
+}
+/* stylelint-enable no-unsupported-browser-features */
 
 .isModalActive .MainView {
   pointer-events: none;
