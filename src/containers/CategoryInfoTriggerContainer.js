@@ -2,11 +2,11 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { setIsCategoryDrawerOpen } from '../actions/gui'
-import { selectIsCategoryDrawerOpen } from '../selectors/gui'
+import { selectIsCategoryDrawerOpenBase } from '../selectors/gui'
 import { CategoryInfoTrigger } from '../components/categories/CategoryRenderables'
 
 function mapStateToProps(state) {
-  const isCategoryDrawerOpen = selectIsCategoryDrawerOpen(state)
+  const isCategoryDrawerOpen = selectIsCategoryDrawerOpenBase(state)
 
   return {
     isCategoryDrawerOpen,
