@@ -353,7 +353,13 @@ export const CategoryTabBar = ({
 
       {tabs.map(tab =>
         (<CategoryTab
-          isActive={(tab.activePattern ? tab.activePattern.test(pathname) : tab.to === pathname.replace('/trending', ''))}
+          isActive={
+            (
+              tab.activePattern ?
+              tab.activePattern.test(pathname) :
+              tab.to === pathname.replace('/trending', '').replace('/recent', '').replace('/shop', '')
+            )
+          }
           key={`CategoryTab_${tab.to}`}
           label={tab.label}
           source={isImageSizeLarge(deviceSize, tabs.length) ? tab.sources.large : tab.sources.small}
