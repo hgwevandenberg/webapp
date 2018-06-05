@@ -168,7 +168,8 @@ CategoryTab.defaultProps = {
 const AllCategoryTab = ({ pathname }) => {
   const isActive = pathname === '/discover' ||
     pathname === '/discover/trending' ||
-    pathname === '/discover/recent'
+    pathname === '/discover/recent' ||
+    pathname === '/discover/shop'
   return (
     <Link
       className={classNames('mini all', { isActive }, `${categoryTabStyle}`)}
@@ -187,7 +188,8 @@ AllCategoryTab.propTypes = {
 const SubscribedCategoryTab = ({ pathname }) => {
   const isActive = pathname === '/discover/subscribed' ||
     pathname === '/discover/subscribed/trending' ||
-    pathname === '/discover/subscribed/recent'
+    pathname === '/discover/subscribed/recent' ||
+    pathname === '/discover/subscribed/shop'
   return (
     <Link
       className={classNames('mini subscribed', { isActive }, `${categoryTabStyle}`)}

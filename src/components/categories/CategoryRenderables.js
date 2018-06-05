@@ -168,6 +168,7 @@ const categorySubNavStyle = css(
 )
 
 export function CategorySubNav({ stream, kind }) {
+  console.log(`kind: ${kind}`)
   if (stream === 'global') {
     return (
       <ul className={`category-sub-nav global ${categorySubNavStyle}`}>
