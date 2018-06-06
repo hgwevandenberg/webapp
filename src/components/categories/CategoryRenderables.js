@@ -471,6 +471,7 @@ const categoryInfoCollapsedStyle = css(
   s.absolute,
   s.m0,
   s.pt20,
+  s.zIndex2,
   { top: 0, right: 20 },
 
   media(s.minBreak2,
