@@ -587,6 +587,8 @@ const categoryInfoExpandedStyle = css(
     select('& li',
       s.m0,
       s.p0,
+      // hack to kill Edit Profile button
+      select('& a.FollowButton', s.displayNone),
     ),
   ),
 
