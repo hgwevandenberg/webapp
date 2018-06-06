@@ -38,7 +38,6 @@ function mapStateToProps(state, props) {
     dpi,
     isMobile,
     isInfoCollapsed,
-    isLoggedIn,
     isSubscribed,
     isPromo,
     subscribedIds,
@@ -53,7 +52,6 @@ class HeroPageHeaderContainer extends Component {
     dpi: PropTypes.string.isRequired,
     isMobile: PropTypes.bool.isRequired,
     isInfoCollapsed: PropTypes.bool.isRequired,
-    isLoggedIn: PropTypes.bool.isRequired,
     isSubscribed: PropTypes.bool.isRequired,
     isPromo: PropTypes.bool.isRequired,
     categoryId: PropTypes.string,
@@ -84,7 +82,6 @@ class HeroPageHeaderContainer extends Component {
       dpi,
       isMobile,
       isInfoCollapsed,
-      isLoggedIn,
       isSubscribed,
       isPromo,
       pageHeader,
@@ -121,7 +118,6 @@ class HeroPageHeaderContainer extends Component {
             creditUsername={user.get('username', null)}
             dpi={dpi}
             isMobile={isMobile}
-            isLoggedIn={isLoggedIn}
           />
         )
       case 'AUTHENTICATION':

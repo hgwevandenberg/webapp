@@ -131,7 +131,7 @@ const ctaStyle = css(
 
 const ctaTextStyle = css({ borderBottom: '1px solid' })
 
-export const HeroPromotionCTA = ({ caption, isLoggedIn, to, trackingLabel }, context) => {
+export const HeroPromotionCTA = ({ caption, to, trackingLabel }, context) => {
   const { onClickTrackCTA } = context
   const track = () => onClickTrackCTA(trackingLabel)
   if (caption && to) {
@@ -158,7 +158,6 @@ HeroPromotionCTA.contextTypes = {
 
 HeroPromotionCTA.propTypes = {
   caption: PropTypes.string,
-  isLoggedIn: PropTypes.bool,
   to: PropTypes.string,
   trackingLabel: PropTypes.string,
 }

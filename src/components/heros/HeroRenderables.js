@@ -435,7 +435,7 @@ const promotionSubheadingStyle = css(s.fontSize14, media(s.minBreak2, s.fontSize
 
 export const HeroPromotionPage = (props) => {
   const { creditSources, creditUsername, dpi, header, sources, subheader } = props
-  const { ctaCaption, ctaHref, isLoggedIn } = props
+  const { ctaCaption, ctaHref } = props
   return (
     <div className={promotionStyle}>
       <BackgroundImage className="hasOverlay4" dpi={dpi} sources={sources} />
@@ -444,7 +444,6 @@ export const HeroPromotionPage = (props) => {
         <h2 className={promotionSubheadingStyle}>{subheader}</h2>
         <HeroPromotionCTA
           caption={ctaCaption}
-          isLoggedIn={isLoggedIn}
           to={ctaHref}
           trackingLabel="general"
         />
@@ -467,7 +466,6 @@ HeroPromotionPage.propTypes = {
   ctaHref: PropTypes.string,
   dpi: PropTypes.string.isRequired,
   header: PropTypes.string.isRequired,
-  isLoggedIn: PropTypes.bool.isRequired,
   sources: PropTypes.object,
   subheader: PropTypes.string,
 }
