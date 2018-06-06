@@ -583,13 +583,6 @@ const categoryInfoExpandedStyle = css(
 
   select('& .moderators, & .curators',
     s.resetList,
-
-    select('& li',
-      s.m0,
-      s.p0,
-      // hack to kill Edit Profile button
-      select('& a.FollowButton', s.displayNone),
-    ),
   ),
 
   select('& .close-trigger',
@@ -711,6 +704,13 @@ const categoryUsersStyle = css(
     s.mb0,
     select('& .UserCompact',
       s.m0,
+      // hack to kill Edit Profile button
+      select('& .RelationshipContainer a.FollowButton', s.displayNone),
+      // adjust Relationship button height
+      select('& .RelationshipContainer button.FollowButton',
+        { marginTop: 5 },
+        select('& span', s.displayNone),
+      ),
     ),
 
     media(s.minBreak2,
@@ -722,11 +722,10 @@ const categoryUsersStyle = css(
   ),
 )
 
-const CategoryUsers = ({ categoryCurators, categoryModerators, innerWidth }) => {
+const CategoryUsers = ({ categoryCurators, categoryModerators }) => {
   const kind = categoryCurators ? 'curators' : 'moderators'
   const title = kind === 'curators' ? 'Curators' : 'Moderators'
   const categoryUsers = categoryCurators || categoryModerators
-  const isRelationshipHidden = ((innerWidth > 639) && (innerWidth < 959))
 
   if (!categoryUsers.length > 0) {
     return null
@@ -748,7 +747,7 @@ const CategoryUsers = ({ categoryCurators, categoryModerators, innerWidth }) => 
               <UserContainer
                 userId={userId}
                 type="compact"
-                isRelationshipHidden={isRelationshipHidden}
+                useSmallRelationships
               />
             </li>
           )
@@ -760,7 +759,6 @@ const CategoryUsers = ({ categoryCurators, categoryModerators, innerWidth }) => 
 CategoryUsers.propTypes = {
   categoryCurators: PropTypes.array,
   categoryModerators: PropTypes.array,
-  innerWidth: PropTypes.number.isRequired,
 }
 CategoryUsers.defaultProps = {
   categoryCurators: null,
