@@ -587,17 +587,27 @@ const categoryInfoExpandedStyle = css(
 
   select('& .close-trigger',
     s.absolute,
+    s.block,
     {
       top: 0,
       right: 20,
       width: 16,
-      height: 16,
+      height: 20,
     },
     select('& .label',
       s.displayNone,
     ),
     select('& .icon svg line',
-      { stroke: '#aaa' },
+      s.block,
+      {
+        stroke: '#aaa',
+        transition: 'stroke 0.2s ease',
+      },
+    ),
+    hover(
+      select('& .icon svg line',
+        { stroke: '#000' },
+      ),
     ),
     // hide on mobile
     media(s.maxBreak2, s.displayNone),
