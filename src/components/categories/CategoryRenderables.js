@@ -724,7 +724,7 @@ const categoryUsersStyle = css(
       ),
     ),
 
-    media(s.minBreak2,
+    media(s.minBreak3,
       s.mb10,
       select(':last-child',
         s.m0,
