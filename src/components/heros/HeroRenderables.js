@@ -208,6 +208,15 @@ const categoryHeadingStyle = css(
         lineHeight: 1,
         borderBottom: '8px solid',
       },
+      media(s.maxBreak4,
+        { fontSize: 120 },
+      ),
+      media(s.maxBreak3,
+        {
+          fontSize: 72,
+          borderBottom: '6px solid',
+        },
+      ),
     ),
   ),
 
