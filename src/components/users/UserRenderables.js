@@ -27,17 +27,25 @@ export class UserCompact extends PureComponent {
   static propTypes = {
     avatar: PropTypes.object.isRequired,
     id: PropTypes.string.isRequired,
+    isRelationshipHidden: PropTypes.bool,
     relationshipPriority: PropTypes.string,
     username: PropTypes.string.isRequired,
   }
   static defaultProps = {
+    isRelationshipHidden: false,
     relationshipPriority: null,
   }
   render() {
-    const { avatar, id, relationshipPriority, username } = this.props
+    const {
+      avatar,
+      id,
+      isRelationshipHidden,
+      relationshipPriority,
+      username,
+    } = this.props
     return (
       <div className="UserCompact">
-        <div className="UserCompactHeader">
+        <div className={`UserCompactHeader${!isRelationshipHidden ? ' hide-relationships' : ''}`}>
           <Link className="UserCompactUserLink truncate" to={`/${username}`}>
             <Avatar
               priority={relationshipPriority}
@@ -48,7 +56,9 @@ export class UserCompact extends PureComponent {
             <span className="UserCompactUsername">{`@${username}`}</span>
           </Link>
         </div>
-        <RelationshipContainer relationshipPriority={relationshipPriority} userId={id} />
+        {!isRelationshipHidden &&
+          <RelationshipContainer relationshipPriority={relationshipPriority} userId={id} />
+        }
       </div>
     )
   }

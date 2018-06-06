@@ -117,6 +117,7 @@ class UserContainer extends Component {
     isLoggedIn: PropTypes.bool.isRequired,
     isMiniProfileCard: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
+    isRelationshipHidden: PropTypes.bool,
     isSelf: PropTypes.bool.isRequired,
     isShortBioTruncated: PropTypes.bool.isRequired,
     isUserEmpty: PropTypes.bool.isRequired,
@@ -151,6 +152,7 @@ class UserContainer extends Component {
     id: null,
     invitationAcceptedAt: null,
     invitationEmail: null,
+    isRelationshipHidden: false,
     location: null,
     name: null,
     relationshipPriority: null,
@@ -197,7 +199,7 @@ class UserContainer extends Component {
 
   shouldComponentUpdate(nextProps) {
     return !Immutable.is(nextProps.user, this.props.user) ||
-      ['isLoggedIn', 'isBadgesLoaded', 'isMiniProfileCard', 'isMobile'].some(prop =>
+      ['isLoggedIn', 'isBadgesLoaded', 'isMiniProfileCard', 'isMobile', 'isRelationshipHidden'].some(prop =>
         nextProps[prop] !== this.props[prop],
       )
   }
@@ -301,6 +303,7 @@ class UserContainer extends Component {
       isLoggedIn,
       isMiniProfileCard,
       isMobile,
+      isRelationshipHidden,
       isSelf,
       isUserEmpty,
       location,
@@ -321,7 +324,15 @@ class UserContainer extends Component {
     switch (type) {
       case 'compact':
         return (
-          <UserCompact {...{ avatar, id, relationshipPriority, username }} />
+          <UserCompact
+            {...{
+              avatar,
+              id,
+              isRelationshipHidden,
+              relationshipPriority,
+              username,
+            }}
+          />
         )
         // TODO: Move to InvitationContainer?
       case 'invitee':

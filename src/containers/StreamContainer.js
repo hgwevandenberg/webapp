@@ -324,8 +324,20 @@ class StreamContainer extends Component {
   }
 
   render() {
-    const { className, columnCount, hasShowMoreButton, isCategoryDrawerOpen, isGridMode, isPostHeaderHidden,
-      paginatorCentered, paginatorText, paginatorTo, result, stream, resultPath } = this.props
+    const {
+      className,
+      columnCount,
+      hasShowMoreButton,
+      isCategoryDrawerOpen,
+      isGridMode,
+      isPostHeaderHidden,
+      paginatorCentered,
+      paginatorText,
+      paginatorTo,
+      result,
+      stream,
+      resultPath,
+    } = this.props
     const { action, hidePaginator, renderType } = this.state
     if (!action) { return null }
     if (!result.get('ids').size) {
@@ -350,12 +362,13 @@ class StreamContainer extends Component {
     const renderMethod = isGridMode ? 'asGrid' : 'asList'
     const pagination = result.get('pagination')
     const isLastPage = pagination.get('isLastPage', false)
-    const finalColumnCount = (isCategoryDrawerOpen && (innerWidth > 959)) ? (columnCount - 1) : columnCount
+    const finalColumnCount =
+      (isCategoryDrawerOpen && (innerWidth > 959)) ? (columnCount - 1) : columnCount
     let nextPagePath = null
     if (!isLastPage && (resultPath.includes('/discover') || resultPath === '/')) {
       nextPagePath = `${resultPath}?before=${pagination.get('next')}`
     }
-    console.log(action)
+
     return (
       <section className={classNames('StreamContainer', className)}>
         {meta.renderStream[renderMethod](result.get('ids'), finalColumnCount, isPostHeaderHidden, meta.renderProps)}

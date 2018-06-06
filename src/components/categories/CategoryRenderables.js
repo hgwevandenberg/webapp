@@ -616,7 +616,7 @@ export function CategoryInfo({
   ctaTrackingLabel,
   categoryUsers,
   collapsed,
-  isLoggedIn,
+  innerWidth,
   name,
 }) {
   const categoryCurators = categoryUsers.filter(categoryUser => categoryUser.get('role') === 'CURATOR')
@@ -655,7 +655,6 @@ export function CategoryInfo({
               <p>
                 <HeroPromotionCTA
                   caption={ctaCaption}
-                  isLoggedIn={isLoggedIn}
                   to={ctaHref}
                   label={ctaTrackingLabel}
                 />
@@ -677,8 +676,14 @@ export function CategoryInfo({
         </article>
       }
       <section className="moderators-curators">
-        <CategoryUsers categoryModerators={categoryModerators} />
-        <CategoryUsers categoryCurators={categoryCurators} />
+        <CategoryUsers
+          categoryModerators={categoryModerators}
+          innerWidth={innerWidth}
+        />
+        <CategoryUsers
+          categoryCurators={categoryCurators}
+          innerWidth={innerWidth}
+        />
       </section>
     </aside>
   )
@@ -690,14 +695,13 @@ CategoryInfo.propTypes = {
   ctaCaption: PropTypes.string,
   ctaHref: PropTypes.string,
   ctaTrackingLabel: PropTypes.string,
-  isLoggedIn: PropTypes.bool,
+  innerWidth: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
 }
 CategoryInfo.defaultProps = {
   ctaCaption: null,
   ctaHref: null,
   ctaTrackingLabel: null,
-  isLoggedIn: false,
 }
 
 const categoryUsersStyle = css(
@@ -716,10 +720,11 @@ const categoryUsersStyle = css(
   ),
 )
 
-const CategoryUsers = ({ categoryCurators, categoryModerators }) => {
+const CategoryUsers = ({ categoryCurators, categoryModerators, innerWidth }) => {
   const kind = categoryCurators ? 'curators' : 'moderators'
   const title = kind === 'curators' ? 'Curators' : 'Moderators'
   const categoryUsers = categoryCurators || categoryModerators
+  const isRelationshipHidden = ((innerWidth > 639) && (innerWidth < 959))
 
   if (!categoryUsers.length > 0) {
     return null
@@ -738,7 +743,11 @@ const CategoryUsers = ({ categoryCurators, categoryModerators }) => {
               key={key}
               className="category-user"
             >
-              <UserContainer userId={userId} type="compact" />
+              <UserContainer
+                userId={userId}
+                type="compact"
+                isRelationshipHidden={isRelationshipHidden}
+              />
             </li>
           )
         })}
@@ -749,6 +758,7 @@ const CategoryUsers = ({ categoryCurators, categoryModerators }) => {
 CategoryUsers.propTypes = {
   categoryCurators: PropTypes.array,
   categoryModerators: PropTypes.array,
+  innerWidth: PropTypes.number.isRequired,
 }
 CategoryUsers.defaultProps = {
   categoryCurators: null,
