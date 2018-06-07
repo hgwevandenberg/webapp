@@ -199,6 +199,9 @@ const categoryHeadingStyle = css(
   media(s.minBreak2,
     s.inlineBlock,
     s.center,
+    s.pr40,
+    s.pl40,
+    { paddingTop: 35 },
     select('& .category-check',
       {
         marginLeft: 15,
@@ -206,6 +209,23 @@ const categoryHeadingStyle = css(
         width: 30,
         transform: 'scale(1.75)',
       },
+      media(s.maxBreak5,
+        {
+          marginTop: 14,
+        },
+      ),
+      media(s.maxBreak4,
+        {
+          marginTop: 10,
+        },
+      ),
+      media(s.maxBreak3,
+        {
+          marginTop: 8,
+          marginLeft: 10,
+          transform: 'scale(1.25)',
+        },
+      ),
     ),
     select('& .label',
       {
@@ -213,13 +233,24 @@ const categoryHeadingStyle = css(
         lineHeight: 1,
         borderBottom: '8px solid',
       },
+      media(s.maxBreak5,
+        {
+          fontSize: '10vw',
+          lineHeight: 1.2,
+        },
+      ),
       media(s.maxBreak4,
-        { fontSize: 120 },
+        {
+          fontSize: '9vw',
+          lineHeight: 1.3,
+          borderBottom: '7px solid',
+        },
       ),
       media(s.maxBreak3,
         {
-          fontSize: 72,
-          borderBottom: '6px solid',
+          fontSize: '8.5vw',
+          lineHeight: 1.2,
+          borderBottom: '5px solid',
         },
       ),
     ),
@@ -228,6 +259,8 @@ const categoryHeadingStyle = css(
   // mobile version
   media(s.maxBreak2,
     s.pr20,
+    s.pl0,
+    s.pt0,
     select('& .label',
       s.fontSize56,
       {
