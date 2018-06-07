@@ -155,14 +155,19 @@ const categoryCaptionStyle = css(
     s.px0,
     s.mxAuto,
   ),
+  media(s.minBreak3,
+    s.mxAuto,
+    s.px40,
+  ),
   media(s.minBreak4,
-    s.px0,
+    s.px40,
   ),
 )
 
 const categoryCaptionCollapsedStyle = css(
   { ...categoryCaptionStyle },
   s.flex,
+  s.p0,
   s.itemsCenter,
 )
 
@@ -222,6 +227,7 @@ const categoryHeadingStyle = css(
 
   // mobile version
   media(s.maxBreak2,
+    s.pr20,
     select('& .label',
       s.fontSize56,
       {
@@ -239,6 +245,18 @@ const categoryHeadingStyle = css(
         width: 26,
         transform: 'scale(1.25)',
       },
+    ),
+  ),
+  media('(max-width: 420px)',
+    s.pr0,
+    select('& .label',
+      {
+        fontSize: '13.15vw',
+        lineHeight: 1,
+      },
+      select('&.open',
+        s.pr20,
+      ),
     ),
   ),
 )
