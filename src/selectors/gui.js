@@ -19,6 +19,7 @@ export const selectDiscoverKeyType = state => state.gui.get('discoverKeyType')
 export const selectHasLaunchedSignupModal = state => state.gui.get('hasLaunchedSignupModal')
 export const selectInnerHeight = state => state.gui.get('innerHeight')
 export const selectInnerWidth = state => state.gui.get('innerWidth')
+export const selectIsCategoryDrawerOpenBase = state => state.gui.get('isCategoryDrawerOpen')
 export const selectIsCompleterActive = state => state.gui.get('isCompleterActive')
 export const selectIsGridMode = state => state.gui.get('isGridMode')
 export const selectIsNavbarHidden = state => state.gui.get('isNavbarHidden')
@@ -86,6 +87,19 @@ export const selectColumnWidth = createSelector(
 export const selectContentWidth = createSelector(
   [selectInnerWidth, selectPaddingOffset], (innerWidth, padding) =>
     Math.round(innerWidth - (padding * 2)),
+)
+
+export const selectIsCategoryDrawerOpen = createSelector(
+  [selectIsCategoryDrawerOpenBase, selectPathname], (isCategoryDrawerOpen, pathname) =>
+    isCategoryDrawerOpen &&
+    pathname.includes('/discover') &&
+    !(
+      pathname.includes('/discover/subscribed') ||
+      pathname === '/discover' ||
+      pathname === '/discover/trending/' ||
+      pathname === '/discover/recent' ||
+      pathname === '/discover/shop'
+    ),
 )
 
 // This is very rudimentary. needs things like 1x, 2x calculating the set

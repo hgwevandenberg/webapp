@@ -37,10 +37,14 @@ User Compact  */
 
 .UserCompactHeader {
   display: inline-block;
-  width: calc(100% - 120px);
+  width: 100%;
   height: 40px;
   overflow: hidden;
   line-height: 40px;
+}
+
+.UserCompactHeader.hide-relationships {
+  width: calc(100% - 120px);
 }
 
 .UserCompactUserLink {

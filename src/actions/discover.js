@@ -9,6 +9,7 @@ import {
   subscribedPostStreamQuery,
   categoryPostStreamQuery,
 } from '../queries/postStreamQueries'
+import categoryDetailsQuery from '../queries/categoryDetailsQuery'
 
 const KINDS = {
   featured: 'FEATURED',
@@ -80,6 +81,16 @@ export function loadCategoryPostStream(slug, kind, before) {
       variables: { kind: KINDS[kind], slug, before },
     },
     meta: postStreamMeta,
+  }
+}
+
+export function loadCategoryDetails(slug) {
+  return {
+    type: ACTION_TYPES.V3.CATEGORY.LOAD,
+    payload: {
+      query: categoryDetailsQuery,
+      variables: { slug, roles: ['CURATOR', 'MODERATOR'] },
+    },
   }
 }
 

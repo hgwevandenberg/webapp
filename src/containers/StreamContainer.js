@@ -26,6 +26,7 @@ import {
   selectHasLaunchedSignupModal,
   selectInnerHeight,
   selectInnerWidth,
+  selectIsCategoryDrawerOpen,
   selectIsGridMode,
 } from '../selectors/gui'
 import { selectOmnibar, selectStream } from '../selectors/store'
@@ -44,6 +45,7 @@ function makeMapStateToProps() {
       hasLaunchedSignupModal: selectHasLaunchedSignupModal(state),
       innerHeight: selectInnerHeight(state),
       innerWidth: selectInnerWidth(state),
+      isCategoryDrawerOpen: selectIsCategoryDrawerOpen(state),
       isLoggedIn: selectIsLoggedIn(state),
       isGridMode: selectIsGridMode(state),
       omnibar: selectOmnibar(state),
@@ -108,6 +110,7 @@ class StreamContainer extends Component {
     dispatch: PropTypes.func.isRequired,
     hasLaunchedSignupModal: PropTypes.bool.isRequired,
     hasShowMoreButton: PropTypes.bool,
+    isCategoryDrawerOpen: PropTypes.bool,
     isGridMode: PropTypes.bool.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
     isModalComponent: PropTypes.bool,
@@ -128,6 +131,7 @@ class StreamContainer extends Component {
     action: null,
     className: '',
     hasShowMoreButton: true,
+    isCategoryDrawerOpen: false,
     isModalComponent: false,
     isPostHeaderHidden: false,
     paginatorCentered: true,
@@ -190,7 +194,7 @@ class StreamContainer extends Component {
       return false
     }
     return !Immutable.is(nextProps.result, this.props.result) ||
-      ['columnCount', 'isGridMode', 'isLoggedIn'].some(prop =>
+      ['columnCount', 'isCategoryDrawerOpen', 'isGridMode', 'isLoggedIn'].some(prop =>
         nextProps[prop] !== this.props[prop],
       ) ||
       ['hidePaginator', 'renderType'].some(prop =>
@@ -320,8 +324,20 @@ class StreamContainer extends Component {
   }
 
   render() {
-    const { className, columnCount, hasShowMoreButton, isGridMode, isPostHeaderHidden,
-      paginatorCentered, paginatorText, paginatorTo, result, stream, resultPath } = this.props
+    const {
+      className,
+      columnCount,
+      hasShowMoreButton,
+      isCategoryDrawerOpen,
+      isGridMode,
+      isPostHeaderHidden,
+      paginatorCentered,
+      paginatorText,
+      paginatorTo,
+      result,
+      stream,
+      resultPath,
+    } = this.props
     const { action, hidePaginator, renderType } = this.state
     if (!action) { return null }
     if (!result.get('ids').size) {
@@ -346,13 +362,16 @@ class StreamContainer extends Component {
     const renderMethod = isGridMode ? 'asGrid' : 'asList'
     const pagination = result.get('pagination')
     const isLastPage = pagination.get('isLastPage', false)
+    const finalColumnCount =
+      (isCategoryDrawerOpen && (innerWidth > 959)) ? (columnCount - 1) : columnCount
     let nextPagePath = null
     if (!isLastPage && (resultPath.includes('/discover') || resultPath === '/')) {
       nextPagePath = `${resultPath}?before=${pagination.get('next')}`
     }
+
     return (
       <section className={classNames('StreamContainer', className)}>
-        {meta.renderStream[renderMethod](result.get('ids'), columnCount, isPostHeaderHidden, meta.renderProps)}
+        {meta.renderStream[renderMethod](result.get('ids'), finalColumnCount, isPostHeaderHidden, meta.renderProps)}
 
         {!isLastPage &&
           <Paginator

@@ -1,5 +1,7 @@
+/* eslint-disable no-use-before-define */
 import Immutable from 'immutable'
 import { camelizeKeys } from 'humps'
+import { set } from 'lodash'
 import * as ACTION_TYPES from '../constants/action_types'
 
 // Like .getIn but for regular JS objects
@@ -75,12 +77,27 @@ function reduceAssets(assets) {
     ), {})
 }
 
+function parseCategoryUser(state, categoryUser) {
+  if (!categoryUser) { return state }
+  const state1 = parseUser(state, categoryUser.user)
+  return smartMergeDeepIn(state1, ['categoryUsers', categoryUser.id], Immutable.fromJS({
+    id: categoryUser.id,
+    role: categoryUser.role,
+    userId: deepGet(categoryUser, ['user', 'id']),
+    categoryId: categoryUser.categoryId || deepGet(categoryUser, ['category', 'id']),
+  }))
+}
+
 function parseCategory(state, category) {
   if (!category) { return state }
-  return smartMergeDeepIn(state, ['categories', category.id], Immutable.fromJS({
+  const categoryUsers = (category.categoryUsers || []).map(cu => set(cu, 'categoryId', category.id))
+
+  const state1 = parseList(state, categoryUsers, parseCategoryUser)
+  return smartMergeDeepIn(state1, ['categories', category.id], Immutable.fromJS({
     id: category.id,
     slug: category.slug,
     name: category.name,
+    description: category.description,
     level: category.level,
     order: category.order,
     allowInOnboarding: category.allowInOnboarding,
@@ -339,6 +356,9 @@ function parseStream(state, { payload: { response: { data }, pathname, query, va
 }
 
 function parseCategoryQueries(state, { payload: { response: { data } } }) {
+  if (data.category) {
+    return parseCategory(state, data.category)
+  }
   return parseList(state, data.categoryNav || data.allCategories, parseCategory)
 }
 
@@ -366,6 +386,8 @@ export default function (state, action) {
     case ACTION_TYPES.V3.LOAD_NEXT_CONTENT_SUCCESS:
       return parseStream(state, action)
     case ACTION_TYPES.V3.LOAD_CATEGORIES_SUCCESS:
+      return parseCategoryQueries(state, action)
+    case ACTION_TYPES.V3.CATEGORY.LOAD_SUCCESS:
       return parseCategoryQueries(state, action)
     case ACTION_TYPES.V3.LOAD_PAGE_HEADERS_SUCCESS:
       return parsePageHeaders(state, action)

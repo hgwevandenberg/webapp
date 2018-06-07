@@ -1,5 +1,14 @@
 import { GUI } from '../constants/action_types'
 
+export function setIsCategoryDrawerOpen({ isOpen }) {
+  return {
+    type: GUI.SET_IS_CATEGORY_DRAWER_OPEN,
+    payload: {
+      isCategoryDrawerOpen: isOpen,
+    },
+  }
+}
+
 export function setIsNavbarHidden({ isHidden }) {
   return {
     type: GUI.SET_IS_NAVBAR_HIDDEN,

@@ -29,12 +29,20 @@ export class UserCompact extends PureComponent {
     id: PropTypes.string.isRequired,
     relationshipPriority: PropTypes.string,
     username: PropTypes.string.isRequired,
+    useSmallRelationships: PropTypes.bool,
   }
   static defaultProps = {
     relationshipPriority: null,
+    useSmallRelationships: false,
   }
   render() {
-    const { avatar, id, relationshipPriority, username } = this.props
+    const {
+      avatar,
+      id,
+      relationshipPriority,
+      username,
+      useSmallRelationships,
+    } = this.props
     return (
       <div className="UserCompact">
         <div className="UserCompactHeader">
@@ -48,7 +56,7 @@ export class UserCompact extends PureComponent {
             <span className="UserCompactUsername">{`@${username}`}</span>
           </Link>
         </div>
-        <RelationshipContainer relationshipPriority={relationshipPriority} userId={id} />
+        <RelationshipContainer className={`${useSmallRelationships ? 'isInHeader' : ''}`} relationshipPriority={relationshipPriority} userId={id} />
       </div>
     )
   }

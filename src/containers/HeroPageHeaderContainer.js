@@ -10,6 +10,7 @@ import {
 } from '../components/heros/HeroRenderables'
 import {
   selectHeroDPI,
+  selectIsCategoryDrawerOpen,
   selectIsMobile,
 } from '../selectors/gui'
 import { selectIsLoggedIn } from '../selectors/authentication'
@@ -17,7 +18,6 @@ import { selectSubscribedCategoryIds } from '../selectors/profile'
 import { selectCategoryForPath } from '../selectors/categories'
 import { selectRandomPageHeader } from '../selectors/page_headers'
 import { trackPostViews } from '../actions/posts'
-import { followCategories } from '../actions/profile'
 
 function mapStateToProps(state, props) {
   const pageHeader = selectRandomPageHeader(state)
@@ -27,6 +27,7 @@ function mapStateToProps(state, props) {
   const isLoggedIn = selectIsLoggedIn(state)
   const categoryId = pageHeader ? pageHeader.get('categoryId') : null
   const category = categoryId ? selectCategoryForPath(state, props) : null
+  const isInfoCollapsed = !selectIsCategoryDrawerOpen(state)
   const subscribedIds = selectSubscribedCategoryIds(state, props)
   const isSubscribed = !!categoryId && !!isLoggedIn && subscribedIds.includes(categoryId)
   const isPromo = category ? category.get('level') === 'promo' : false
@@ -36,7 +37,7 @@ function mapStateToProps(state, props) {
     user,
     dpi,
     isMobile,
-    isLoggedIn,
+    isInfoCollapsed,
     isSubscribed,
     isPromo,
     subscribedIds,
@@ -50,10 +51,9 @@ class HeroPageHeaderContainer extends Component {
     user: PropTypes.object,
     dpi: PropTypes.string.isRequired,
     isMobile: PropTypes.bool.isRequired,
-    isLoggedIn: PropTypes.bool.isRequired,
+    isInfoCollapsed: PropTypes.bool.isRequired,
     isSubscribed: PropTypes.bool.isRequired,
     isPromo: PropTypes.bool.isRequired,
-    subscribedIds: PropTypes.object,
     categoryId: PropTypes.string,
     dispatch: PropTypes.func.isRequired,
   }
@@ -76,37 +76,24 @@ class HeroPageHeaderContainer extends Component {
     }
   }
 
-  subscribe = (e) => {
-    const { isLoggedIn, categoryId, dispatch, subscribedIds } = this.props
-    e.preventDefault()
-    if (!isLoggedIn) {
-      const { onClickOpenRegistrationRequestDialog } = this.context
-      onClickOpenRegistrationRequestDialog('subscribe-from-page-header')
-    } else {
-      const catIds = subscribedIds.push(categoryId)
-      dispatch(followCategories(catIds, true))
-    }
-  }
-
-  unsubscribe = (e) => {
-    const { categoryId, dispatch, subscribedIds } = this.props
-    e.preventDefault()
-    const catIds = subscribedIds.filter(id => id !== categoryId)
-    dispatch(followCategories(catIds, true))
-  }
-
   render() {
-    const { pageHeader, user, dpi, isMobile, isLoggedIn, isSubscribed, isPromo } = this.props
+    const {
+      categoryId,
+      dpi,
+      isMobile,
+      isInfoCollapsed,
+      isSubscribed,
+      isPromo,
+      pageHeader,
+      user,
+    } = this.props
     if (!pageHeader) { return null }
     switch (pageHeader.get('kind')) {
       case 'CATEGORY':
         return (
           <HeroPromotionCategory
+            categoryId={categoryId}
             name={pageHeader.get('header', '')}
-            description={pageHeader.get('subheader', '')}
-            ctaCaption={pageHeader.getIn(['ctaLink', 'text'])}
-            ctaHref={pageHeader.getIn(['ctaLink', 'url'])}
-            ctaTrackingLabel={pageHeader.get('slug')}
             sources={pageHeader.get('image')}
             creditSources={user.get('avatar', null)}
             creditUsername={user.get('username', null)}
@@ -114,11 +101,9 @@ class HeroPageHeaderContainer extends Component {
             creditTrackingLabel={pageHeader.get('slug')}
             dpi={dpi}
             isMobile={isMobile}
-            isLoggedIn={isLoggedIn}
+            isInfoCollapsed={isInfoCollapsed}
             isSubscribed={isSubscribed}
             isPromo={isPromo}
-            subscribe={this.subscribe}
-            unsubscribe={this.unsubscribe}
           />
         )
       case 'GENERIC':
@@ -133,7 +118,6 @@ class HeroPageHeaderContainer extends Component {
             creditUsername={user.get('username', null)}
             dpi={dpi}
             isMobile={isMobile}
-            isLoggedIn={isLoggedIn}
           />
         )
       case 'AUTHENTICATION':

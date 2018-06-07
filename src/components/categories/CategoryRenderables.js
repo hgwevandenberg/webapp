@@ -2,11 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import classNames from 'classnames'
+import UserContainer from '../../containers/UserContainer'
+import CategoryInfoTriggerContainer from '../../containers/CategoryInfoTriggerContainer'
+import CategorySubscribeButtonContainer from '../../containers/CategorySubscribeButtonContainer'
 import {
   BadgeFeaturedIcon,
   CheckCircleIcon,
+  ChevronIcon,
+  XIcon,
 } from '../assets/Icons'
 import { RoundedRectLink } from '../buttons/Buttons'
+import { HeroPromotionCTA } from './../heros/HeroParts'
 import { before, css, hover, media, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
@@ -389,13 +395,12 @@ const categoryCardStyle = css(
 )
 
 export const CategoryCard = ({
-  name,
+  categoryId,
   imageUrl,
-  to,
   isSubscribed,
   isPromo,
-  subscribe,
-  unsubscribe,
+  name,
+  to,
 }) => (
   <li className={categoryCardStyle}>
     <CategoryCardLink imageUrl={imageUrl} to={to}>
@@ -410,23 +415,20 @@ export const CategoryCard = ({
         isSubscribed={isSubscribed}
       />
       <span className="button-holder">
-        <CategorySubscribeButton
-          subscribe={subscribe}
-          unsubscribe={unsubscribe}
-          isSubscribed={isSubscribed}
+        <CategorySubscribeButtonContainer
+          categoryId={categoryId}
         />
       </span>
     </CategoryCardLink>
   </li>
 )
 CategoryCard.propTypes = {
-  name: PropTypes.string.isRequired,
+  categoryId: PropTypes.string.isRequired,
   imageUrl: PropTypes.string,
-  to: PropTypes.string.isRequired,
   isSubscribed: PropTypes.bool.isRequired,
   isPromo: PropTypes.bool.isRequired,
-  subscribe: PropTypes.func.isRequired,
-  unsubscribe: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  to: PropTypes.string.isRequired,
 }
 
 CategoryCard.defaultProps = {
@@ -465,3 +467,353 @@ export const CategoryAllFooter = () => (
   </footer>
 )
 
+const categoryInfoCollapsedStyle = css(
+  s.absolute,
+  s.m0,
+  s.pt20,
+  s.zIndex2,
+  { top: 0, right: 20 },
+
+  media(s.minBreak2,
+    s.pt40,
+    { right: 40 },
+  ),
+
+  select('& .label',
+    s.fontSize16,
+    s.colorA,
+
+    media(s.minBreak2,
+      s.fontSize18,
+    ),
+  ),
+  select('& .icon',
+    s.inlineBlock,
+    s.rotate180,
+    s.ml10,
+    {
+      paddingBottom: 18,
+      width: 16,
+      height: 16,
+    },
+    select('& svg polyline',
+      { stroke: '#aaa' },
+    ),
+  ),
+
+  // hide on mobile
+  media(s.maxBreak2, s.displayNone),
+)
+
+const categoryInfoExpandedStyle = css(
+  s.relative,
+  s.pr20,
+  s.pl20,
+  s.mt40,
+  s.mb20,
+  { borderLeft: '1px solid #f2f2f2' },
+
+  media(s.maxBreak2,
+    s.pr10,
+    s.pl10,
+    s.mt20,
+  ),
+
+  select('& h2',
+    s.m0,
+    s.mb20,
+    s.fullWidth,
+    s.fontSize16,
+    s.colorA,
+    {
+      paddingBottom: 5,
+      borderBottom: '1px solid #f2f2f2',
+    },
+
+    media(s.minBreak2,
+      s.fontSize18,
+    ),
+
+    media(s.maxBreak2,
+      s.displayNone,
+    ),
+  ),
+
+  select('& h3, & h4',
+    s.pt10,
+    s.sansBlack,
+    s.fontSize14,
+    s.colorA,
+  ),
+
+  select('& h4',
+    s.mb10,
+  ),
+
+  select('& .subscribe-button',
+    s.mb20,
+    media(s.maxBreak2, s.displayNone),
+  ),
+
+  select('& .description',
+    s.mb20,
+    { borderBottom: '1px solid #f2f2f2' },
+    select('& p',
+      s.colorA,
+    ),
+
+    select('& .main',
+      select('& p',
+        s.colorBlack,
+      ),
+    ),
+  ),
+
+  select('& .users-holder',
+    s.mb20,
+    {
+      paddingBottom: 15,
+      borderBottom: '1px solid #f2f2f2',
+    },
+    select(':last-child',
+      s.mb0,
+      s.pb0,
+      { borderBottomWidth: 0 },
+    ),
+  ),
+
+  select('& .moderators, & .curators',
+    s.resetList,
+  ),
+
+  select('& .close-trigger',
+    s.absolute,
+    s.block,
+    {
+      top: 0,
+      right: 20,
+      width: 16,
+      height: 20,
+    },
+    select('& .label',
+      s.displayNone,
+    ),
+    select('& .icon svg line',
+      s.block,
+      {
+        stroke: '#aaa',
+        transition: 'stroke 0.2s ease',
+      },
+    ),
+    hover(
+      select('& .icon svg line',
+        { stroke: '#000' },
+      ),
+    ),
+    // hide on mobile
+    media(s.maxBreak2, s.displayNone),
+  ),
+)
+
+export function CategoryInfo({
+  category,
+  ctaCaption,
+  ctaHref,
+  ctaTrackingLabel,
+  categoryUsers,
+  collapsed,
+  innerWidth,
+  name,
+}) {
+  const categoryCurators = categoryUsers.filter(categoryUser => categoryUser.get('role') === 'CURATOR')
+  const categoryModerators = categoryUsers.filter(categoryUser => categoryUser.get('role') === 'MODERATOR')
+  const categoryId = category.get('id')
+  const description = category.get('description')
+  const showRules = false // hide this for now
+
+  if (collapsed) {
+    return (
+      <p className={categoryInfoCollapsedStyle}>
+        <CategoryInfoTriggerContainer
+          name={name}
+        />
+      </p>
+    )
+  }
+  return (
+    <aside className={`sidebar ${categoryInfoExpandedStyle}`}>
+      <CategoryInfoTriggerContainer
+        name={name}
+      />
+      <h2>
+        Info
+      </h2>
+      <CategorySubscribeButtonContainer
+        categoryId={categoryId}
+      />
+      {(description || showRules) &&
+        <article className="description">
+          {description &&
+            <section className="main">
+              <p>
+                {description}
+              </p>
+              <p>
+                <HeroPromotionCTA
+                  caption={ctaCaption}
+                  to={ctaHref}
+                  label={ctaTrackingLabel}
+                />
+              </p>
+            </section>
+          }
+
+          {showRules &&
+            <section className="sub-section">
+              <h3>Rules</h3>
+              <p>
+                Discover a diverse range of visual and performance work that explores many forms,
+                genres, and styles including traditional techniques such as painting, drawing,
+                and sculpting, as well as more contemporary forms such as site specific art,
+                digital, and virtual reality.
+              </p>
+            </section>
+          }
+        </article>
+      }
+      <section className="moderators-curators">
+        <CategoryUsers
+          categoryModerators={categoryModerators}
+          innerWidth={innerWidth}
+        />
+        <CategoryUsers
+          categoryCurators={categoryCurators}
+          innerWidth={innerWidth}
+        />
+      </section>
+    </aside>
+  )
+}
+CategoryInfo.propTypes = {
+  category: PropTypes.object.isRequired,
+  categoryUsers: PropTypes.array.isRequired,
+  collapsed: PropTypes.bool.isRequired,
+  ctaCaption: PropTypes.string,
+  ctaHref: PropTypes.string,
+  ctaTrackingLabel: PropTypes.string,
+  innerWidth: PropTypes.number.isRequired,
+  name: PropTypes.string.isRequired,
+}
+CategoryInfo.defaultProps = {
+  ctaCaption: null,
+  ctaHref: null,
+  ctaTrackingLabel: null,
+}
+
+const categoryUsersStyle = css(
+  select('& li.category-user',
+    s.mb0,
+    select('& .UserCompact',
+      s.m0,
+      // hack to kill Edit Profile button
+      select('& .RelationshipContainer a.FollowButton', s.displayNone),
+      // adjust Relationship button height
+      select('& .RelationshipContainer button.FollowButton',
+        { marginTop: 5 },
+        select('& span', s.displayNone),
+      ),
+    ),
+
+    media(s.minBreak3,
+      s.mb10,
+      select(':last-child',
+        s.m0,
+      ),
+    ),
+  ),
+)
+
+const CategoryUsers = ({ categoryCurators, categoryModerators }) => {
+  const kind = categoryCurators ? 'curators' : 'moderators'
+  const title = kind === 'curators' ? 'Curators' : 'Moderators'
+  const categoryUsers = categoryCurators || categoryModerators
+
+  if (!categoryUsers.length > 0) {
+    return null
+  }
+
+  return (
+    <nav className={`${kind}-holder users-holder`}>
+      <h4>{title}</h4>
+      <ul className={`${kind} ${categoryUsersStyle}`}>
+        {categoryUsers.map((categoryUser) => {
+          const key = categoryUser.get('id')
+          const userId = categoryUser.get('userId')
+
+          return (
+            <li
+              key={key}
+              className="category-user"
+            >
+              <UserContainer
+                userId={userId}
+                type="compact"
+                useSmallRelationships
+              />
+            </li>
+          )
+        })}
+      </ul>
+    </nav>
+  )
+}
+CategoryUsers.propTypes = {
+  categoryCurators: PropTypes.array,
+  categoryModerators: PropTypes.array,
+}
+CategoryUsers.defaultProps = {
+  categoryCurators: null,
+  categoryModerators: null,
+}
+
+export function CategoryInfoTrigger({
+  collapsed,
+  handleTriggerClick,
+  name,
+}) {
+  if (collapsed) {
+    return (
+      <button
+        className="category-info open-trigger"
+        title={`${name} info`}
+        onClick={handleTriggerClick}
+      >
+        <span className="label">
+          Info
+        </span>
+        <span className="icon">
+          <ChevronIcon />
+        </span>
+      </button>
+    )
+  }
+  return (
+    <button
+      className="category-info close-trigger"
+      title={`Close ${name} info`}
+      onClick={handleTriggerClick}
+    >
+      <span className="label">
+        Close
+      </span>
+      <span className="icon">
+        <XIcon />
+      </span>
+    </button>
+  )
+}
+CategoryInfoTrigger.propTypes = {
+  collapsed: PropTypes.bool.isRequired,
+  handleTriggerClick: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+}

@@ -11,6 +11,7 @@ export const Viewport = props =>
     className={classNames(
       'Viewport',
       { isAuthenticationView: props.isAuthenticationView },
+      { isCategoryDrawerOpen: props.isCategoryDrawerOpen },
       { isDiscoverView: props.isDiscoverView },
       { isNavbarHidden: props.isNavbarHidden || props.isLightBoxActive },
       { isNotificationsActive: props.isNotificationsActive },
@@ -24,6 +25,7 @@ export const Viewport = props =>
 
 Viewport.propTypes = {
   isAuthenticationView: PropTypes.bool.isRequired,
+  isCategoryDrawerOpen: PropTypes.bool.isRequired,
   isDiscoverView: PropTypes.bool.isRequired,
   isLightBoxActive: PropTypes.bool.isRequired,
   isNavbarHidden: PropTypes.bool.isRequired,
