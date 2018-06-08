@@ -8,6 +8,7 @@ import BackgroundImage from '../assets/BackgroundImage'
 import { BadgeButton } from '../buttons/Buttons'
 import { MarkerIcon } from '../assets/Icons'
 import RelationshipContainer from '../../containers/RelationshipContainer'
+import UserDetailRolesContainer from '../../containers/UserDetailRolesContainer'
 import {
   UserFiguresCell,
   UserInfoCell,
@@ -262,6 +263,7 @@ export class UserProfile extends PureComponent {
     onClickOpenBio: PropTypes.func,
     onClickOpenBadgeModal: PropTypes.func,
     onClickShareProfile: PropTypes.func,
+    onClickRoles: PropTypes.func,
   }
   static propTypes = {
     avatar: PropTypes.object.isRequired,
@@ -277,6 +279,7 @@ export class UserProfile extends PureComponent {
     isHireable: PropTypes.bool.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
+    isRolesOpen: PropTypes.bool.isRequired,
     isSelf: PropTypes.bool.isRequired,
     location: PropTypes.string,
     lovesCount: PropTypes.number.isRequired,
@@ -306,6 +309,7 @@ export class UserProfile extends PureComponent {
       onClickOpenBio,
       onClickOpenBadgeModal,
       onClickShareProfile,
+      onClickRoles,
     } = this.context
     const {
       avatar,
@@ -319,6 +323,7 @@ export class UserProfile extends PureComponent {
       isLoggedIn,
       isMobile,
       isSelf,
+      isRolesOpen,
       location,
       lovesCount,
       name,
@@ -331,6 +336,7 @@ export class UserProfile extends PureComponent {
       username,
       userProfileBadges,
     } = this.props
+
     return (
       <div className="UserProfile">
         <Avatar
@@ -407,9 +413,19 @@ export class UserProfile extends PureComponent {
             relationshipPriority={relationshipPriority}
             userId={id}
           />
+          {onClickRoles &&
+            <button
+              className="inUserProfile"
+              onClick={onClickRoles}
+            >
+              Open Roles
+            </button>
+          }
         </UserProfileButtons>
+        <UserDetailRolesContainer
+          isOpen={isRolesOpen}
+        />
       </div>
     )
   }
 }
-
