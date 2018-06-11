@@ -371,6 +371,7 @@ export default function json(state = initialState, action = { type: '' }) {
     case ACTION_TYPES.V3.POST.DETAIL_SUCCESS:
     case ACTION_TYPES.V3.POST.LOAD_MANY_SUCCESS:
     case ACTION_TYPES.V3.CATEGORY.LOAD_SUCCESS:
+    case ACTION_TYPES.V3.USER.DETAIL_SUCCESS:
     case ACTION_TYPES.PROFILE.FOLLOW_CATEGORIES_SUCCESS:
     case ACTION_TYPES.PROFILE.UNFOLLOW_CATEGORIES_SUCCESS:
       return v3Reducer(state, action)

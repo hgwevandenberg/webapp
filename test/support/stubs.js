@@ -139,6 +139,13 @@ function stubUser(properties, shouldAdd = true) {
   return model
 }
 
+function stubCategoryUser(properties, shouldAdd = true) {
+  const defaultProps = { role: 'FEATURED' }
+  const model = Immutable.fromJS({ ...commonProps, ...defaultProps, ...properties })
+  if (shouldAdd) { addToJSON('categoryUsers', model) }
+  return model
+}
+
 export function stubEmbedRegion(properties) {
   const defaultProps = {
     kind: 'embed',
@@ -343,6 +350,8 @@ export function stub(model, properties) {
       return stubPost(properties)
     case 'user':
       return stubUser(properties)
+    case 'categoryuser':
+      return stubCategoryUser(properties)
     default:
       return null
   }

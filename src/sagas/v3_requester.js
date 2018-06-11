@@ -20,6 +20,7 @@ export const requestTypes = [
   ACTION_TYPES.V3.POST.DETAIL,
   ACTION_TYPES.V3.POST.LOAD_MANY,
   ACTION_TYPES.V3.CATEGORY.LOAD,
+  ACTION_TYPES.V3.USER.DETAIL,
 ]
 
 let unauthorizedActionQueue = []

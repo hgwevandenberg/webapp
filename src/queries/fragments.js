@@ -52,6 +52,44 @@ export const authorSummary = `
   }
 `
 
+export const fullUser = `
+  fragment fullUser on User {
+    id
+    username
+    name
+    location
+    formattedShortBio
+    isCommunity
+    badges
+    avatar { ...tshirtImageVersions }
+    coverImage { ...responsiveImageVersions }
+    currentUserState { relationshipPriority }
+    externalLinksList { icon type text url }
+    userStats {
+      followingCount
+      followersCount
+      lovesCount
+      postsCount
+      totalViewsCount
+    }
+    settings {
+      postsAdultContent
+      hasCommentingEnabled
+      hasRepostingEnabled
+      hasSharingEnabled
+      hasLovesEnabled
+      isHireable
+      isCollaborateable
+    }
+    metaAttributes { title description robots image }
+    categoryUsers {
+      id
+      role
+      category { id name slug }
+    }
+  }
+`
+
 export const contentProps = `
   fragment contentProps on ContentBlocks {
     linkUrl
@@ -158,6 +196,14 @@ export const categorySummary = `
   }
 `
 
+export const categoryUserDetails = `
+  fragment categoryUserDetails on CategoryUser {
+    id
+    role
+    category { ...categorySummary }
+  }
+`
+
 export const postStream = `
   fragment postStream on PostStream {
     next
@@ -194,4 +240,12 @@ export const fullPostAllFragments = `
   ${artistInviteSubmissionAction}
   ${artistInviteSubmissionDetails}
   ${fullPost}
+`
+
+export const fullUserAllFragments = `
+  ${imageVersionProps}
+  ${responsiveImageVersions}
+  ${tshirtImageVersions}
+  ${categorySummary}
+  ${fullUser}
 `
