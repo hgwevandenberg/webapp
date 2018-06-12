@@ -6,6 +6,7 @@ import * as StreamRenderables from '../components/streams/StreamRenderables'
 import * as StreamFilters from '../components/streams/StreamFilters'
 import { ErrorState } from '../components/errors/Errors'
 import userPostStreamQuery from '../queries/userPostStream'
+import { findUserQuery } from '../queries/findUser'
 
 export function flagUser(username, kind) {
   return {
@@ -18,14 +19,14 @@ export function flagUser(username, kind) {
   }
 }
 
-export function loadUserDetail(username) {
+export function loadUserDetail({ username }) {
   return {
-    type: ACTION_TYPES.USER.DETAIL,
-    payload: { endpoint: api.userDetail(username) },
-    meta: {
-      mappingType: MAPPING_TYPES.USERS,
-      updateResult: false,
+    type: ACTION_TYPES.V3.USER.DETAIL,
+    payload: {
+      query: findUserQuery,
+      variables: { username },
     },
+    meta: {},
   }
 }
 

@@ -28,6 +28,13 @@ const creditsStyle = css(
   s.absolute,
   { right: 10, bottom: 10 },
   s.zIndex1,
+  media(s.minBreak2,
+    { right: 20, bottom: 20 },
+  ),
+)
+
+const creditsStyleExpanded = css(
+  { ...creditsStyle },
   s.fontSize14,
   s.colorWhite,
   { transition: 'color 0.2s ease, opacity 0.2s ease' },
@@ -40,7 +47,6 @@ const creditsStyle = css(
     parent('.HeroHeader', { right: 40 }),
     parent('.AuthenticationFormDialog.inModal', { right: 30 }),
   ),
-  media(s.minBreak4, { right: 40 }, parent('.HeroHeader', { right: 60 })),
   media(s.maxBreak2,
     s.flex,
     s.justifyEnd,
@@ -78,13 +84,25 @@ const creditsByStyle = media(s.maxBreak2,
   parent('.HeroPromotionCredits', s.inlineBlock),
 )
 
-export const HeroPromotionCredits = ({ label, sources, username, trackingLabel }, context) => {
+export const HeroPromotionCredits = ({
+  collapsed,
+  label,
+  sources,
+  username,
+  trackingLabel,
+}, context) => {
   const { onClickTrackCredits } = context
   const track = () => onClickTrackCredits(trackingLabel)
   return (
-    <Link className={`HeroPromotionCredits ${creditsStyle}`} onClick={track} to={`/${username}`}>
-      {label && <span className={creditsByStyle}>{label}</span>}
-      <span className={`${creditsAuthorStyle}${label ? ' with-label' : ''}`}>@{username}</span>
+    <Link
+      className={`HeroPromotionCredits ${collapsed ? creditsStyle : creditsStyleExpanded}`}
+      onClick={track}
+      to={`/${username}`}
+    >
+      {!collapsed && label && <span className={creditsByStyle}>{label}</span>}
+      {!collapsed &&
+        <span className={`${creditsAuthorStyle}${label ? ' with-label' : ''}`}>@{username}</span>
+      }
       <Avatar className="inHeroPromotionCredits" sources={sources} username={username} />
     </Link>
   )
@@ -95,10 +113,14 @@ HeroPromotionCredits.contextTypes = {
 }
 
 HeroPromotionCredits.propTypes = {
+  collapsed: PropTypes.bool,
   label: PropTypes.string,
   sources: PropTypes.object,
   username: PropTypes.string,
   trackingLabel: PropTypes.string,
+}
+HeroPromotionCredits.defaultTypes = {
+  collapsed: false,
 }
 
 // -------------------------------------
@@ -109,7 +131,7 @@ const ctaStyle = css(
 
 const ctaTextStyle = css({ borderBottom: '1px solid' })
 
-export const HeroPromotionCTA = ({ caption, isLoggedIn, to, trackingLabel }, context) => {
+export const HeroPromotionCTA = ({ caption, to, trackingLabel }, context) => {
   const { onClickTrackCTA } = context
   const track = () => onClickTrackCTA(trackingLabel)
   if (caption && to) {
@@ -136,7 +158,6 @@ HeroPromotionCTA.contextTypes = {
 
 HeroPromotionCTA.propTypes = {
   caption: PropTypes.string,
-  isLoggedIn: PropTypes.bool,
   to: PropTypes.string,
   trackingLabel: PropTypes.string,
 }

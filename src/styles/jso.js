@@ -23,6 +23,7 @@ export const minBreak7 = '(min-width: 152.5em)'   // 7: 2440 / 16 = 152.5em
 export const maxBreak2 = '(max-width: 39.9375em)' // 2: 639  / 16 = 39.9375em
 export const maxBreak3 = '(max-width: 59.9375em)' // 3: 959  / 16 = 59.9375em
 export const maxBreak4 = '(max-width: 84.9375em)' // 4: 1359 / 16 = 84.9375em
+export const maxBreak5 = '(max-width: 107.4375em)' // 4: 1719 / 16 = 107.4375em
 
 export const ease = 'cubic-bezier(0.23, 1, 0.32, 1)'
 export const easeInOutQuart = 'cubic-bezier(0.77, 0, 0.175, 1)'
@@ -321,6 +322,7 @@ export const fontSize28 = { fontSize: 28 }
 export const fontSize32 = { fontSize: 32 }
 export const fontSize38 = { fontSize: 38 }
 export const fontSize48 = { fontSize: 48 }
+export const fontSize56 = { fontSize: 56 }
 
 export const leftAlign = { textAlign: 'left' }
 export const center = { textAlign: 'center' }

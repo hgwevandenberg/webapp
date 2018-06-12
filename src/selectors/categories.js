@@ -2,7 +2,6 @@ import { Map, OrderedSet, List } from 'immutable'
 import { createSelector } from 'reselect'
 import get from 'lodash/get'
 import startCase from 'lodash/startCase'
-import trunc from 'trunc-html'
 import { CATEGORIES } from '../constants/mapping_types'
 import { META } from '../constants/locales/en'
 import { selectParamsType } from './params'
@@ -15,12 +14,17 @@ export const selectPropsCategoryId = (state, props) => get(props, 'categoryId')
 // state.json.categories.xxx
 export const selectCategoryCollection = state => state.json.get(CATEGORIES, Map())
 export const selectCategoryPostCollection = state => state.json.get('categoryPosts', Map())
+export const selectCategoryUsersCollection = state => state.json.get('categoryUsers', Map())
 
 // Requires `categoryId` to be found in props
 export const selectCategory = createSelector(
   [selectPropsCategoryId, selectCategoryCollection], (id, categories) =>
     categories.get(id, Map()),
 )
+
+export const selectCategoryUsers = createSelector(
+  [selectPropsCategoryId, selectCategoryUsersCollection], (id, categoryUsers) =>
+    categoryUsers.filter(categoryUser => categoryUser.get('categoryId') === id).toArray())
 
 export const selectCategoryName = createSelector([selectCategory], category => category.get('name'))
 export const selectCategorySlug = createSelector([selectCategory], category => category.get('slug'))
@@ -186,7 +190,7 @@ export const selectDiscoverMetaData = createSelector(
         break
       default: {
         description = category && category.get('description') ?
-          trunc(category.get('description'), 160).text : META.DESCRIPTION
+          category.get('description') : META.DESCRIPTION
         break
       }
     }

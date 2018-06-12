@@ -6,6 +6,7 @@ import {
   loadGlobalPostStream,
   loadSubscribedPostStream,
   loadCategoryPostStream,
+  loadCategoryDetails,
 } from '../actions/discover'
 import { Discover } from '../components/views/Discover'
 import {
@@ -49,13 +50,19 @@ class DiscoverContainer extends Component {
   }
 
   componentWillMount() {
-    const { dispatch, pathname } = this.props
+    const { dispatch, pathname, stream } = this.props
+    if (stream !== 'global' && stream !== 'subscribed') {
+      dispatch(loadCategoryDetails(stream))
+    }
     dispatch(bindDiscoverKey(pathname))
   }
 
   componentDidUpdate(prevProps) {
-    const { dispatch, pathname } = this.props
+    const { dispatch, pathname, stream } = this.props
     if (prevProps.pathname !== pathname) {
+      if (stream !== 'global' && stream !== 'subscribed') {
+        dispatch(loadCategoryDetails(stream))
+      }
       dispatch(bindDiscoverKey(pathname))
     }
   }

@@ -39,7 +39,7 @@ const getCategoryLinks = (categories) => {
     if (index < len - 2) {
       postfix = ', '
     } else if (index < len - 1) {
-      postfix = ', & '
+      postfix = ' & '
     }
     return [
       <Link className={catLinkStyle} to={`/discover/${category.get('slug')}`}>

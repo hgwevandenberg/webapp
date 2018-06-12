@@ -44,6 +44,9 @@ describe('user selectors', () => {
     stubInvitation()
     stubCategories()
     stubBadges()
+    stub('categoryUser', { id: '1', userId: '666', categoryId: '4', role: 'FEATURED' })
+    stub('categoryUser', { id: '2', userId: '666', categoryId: '5', role: 'FEATURED' })
+
     state = { json }
   })
 
@@ -441,20 +444,6 @@ describe('user selectors', () => {
       const props = { userId: '1000' }
       const result = selector.selectUserIsEmpty(state, props)
       expect(result).to.equal(true)
-    })
-  })
-
-  context('#selectUserIsFeatured', () => {
-    it('returns whether the user.isFeatured (true)', () => {
-      const props = { userId: '666' }
-      const result = selector.selectUserIsFeatured(state, props)
-      expect(result).to.equal(true)
-    })
-
-    it('returns whether the user.isFeatured (false)', () => {
-      const props = { userId: '100' }
-      const result = selector.selectUserIsFeatured(state, props)
-      expect(result).to.equal(false)
     })
   })
 

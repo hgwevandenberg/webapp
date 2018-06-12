@@ -1,5 +1,7 @@
+/* eslint-disable no-use-before-define */
 import Immutable from 'immutable'
 import { camelizeKeys } from 'humps'
+import { merge } from 'lodash'
 import * as ACTION_TYPES from '../constants/action_types'
 
 // Like .getIn but for regular JS objects
@@ -30,9 +32,9 @@ function smartMergeDeepIn(state, keyPath, newMap) {
   return state.setIn(keyPath, mergedMap)
 }
 
-function parseList(state, list, parser) {
+function parseList(state, list, parser, mergeAttrs = {}) {
   if (!Array.isArray(list)) { return state }
-  return list.reduce(parser, state)
+  return list.reduce((s, record) => parser(s, merge(record, mergeAttrs)), state)
 }
 
 function parsePagination(state, models, next, isLastPage, pathname, query, variables) {
@@ -75,12 +77,28 @@ function reduceAssets(assets) {
     ), {})
 }
 
+function parseCategoryUser(state, categoryUser) {
+  if (!categoryUser) { return state }
+  const state1 = parseUser(state, categoryUser.user)
+  const state2 = parseCategory(state1, categoryUser.category)
+  return smartMergeDeepIn(state2, ['categoryUsers', categoryUser.id], Immutable.fromJS({
+    id: categoryUser.id,
+    role: categoryUser.role,
+    userId: categoryUser.userId || deepGet(categoryUser, ['user', 'id']),
+    categoryId: categoryUser.categoryId || deepGet(categoryUser, ['category', 'id']),
+  }))
+}
+
 function parseCategory(state, category) {
   if (!category) { return state }
-  return smartMergeDeepIn(state, ['categories', category.id], Immutable.fromJS({
+  const state1 = parseList(state, category.categoryUsers, parseCategoryUser, {
+    categoryId: category.id,
+  })
+  return smartMergeDeepIn(state1, ['categories', category.id], Immutable.fromJS({
     id: category.id,
     slug: category.slug,
     name: category.name,
+    description: category.description,
     level: category.level,
     order: category.order,
     allowInOnboarding: category.allowInOnboarding,
@@ -128,7 +146,9 @@ function parseArtistInviteSubmission(state, submission) {
 function parseUser(state, user) {
   if (!user) { return state }
 
-  const state1 = smartMergeDeepIn(state, ['users', user.id], Immutable.fromJS({
+  const state1 = parseList(state, user.categories, parseCategory)
+  const state2 = parseList(state1, user.categoryUsers, parseCategoryUser, { userId: user.id })
+  return smartMergeDeepIn(state2, ['users', user.id], Immutable.fromJS({
 
     // Minumum properties
     id: user.id,
@@ -142,6 +162,7 @@ function parseUser(state, user) {
     externalLinksLink: user.externalLinksLink,
     formattedShortBio: user.formattedShortBio,
     location: user.location,
+    metaAttributes: user.metaAttributes,
 
     // Settings
     isCollaboratable: deepGet(user, ['settings', 'isCollaboratable']),
@@ -162,8 +183,6 @@ function parseUser(state, user) {
     // currentUserState
     relationshipPriority: deepGet(user, ['currentUserState', 'relationshipPriority']),
   }))
-  const state2 = parseList(state1, user.categories, parseCategory)
-  return state2
 }
 
 function parsePageHeader(state, pageHeader) {
@@ -339,6 +358,9 @@ function parseStream(state, { payload: { response: { data }, pathname, query, va
 }
 
 function parseCategoryQueries(state, { payload: { response: { data } } }) {
+  if (data.category) {
+    return parseCategory(state, data.category)
+  }
   return parseList(state, data.categoryNav || data.allCategories, parseCategory)
 }
 
@@ -358,6 +380,10 @@ function parseLoadManyPosts(state, action) {
   return state1
 }
 
+function parseUserDetail(state, { payload: { response: { data: { findUser: user } } } }) {
+  return parseUser(state, user)
+}
+
 // Dispatch different graphql response types for parsing (reducing)
 export default function (state, action) {
   const { type } = action
@@ -367,12 +393,17 @@ export default function (state, action) {
       return parseStream(state, action)
     case ACTION_TYPES.V3.LOAD_CATEGORIES_SUCCESS:
       return parseCategoryQueries(state, action)
+    case ACTION_TYPES.V3.CATEGORY.LOAD_SUCCESS:
+      return parseCategoryQueries(state, action)
     case ACTION_TYPES.V3.LOAD_PAGE_HEADERS_SUCCESS:
       return parsePageHeaders(state, action)
     case ACTION_TYPES.V3.POST.DETAIL_SUCCESS:
       return parsePostDetail(state, action)
     case ACTION_TYPES.V3.POST.LOAD_MANY_SUCCESS:
       return parseLoadManyPosts(state, action)
+    case ACTION_TYPES.V3.USER.DETAIL_SUCCESS:
+
+      return parseUserDetail(state, action)
     case ACTION_TYPES.PROFILE.FOLLOW_CATEGORIES_SUCCESS:
     case ACTION_TYPES.PROFILE.UNFOLLOW_CATEGORIES_SUCCESS:
       return resetSubscribedStreamPagination(state)

@@ -134,6 +134,7 @@ class UserContainer extends Component {
       'profile',
     ]).isRequired,
     useGif: PropTypes.bool,
+    useSmallRelationships: PropTypes.bool,
     user: PropTypes.object.isRequired,
     username: PropTypes.string,
     userBadgeCount: PropTypes.number.isRequired,
@@ -157,6 +158,7 @@ class UserContainer extends Component {
     showBlockMuteButton: false,
     totalViewsCount: null,
     useGif: false,
+    useSmallRelationships: false,
     username: null,
   }
 
@@ -197,7 +199,7 @@ class UserContainer extends Component {
 
   shouldComponentUpdate(nextProps) {
     return !Immutable.is(nextProps.user, this.props.user) ||
-      ['isLoggedIn', 'isBadgesLoaded', 'isMiniProfileCard', 'isMobile'].some(prop =>
+      ['isLoggedIn', 'isBadgesLoaded', 'isMiniProfileCard', 'isMobile', 'isRelationshipHidden'].some(prop =>
         nextProps[prop] !== this.props[prop],
       )
   }
@@ -312,6 +314,7 @@ class UserContainer extends Component {
       truncatedShortBio,
       type,
       useGif,
+      useSmallRelationships,
       userBadgeCount,
       username,
       userProfileBadges,
@@ -321,7 +324,15 @@ class UserContainer extends Component {
     switch (type) {
       case 'compact':
         return (
-          <UserCompact {...{ avatar, id, relationshipPriority, username }} />
+          <UserCompact
+            {...{
+              avatar,
+              id,
+              useSmallRelationships,
+              relationshipPriority,
+              username,
+            }}
+          />
         )
         // TODO: Move to InvitationContainer?
       case 'invitee':

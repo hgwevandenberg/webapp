@@ -9,9 +9,6 @@ import {
   selectCategoryIsSubscribed,
   selectCategoryIsPromo,
 } from '../selectors/categories'
-import { selectSubscribedCategoryIds } from '../selectors/profile'
-import { selectIsLoggedIn } from '../selectors/authentication'
-import { followCategories, unfollowCategories } from '../actions/profile'
 
 function mapStateToProps(state, props) {
   return {
@@ -20,8 +17,6 @@ function mapStateToProps(state, props) {
     tileImageUrl: selectCategoryTileImageUrl(state, props),
     isSubscribed: selectCategoryIsSubscribed(state, props),
     isPromo: selectCategoryIsPromo(state, props),
-    isLoggedIn: selectIsLoggedIn(state, props),
-    subscribedIds: selectSubscribedCategoryIds(state, props),
   }
 }
 
@@ -30,12 +25,9 @@ class CategoryContainer extends Component {
     name: PropTypes.string.isRequired,
     slug: PropTypes.string.isRequired,
     tileImageUrl: PropTypes.string,
-    isLoggedIn: PropTypes.bool.isRequired,
     isSubscribed: PropTypes.bool.isRequired,
     isPromo: PropTypes.bool.isRequired,
     categoryId: PropTypes.string.isRequired,
-    dispatch: PropTypes.func.isRequired,
-    subscribedIds: PropTypes.object.isRequired,
   }
 
   static defaultProps = {
@@ -46,36 +38,23 @@ class CategoryContainer extends Component {
     onClickOpenRegistrationRequestDialog: PropTypes.func.isRequired,
   }
 
-  subscribe = (e) => {
-    const { isLoggedIn, categoryId, dispatch, subscribedIds } = this.props
-    e.preventDefault()
-    if (!isLoggedIn) {
-      const { onClickOpenRegistrationRequestDialog } = this.context
-      onClickOpenRegistrationRequestDialog('subscribe-from-page-header')
-    } else {
-      const catIds = subscribedIds.push(categoryId)
-      dispatch(followCategories(catIds, true))
-    }
-  }
-
-  unsubscribe = (e) => {
-    const { categoryId, dispatch, subscribedIds } = this.props
-    e.preventDefault()
-    const catIds = subscribedIds.filter(id => id !== categoryId)
-    dispatch(unfollowCategories(catIds, true))
-  }
-
   render() {
-    const { name, slug, tileImageUrl, isSubscribed, isPromo } = this.props
+    const {
+      categoryId,
+      isSubscribed,
+      isPromo,
+      name,
+      slug,
+      tileImageUrl,
+    } = this.props
     return (
       <CategoryCard
+        categoryId={categoryId}
         name={name}
         imageUrl={tileImageUrl}
         to={`/discover/${slug}`}
         isSubscribed={isSubscribed}
         isPromo={isPromo}
-        subscribe={this.subscribe}
-        unsubscribe={this.unsubscribe}
       />
     )
   }

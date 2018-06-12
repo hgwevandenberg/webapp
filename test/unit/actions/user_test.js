@@ -27,27 +27,15 @@ describe('user actions', () => {
   })
 
   context('#loadUserDetail', () => {
-    const action = subject.loadUserDetail('archer')
+    const action = subject.loadUserDetail({ username: 'archer' })
 
     it('is an FSA compliant action', () => {
       expect(isFSA(action)).to.be.true
     })
 
-    it('has similar action.name and action.type')
-    // it('has similar action.name and action.type', () => {
-    //   expect(isFSAName(action, subject.loadUserDetail)).to.be.true
-    // })
-
-    it('has the correct api endpoint in the action', () => {
-      expect(action.payload.endpoint.path).to.contain('/archer')
-    })
-
-    it('has the correct mapping type in the action', () => {
-      expect(action.meta.mappingType).to.equal('users')
-    })
-
-    it('sets updateResult to false in the action', () => {
-      expect(action.meta.updateResult).to.be.false
+    it('has the correct query in the action', () => {
+      expect(action.payload.query).to.contain('findUser')
+      expect(action.payload.variables.username).to.equal('archer')
     })
   })
 

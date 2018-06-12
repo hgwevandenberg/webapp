@@ -30,6 +30,7 @@ describe('gui reducer', () => {
         'hasLaunchedSignupModal',
         'innerHeight',
         'innerWidth',
+        'isCategoryDrawerOpen',
         'isCompleterActive',
         'isGridMode',
         'isNavbarHidden',
@@ -120,6 +121,13 @@ describe('gui reducer', () => {
       expect(initialState).to.have.property('activeNotificationsType', 'all')
       const action = { type: GUI.NOTIFICATIONS_TAB, payload: { activeTabType: 'comments' } }
       expect(reducer(initialState, action)).to.have.property('activeNotificationsType', 'comments')
+    })
+
+    it('GUI.SET_IS_CATEGORY_DRAWER_OPEN updates isCategoryDrawerOpen', () => {
+      expect(initialState).to.have.property('isCategoryDrawerOpen', false)
+      const isCategoryDrawerOpen = true
+      const action = { type: GUI.SET_IS_CATEGORY_DRAWER_OPEN, payload: { isCategoryDrawerOpen } }
+      expect(reducer(initialState, action)).to.have.property('isCategoryDrawerOpen', true)
     })
 
     it('GUI.SET_IS_PROFILE_MENU_ACTIVE updates isProfileMenuActive', () => {
@@ -299,6 +307,7 @@ describe('gui reducer', () => {
       innerWidth: 303,
       isNavbarHidden: false,
       hasLaunchedSignupModal: false,
+      isCategoryDrawerOpen: false,
       isCompleterActive: false,
       isNotificationsActive: false,
       isOmnibarActive: false,

@@ -2,6 +2,50 @@ import { isFSA, isFSAName } from '../../support/test_helpers'
 import * as subject from '../../../src/actions/gui'
 
 describe('gui actions', () => {
+  context('#setIsCategoryDrawerOpen', () => {
+    const action = subject.setIsCategoryDrawerOpen({ isOpen: false })
+
+    it('is an FSA compliant action', () => {
+      expect(isFSA(action)).to.be.true
+    })
+
+    it('has similar action.name and action.type', () => {
+      expect(isFSAName(action, subject.setIsCategoryDrawerOpen)).to.be.true
+    })
+
+    it('has a payload with the correct keys', () => {
+      expect(action.payload).to.have.keys(
+        'isCategoryDrawerOpen',
+      )
+    })
+
+    it('sets the appropriate payload', () => {
+      expect(action.payload.isCategoryDrawerOpen).to.be.false
+    })
+  })
+
+  context('#setIsLightBoxActive', () => {
+    const action = subject.setIsLightBoxActive({ isActive: false })
+
+    it('is an FSA compliant action', () => {
+      expect(isFSA(action)).to.be.true
+    })
+
+    it('has similar action.name and action.type', () => {
+      expect(isFSAName(action, subject.setIsLightBoxActive)).to.be.true
+    })
+
+    it('has a payload with the correct keys', () => {
+      expect(action.payload).to.have.keys(
+        'isLightBoxActive',
+      )
+    })
+
+    it('sets the appropriate payload', () => {
+      expect(action.payload.isLightBoxActive).to.be.false
+    })
+  })
+
   context('#setIsNavbarHidden', () => {
     const action = subject.setIsNavbarHidden({ isHidden: false })
 
