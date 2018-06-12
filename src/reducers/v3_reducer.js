@@ -201,6 +201,17 @@ function parsePageHeader(state, pageHeader) {
   }))
 }
 
+function commentLinks(comment) {
+  const links = {}
+  const authorId = deepGet(comment, ['author', 'id'])
+  if (authorId) { links.author = { id: authorId, type: 'users' } }
+
+  const parentPostId = deepGet(comment, ['parentPost', 'id'])
+  if (parentPostId) { links.parentPost = { id: parentPostId, type: 'posts' } }
+
+  return links
+}
+
 function postLinks(post) {
   const links = {}
   const authorId = deepGet(post, ['author', 'id'])
@@ -243,6 +254,32 @@ function parseRegion(post, type, assetsById) {
     }
     return { ...region, data, id }
   })
+}
+
+function parseComment(state, comment) {
+  if (!comment) { return state }
+
+  const state1 = parseUser(state, comment.author)
+  const state2 = parseList(state1, comment.assets, parseAsset)
+
+  const assetsById = reduceAssets(comment.assets)
+
+  return smartMergeDeepIn(state2, ['comments', comment.id], Immutable.fromJS({
+    // ids
+    id: comment.id,
+    authorId: deepGet(comment, ['author', 'id']), // We don't use links for this
+    postId: deepGet(comment, ['parentPost', 'id']),
+
+    // Properties
+    createdAt: comment.createdAt,
+
+    // Content
+    summary: parseRegion(comment, 'summary', assetsById),
+    content: parseRegion(comment, 'content', assetsById),
+
+    // Links
+    links: commentLinks(comment),
+  }))
 }
 
 function parsePost(state, post) {
@@ -339,6 +376,10 @@ function parseQueryType(state, type, stream, pathname, query, variables) {
       models = stream.editorials
       parser = parseEditorial
       break;
+    case 'commentStream':
+      models = stream.comments
+      parser = parseComment
+      break;
     default:
       models = null
       parser = null
@@ -348,9 +389,9 @@ function parseQueryType(state, type, stream, pathname, query, variables) {
   return parsePagination(state1, models, next, isLastPage, pathname, query, variables)
 }
 
-function parseStream(state, { payload: { response: { data }, pathname, query, variables } }) {
+function parseStream(state, { meta, payload: { response: { data }, pathname, query, variables } }) {
   return Object.keys(data).reduce((s, key) =>
-    parseQueryType(s, key, data[key], pathname, query, variables),
+    parseQueryType(s, key, data[key], meta.resultKey || pathname, query, variables),
     state,
   )
 }
