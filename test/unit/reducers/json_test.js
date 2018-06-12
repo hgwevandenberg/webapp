@@ -249,7 +249,7 @@ describe('json reducer', () => {
           pagination: 'sweet',
         })
         action = { meta: { resultKey: 'sweetness' } }
-        sinon.stub(subject.methods, 'getResult', () => ({ result, newState: state }))
+        sinon.stub(subject.methods, 'getResult').callsFake(() => ({ result, newState: state }))
         expect(state.getIn(['pages', 'sweetness'])).to.be.undefined
         state = subject.methods.updateResult({}, state, action)
         expect(state.getIn(['pages', 'sweetness'])).to.equal(result)
@@ -265,15 +265,13 @@ describe('json reducer', () => {
             meta: { resultKey: 'sweetness' },
             type: ACTION_TYPES.LOAD_NEXT_CONTENT_SUCCESS,
           }
-          sinon.stub(subject.methods, 'getResult', () =>
-            ({
-              newState: state,
-              result: Immutable.fromJS({
-                ids: ['6', '5', '3', '8'],
-                pagination: 'sweet',
-              }),
+          sinon.stub(subject.methods, 'getResult').callsFake(() => ({
+            newState: state,
+            result: Immutable.fromJS({
+              ids: ['6', '5', '3', '8'],
+              pagination: 'sweet',
             }),
-          )
+          }))
         })
 
         // update the pagination of the existing result for infinite scroll
@@ -302,15 +300,13 @@ describe('json reducer', () => {
       context('and we already have the results available', () => {
         it('returns the existing state', () => {
           state = state.setIn(['pages', 'sweetness'], Immutable.fromJS({ ids: ['10', '9', '8', '7', '6'] }))
-          sinon.stub(subject.methods, 'getResult', () =>
-            ({
-              newState: state,
-              result: Immutable.fromJS({
-                ids: ['10', '9', '8'],
-                pagination: 'sweet',
-              }),
+          sinon.stub(subject.methods, 'getResult').callsFake(() => ({
+            newState: state,
+            result: Immutable.fromJS({
+              ids: ['10', '9', '8'],
+              pagination: 'sweet',
             }),
-          )
+          }))
           state = subject.methods.updateResult({}, state, action)
           expect(state.getIn(['pages', 'sweetness', 'ids'])).to.deep.equal(Immutable.List(['10', '9', '8', '7', '6']))
         })
@@ -322,15 +318,13 @@ describe('json reducer', () => {
           action = {
             payload: { pathname: '/sweetness' },
           }
-          sinon.stub(subject.methods, 'getResult', () =>
-            ({
-              newState: state,
-              result: Immutable.fromJS({
-                ids: ['10', '9', '8'],
-                pagination: 'sweet',
-              }),
+          sinon.stub(subject.methods, 'getResult').callsFake(() => ({
+            newState: state,
+            result: Immutable.fromJS({
+              ids: ['10', '9', '8'],
+              pagination: 'sweet',
             }),
-          )
+          }))
           subject.setHasLoadedFirstStream(true)
         })
 
