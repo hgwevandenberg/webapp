@@ -86,6 +86,10 @@ function parseCategoryUser(state, categoryUser) {
     role: categoryUser.role,
     userId: categoryUser.userId || deepGet(categoryUser, ['user', 'id']),
     categoryId: categoryUser.categoryId || deepGet(categoryUser, ['category', 'id']),
+
+    // De-normalize these if available to make access easier - infrequently updated.
+    categorySlug: deepGet(categoryUser, ['category', 'slug']),
+    categoryName: deepGet(categoryUser, ['category', 'name']),
   }))
 }
 

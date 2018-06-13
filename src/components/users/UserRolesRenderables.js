@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router'
 import { DismissButtonLGReverse } from './../buttons/Buttons'
 import { css, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
@@ -41,11 +42,17 @@ const userDetailRolesStyle = css(
   ),
 )
 
+const roleName = {
+  'FEATURED': 'Featured User',
+  'CURATOR': 'Curator',
+  'MODERATOR': 'Moderator',
+}
+
 export default function UserDetailRoles({
   close,
   handleMaskClick,
   isOpen,
-  sampleProp,
+  categoryUsers,
 }) {
   if (!isOpen) {
     return null
@@ -58,9 +65,13 @@ export default function UserDetailRoles({
           onClick={close}
         />
         <div className={`${userDetailRolesStyle} content`}>
-          <h1>Hello, I am modal.</h1>
-          <p>I have fancy content.</p>
-          <p>{sampleProp}</p>
+          <h1>Role Administrator</h1>
+          {categoryUsers.map(cu => (
+            <div key={cu.get('id')}>
+              {roleName[cu.get('role')]} in&nbsp;
+              <Link to={`/discover/${cu.get('categorySlug')}`}>{cu.get('categoryName')}</Link>
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -70,5 +81,5 @@ UserDetailRoles.propTypes = {
   close: PropTypes.func.isRequired,
   handleMaskClick: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
-  sampleProp: PropTypes.string.isRequired,
+  categoryUsers: PropTypes.object.isRequired,
 }

@@ -5,22 +5,24 @@ import Mousetrap from 'mousetrap'
 import { setIsProfileRolesActive } from '../actions/gui'
 import UserDetailRoles from '../components/users/UserRolesRenderables'
 import { SHORTCUT_KEYS } from '../constants/application_types'
+import { selectUserCategoryUsers } from '../selectors/user'
 
-// export function mapStateToProps(state) {
-//   return {
-//     classList: state.modal.get('classList'),
-//   }
-// }
+export function mapStateToProps(state, props) {
+  return {
+    classList: state.modal.get('classList'),
+    categoryUsers: selectUserCategoryUsers(state, props),
+  }
+}
 
 class UserDetailRolesContainer extends PureComponent {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     isOpen: PropTypes.bool.isRequired,
     sampleProp: PropTypes.string,
+    categoryUsers: PropTypes.object.isRequired,
   }
 
   static defaultProps = {
-    sampleProp: 'I could be used for something.',
   }
 
   componentDidMount() {
@@ -49,7 +51,7 @@ class UserDetailRolesContainer extends PureComponent {
   render() {
     const {
       isOpen,
-      sampleProp,
+      categoryUsers,
     } = this.props
 
     return (
@@ -57,11 +59,10 @@ class UserDetailRolesContainer extends PureComponent {
         close={() => this.close()}
         isOpen={isOpen}
         handleMaskClick={e => this.handleMaskClick(e)}
-        sampleProp={sampleProp}
+        categoryUsers={categoryUsers}
       />
     )
   }
 }
 
-// export default connect(mapStateToProps)(UserDetailRolesContainer)
-export default connect()(UserDetailRolesContainer)
+export default connect(mapStateToProps)(UserDetailRolesContainer)
