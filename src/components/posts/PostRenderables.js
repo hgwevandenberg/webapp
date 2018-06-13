@@ -227,7 +227,7 @@ export class PostDetailHeader extends PureComponent {
             <div className="PostHeaderLinks">
               <Link className={!isRepost ? 'FullNameLink' : 'UserNameLink RepostAuthor'} to={`/${author.get('username')}`}>
                 <span
-                  className={`DraggableUsername${!isRepost && author.get('name') ? ' PostHeaderAuthorName' : 'PostHeaderAuthorUsername'}`}
+                  className={`DraggableUsername${!isRepost && author.get('name') ? ' PostHeaderAuthorName' : ' PostHeaderAuthorUsername'}`}
                   data-priority={author.get('relationshipPriority') || 'inactive'}
                   data-userid={author.get('id')}
                   data-username={author.get('username')}
