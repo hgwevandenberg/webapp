@@ -346,7 +346,7 @@ export class PostHeader extends PureComponent {
 
     return (
       <header
-        className={classNames('PostHeader', isRepost ? 'RepostHeader' : '', { inUserDetail, isOwnPost })}
+        className={classNames('PostHeader', isRepost ? 'RepostHeader' : 'UserPostHeader', { inUserDetail, isOwnPost })}
         key={`PostHeader_${postId}`}
       >
         <div className={`PostHeaderAuthor ${isRepost ? 'RepostHeaderAuthor' : ''}`}>

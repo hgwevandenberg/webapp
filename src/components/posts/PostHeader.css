@@ -103,15 +103,33 @@
 }
 
 .FullNameLink .DraggableUsername,
-.UserNameLink .DraggableUsername {
+.UserNameLink .DraggableUsername,
+.PostHeader .DraggableUsername {
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.PostDetailHeader .UserNameLink.RepostAuthor {
-  width: calc(100% - 20px);
+.PostHeader.UserPostHeader {
+  display: flex;
+  align-items: center;
+}
+
+.PostHeader.UserPostHeader .DraggableUsername {
+  display: inline-block;
+  max-width: 100%;
+}
+
+.PostHeader.UserPostHeader .PostHeaderLink {
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  line-height: 1;
+}
+
+.PostHeader.UserPostHeader .PostHeaderLink .Avatar {
+  top: auto;
 }
 
 /* stylelint-disable selector-max-specificity, selector-max-compound-selectors */
