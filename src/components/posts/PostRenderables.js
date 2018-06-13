@@ -233,11 +233,13 @@ export class PostDetailHeader extends PureComponent {
                   data-username={author.get('username')}
                   draggable
                 >
-                  {!isRepost && author.get('name') ?
-                    author.get('name')
-                    :
-                    `@${author.get('username')}`
-                  }
+                  <span className="username-container">
+                    {!isRepost && author.get('name') ?
+                      author.get('name')
+                      :
+                      `@${author.get('username')}`
+                    }
+                  </span>
                   {isRepost &&
                     <RelationshipContainer className="isInHeader" user={author} />
                   }

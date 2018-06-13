@@ -120,6 +120,10 @@
   max-width: 100%;
   margin-bottom: -8px;
 }
+.PostDetailHeader .UserNameLink.RepostAuthor .PostHeaderAuthorUsername .username-container {
+  display: inline-block;
+  max-width: 100%;
+}
 /* stylelint-enable selector-max-specificity, selector-max-compound-selectors */
 
 .PostDetailHeader.RepostDetailHeader .RelationshipContainer {
