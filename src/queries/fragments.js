@@ -212,6 +212,18 @@ export const postStream = `
   }
 `
 
+export const fullComment = `
+  fragment fullComment on Comment {
+    id
+    createdAt
+    author { ...authorSummary }
+    summary { ...contentProps }
+    content { ...contentProps }
+    assets { id attachment { ...responsiveImageVersions } }
+    parentPost { id }
+  }
+`
+
 export const postSummaryAllFragments = `
   ${imageVersionProps}
   ${responsiveImageVersions}
@@ -240,6 +252,7 @@ export const fullPostAllFragments = `
   ${artistInviteSubmissionAction}
   ${artistInviteSubmissionDetails}
   ${fullPost}
+  ${fullComment}
 `
 
 export const fullUserAllFragments = `
