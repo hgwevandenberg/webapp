@@ -111,12 +111,53 @@
   white-space: nowrap;
 }
 
-.PostHeader.UserPostHeader {
+.PostHeader.UserPostHeader,
+.PostHeader.RepostHeader {
   display: flex;
   align-items: center;
 }
 
-.PostHeader.UserPostHeader .DraggableUsername {
+.PostHeader.RepostHeader .author-with-relationship {
+  display: block;
+  /*max-width: 100%;*/
+  max-width: calc(100% - 85px);
+}
+
+.PostHeader.RepostHeader .author-with-relationship .container {
+  display: block;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.PostHeader.RepostHeader .author-with-relationship .container .RelationshipContainer {
+  /*display: block;*/
+  /*margin-top: -5px;*/
+}
+
+.PostHeader.RepostHeader .author-with-relationship .RepostHeaderAuthor {
+  display: inline-block;
+  max-width: 100%;
+  line-height: 1;
+}
+
+.PostHeader.RepostHeader .author-with-relationship .RepostHeaderReposter {
+  display: block;
+  margin-top: 0;
+  max-width: 100%;
+}
+
+.PostHeader.RepostHeader .author-with-relationship .RepostHeaderReposter .PostHeaderLink {
+  display: flex;
+  align-items: center;
+}
+
+.PostHeader.RepostHeader .author-with-relationship .RepostHeaderReposter .PostHeaderLink svg {
+  margin-right: 4px;
+  overflow: visible;
+}
+
+.PostHeader.UserPostHeader .DraggableUsername,
+.PostHeader.RepostHeader .author-with-relationship .DraggableUsername {
   display: inline-block;
   max-width: 100%;
 }
@@ -128,7 +169,13 @@
   line-height: 1;
 }
 
-.PostHeader.UserPostHeader .PostHeaderLink .Avatar {
+.PostHeader.RepostHeader .author-with-relationship .PostHeaderLink {
+  max-width: 100%;
+  line-height: 1;
+}
+
+.PostHeader.UserPostHeader .PostHeaderLink .Avatar,
+.PostHeader.RepostHeader .author-with-relationship .PostHeaderLink .Avatar {
   top: auto;
 }
 

@@ -344,12 +344,70 @@ export class PostHeader extends PureComponent {
       postId,
     } = this.props
 
+    if (isRepost) {
+      return (
+        <header
+          className={classNames('PostHeader RepostHeader', { inUserDetail, isOwnPost })}
+          key={`PostHeader_${postId}`}
+        >
+          <span className="author-with-relationship">
+            <span className="container">
+              <span className="PostHeaderAuthor RepostHeaderAuthor">
+                <Link className="PostHeaderLink" to={`/${author.get('username')}`}>
+                  <Avatar
+                    priority={author.get('relationshipPriority')}
+                    sources={author.get('avatar')}
+                    userId={`${author.get('id')}`}
+                    username={author.get('username')}
+                  />
+                  <span
+                    className="DraggableUsername"
+                    data-priority={author.get('relationshipPriority') || 'inactive'}
+                    data-userid={author.get('id')}
+                    data-username={author.get('username')}
+                    draggable
+                  >
+                    {`@${author.get('username')}`}
+                  </span>
+                </Link>
+              </span>
+              <RelationshipContainer className="isInHeader" user={author} />
+            </span>
+            <span className="RepostHeaderReposter">
+              <Link className="PostHeaderLink" to={`/${repostedBy.get('username')}`}>
+                <RepostIcon />
+                <span
+                  className="DraggableUsername"
+                  data-priority={repostedBy.get('relationshipPriority') || 'inactive'}
+                  data-userid={repostedBy.get('id')}
+                  data-username={repostedBy.get('username')}
+                  draggable
+                >
+                  {` by @${repostedBy.get('username')}`}
+                </span>
+              </Link>
+            </span>
+          </span>
+          <span className="PostHeaderTools">
+            <PostHeaderTimeAgoLink to={detailPath} createdAt={postCreatedAt} />
+            {categoryPostActions &&
+              <FeatureCategoryPostTool
+                categoryPostActions
+                actions={categoryPostActions}
+                fireAction={categoryPostFireAction}
+                status={categoryPostStatus}
+              />
+            }
+          </span>
+        </header>
+      )
+    }
     return (
       <header
-        className={classNames('PostHeader', isRepost ? 'RepostHeader' : 'UserPostHeader', { inUserDetail, isOwnPost })}
+        className={classNames('PostHeader UserPostHeader', { inUserDetail, isOwnPost })}
         key={`PostHeader_${postId}`}
       >
-        <div className={`PostHeaderAuthor ${isRepost ? 'RepostHeaderAuthor' : ''}`}>
+        <div className="PostHeaderAuthor">
           <Link className="PostHeaderLink" to={`/${author.get('username')}`}>
             <Avatar
               priority={author.get('relationshipPriority')}
@@ -369,22 +427,6 @@ export class PostHeader extends PureComponent {
           </Link>
         </div>
         <RelationshipContainer className="isInHeader" user={author} />
-        {isRepost &&
-          <div className="RepostHeaderReposter">
-            <Link className="PostHeaderLink" to={`/${repostedBy.get('username')}`}>
-              <RepostIcon />
-              <span
-                className="DraggableUsername"
-                data-priority={repostedBy.get('relationshipPriority') || 'inactive'}
-                data-userid={repostedBy.get('id')}
-                data-username={repostedBy.get('username')}
-                draggable
-              >
-                {` by @${repostedBy.get('username')}`}
-              </span>
-            </Link>
-          </div>
-        }
         <div className="PostHeaderTools">
           <PostHeaderTimeAgoLink to={detailPath} createdAt={postCreatedAt} />
           {categoryPostActions &&
