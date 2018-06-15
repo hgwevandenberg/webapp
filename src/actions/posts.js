@@ -4,6 +4,7 @@ import * as api from '../networking/api'
 import { findPostQuery } from '../queries/findPost'
 import * as StreamRenderables from '../components/streams/StreamRenderables'
 import { resetEditor } from '../actions/editor'
+import commentStreamQuery from '../queries/commentStreamQuery'
 
 export function createPost(body, editorId, repostId, repostedFromId, artistInviteId, categoryIds) {
   const data = { category_ids: categoryIds || [] }
@@ -58,9 +59,10 @@ export function flagPost(post, kind) {
 // a comment.
 export function loadComments(postId, addUpdateKey = true) {
   const obj = {
-    type: LOAD_STREAM,
+    type: V3.LOAD_STREAM,
     payload: {
-      endpoint: api.commentsForPost(postId),
+      query: commentStreamQuery,
+      variables: { id: postId },
       postIdOrToken: postId,
     },
     meta: {
