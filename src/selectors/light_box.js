@@ -61,7 +61,7 @@ export const selectPostsAssetIds = createSelector(
     const combinedPostsAssetIds = []
     postIds.forEach((postId) => {
       const post = postsToMap.get(postId, Immutable.Map())
-      const postContent = post.get('content')
+      const postContent = post.get('content', Immutable.List())
       const postRepostContent = post.get('repostContent')
 
       // accomodate reposts (if available)

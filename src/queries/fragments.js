@@ -171,6 +171,15 @@ export const postSummary = `
   }
 `
 
+export const fullLove = `
+  fragment fullLove on Love {
+    id
+    post { ...postSummary }
+    user { ...authorSummary }
+    createdAt
+  }
+`
+
 export const fullPost = `
   fragment fullPost on Post {
     id
@@ -234,6 +243,11 @@ export const postSummaryAllFragments = `
   ${categoryPostSummary}
   ${artistInviteSubmissionSummary}
   ${postSummary}
+`
+
+export const loveSummaryAllFragments = `
+  ${postSummaryAllFragments}
+  ${fullLove}
 `
 
 export const postStreamAllFragments = `

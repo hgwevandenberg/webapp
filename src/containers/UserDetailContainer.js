@@ -31,7 +31,7 @@ export function getStreamAction({ type = 'posts', username }) {
     case 'followers':
       return loadUserUsers(`~${username}`, type)
     case 'loves':
-      return loadUserLoves(`~${username}`, type)
+      return loadUserLoves(`~${username}`)
     case 'posts':
     default:
       return loadUserPostsV3(`~${username}`, type)

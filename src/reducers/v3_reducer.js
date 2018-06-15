@@ -3,6 +3,7 @@ import Immutable from 'immutable'
 import { camelizeKeys } from 'humps'
 import { merge } from 'lodash'
 import * as ACTION_TYPES from '../constants/action_types'
+import * as StreamFilters from '../components/streams/StreamFilters'
 
 // Like .getIn but for regular JS objects
 // Does not break if object is missing a key in the middle
@@ -214,6 +215,17 @@ function commentLinks(comment) {
   return links
 }
 
+// function loveLinks(love) {
+//   const links = {}
+//   const userId = deepGet(love, ['user', 'id'])
+//   if (userId) { links.user = { id: userId, type: 'users' } }
+
+//   const postId = deepGet(love, ['post', 'id'])
+//   if (postId) { links.post = { id: postId, type: 'posts' } }
+
+//   return links
+// }
+
 function postLinks(post) {
   const links = {}
   const authorId = deepGet(post, ['author', 'id'])
@@ -257,6 +269,30 @@ function parseRegion(post, type, assetsById) {
     return { ...region, data, id }
   })
 }
+
+// function parseLove(state, love) {
+//   if (!love) { return state }
+
+//   const state1 = parseUser(state, love.user)
+//   const state2 = parsePost(state1, love.post)
+
+//   const assetsById = reduceAssets(love.post.assets)
+//   parseRegion(love.post, 'summary', assetsById)
+//   parseRegion(love.post, 'content', assetsById)
+
+//   return smartMergeDeepIn(state2, ['loves', love.id], Immutable.fromJS({
+//     // ids
+//     id: love.id,
+//     userId: deepGet(love, ['user', 'id']),
+//     postId: deepGet(love, ['post', 'id']),
+
+//     // Properties
+//     createdAt: love.createdAt,
+
+//     // Links
+//     links: loveLinks(love),
+//   }))
+// }
 
 function parseComment(state, comment) {
   if (!comment) { return state }
@@ -381,6 +417,10 @@ function parseQueryType(state, type, stream, pathname, query, variables) {
     case 'commentStream':
       models = stream.comments
       parser = parseComment
+      break;
+    case 'userLoveStream':
+      models = StreamFilters.postsFromLoves(stream.loves)
+      parser = parsePost
       break;
     default:
       models = null
