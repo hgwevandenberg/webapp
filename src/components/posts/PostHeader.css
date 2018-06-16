@@ -208,6 +208,16 @@
   top: -5px;
 }
 
+@media (--break-2-max) {
+  .PostHeader.RepostHeader .author-with-relationship .PostHeaderLink .Avatar {
+    top: 4px;
+  }
+
+  .CategoryHeader .author-with-relationship .PostHeaderLink .Avatar {
+    top: 1px;
+  }
+}
+
 .PostDetailHeader .UserNameLink.RepostAuthor .PostHeaderAuthorUsername {
   display: inline-block;
   max-width: 100%;
@@ -350,6 +360,12 @@
   margin-left: 0;
 }
 
+@media (--break-2-max) {
+  .RepostHeader.inUserDetail .author-with-relationship .RepostHeaderReposter {
+    top: 18px;
+  }
+}
+
 .RepostHeader.inUserDetail .author-with-relationship .DraggableUsername {
   margin-left: 10px;
 }
@@ -362,6 +378,14 @@
 .RepostHeader.inUserDetail .author-with-relationship .ArtistInviteSubmissionHeaderAuthor,
 .RepostHeader.inUserDetail .author-with-relationship .RepostHeaderAuthor {
   padding-left: 65px;
+}
+
+@media (--break-2-max) {
+  .RepostHeader.inUserDetail .author-with-relationship .CategoryHeaderAuthor,
+  .RepostHeader.inUserDetail .author-with-relationship .ArtistInviteSubmissionHeaderAuthor,
+  .RepostHeader.inUserDetail .author-with-relationship .RepostHeaderAuthor {
+    padding-left: 55px;
+  }
 }
 
 /* MIN WIDTH!!! */
