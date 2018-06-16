@@ -500,35 +500,39 @@ export class CategoryHeader extends PureComponent {
     const { author, categoryName, categoryPath, detailPath, postCreatedAt, postId } = this.props
     return (
       <header className="CategoryHeader" key={`CategoryHeader_${postId}`}>
-        <div className="CategoryHeaderAuthor">
-          <Link className="PostHeaderLink" to={`/${author.get('username')}`}>
-            <Avatar
-              priority={author.get('relationshipPriority')}
-              sources={author.get('avatar')}
-              userId={`${author.get('id')}`}
-              username={author.get('username')}
-            />
-            <span
-              className="DraggableUsername"
-              data-priority={author.get('relationshipPriority') || 'inactive'}
-              data-userid={author.get('id')}
-              data-username={author.get('username')}
-              draggable
-            >
-              {`@${author.get('username')}`}
+        <span className="author-with-relationship">
+          <span className="container">
+            <span className="CategoryHeaderAuthor">
+              <Link className="PostHeaderLink" to={`/${author.get('username')}`}>
+                <Avatar
+                  priority={author.get('relationshipPriority')}
+                  sources={author.get('avatar')}
+                  userId={`${author.get('id')}`}
+                  username={author.get('username')}
+                />
+                <span
+                  className="DraggableUsername"
+                  data-priority={author.get('relationshipPriority') || 'inactive'}
+                  data-userid={author.get('id')}
+                  data-username={author.get('username')}
+                  draggable
+                >
+                  {`@${author.get('username')}`}
+                </span>
+              </Link>
             </span>
-          </Link>
-        </div>
-        <RelationshipContainer className="isInHeader" user={author} />
-        <div className="CategoryHeaderCategory">
-          <Link className="PostHeaderLink" to={categoryPath}>
-            <span>in </span>
-            <span className="CategoryHeaderCategoryName">{categoryName}</span>
-          </Link>
-        </div>
-        <div className="PostHeaderTools">
+            <RelationshipContainer className="isInHeader" user={author} />
+          </span>
+          <span className="CategoryHeaderCategory">
+            <Link className="PostHeaderLink" to={categoryPath}>
+              <span>in </span>
+              <span className="CategoryHeaderCategoryName">{categoryName}</span>
+            </Link>
+          </span>
+        </span>
+        <span className="PostHeaderTools">
           <PostHeaderTimeAgoLink to={detailPath} createdAt={postCreatedAt} />
-        </div>
+        </span>
       </header>
     )
   }

@@ -1,5 +1,6 @@
 @import "../../lib/styles/properties.css";
 
+/* stylelint-disable selector-max-specificity, selector-max-compound-selectors */
 .PostHeader,
 .CategoryHeader,
 .ArtistInviteSubmissionHeader,
@@ -52,7 +53,7 @@
 .CategoryHeaderAuthor,
 .ArtistInviteSubmissionHeaderAuthor,
 .RepostHeaderAuthor {
-  max-width: calc(100% - 80px);
+  max-width: calc(100% - 90px);
 }
 
 .PostDetailHeader .PostHeaderAuthor {
@@ -104,7 +105,8 @@
 
 .FullNameLink .DraggableUsername,
 .UserNameLink .DraggableUsername,
-.PostHeader .DraggableUsername {
+.PostHeader .DraggableUsername,
+.CategoryHeader .DraggableUsername {
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -112,41 +114,49 @@
 }
 
 .PostHeader.UserPostHeader,
-.PostHeader.RepostHeader {
+.PostHeader.RepostHeader,
+.CategoryHeader {
   display: flex;
   align-items: center;
 }
 
-.PostHeader.RepostHeader .author-with-relationship {
+.PostHeader.RepostHeader .author-with-relationship,
+.CategoryHeader .author-with-relationship {
   display: block;
-  /*max-width: 100%;*/
-  max-width: calc(100% - 85px);
+  max-width: calc(100% - 90px);
 }
 
-.PostHeader.RepostHeader .author-with-relationship .container {
+.CategoryHeader .author-with-relationship {
+  width: 100%;
+}
+
+.PostHeader.RepostHeader .author-with-relationship .container,
+.CategoryHeader .author-with-relationship .container {
   display: block;
   max-width: 100%;
   white-space: nowrap;
 }
 
-.PostHeader.RepostHeader .author-with-relationship .container .RelationshipContainer {
-  /*display: block;*/
-  /*margin-top: -5px;*/
-}
-
-.PostHeader.RepostHeader .author-with-relationship .RepostHeaderAuthor {
+.PostHeader.RepostHeader .author-with-relationship .RepostHeaderAuthor,
+.CategoryHeader .author-with-relationship .CategoryHeaderAuthor {
   display: inline-block;
   max-width: 100%;
   line-height: 1;
 }
 
-.PostHeader.RepostHeader .author-with-relationship .RepostHeaderReposter {
-  display: block;
-  margin-top: 0;
-  max-width: 100%;
+.CategoryHeader .author-with-relationship .RelationshipContainer {
+  margin-top: -4px;
 }
 
-.PostHeader.RepostHeader .author-with-relationship .RepostHeaderReposter .PostHeaderLink {
+.PostHeader.RepostHeader .author-with-relationship .RepostHeaderReposter,
+.CategoryHeader .author-with-relationship .CategoryHeaderCategory {
+  display: block;
+  max-width: 100%;
+  margin-top: 0;
+}
+
+.PostHeader.RepostHeader .author-with-relationship .RepostHeaderReposter .PostHeaderLink,
+.CategoryHeader .author-with-relationship .CategoryHeaderCategory .PostHeaderLink {
   display: flex;
   align-items: center;
 }
@@ -156,8 +166,17 @@
   overflow: visible;
 }
 
+.CategoryHeader .author-with-relationship .CategoryHeaderCategory .PostHeaderLink .CategoryHeaderCategoryName {
+  margin-left: 4px;
+}
+
+.CategoryHeader .author-with-relationship .CategoryHeaderCategory {
+  padding-top: 2px;
+}
+
 .PostHeader.UserPostHeader .DraggableUsername,
-.PostHeader.RepostHeader .author-with-relationship .DraggableUsername {
+.PostHeader.RepostHeader .author-with-relationship .DraggableUsername,
+.CategoryHeader .author-with-relationship .DraggableUsername {
   display: inline-block;
   max-width: 100%;
 }
@@ -169,27 +188,36 @@
   line-height: 1;
 }
 
-.PostHeader.RepostHeader .author-with-relationship .PostHeaderLink {
+.CategoryHeaderAuthor .PostHeaderLink {
+  max-width: 100%;
+}
+
+.PostHeader.RepostHeader .author-with-relationship .PostHeaderLink,
+.CategoryHeader .author-with-relationship .PostHeaderLink {
   max-width: 100%;
   line-height: 1;
 }
 
 .PostHeader.UserPostHeader .PostHeaderLink .Avatar,
-.PostHeader.RepostHeader .author-with-relationship .PostHeaderLink .Avatar {
+.PostHeader.RepostHeader .author-with-relationship .PostHeaderLink .Avatar,
+.CategoryHeader .author-with-relationship .PostHeaderLink .Avatar {
   top: auto;
 }
 
-/* stylelint-disable selector-max-specificity, selector-max-compound-selectors */
+.CategoryHeader .author-with-relationship .PostHeaderLink .Avatar {
+  top: -5px;
+}
+
 .PostDetailHeader .UserNameLink.RepostAuthor .PostHeaderAuthorUsername {
   display: inline-block;
   max-width: 100%;
   margin-bottom: -8px;
 }
+
 .PostDetailHeader .UserNameLink.RepostAuthor .PostHeaderAuthorUsername .username-container {
   display: inline-block;
   max-width: 100%;
 }
-/* stylelint-enable selector-max-specificity, selector-max-compound-selectors */
 
 .PostDetailHeader.RepostDetailHeader .RelationshipContainer {
   position: absolute;
@@ -293,7 +321,6 @@
   overflow: hidden;
 }
 
-/* stylelint-disable selector-max-specificity */
 .PostHeaderTools .featured-toggle:hover path {
   fill: #000;
 }
@@ -301,7 +328,6 @@
 .PostHeaderTools .featured-toggle.featured:hover path {
   fill: #16a905;
 }
-/* stylelint-enable selector-max-specificity */
 
 .PostHeaderTimeAgoLink {
   padding-left: 5px;
@@ -312,22 +338,30 @@
 }
 
 /* Weird layout for reposts headers when in a UserDetail template */
-.RepostHeader.inUserDetail > .RepostHeaderReposter {
-  position: absolute;
-  top: 32px;
-  left: -40px;
-  z-index: 2;
+.PostHeader.RepostHeader.inUserDetail .author-with-relationship .PostHeaderLink .Avatar {
+  top: -10px;
 }
 
-.RepostHeader.inUserDetail > .RepostHeaderReposter .DraggableUsername {
+.RepostHeader.inUserDetail .author-with-relationship .RepostHeaderReposter {
+  position: absolute;
+  top: 29px;
+  left: 0;
+  z-index: 2;
+  margin-left: 0;
+}
+
+.RepostHeader.inUserDetail .author-with-relationship .DraggableUsername {
+  margin-left: 10px;
+}
+
+.RepostHeader.inUserDetail .author-with-relationship .RepostHeaderReposter .DraggableUsername {
   display: none;
 }
 
-.RepostHeader.inUserDetail > .CategoryHeaderAuthor,
-.RepostHeader.inUserDetail > .ArtistInviteSubmissionHeaderAuthor,
-.RepostHeader.inUserDetail > .RepostHeaderAuthor {
+.RepostHeader.inUserDetail .author-with-relationship .CategoryHeaderAuthor,
+.RepostHeader.inUserDetail .author-with-relationship .ArtistInviteSubmissionHeaderAuthor,
+.RepostHeader.inUserDetail .author-with-relationship .RepostHeaderAuthor {
   padding-left: 65px;
-  line-height: 60px;
 }
 
 /* MIN WIDTH!!! */
@@ -407,14 +441,12 @@
 }
 
 /* // Don't show the relationship buttons in these specific conditions */
-/* stylelint-disable selector-max-compound-selectors, selector-max-specificity */
 .Following.MainView .PostHeader .RelationshipContainer,
 .UserDetail.MainView .PostHeader .RelationshipContainer[data-priority="friend"],
 .UserDetail.MainView .PostHeader .RelationshipContainer[data-priority="noise"],
 .UserDetail.MainView .PostHeader .RelationshipContainer[data-priority="self"] {
   display: none;
 }
-/* stylelint-enable selector-max-compound-selectors, selector-max-specificity */
 
 /* // MAX WIDTH!!! */
 @media (--break-2-max) {
@@ -454,4 +486,4 @@
     line-height: 14px;
   }
 }
-
+/* stylelint-enable selector-max-specificity, selector-max-compound-selectors */
