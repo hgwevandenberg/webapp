@@ -89,8 +89,10 @@
 
 .PostDetailHeader .PostHeaderLinks {
   flex: none;
-  width: calc(100% - 40px);
+  width: calc(100% - 60px);
+  max-width: calc(100% - 60px);
   padding-left: 10px;
+  overflow: hidden;
 }
 
 .FullNameLink,
@@ -224,6 +226,12 @@
   margin-bottom: -8px;
 }
 
+@media (--break-2-max) {
+  .PostDetailHeader .UserNameLink.RepostAuthor .PostHeaderAuthorUsername {
+    margin-bottom: 0;
+  }
+}
+
 .PostDetailHeader .UserNameLink.RepostAuthor .PostHeaderAuthorUsername .username-container {
   display: inline-block;
   max-width: 100%;
@@ -232,6 +240,12 @@
 .PostDetailHeader.RepostDetailHeader .RelationshipContainer {
   position: absolute;
   margin: -1px 0 0 4px;
+}
+
+@media (--break-2-max) {
+  .PostDetailHeader.RepostDetailHeader .RelationshipContainer {
+    margin-top: -5px;
+  }
 }
 
 .PostDetailHeader > .PostHeaderAuthor {
@@ -405,10 +419,6 @@
     padding-left: 60px;
   }
 
-  .PostDetailHeader .PostHeaderLinks {
-    padding-left: 20px;
-  }
-
   .PostHeaderAuthor {
     padding-left: 60px;
     line-height: 80px;
@@ -457,6 +467,10 @@
 @media (--break-3) {
   .Posts.asList .PostHeaderTimeAgoLink {
     display: none;
+  }
+
+  .PostDetailHeader .PostHeaderLinks {
+    padding-left: 20px;
   }
 
   .PostHeaderLinks {
