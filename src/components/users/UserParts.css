@@ -77,7 +77,7 @@ User Buttons */
 
 @media (--break-2) {
   .UserProfileButtons.inUserProfile {
-    top: 280px;
+    top: 300px;
     right: 0;
     left: 0;
     max-width: 260px;
@@ -427,4 +427,3 @@ User Links */
   }
 }
 /* stylelint-enable selector-max-specificity, selector-max-compound-selectors */
-
