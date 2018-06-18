@@ -559,7 +559,7 @@ class SettingsContainer extends PureComponent {
                       ref={(comp) => { this.exportButton = comp }}
                     >
                         Request Export
-                      </button>
+                    </button>
                   }
                 </div>
               </TreePanel>
