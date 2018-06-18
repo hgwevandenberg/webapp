@@ -38,12 +38,23 @@ function parseList(state, list, parser, mergeAttrs = {}) {
   return list.reduce((s, record) => parser(s, merge(record, mergeAttrs)), state)
 }
 
-function parsePagination(state, models, next, isLastPage, pathname, query, variables) {
+function parsePaginationIds(type, models) {
+  switch (type) {
+    case 'userLoveStream':
+      return Immutable.OrderedSet(models.map(m => m.post.id))
+    default:
+      return Immutable.OrderedSet(models.map(m => m.id))
+  }
+}
+
+function parsePagination(state, type, models, next, isLastPage, pathname, query, variables) {
   const mergedState = state.mergeDeepIn(['pages', pathname], Immutable.fromJS({
     pagination: Immutable.fromJS({ next, query, variables, isLastPage }),
   }))
+
+  const newPageIds = parsePaginationIds(type, models)
+
   return mergedState.updateIn(['pages', pathname, 'ids'], (existingPageIds) => {
-    const newPageIds = Immutable.OrderedSet(models.map(m => m.id))
     // If we don't have any existingPageIds just return the new ids.
     if (!existingPageIds || existingPageIds.count() === 0) {
       return newPageIds
@@ -270,30 +281,6 @@ function parseRegion(post, type, assetsById) {
   })
 }
 
-// function parseLove(state, love) {
-//   if (!love) { return state }
-
-//   const state1 = parseUser(state, love.user)
-//   const state2 = parsePost(state1, love.post)
-
-//   const assetsById = reduceAssets(love.post.assets)
-//   parseRegion(love.post, 'summary', assetsById)
-//   parseRegion(love.post, 'content', assetsById)
-
-//   return smartMergeDeepIn(state2, ['loves', love.id], Immutable.fromJS({
-//     // ids
-//     id: love.id,
-//     userId: deepGet(love, ['user', 'id']),
-//     postId: deepGet(love, ['post', 'id']),
-
-//     // Properties
-//     createdAt: love.createdAt,
-
-//     // Links
-//     links: loveLinks(love),
-//   }))
-// }
-
 function parseComment(state, comment) {
   if (!comment) { return state }
 
@@ -365,6 +352,10 @@ function parsePost(state, post) {
   }))
 }
 
+function parsePostFromLove(store, love) {
+  return parsePost(store, love.post)
+}
+
 function editorialLinks(editorial) {
   const links = {}
   const postId = deepGet(editorial, ['post', 'id'])
@@ -419,16 +410,15 @@ function parseQueryType(state, type, stream, pathname, query, variables) {
       parser = parseComment
       break;
     case 'userLoveStream':
-      models = StreamFilters.postsFromLoves(stream.loves)
-      parser = parsePost
+      models = stream.loves
+      parser = parsePostFromLove
       break;
     default:
       models = null
       parser = null
-
   }
   const state1 = parseList(state, models, parser)
-  return parsePagination(state1, models, next, isLastPage, pathname, query, variables)
+  return parsePagination(state1, type, models, next, isLastPage, pathname, query, variables)
 }
 
 function parseStream(state, { meta, payload: { response: { data }, pathname, query, variables } }) {
@@ -483,7 +473,6 @@ export default function (state, action) {
     case ACTION_TYPES.V3.POST.LOAD_MANY_SUCCESS:
       return parseLoadManyPosts(state, action)
     case ACTION_TYPES.V3.USER.DETAIL_SUCCESS:
-
       return parseUserDetail(state, action)
     case ACTION_TYPES.PROFILE.FOLLOW_CATEGORIES_SUCCESS:
     case ACTION_TYPES.PROFILE.UNFOLLOW_CATEGORIES_SUCCESS:

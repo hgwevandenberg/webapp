@@ -1,12 +1,12 @@
-import { loveSummaryAllFragments } from './fragments'
+import { postSummaryAllFragments } from './fragments'
 
 export default `
-    ${loveSummaryAllFragments}
+    ${postSummaryAllFragments}
     query($username: String!, $perPage: String, $before: String) {
       userLoveStream(username: $username, perPage: $perPage, before: $before) {
         next
         isLastPage
-        loves { ...fullLove }
+        loves { post { ...postSummary } }
       }
     }
 `

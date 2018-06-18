@@ -55,13 +55,10 @@ export function loadUserLoves(username) {
       variables: { username },
     },
     meta: {
-      mappingType: MAPPING_TYPES.LOVES,
       renderStream: {
         asList: StreamRenderables.postsAsList,
         asGrid: StreamRenderables.postsAsGrid,
       },
-      resultFilter: StreamFilters.postsFromLoves,
-      resultKey: `${username}/loves`,
     },
   }
 }
