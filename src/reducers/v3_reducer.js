@@ -3,7 +3,6 @@ import Immutable from 'immutable'
 import { camelizeKeys } from 'humps'
 import { merge } from 'lodash'
 import * as ACTION_TYPES from '../constants/action_types'
-import * as StreamFilters from '../components/streams/StreamFilters'
 
 // Like .getIn but for regular JS objects
 // Does not break if object is missing a key in the middle

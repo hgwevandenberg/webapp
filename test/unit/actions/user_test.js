@@ -2,7 +2,6 @@ import Immutable from 'immutable'
 import { isFSA, isFSAName } from '../../support/test_helpers'
 import * as subject from '../../../src/actions/user'
 import { postsAsGrid, postsAsList, usersAsGrid } from '../../../src/components/streams/StreamRenderables'
-import { postsFromLoves } from '../../../src/components/streams/StreamFilters'
 import { postLovers } from '../../../src/networking/api'
 
 describe('user actions', () => {
@@ -64,25 +63,14 @@ describe('user actions', () => {
       expect(isFSA(action)).to.be.true
     })
 
-    it('has a top level action.type', () => {
-      expect(isFSAName(action, subject.loadUserLoves)).to.be.true
-    })
-
-    it('has the correct api endpoint in the action', () => {
-      expect(action.payload.endpoint.path).to.contain('/archer/loves')
-    })
-
-    it('has the correct mapping type in the action', () => {
-      expect(action.meta.mappingType).to.equal('loves')
+    it('has the correct query in the action', () => {
+      expect(action.payload.query).to.contain('userLoveStream')
+      expect(action.payload.variables.username).to.equal('archer')
     })
 
     it('has asList and asGrid properties on renderStreams in the action', () => {
       expect(action.meta.renderStream.asList).to.equal(postsAsList)
       expect(action.meta.renderStream.asGrid).to.equal(postsAsGrid)
-    })
-
-    it('has the correct resultFilter in the action', () => {
-      expect(action.meta.resultFilter).to.equal(postsFromLoves)
     })
   })
 
