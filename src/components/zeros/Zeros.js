@@ -132,11 +132,6 @@ export const ZeroStateFirstPost = () =>
     <Editor autoPopulate="Ello World! My first post on :ello:!" />
   </ZeroState>)
 
-ZeroStateFirstPost.propTypes = {
-  hasPosted: PropTypes.bool,
-  onSubmit: PropTypes.func,
-}
-
 // -------------------------------------
 
 const zeroStateEditorialStyle = css(

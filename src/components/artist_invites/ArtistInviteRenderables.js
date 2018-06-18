@@ -431,7 +431,6 @@ export const ArtistInviteDetail = ({
   openedAt,
   slug,
   status,
-  submissionBodyBlock,
   title,
 }, {
   onClickScrollToContent,
@@ -511,7 +510,6 @@ ArtistInviteDetail.propTypes = {
   openedAt: PropTypes.string.isRequired,
   slug: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
-  submissionBodyBlock: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
 }
 ArtistInviteDetail.contextTypes = {
