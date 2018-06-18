@@ -46,7 +46,7 @@ export default function (chai, utils) {
       if (actual) {
         const assertion = new Assertion(actual)
         utils.transferFlags(this, assertion, false)
-        assertion.to.have.deep.property('CALL.fn')
+        assertion.to.have.deep.nested.property('CALL.fn')
         assertion.to.eq(fn)
       }
     }
@@ -64,7 +64,7 @@ export default function (chai, utils) {
     return function (...args) {
       const actual = utils.flag(this, 'yield.call')
       if (actual) {
-        const assertion = new Assertion(actual).to.have.deep.property('CALL.args')
+        const assertion = new Assertion(actual).to.have.deep.nested.property('CALL.args')
         args.forEach((arg) => {
           if (arg instanceof RegExp) {
             assertion.to.match(arg)
