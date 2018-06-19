@@ -224,6 +224,15 @@ export const fullComment = `
   }
 `
 
+export const fullCommentAllFragments = `
+  ${fullComment}
+  ${imageVersionProps}
+  ${responsiveImageVersions}
+  ${tshirtImageVersions}
+  ${contentProps}
+  ${authorSummary}
+`
+
 export const postSummaryAllFragments = `
   ${imageVersionProps}
   ${responsiveImageVersions}
@@ -252,7 +261,6 @@ export const fullPostAllFragments = `
   ${artistInviteSubmissionAction}
   ${artistInviteSubmissionDetails}
   ${fullPost}
-  ${fullComment}
 `
 
 export const fullUserAllFragments = `
