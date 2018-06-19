@@ -3,9 +3,9 @@ import * as ACTION_TYPES from '../constants/action_types'
 import * as MAPPING_TYPES from '../constants/mapping_types'
 import * as api from '../networking/api'
 import * as StreamRenderables from '../components/streams/StreamRenderables'
-import * as StreamFilters from '../components/streams/StreamFilters'
 import { ErrorState } from '../components/errors/Errors'
 import userPostStreamQuery from '../queries/userPostStream'
+import userLoveStreamQuery from '../queries/userLoveStreamQuery'
 import { findUserQuery } from '../queries/findUser'
 
 export function flagUser(username, kind) {
@@ -46,17 +46,18 @@ export function loadUserPostsV3(username) {
   }
 }
 
-export function loadUserLoves(username, type) {
+export function loadUserLoves(username) {
   return {
-    type: ACTION_TYPES.LOAD_STREAM,
-    payload: { endpoint: api.userResources(username, type) },
+    type: ACTION_TYPES.V3.LOAD_STREAM,
+    payload: {
+      query: userLoveStreamQuery,
+      variables: { username },
+    },
     meta: {
-      mappingType: MAPPING_TYPES.LOVES,
       renderStream: {
         asList: StreamRenderables.postsAsList,
         asGrid: StreamRenderables.postsAsGrid,
       },
-      resultFilter: StreamFilters.postsFromLoves,
     },
   }
 }
