@@ -6,7 +6,7 @@ export default `
       userLoveStream(username: $username, perPage: $perPage, before: $before) {
         next
         isLastPage
-        loves { post { ...postSummary } }
+        loves { post { ...postSummary repostedSource { ...postSummary } } }
       }
     }
 `
