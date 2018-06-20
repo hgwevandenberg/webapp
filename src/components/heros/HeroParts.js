@@ -233,11 +233,11 @@ const userRolesButtonStyle = css(
   ),
 )
 
-export const HeroUserRolesButton = (props, { onClickShareProfile }) =>
-  (<button className={`HeroUserRolesButton ${userRolesButtonStyle}`} onClick={onClickShareProfile} >
+export const HeroUserRolesButton = (props, { onClickOpenUserRoles }) =>
+  (<button className={`HeroUserRolesButton ${userRolesButtonStyle}`} onClick={onClickOpenUserRoles} >
     <RolesIcon />
   </button>)
 
 HeroUserRolesButton.contextTypes = {
-  onClickShareProfile: PropTypes.func.isRequired,
+  onClickOpenUserRoles: PropTypes.func.isRequired,
 }

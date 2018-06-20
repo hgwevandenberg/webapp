@@ -263,7 +263,6 @@ export class UserProfile extends PureComponent {
     onClickOpenBio: PropTypes.func,
     onClickOpenBadgeModal: PropTypes.func,
     onClickShareProfile: PropTypes.func,
-    onClickRoles: PropTypes.func,
   }
   static propTypes = {
     avatar: PropTypes.object.isRequired,
@@ -309,7 +308,6 @@ export class UserProfile extends PureComponent {
       onClickOpenBio,
       onClickOpenBadgeModal,
       onClickShareProfile,
-      onClickRoles,
     } = this.context
     const {
       avatar,
@@ -413,14 +411,6 @@ export class UserProfile extends PureComponent {
             relationshipPriority={relationshipPriority}
             userId={id}
           />
-          {onClickRoles &&
-            <button
-              className="inUserProfile"
-              onClick={onClickRoles}
-            >
-              Open Roles
-            </button>
-          }
         </UserProfileButtons>
         <UserDetailRolesContainer
           isOpen={isRolesOpen}

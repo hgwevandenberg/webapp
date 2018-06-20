@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { trackEvent } from '../actions/analytics'
 import { openModal } from '../actions/modals'
+import { setIsProfileRolesActive } from '../actions/gui'
 import {
   selectUserId,
   selectUserPostsAdultContent,
@@ -11,7 +12,7 @@ import {
   selectUserUsername,
 } from '../selectors/user'
 import { selectViewsAdultContent } from '../selectors/profile'
-import { selectHeroDPI } from '../selectors/gui'
+import { selectHeroDPI, selectIsProfileRolesActive } from '../selectors/gui'
 import { HeroProfile } from '../components/heros/HeroRenderables'
 import ShareDialog from '../components/dialogs/ShareDialog'
 
@@ -20,35 +21,39 @@ function mapStateToProps(state, props) {
   const username = selectUserUsername(state, props)
   const dpi = selectHeroDPI(state)
   const coverImage = selectUserCoverImage(state, props)
+  const isRolesOpen = selectIsProfileRolesActive(state)
   const useGif = selectViewsAdultContent(state) ||
     !selectUserPostsAdultContent(state, props) ||
     false
-  return { userId, dpi, coverImage, useGif, username }
+  return { userId, dpi, coverImage, isRolesOpen, useGif, username }
 }
 
 class HeroProfileContainer extends Component {
   static propTypes = {
+    coverImage: PropTypes.object,
+    dispatch: PropTypes.func.isRequired,
+    dpi: PropTypes.string.isRequired,
+    isRolesOpen: PropTypes.bool.isRequired,
+    useGif: PropTypes.bool.isRequired,
     userId: PropTypes.string,
     username: PropTypes.string,
-    dpi: PropTypes.string.isRequired,
-    coverImage: PropTypes.object,
-    useGif: PropTypes.bool.isRequired,
-    dispatch: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
+    coverImage: null,
     userId: null,
     username: null,
-    coverImage: null,
   }
 
   static childContextTypes = {
     onClickShareProfile: PropTypes.func,
+    onClickOpenUserRoles: PropTypes.func,
   }
 
   getChildContext() {
     return {
       onClickShareProfile: this.onClickShareProfile,
+      onClickOpenUserRoles: this.onClickOpenUserRoles,
     }
   }
 
@@ -56,6 +61,11 @@ class HeroProfileContainer extends Component {
     const { dispatch, username } = this.props
     const action = bindActionCreators(trackEvent, dispatch)
     dispatch(openModal(<ShareDialog username={username} trackEvent={action} />, '', null, 'open-share-dialog-profile'))
+  }
+
+  onClickOpenUserRoles = () => {
+    const { dispatch, isRolesOpen } = this.props
+    dispatch(setIsProfileRolesActive({ isActive: !isRolesOpen }))
   }
 
   render() {

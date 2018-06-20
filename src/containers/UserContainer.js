@@ -176,7 +176,6 @@ class UserContainer extends Component {
     onClickOpenBadgeModal: PropTypes.func,
     onClickReInvite: PropTypes.func,
     onClickShareProfile: PropTypes.func,
-    onClickRoles: PropTypes.func,
   }
 
   getChildContext() {
@@ -198,7 +197,6 @@ class UserContainer extends Component {
       onClickOpenBadgeModal: userBadgeCount && isBadgesLoaded ? this.onClickOpenBadgeModal : null,
       onClickReInvite: this.onClickReInvite,
       onClickShareProfile: isMobile ? this.onClickShareProfile : null,
-      onClickRoles: this.onClickRoles,
     }
   }
 
@@ -221,11 +219,6 @@ class UserContainer extends Component {
     const { dispatch, username } = this.props
     const action = bindActionCreators(trackEvent, dispatch)
     dispatch(openModal(<ShareDialog username={username} trackEvent={action} />, '', null, 'open-share-dialog-profile'))
-  }
-
-  onClickRoles = () => {
-    const { dispatch, isRolesOpen } = this.props
-    dispatch(setIsProfileRolesActive({ isActive: !isRolesOpen }))
   }
 
   onClickOpenBadgeModal = (e) => {
