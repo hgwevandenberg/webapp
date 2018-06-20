@@ -186,7 +186,7 @@ HeroScrollToContentButton.contextTypes = {
 
 const shareButtonStyle = css(
   s.absolute,
-  { top: 20, right: 20, borderRadius: 20 },
+  { top: 40, right: 40, borderRadius: 20 },
   s.displayNone,
   s.wv40,
   s.hv40,
@@ -213,7 +213,7 @@ HeroShareUserButton.contextTypes = {
 
 const userRolesButtonStyle = css(
   { ...shareButtonStyle },
-  { right: 75 },
+  { right: 95 },
   select('& .RolesIcon',
     s.colorWhite,
     {
