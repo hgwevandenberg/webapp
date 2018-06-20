@@ -148,13 +148,33 @@ User Figures */
   color: #aaa;
 }
 
-.UserShareButton.inUserProfile {
+.UserShareButton.inUserProfile,
+.UserRolesButton.inUserProfile {
   position: absolute;
   top: -55px;
   right: 0;
   z-index: 2;
   display: block;
   color: #aaa;
+}
+
+.UserRolesButton.inUserProfile {
+  right: auto;
+  left: 0;
+}
+
+.UserRolesButton.inUserProfile svg {
+  overflow: visible;
+  transform: scale(0.85);
+}
+
+.UserRolesButton.inUserProfile g {
+  stroke-width: 0;
+}
+
+.UserRolesButton.inUserProfile g path {
+  fill: #aaa;
+  stroke-width: 0.4;
 }
 
 @media (--break-2) {

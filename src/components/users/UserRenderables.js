@@ -16,6 +16,7 @@ import {
   UserNamesCell,
   UserNamesCellCard,
   UserProfileButtons,
+  UserRolesButton,
   UserShareButton,
   UserStatsCell,
 } from './UserParts'
@@ -263,6 +264,7 @@ export class UserProfile extends PureComponent {
     onClickOpenBio: PropTypes.func,
     onClickOpenBadgeModal: PropTypes.func,
     onClickShareProfile: PropTypes.func,
+    onClickRoles: PropTypes.func,
   }
   static propTypes = {
     avatar: PropTypes.object.isRequired,
@@ -308,6 +310,7 @@ export class UserProfile extends PureComponent {
       onClickOpenBio,
       onClickOpenBadgeModal,
       onClickShareProfile,
+      onClickRoles,
     } = this.context
     const {
       avatar,
@@ -362,6 +365,12 @@ export class UserProfile extends PureComponent {
             <UserShareButton
               className="inUserProfile"
               onClick={onClickShareProfile}
+            />
+          }
+          {onClickRoles &&
+            <UserRolesButton
+              className="inUserProfile"
+              onClick={onClickRoles}
             />
           }
           {isLoggedIn && !isSelf ?
