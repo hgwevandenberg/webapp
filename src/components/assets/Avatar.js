@@ -73,6 +73,12 @@ const baseStyle = css(
     ),
   ),
   media(
+    s.minBreak2,
+    parent('.Post',
+      { width: 40, height: 40 },
+    ),
+  ),
+  media(
     s.minBreak3,
     { width: 40, height: 40 },
     modifier('.inUserProfile', s.absolute, s.my0, { top: 0, left: 0, width: 260, height: 260 }),

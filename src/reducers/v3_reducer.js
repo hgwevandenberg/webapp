@@ -37,12 +37,23 @@ function parseList(state, list, parser, mergeAttrs = {}) {
   return list.reduce((s, record) => parser(s, merge(record, mergeAttrs)), state)
 }
 
-function parsePagination(state, models, next, isLastPage, pathname, query, variables) {
+function parsePaginationIds(type, models) {
+  switch (type) {
+    case 'userLoveStream':
+      return Immutable.OrderedSet(models.map(m => m.post.id))
+    default:
+      return Immutable.OrderedSet(models.map(m => m.id))
+  }
+}
+
+function parsePagination(state, type, models, next, isLastPage, pathname, query, variables) {
   const mergedState = state.mergeDeepIn(['pages', pathname], Immutable.fromJS({
     pagination: Immutable.fromJS({ next, query, variables, isLastPage }),
   }))
+
+  const newPageIds = parsePaginationIds(type, models)
+
   return mergedState.updateIn(['pages', pathname, 'ids'], (existingPageIds) => {
-    const newPageIds = Immutable.OrderedSet(models.map(m => m.id))
     // If we don't have any existingPageIds just return the new ids.
     if (!existingPageIds || existingPageIds.count() === 0) {
       return newPageIds
@@ -207,6 +218,28 @@ function parsePageHeader(state, pageHeader) {
   }))
 }
 
+function commentLinks(comment) {
+  const links = {}
+  const authorId = deepGet(comment, ['author', 'id'])
+  if (authorId) { links.author = { id: authorId, type: 'users' } }
+
+  const parentPostId = deepGet(comment, ['parentPost', 'id'])
+  if (parentPostId) { links.parentPost = { id: parentPostId, type: 'posts' } }
+
+  return links
+}
+
+// function loveLinks(love) {
+//   const links = {}
+//   const userId = deepGet(love, ['user', 'id'])
+//   if (userId) { links.user = { id: userId, type: 'users' } }
+
+//   const postId = deepGet(love, ['post', 'id'])
+//   if (postId) { links.post = { id: postId, type: 'posts' } }
+
+//   return links
+// }
+
 function postLinks(post) {
   const links = {}
   const authorId = deepGet(post, ['author', 'id'])
@@ -249,6 +282,32 @@ function parseRegion(post, type, assetsById) {
     }
     return { ...region, data, id }
   })
+}
+
+function parseComment(state, comment) {
+  if (!comment) { return state }
+
+  const state1 = parseUser(state, comment.author)
+  const state2 = parseList(state1, comment.assets, parseAsset)
+
+  const assetsById = reduceAssets(comment.assets)
+
+  return smartMergeDeepIn(state2, ['comments', comment.id], Immutable.fromJS({
+    // ids
+    id: comment.id,
+    authorId: deepGet(comment, ['author', 'id']), // We don't use links for this
+    postId: deepGet(comment, ['parentPost', 'id']),
+
+    // Properties
+    createdAt: comment.createdAt,
+
+    // Content
+    summary: parseRegion(comment, 'summary', assetsById),
+    content: parseRegion(comment, 'content', assetsById),
+
+    // Links
+    links: commentLinks(comment),
+  }))
 }
 
 function parsePost(state, post) {
@@ -294,6 +353,10 @@ function parsePost(state, post) {
     // Links
     links: postLinks(post),
   }))
+}
+
+function parsePostFromLove(store, love) {
+  return parsePost(store, love.post)
 }
 
 function editorialLinks(editorial) {
@@ -345,18 +408,25 @@ function parseQueryType(state, type, stream, pathname, query, variables) {
       models = stream.editorials
       parser = parseEditorial
       break;
+    case 'commentStream':
+      models = stream.comments
+      parser = parseComment
+      break;
+    case 'userLoveStream':
+      models = stream.loves
+      parser = parsePostFromLove
+      break;
     default:
       models = null
       parser = null
-
   }
   const state1 = parseList(state, models, parser)
-  return parsePagination(state1, models, next, isLastPage, pathname, query, variables)
+  return parsePagination(state1, type, models, next, isLastPage, pathname, query, variables)
 }
 
-function parseStream(state, { payload: { response: { data }, pathname, query, variables } }) {
+function parseStream(state, { meta, payload: { response: { data }, pathname, query, variables } }) {
   return Object.keys(data).reduce((s, key) =>
-    parseQueryType(s, key, data[key], pathname, query, variables),
+    parseQueryType(s, key, data[key], meta.resultKey || pathname, query, variables),
     state,
   )
 }
@@ -406,7 +476,6 @@ export default function (state, action) {
     case ACTION_TYPES.V3.POST.LOAD_MANY_SUCCESS:
       return parseLoadManyPosts(state, action)
     case ACTION_TYPES.V3.USER.DETAIL_SUCCESS:
-
       return parseUserDetail(state, action)
     case ACTION_TYPES.PROFILE.FOLLOW_CATEGORIES_SUCCESS:
     case ACTION_TYPES.PROFILE.UNFOLLOW_CATEGORIES_SUCCESS:

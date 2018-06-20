@@ -83,12 +83,12 @@ describe('posts.js', () => {
     })
 
     it('has a top level action.type', () => {
-      expect(isFSAName(action, subject.loadComments)).to.be.true
+      expect(action.type).to.equal('V3.LOAD_STREAM')
     })
 
     it('sets the appropriate payload', () => {
-      expect(action.payload.endpoint.path).to.contain('/posts/1/comments')
-      expect(action.payload.postIdOrToken).to.equal('1')
+      expect(action.payload.query).to.contain('commentStream')
+      expect(action.payload.variables.id).to.equal('1')
     })
 
     it('sets the appropriate meta', () => {
