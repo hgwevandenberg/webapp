@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
-import { DismissButtonLGReverse } from './../buttons/Buttons'
-import { css, select } from '../../styles/jss'
+import { DismissButtonLG } from './../buttons/Buttons'
+import { css, hover, media, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
 const userDetailRolesModalStyle = css(
@@ -12,29 +12,52 @@ const userDetailRolesModalStyle = css(
   { margin: '0 auto' },
   select(
     '> .mask',
-    s.flex,
-    s.itemsCenter,
-    s.justifyCenter,
     s.fullscreen,
     s.fullWidth,
     s.fullHeight,
     s.bgcModal,
     s.zModal,
     { transition: `background-color 0.4s ${s.ease}` },
+
+    media(s.minBreak2,
+      s.flex,
+      s.itemsCenter,
+      s.justifyCenter,
+    ),
   ),
 )
 const userDetailRolesStyle = css(
   s.relative,
   s.block,
   s.p20,
-  s.pt40,
+  s.mt40,
   s.colorBlack,
+  s.fullWidth,
   s.leftAlign,
   s.bgcWhite,
   {
-    width: '60%',
-    borderRadius: 10,
+    maxWidth: 780,
+    borderRadius: 5,
   },
+
+  media(s.minBreak2,
+    s.m0,
+    s.pt40,
+    { width: '80%' },
+  ),
+  media(s.minBreak4,
+    { width: '60%' },
+  ),
+
+  select('& .CloseModal',
+    s.colorA,
+    { top: 14, right: 20 },
+    hover(s.colorBlack),
+
+    media(s.maxBreak2,
+      { top: 7, right: 7 },
+    ),
+  ),
 
   select('& h1',
     s.sansBlack,
@@ -61,10 +84,10 @@ export default function UserDetailRoles({
   return (
     <div className={userDetailRolesModalStyle}>
       <div className="mask" role="presentation" onClick={handleMaskClick}>
-        <DismissButtonLGReverse
-          onClick={close}
-        />
         <div className={`${userDetailRolesStyle} content`}>
+          <DismissButtonLG
+            onClick={close}
+          />
           <h1>Role Administrator</h1>
           {categoryUsers.map(cu => (
             <div key={cu.get('id')}>
