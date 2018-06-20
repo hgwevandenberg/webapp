@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import Avatar from '../assets/Avatar'
-import { ChevronCircleIcon, ShareIcon } from '../assets/Icons'
+import { ChevronCircleIcon, RolesIcon, ShareIcon } from '../assets/Icons'
 import { AppleStore, GooglePlayStore } from '../assets/Sprites'
 import { css, hover, media, parent, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
@@ -192,6 +192,12 @@ const shareButtonStyle = css(
   s.hv40,
   s.bgcBlack,
   media(s.minBreak2, s.block),
+  select('& .ShareIcon',
+    s.colorWhite,
+    {
+      marginTop: -6,
+    },
+  ),
 )
 
 export const HeroShareUserButton = (props, { onClickShareProfile }) =>
@@ -203,3 +209,35 @@ HeroShareUserButton.contextTypes = {
   onClickShareProfile: PropTypes.func.isRequired,
 }
 
+// -------------------------------------
+
+const userRolesButtonStyle = css(
+  { ...shareButtonStyle },
+  { right: 75 },
+  select('& .RolesIcon',
+    s.colorWhite,
+    {
+      marginTop: -3,
+    },
+    select('& g',
+      {
+        strokeWidth: 0,
+      },
+      select('& path',
+        {
+          strokeWidth: 0,
+          fill: '#fff',
+        },
+      ),
+    ),
+  ),
+)
+
+export const HeroUserRolesButton = (props, { onClickShareProfile }) =>
+  (<button className={`HeroUserRolesButton ${userRolesButtonStyle}`} onClick={onClickShareProfile} >
+    <RolesIcon />
+  </button>)
+
+HeroUserRolesButton.contextTypes = {
+  onClickShareProfile: PropTypes.func.isRequired,
+}

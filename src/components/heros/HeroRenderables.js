@@ -11,6 +11,7 @@ import {
   HeroPromotionCTA,
   HeroScrollToContentButton,
   HeroShareUserButton,
+  HeroUserRolesButton,
 } from './HeroParts'
 import Hint from '../hints/Hint'
 import { BadgeFeaturedIcon } from '../assets/Icons'
@@ -76,6 +77,7 @@ export const HeroProfile = ({ dpi, sources, userId, useGif }) =>
       useGif={useGif}
     />
     <UserContainer userId={userId} type="profile" />
+    <HeroUserRolesButton />
     <HeroShareUserButton />
     <HeroScrollToContentButton />
   </div>)
