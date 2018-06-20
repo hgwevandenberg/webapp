@@ -18,7 +18,6 @@ class UserDetailRolesContainer extends PureComponent {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     isOpen: PropTypes.bool.isRequired,
-    sampleProp: PropTypes.string,
     categoryUsers: PropTypes.object.isRequired,
   }
 

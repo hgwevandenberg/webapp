@@ -43,9 +43,9 @@ const userDetailRolesStyle = css(
 )
 
 const roleName = {
-  'FEATURED': 'Featured User',
-  'CURATOR': 'Curator',
-  'MODERATOR': 'Moderator',
+  FEATURED: 'Featured User',
+  CURATOR: 'Curator',
+  MODERATOR: 'Moderator',
 }
 
 export default function UserDetailRoles({
