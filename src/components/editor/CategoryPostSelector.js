@@ -1,244 +1,17 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
 import { scrollToPosition } from './../../lib/jello'
-import { css, media, parent, select } from './../../styles/jss'
-import * as s from './../../styles/jso'
 import {
   ChevronIcon,
   XIcon,
 } from '../assets/Icons'
-
-const categoryPostSelectorStyle = css(
-  s.inlineBlock,
-  s.relative,
-  s.mr10,
-  s.ml10,
-  {
-    width: 300,
-  },
-  media(s.maxBreak2,
-    s.m0,
-    s.fullWidth,
-    { marginBottom: 10 },
-  ),
-  parent('.PostGrid .isPostReposting',
-    s.m0,
-    s.fullWidth,
-    { marginBottom: 10 },
-  ),
-)
-
-const categoriesSelectionsStyle = css(
-  { cursor: 'pointer' },
-  select('& input', s.resetInput),
-  select('& .selector, & .selected',
-    s.fullWidth,
-    s.block,
-    s.pr20,
-    s.pl20,
-    s.zIndex2,
-    {
-      cursor: 'pointer',
-      paddingTop: 9,
-      paddingBottom: 9,
-      lineHeight: 20,
-      border: '1px solid #aaa',
-      borderRadius: 5,
-    },
-  ),
-  select('&.open .selector, &.open .selected',
-    {
-      borderBottomRightRadius: 0,
-      borderBottomLeftRadius: 0,
-    },
-  ),
-  // selector
-  select('& .selector',
-    s.relative,
-  ),
-  select('&.open .selector',
-    {
-      cursor: 'text',
-    },
-  ),
-  select('& .selector-label',
-    s.absolute,
-    s.colorA,
-    s.zIndex1,
-    {
-      left: 20,
-    },
-  ),
-  select('& svg.ChevronIcon',
-    s.absolute,
-    s.block,
-    s.colorA,
-    s.rotate90,
-    s.zIndex1,
-    {
-      cursor: 'pointer',
-      top: 10,
-      right: 10,
-    },
-    // select('& polyline', { fill: '#aaa' }),
-  ),
-  select('&.open svg.ChevronIcon',
-    s.zIndex3,
-  ),
-  // selected
-  select('& .selected',
-    {
-      borderColor: '#979797',
-    },
-    select('& b',
-      s.sansRegular,
-      s.inlineBlock,
-      s.fullWidth,
-      s.truncate,
-      {
-        width: 'calc(100% - 24px)',
-        lineHeight: 20,
-        verticalAlign: 'middle',
-      },
-      select('& i',
-        s.sansRegular,
-        s.colorA,
-      ),
-    ),
-    select('& button',
-      s.absolute,
-      {
-        right: 15,
-      },
-      media(s.maxBreak2,
-        { right: 18 },
-      ),
-    ),
-    select('& button span.label', s.displayNone),
-  ),
-)
-
-const categoriesListStyle = css(
-  s.absolute,
-  s.fullWidth,
-  s.p10,
-  s.overflowHidden,
-  s.overflowScrollWebY,
-  s.bgcWhite,
-  s.zTools,
-  {
-    top: 39,
-    left: 0,
-    maxHeight: 260,
-    border: '1px solid #aaa',
-    borderRadius: 0,
-    borderBottomRightRadius: 5,
-    borderBottomLeftRadius: 5,
-  },
-  select('& .divider',
-    s.p0,
-    s.m10,
-    s.bgcA,
-    {
-      height: 1,
-      border: 0,
-    },
-  ),
-  // list items
-  select('& b',
-    s.block,
-    s.m0,
-    s.p5,
-    s.pr10,
-    s.pl10,
-    s.colorA,
-    s.sansRegular,
-    {
-      lineHeight: 20,
-    },
-  ),
-  select('& ul',
-    s.resetList,
-    select('& li',
-      s.m0,
-      s.p0,
-      select('& button',
-        s.block,
-        s.fullWidth,
-        {
-          marginTop: 1,
-          marginBottom: 1,
-          padding: 4,
-          height: 'auto',
-          textAlign: 'left',
-          lineHeight: 20,
-        },
-        // have to be below `padding: 4`
-        s.pr10,
-        s.pl10,
-      ),
-      select('& button:active',
-        s.colorBlack,
-        s.bgcWhite,
-      ),
-
-      select('&.isSelected button, & button:hover',
-        s.colorWhite,
-        s.bgcBlack,
-        { borderRadius: 3 },
-      ),
-    ),
-  ),
-  // mobile tweaks
-  media(s.maxBreak2,
-    s.relative,
-    s.block,
-    {
-      WebkitOverflowScrolling: 'none',
-      overflowX: 'hidden',
-      overflowY: 'visible',
-      top: 'auto',
-      left: 'auto',
-      maxHeight: '100%',
-      borderTopWidth: 0,
-    },
-  ),
-)
-
-function filterSearch(categories, searchText) {
-  if (searchText === '') { return categories }
-  return categories.filter(c => c.get('name').toLowerCase().includes(searchText.toLowerCase()))
-}
-
-function CategoryItem({ category, index, selectedIndexCurrent, onSelect }) {
-  const isSelected = selectedIndexCurrent === index
-  return (
-    <li
-      id={`categorySelect_${category.get('id')}`}
-      className={classNames({ isSelected })}
-    >
-      <button
-        role="option"
-        aria-selected={isSelected}
-        onClick={() => onSelect(category)}
-      >
-        {category.get('name')}
-      </button>
-    </li>
-  )
-}
-
-CategoryItem.propTypes = {
-  category: PropTypes.object.isRequired,
-  index: PropTypes.number.isRequired,
-  onSelect: PropTypes.func.isRequired,
-  selectedIndexCurrent: PropTypes.number,
-}
-
-CategoryItem.defaultProps = {
-  selectedIndexCurrent: null,
-}
+import {
+  filterSearch,
+  FilterSelectorControlWrapper,
+  FilterSelectorListWrapper,
+  FilterSelectorInputWrapper,
+  ListItem,
+} from './../forms/FilterSelectorControl'
 
 export default class CategoryPostSelector extends PureComponent {
   static propTypes = {
@@ -580,14 +353,12 @@ export default class CategoryPostSelector extends PureComponent {
     // we can assume there is only one selected category per post.
     const offset = subscribedCategories.length
     return (
-      /* eslint-disable jsx-a11y/interactive-supports-focus */
-      <aside
+      <FilterSelectorControlWrapper
         ref={this.setWrapperRef}
-        className={`${categoryPostSelectorStyle}${isPostEditing ? ' disabled' : ''}`}
-        role="searchbox"
-        onClick={e => this.handleSelectorClick(e)}
+        className={isPostEditing ? 'disabled' : null}
+        handleClick={e => this.handleSelectorClick(e)}
       >
-        <span className={classNames({ open }, `${categoriesSelectionsStyle}`)}>
+        <FilterSelectorInputWrapper open={open}>
           {!selectedCategory &&
             <span className="input-with-label">
               {!searchText &&
@@ -635,22 +406,20 @@ export default class CategoryPostSelector extends PureComponent {
               }
             </span>
           }
-        </span>
+        </FilterSelectorInputWrapper>
         {open && !isPostEditing &&
-          <span
-            id="categoryList"
-            className={categoriesListStyle}
-          >
+          <FilterSelectorListWrapper id="categoryList">
             {subscribedCategories.length > 0 &&
               <span className="subscribed">
                 <b>Your Categories</b>
                 <ul>
-                  {subscribedCategories.map((category, index) =>
-                    (<CategoryItem
-                      key={`categorySelect:${category.get('id')}`}
-                      category={category}
+                  {subscribedCategories.map((item, index) =>
+                    (<ListItem
+                      key={`categorySelect:${item.get('id')}`}
+                      item={item}
                       index={index}
                       selectedIndexCurrent={selectedIndex}
+                      type="category"
                       onSelect={this.onSelectLocal}
                     />),
                   )}
@@ -661,20 +430,21 @@ export default class CategoryPostSelector extends PureComponent {
             <span className="all">
               <b>All Categories</b>
               <ul>
-                {unsubscribedCategories.map((category, index) =>
-                  (<CategoryItem
-                    key={`categorySelect:${category.get('id')}`}
-                    category={category}
+                {unsubscribedCategories.map((item, index) =>
+                  (<ListItem
+                    key={`categorySelect:${item.get('id')}`}
+                    item={item}
                     index={index + offset}
                     selectedIndexCurrent={selectedIndex}
+                    type="category"
                     onSelect={this.onSelectLocal}
                   />),
                 )}
               </ul>
             </span>
-          </span>
+          </FilterSelectorListWrapper>
         }
-      </aside>
+      </FilterSelectorControlWrapper>
     )
   }
 }
