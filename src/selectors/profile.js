@@ -1,7 +1,7 @@
 import Immutable from 'immutable'
 import { createSelector } from 'reselect'
-import { selectIsLoggedIn } from '../selectors/authentication'
-import { selectPathname } from '../selectors/routing'
+import { selectIsLoggedIn } from './authentication'
+import { selectPathname } from './routing'
 
 // state.profile.xxx
 export const selectAllowsAnalytics = state => state.profile.get('allowsAnalytics')

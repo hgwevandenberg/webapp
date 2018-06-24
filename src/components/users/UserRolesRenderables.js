@@ -76,6 +76,9 @@ export default function UserDetailRoles({
   handleMaskClick,
   isOpen,
   categoryUsers,
+  administeredCategories,
+  searchCategories,
+  userId,
 }) {
   if (!isOpen) {
     return null
@@ -89,6 +92,12 @@ export default function UserDetailRoles({
             onClick={close}
           />
           <h1>Role Administrator</h1>
+          <CategoryUserForm
+            administeredCategories={administeredCategories}
+            userId={userId}
+            searchCategories={searchCategories}
+          />
+
           {categoryUsers.map(cu => (
             <div key={cu.get('id')}>
               {roleName[cu.get('role')]} in&nbsp;
@@ -105,4 +114,32 @@ UserDetailRoles.propTypes = {
   handleMaskClick: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
   categoryUsers: PropTypes.object.isRequired,
+  administeredCategories: PropTypes.object.isRequired,
+  searchCategories: PropTypes.func.isRequired,
+  userId: PropTypes.string.isRequired,
+}
+
+function CategoryUserForm({
+  administeredCategories,
+  userId,
+  searchCategories,
+}) {
+  if (administeredCategories.count() < 1) {
+    return null
+  }
+
+  // TODO: Should be a nice dropdown, like the editor category select
+  return (
+    <p>
+      form needs to send:<br />
+      userId - {userId}<br />
+      categoryId<br />
+      role
+    </p>
+  )
+}
+CategoryUserForm.propTypes = {
+  administeredCategories: PropTypes.object.isRequired,
+  searchCategories: PropTypes.func.isRequired,
+  userId: PropTypes.string.isRequired,
 }

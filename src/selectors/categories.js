@@ -197,3 +197,10 @@ export const selectDiscoverMetaData = createSelector(
     return { description, image, title }
   },
 )
+
+export const selectAdministeredCategoryIds = state =>
+  state.json.getIn(['pages', 'administeredCategoryProfileSearch', 'ids'], OrderedSet())
+export const selectAdministeredCategories = createSelector(
+  [selectAdministeredCategoryIds, selectCategoryCollection],
+  (ids, categories) => ids.map(id => categories.get(id)),
+)

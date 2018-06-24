@@ -119,6 +119,7 @@ function parseCategory(state, category) {
     allowInOnboarding: category.allowInOnboarding,
     isCreatorType: category.isCreatorType,
     tileImage: category.tileImage,
+    role: deepGet(category, ['currentUserState', 'role']),
   }))
 }
 
@@ -415,6 +416,10 @@ function parseQueryType(state, type, stream, pathname, query, variables) {
     case 'userLoveStream':
       models = stream.loves
       parser = parsePostFromLove
+      break;
+    case 'searchCategories':
+      models = stream.categories
+      parser = parseCategory
       break;
     default:
       models = null

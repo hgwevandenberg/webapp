@@ -423,6 +423,7 @@ export class UserProfile extends PureComponent {
         </UserProfileButtons>
         <UserDetailRolesContainer
           isOpen={isRolesOpen}
+          userId={id}
         />
       </div>
     )
