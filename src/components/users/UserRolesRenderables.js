@@ -1,7 +1,9 @@
-import React from 'react'
+import Immutable from 'immutable'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import { DismissButtonLG } from './../buttons/Buttons'
+import { FilterSelectorControl } from './../forms/FilterSelectorControl'
 import { css, hover, media, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
@@ -76,6 +78,7 @@ export default function UserDetailRoles({
   handleMaskClick,
   isOpen,
   categoryUsers,
+  categories,
   administeredCategories,
   searchCategories,
   userId,
@@ -94,6 +97,7 @@ export default function UserDetailRoles({
           <h1>Role Administrator</h1>
           <CategoryUserForm
             administeredCategories={administeredCategories}
+            categories={categories}
             userId={userId}
             searchCategories={searchCategories}
           />
@@ -114,32 +118,86 @@ UserDetailRoles.propTypes = {
   handleMaskClick: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
   categoryUsers: PropTypes.object.isRequired,
+  categories: PropTypes.object.isRequired,
   administeredCategories: PropTypes.object.isRequired,
   searchCategories: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired,
 }
 
-function CategoryUserForm({
-  administeredCategories,
-  userId,
-  searchCategories,
-}) {
-  if (administeredCategories.count() < 1) {
-    return null
+class CategoryUserForm extends PureComponent {
+  constructor(props) {
+    super(props)
+    this.state = {
+      selectedItems: [],
+    }
+    this.onSelect = this.onSelect.bind(this)
+    this.onClear = this.onClear.bind(this)
   }
 
-  // TODO: Should be a nice dropdown, like the editor category select
-  return (
-    <p>
-      form needs to send:<br />
-      userId - {userId}<br />
-      categoryId<br />
-      role
-    </p>
-  )
+  onSelect() {
+    console.log('do the select thing!')
+  }
+
+  onClear() {
+    console.log('do the thing on clear!')
+  }
+
+  render() {
+    const {
+      administeredCategories,
+      categories,
+      userId,
+      searchCategories,
+    } = this.props
+
+    const {
+      selectedItems,
+    } = this.state
+
+    const userRoles = Immutable.fromJS([
+      { id: 'FEATURED_USER', name: 'Featured User' },
+      { id: 'CURATOR', name: 'Curator' },
+      { id: 'MODERATOR', name: 'Moderator' },
+    ])
+
+    if (administeredCategories.count() < 1) {
+      return null
+    }
+
+    // TODO: Should be a nice dropdown, like the editor category select
+    return (
+      <div>
+        <FilterSelectorControl
+          labelText="Choose Category"
+          listItems={categories}
+          onSelect={this.onSelect}
+          onClear={this.onClear}
+          searchPromptText="Type category name"
+          selectedItems={selectedItems}
+          type="roleCategoryPicker"
+        />
+        <FilterSelectorControl
+          labelText="Choose position"
+          listItems={userRoles}
+          onSelect={this.onSelect}
+          onClear={this.onClear}
+          searchPromptText="Type position"
+          selectedItems={selectedItems}
+          type="roleCategoryPicker"
+        />
+        <p>
+          form needs to send:<br />
+          userId - {userId}<br />
+          categoryId<br />
+          role
+        </p>
+      </div>
+    )
+  }
 }
 CategoryUserForm.propTypes = {
   administeredCategories: PropTypes.object.isRequired,
+  categories: PropTypes.object.isRequired,
   searchCategories: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired,
 }

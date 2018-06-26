@@ -65,6 +65,8 @@ const selectorSelectedStyle = css(
   select('& .selector-label',
     s.absolute,
     s.colorA,
+    s.fontSize14,
+    s.lh40,
     s.zIndex1,
     {
       left: 20,
@@ -215,7 +217,7 @@ export function FilterSelectorControlWrapper({ children, className, handleClick 
   return (
     /* eslint-disable jsx-a11y/interactive-supports-focus */
     <aside
-      className={classNames({ className }, `${filterSelectorControlStyle}`)}
+      className={classNames(className, `${filterSelectorControlStyle}`)}
       role="searchbox"
       onClick={handleClick}
     >
@@ -310,7 +312,7 @@ export class FilterSelectorControl extends PureComponent {
     assignedItems: PropTypes.object,
     isEditing: PropTypes.bool,
     labelText: PropTypes.string,
-    listItems: PropTypes.array.isRequired,
+    listItems: PropTypes.object.isRequired,
     onSelect: PropTypes.func.isRequired,
     onClear: PropTypes.func.isRequired,
     resetSelection: PropTypes.bool,
@@ -715,6 +717,7 @@ export class FilterSelectorControl extends PureComponent {
     return (
       <FilterSelectorControlWrapper
         ref={this.setWrapperRef}
+        className={`fs-${type}`}
         handleClick={e => this.handleSelectorClick(e)}
       >
         <FilterSelectorInputWrapper open={open}>

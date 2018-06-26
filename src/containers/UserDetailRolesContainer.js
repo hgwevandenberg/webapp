@@ -7,12 +7,13 @@ import { searchAdministratedCategories } from '../actions/profile'
 import UserDetailRoles from '../components/users/UserRolesRenderables'
 import { SHORTCUT_KEYS } from '../constants/application_types'
 import { selectUserCategoryUsers } from '../selectors/user'
-import { selectAdministeredCategories } from '../selectors/categories'
+import { selectAdministeredCategories, selectOrderedCategories } from '../selectors/categories'
 
 export function mapStateToProps(state, props) {
   return {
     classList: state.modal.get('classList'),
     categoryUsers: selectUserCategoryUsers(state, props),
+    categories: selectOrderedCategories(state, props),
     administeredCategories: selectAdministeredCategories(state, props),
   }
 }
@@ -22,6 +23,7 @@ class UserDetailRolesContainer extends PureComponent {
     dispatch: PropTypes.func.isRequired,
     isOpen: PropTypes.bool.isRequired,
     categoryUsers: PropTypes.object.isRequired,
+    categories: PropTypes.object.isRequired,
     administeredCategories: PropTypes.object.isRequired,
     categorySearchTerm: PropTypes.string,
     userId: PropTypes.string.isRequired,
@@ -76,6 +78,7 @@ class UserDetailRolesContainer extends PureComponent {
     const {
       isOpen,
       categoryUsers,
+      categories,
       administeredCategories,
       userId,
     } = this.props
@@ -86,6 +89,7 @@ class UserDetailRolesContainer extends PureComponent {
         isOpen={isOpen}
         handleMaskClick={e => this.handleMaskClick(e)}
         categoryUsers={categoryUsers}
+        categories={categories}
         administeredCategories={administeredCategories}
         searchCategories={term => this.searchCategories(term)}
         userId={userId}
