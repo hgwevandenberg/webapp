@@ -307,7 +307,6 @@ ListItem.defaultProps = {
 
 export default class FilterSelectorControl extends PureComponent {
   static propTypes = {
-    featuredInCategories: PropTypes.array.isRequired,
     isEditing: PropTypes.bool,
     labelText: PropTypes.string,
     onSelect: PropTypes.func.isRequired,
@@ -345,15 +344,9 @@ export default class FilterSelectorControl extends PureComponent {
 
   componentDidMount() {
     const {
-      featuredInCategories,
-      onSelect,
       assignedItems,
       selectedItems,
     } = this.props
-    if (featuredInCategories.length > 0) {
-      onSelect(featuredInCategories[0])
-    }
-
     if (selectedItems || assignedItems) {
       this.setItemSelection()
     }
