@@ -305,25 +305,28 @@ ListItem.defaultProps = {
   type: 'item',
 }
 
-export default class FilterSelectorControl extends PureComponent {
+export class FilterSelectorControl extends PureComponent {
   static propTypes = {
+    assignedItems: PropTypes.object,
     isEditing: PropTypes.bool,
     labelText: PropTypes.string,
+    listItems: PropTypes.array.isRequired,
     onSelect: PropTypes.func.isRequired,
     onClear: PropTypes.func.isRequired,
-    assignedItems: PropTypes.object,
-    resetSelection: PropTypes.bool.isRequired,
+    resetSelection: PropTypes.bool,
     searchPromptText: PropTypes.string,
     selectedItems: PropTypes.array.isRequired,
-    listItems: PropTypes.array.isRequired,
-    trackEvent: PropTypes.func.isRequired,
-    type: PropTypes.string.isRequired,
+    trackEvent: PropTypes.func,
+    type: PropTypes.string,
   }
   static defaultProps = {
+    assignedItems: null,
     isEditing: false,
     labelText: 'Choose',
-    assignedItems: null,
+    resetSelection: false,
     searchPromptText: 'Type something…',
+    trackEvent: null,
+    type: 'filter-select',
   }
 
   constructor(props) {
@@ -393,20 +396,22 @@ export default class FilterSelectorControl extends PureComponent {
   onSelectLocal = (item) => {
     const { onSelect, trackEvent, type } = this.props
 
-    let trackEventName = null
-    switch (type) {
-      case ('postCategorySelect'):
-        trackEventName = 'category-post-selector-selected'
-        break
-      default:
-        return null
-    }
+    if (trackEvent) {
+      let trackEventName = null
+      switch (type) {
+        case ('postCategorySelect'):
+          trackEventName = 'category-post-selector-selected'
+          break
+        default:
+          return null
+      }
 
-    if (trackEventName) {
-      return trackEvent(trackEventName, {
-        id: item.get('id'),
-        slug: item.get('slug'),
-      })
+      if (trackEventName) {
+        return trackEvent(trackEventName, {
+          id: item.get('id'),
+          slug: item.get('slug'),
+        })
+      }
     }
 
     return onSelect(item)
@@ -510,20 +515,22 @@ export default class FilterSelectorControl extends PureComponent {
     } else if (event.key === 'Enter' && !selectedIsNull) {
       const selected = listItems[selectedIndex]
 
-      let trackEventName = null
-      switch (type) {
-        case ('postCategorySelect'):
-          trackEventName = 'category-post-selector-selected'
-          break
-        default:
-          return null
-      }
+      if (trackEvent) {
+        let trackEventName = null
+        switch (type) {
+          case ('postCategorySelect'):
+            trackEventName = 'category-post-selector-selected'
+            break
+          default:
+            return null
+        }
 
-      if (trackEventName) {
-        return trackEvent(trackEventName, {
-          id: selected.get('id'),
-          slug: selected.get('slug'),
-        })
+        if (trackEventName) {
+          return trackEvent(trackEventName, {
+            id: selected.get('id'),
+            slug: selected.get('slug'),
+          })
+        }
       }
 
       onSelect(listItems[selectedIndex])
@@ -610,18 +617,52 @@ export default class FilterSelectorControl extends PureComponent {
 
   open() {
     if (!this.state.open) {
-      this.props.trackEvent('category-post-selector-opened')
-      this.setState({
+      const { trackEvent, type } = this.props
+
+      if (trackEvent) {
+        let trackEventName = null
+        switch (type) {
+          case ('postCategorySelect'):
+            trackEventName = 'category-post-selector-opened'
+            break
+          default:
+            return null
+        }
+
+        if (trackEventName) {
+          trackEvent(trackEventName)
+        }
+      }
+
+      return this.setState({
         open: true,
       })
     }
+    return null
   }
 
   close(track = true) {
     if (this.state.open) {
-      if (track) { this.props.trackEvent('category-post-selector-closed') }
-      this.resetSelection(false)
+      const { trackEvent, type } = this.props
+
+      if (trackEvent && track) {
+        let trackEventName = null
+        switch (type) {
+          case ('postCategorySelect'):
+            trackEventName = 'category-post-selector-closed'
+            break
+          default:
+            return null
+        }
+
+        if (trackEventName) {
+          trackEvent(trackEventName)
+        }
+      }
+
+      return this.resetSelection(false)
     }
+    return null
   }
 
   clearLocal() {
@@ -631,9 +672,24 @@ export default class FilterSelectorControl extends PureComponent {
   }
 
   resetSelection(track = true) {
-    const { listItems } = this.props
-    if (track) { this.props.trackEvent('category-post-selector-reset') }
-    this.setState({
+    const { listItems, trackEvent, type } = this.props
+
+    if (trackEvent && track) {
+      let trackEventName = null
+      switch (type) {
+        case ('postCategorySelect'):
+          trackEventName = 'category-post-selector-reset'
+          break
+        default:
+          return null
+      }
+
+      if (trackEventName) {
+        trackEvent(trackEventName)
+      }
+    }
+
+    return this.setState({
       listItems,
       searchText: '',
       focused: false,
