@@ -164,6 +164,7 @@ class CategoryUserForm extends PureComponent {
     return (
       <div>
         <FilterSelectorControl
+          searchCallback={searchCategories}
           labelText="Choose Category"
           listItems={administeredCategories}
           onSelect={this.onSelect}

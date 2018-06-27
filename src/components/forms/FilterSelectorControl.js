@@ -316,6 +316,7 @@ export class FilterSelectorControl extends PureComponent {
     onSelect: PropTypes.func.isRequired,
     onClear: PropTypes.func.isRequired,
     resetSelection: PropTypes.bool,
+    searchCallback: PropTypes.func,
     searchPromptText: PropTypes.string,
     selectedItems: PropTypes.array.isRequired,
     trackEvent: PropTypes.func,
@@ -326,6 +327,7 @@ export class FilterSelectorControl extends PureComponent {
     isEditing: false,
     labelText: 'Choose',
     resetSelection: false,
+    searchCallback: null,
     searchPromptText: 'Type something…',
     trackEvent: null,
     type: 'filter-select',
@@ -484,13 +486,16 @@ export class FilterSelectorControl extends PureComponent {
     let newSelectedIndex = selectedIndex
     if (!selectedIndex) {
       newSelectedIndex = searchText === '' ? null : 0
-      // newSelectedIndex = 0
     }
     this.setState({
       selectedIndex: newSelectedIndex,
       searchText,
       listItems: filterSearch(listItems, searchText),
     })
+
+    if (this.props.searchCallback) {
+      this.props.searchCallback(searchText)
+    }
   }
 
   handleKeyDown = (event) => {
