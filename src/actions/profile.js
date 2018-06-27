@@ -303,6 +303,7 @@ export function splitFinish(uuid, name) {
 
 export function searchAdministratedCategories(term) {
   const variables = { administered: true }
+  console.log(term)
   if (term) { variables.query = term }
   return {
     type: V3.LOAD_STREAM,

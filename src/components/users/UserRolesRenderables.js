@@ -78,7 +78,6 @@ export default function UserDetailRoles({
   handleMaskClick,
   isOpen,
   categoryUsers,
-  categories,
   administeredCategories,
   searchCategories,
   userId,
@@ -97,7 +96,6 @@ export default function UserDetailRoles({
           <h1>Role Administrator</h1>
           <CategoryUserForm
             administeredCategories={administeredCategories}
-            categories={categories}
             userId={userId}
             searchCategories={searchCategories}
           />
@@ -118,7 +116,6 @@ UserDetailRoles.propTypes = {
   handleMaskClick: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
   categoryUsers: PropTypes.object.isRequired,
-  categories: PropTypes.object.isRequired,
   administeredCategories: PropTypes.object.isRequired,
   searchCategories: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired,
@@ -145,7 +142,6 @@ class CategoryUserForm extends PureComponent {
   render() {
     const {
       administeredCategories,
-      categories,
       userId,
       searchCategories,
     } = this.props
@@ -169,7 +165,7 @@ class CategoryUserForm extends PureComponent {
       <div>
         <FilterSelectorControl
           labelText="Choose Category"
-          listItems={categories}
+          listItems={administeredCategories}
           onSelect={this.onSelect}
           onClear={this.onClear}
           searchPromptText="Type category name"
@@ -197,7 +193,6 @@ class CategoryUserForm extends PureComponent {
 }
 CategoryUserForm.propTypes = {
   administeredCategories: PropTypes.object.isRequired,
-  categories: PropTypes.object.isRequired,
   searchCategories: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired,
 }
