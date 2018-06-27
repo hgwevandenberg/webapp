@@ -355,7 +355,7 @@ export default class CategoryPostSelector extends PureComponent {
     return (
       <FilterSelectorControlWrapper
         ref={this.setWrapperRef}
-        className={isPostEditing ? 'disabled' : null}
+        className={`category-post-selector${isPostEditing ? ' disabled' : ''}`}
         handleClick={e => this.handleSelectorClick(e)}
       >
         <FilterSelectorInputWrapper open={open}>

@@ -71,6 +71,11 @@ const userDetailRolesStyle = css(
     s.pb10,
     s.pr20,
     s.pl20,
+
+    select('& .fs-rolePicker',
+      s.ml10,
+      { width: 200 },
+    ),
   ),
   select('& .user-roles',
     s.pt20,
@@ -232,7 +237,7 @@ class CategoryUserForm extends PureComponent {
           onClear={this.onClear}
           searchPromptText="Type position"
           selectedItems={selectedItems}
-          type="roleCategoryPicker"
+          type="rolePicker"
         />
         <p>
           form needs to send:<br />

@@ -37,6 +37,10 @@ const wrapperStyle = css(
   media(s.maxBreak2,
     { height: 'auto' },
   ),
+  select('& .category-post-selector',
+    s.mr10,
+    s.ml10,
+  ),
 )
 
 const leftStyle = css(

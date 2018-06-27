@@ -12,8 +12,6 @@ import {
 const filterSelectorControlStyle = css(
   s.inlineBlock,
   s.relative,
-  s.mr10,
-  s.ml10,
   {
     width: 300,
   },
