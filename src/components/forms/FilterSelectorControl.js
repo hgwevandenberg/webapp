@@ -721,67 +721,68 @@ export class FilterSelectorControl extends PureComponent {
     // we can assume there is only one selected item at a time.
     return (
       <FilterSelectorControlWrapper
-        ref={this.setWrapperRef}
         className={`fs-${type}`}
         handleClick={e => this.handleSelectorClick(e)}
       >
-        <FilterSelectorInputWrapper open={open}>
-          {!selectedItem &&
-            <span className="input-with-label">
-              {!searchText &&
-                <label
-                  className="selector-label"
-                  htmlFor={type}
-                >
-                  {open ? searchPromptText : labelText}
-                </label>
-              }
-              <ChevronIcon />
-              <input
-                ref={(node) => { this.itemSelectorRef = node }}
-                className="selector"
-                name={type}
-                type="search"
-                value={searchText}
-                onChange={this.handleSearch}
-                onKeyDown={this.handleKeyDown}
-                onBlur={() => this.handleBlur(false)}
-                onFocus={() => this.handleBlur(true)}
-              />
-            </span>
+        <span ref={this.setWrapperRef}>
+          <FilterSelectorInputWrapper open={open}>
+            {!selectedItem &&
+              <span className="input-with-label">
+                {!searchText &&
+                  <label
+                    className="selector-label"
+                    htmlFor={type}
+                  >
+                    {open ? searchPromptText : labelText}
+                  </label>
+                }
+                <ChevronIcon />
+                <input
+                  ref={(node) => { this.itemSelectorRef = node }}
+                  className="selector"
+                  name={type}
+                  type="search"
+                  value={searchText}
+                  onChange={this.handleSearch}
+                  onKeyDown={this.handleKeyDown}
+                  onBlur={() => this.handleBlur(false)}
+                  onFocus={() => this.handleBlur(true)}
+                />
+              </span>
+            }
+            {selectedItem &&
+              <span className="selected">
+                <b>
+                  <i>Post into:</i>
+                  &nbsp;
+                  {selectedItem.get('name')}
+                </b>
+                <button onClick={() => this.clearLocal()}>
+                  <span className="label">Remove</span>
+                  <span className="icon">
+                    <XIcon />
+                  </span>
+                </button>
+              </span>
+            }
+          </FilterSelectorInputWrapper>
+          {open &&
+            <FilterSelectorListWrapper id={`${type}List`}>
+              <ul>
+                {listItems.map((item, index) =>
+                  (<ListItem
+                    key={`${type}Select:${item.get('id')}`}
+                    item={item}
+                    index={index}
+                    selectedIndexCurrent={selectedIndex}
+                    type={type}
+                    onSelect={this.onSelectLocal}
+                  />),
+                )}
+              </ul>
+            </FilterSelectorListWrapper>
           }
-          {selectedItem &&
-            <span className="selected">
-              <b>
-                <i>Post into:</i>
-                &nbsp;
-                {selectedItem.get('name')}
-              </b>
-              <button onClick={() => this.clearLocal()}>
-                <span className="label">Remove</span>
-                <span className="icon">
-                  <XIcon />
-                </span>
-              </button>
-            </span>
-          }
-        </FilterSelectorInputWrapper>
-        {open &&
-          <FilterSelectorListWrapper id={`${type}List`}>
-            <ul>
-              {listItems.map((item, index) =>
-                (<ListItem
-                  key={`${type}Select:${item.get('id')}`}
-                  item={item}
-                  index={index}
-                  selectedIndexCurrent={selectedIndex}
-                  type={type}
-                  onSelect={this.onSelectLocal}
-                />),
-              )}
-            </ul>
-          </FilterSelectorListWrapper>
-        }
+        </span>
       </FilterSelectorControlWrapper>
     )
   }
