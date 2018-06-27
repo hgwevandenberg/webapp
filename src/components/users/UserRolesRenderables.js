@@ -31,7 +31,8 @@ const userDetailRolesModalStyle = css(
 const userDetailRolesStyle = css(
   s.relative,
   s.block,
-  s.p20,
+  s.pt20,
+  s.pb10,
   s.mt40,
   s.colorBlack,
   s.fullWidth,
@@ -65,6 +66,20 @@ const userDetailRolesStyle = css(
     s.sansBlack,
     s.fontSize24,
   ),
+
+  select('& .assign-roles',
+    s.pb10,
+    s.pr20,
+    s.pl20,
+  ),
+  select('& .user-roles',
+    s.pt20,
+    s.pr20,
+    s.pl20,
+    s.resetList,
+    s.borderTop,
+    { borderColor: '#f2f2f2' },
+  ),
 )
 
 const roleName = {
@@ -93,19 +108,24 @@ export default function UserDetailRoles({
           <DismissButtonLG
             onClick={close}
           />
-          <h1>Role Administrator</h1>
-          <CategoryUserForm
-            administeredCategories={administeredCategories}
-            userId={userId}
-            searchCategories={searchCategories}
-          />
-
-          {categoryUsers.map(cu => (
-            <div key={cu.get('id')}>
-              {roleName[cu.get('role')]} in&nbsp;
-              <Link to={`/discover/${cu.get('categorySlug')}`}>{cu.get('categoryName')}</Link>
-            </div>
-          ))}
+          <div className="assign-roles">
+            <h1>Role Administrator</h1>
+            <CategoryUserForm
+              administeredCategories={administeredCategories}
+              userId={userId}
+              searchCategories={searchCategories}
+            />
+          </div>
+          <ul className="user-roles">
+            {categoryUsers.map(cu => (
+              <UserRole
+                key={cu.get('id')}
+                name={roleName[cu.get('role')]}
+                categoryName={cu.get('categoryName')}
+                categorySlug={cu.get('categorySlug')}
+              />
+            ))}
+          </ul>
         </div>
       </div>
     </div>
@@ -119,6 +139,38 @@ UserDetailRoles.propTypes = {
   administeredCategories: PropTypes.object.isRequired,
   searchCategories: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired,
+}
+
+const userRoleStyle = css(
+  s.flex,
+  s.justifySpaceBetween,
+  s.fullWidth,
+  s.mb10,
+  s.bgcF2,
+  { padding: '6px 8px 2px 8px' },
+)
+
+function UserRole({
+  categoryName,
+  categorySlug,
+  name,
+}) {
+  return (
+    <li className={userRoleStyle}>
+      <span className="meta">
+        {name} in&nbsp;
+        <Link to={`/discover/${categorySlug}`}>{categoryName}</Link>
+      </span>
+      <span className="controls">
+        controls
+      </span>
+    </li>
+  )
+}
+UserRole.propTypes = {
+  name: PropTypes.string.isRequired,
+  categoryName: PropTypes.string.isRequired,
+  categorySlug: PropTypes.string.isRequired,
 }
 
 class CategoryUserForm extends PureComponent {
