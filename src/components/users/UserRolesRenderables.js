@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import { DismissButtonLG } from './../buttons/Buttons'
+import { PencilIcon, XBoxIcon } from './../assets/Icons'
 import { FilterSelectorControl } from './../forms/FilterSelectorControl'
 import { css, hover, media, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
@@ -122,12 +123,6 @@ export default function UserDetailRoles({
               searchCategories={searchCategories}
               userId={userId}
             />
-            <p>
-              form needs to send:<br />
-              userId - {userId}<br />
-              categoryId<br />
-              role
-            </p>
           </div>
           <ul className="user-roles">
             {categoryUsers.map(cu => (
@@ -162,6 +157,29 @@ const userRoleStyle = css(
   s.mb10,
   s.bgcF2,
   { padding: '6px 8px 2px 8px' },
+
+  select('& .controls',
+    s.flex,
+    s.justifyCenter,
+    s.itemsCenter,
+
+    select('& .edit, & .remove',
+      s.colorA,
+      s.transitionColor,
+      hover(
+        s.colorBlack,
+      ),
+    ),
+    select('& .edit svg',
+      {
+        marginTop: -1,
+        transform: 'scale(0.85)',
+      },
+    ),
+    select('& .remove',
+      { marginLeft: 3 },
+    ),
+  ),
 )
 
 function UserRole({
@@ -176,7 +194,12 @@ function UserRole({
         <Link to={`/discover/${categorySlug}`}>{categoryName}</Link>
       </span>
       <span className="controls">
-        controls
+        <button className="edit">
+          <PencilIcon />
+        </button>
+        <button className="remove">
+          <XBoxIcon />
+        </button>
       </span>
     </li>
   )
