@@ -94,11 +94,12 @@ const roleName = {
 }
 
 export default function UserDetailRoles({
-  close,
-  handleMaskClick,
-  isOpen,
-  categoryUsers,
   administeredCategories,
+  categoryUsers,
+  close,
+  isOpen,
+  handleMaskClick,
+  handleRolesSubmit,
   searchCategories,
   userId,
 }) {
@@ -115,11 +116,18 @@ export default function UserDetailRoles({
           />
           <div className="assign-roles">
             <h1>Role Administrator</h1>
-            <CategoryUserForm
+            <UserCategoryRolesForm
               administeredCategories={administeredCategories}
-              userId={userId}
+              handleSubmit={handleRolesSubmit}
               searchCategories={searchCategories}
+              userId={userId}
             />
+            <p>
+              form needs to send:<br />
+              userId - {userId}<br />
+              categoryId<br />
+              role
+            </p>
           </div>
           <ul className="user-roles">
             {categoryUsers.map(cu => (
@@ -137,11 +145,12 @@ export default function UserDetailRoles({
   )
 }
 UserDetailRoles.propTypes = {
+  administeredCategories: PropTypes.object.isRequired,
+  categoryUsers: PropTypes.object.isRequired,
   close: PropTypes.func.isRequired,
   handleMaskClick: PropTypes.func.isRequired,
+  handleRolesSubmit: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
-  categoryUsers: PropTypes.object.isRequired,
-  administeredCategories: PropTypes.object.isRequired,
   searchCategories: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired,
 }
@@ -191,9 +200,33 @@ const formStyle = css(
       s.block,
     ),
   ),
+
+  select('& .role-submit',
+    s.pr10,
+    s.pl10,
+    s.hv40,
+    s.lh40,
+    s.fontSize14,
+    s.colorWhite,
+    s.bgcGreen,
+    s.transitionBgColor,
+    { borderRadius: 5 },
+
+    hover(
+      {
+        cursor: 'pointer',
+        backgroundColor: '#16a905',
+      },
+    ),
+
+    select('&:disabled, &:disabled:hover',
+      s.bgcA,
+      hover({ cursor: 'default' }),
+    ),
+  ),
 )
 
-class CategoryUserForm extends PureComponent {
+class UserCategoryRolesForm extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
@@ -236,10 +269,29 @@ class CategoryUserForm extends PureComponent {
     })
   }
 
+  handleSubmitLocal(e) {
+    e.preventDefault()
+
+    const { handleSubmit, userId } = this.props
+    const { selectedCategories, selectedRoles } = this.state
+
+    if (selectedCategories && selectedRoles) {
+      const categoryId = selectedCategories[0].get('id')
+      const roleId = selectedRoles[0].get('id')
+      const roleParams = {
+        categoryId,
+        roleId,
+        userId,
+      }
+
+      return handleSubmit(roleParams)
+    }
+    return null
+  }
+
   render() {
     const {
       administeredCategories,
-      userId,
       searchCategories,
     } = this.props
 
@@ -253,6 +305,8 @@ class CategoryUserForm extends PureComponent {
       { id: 'CURATOR', name: 'Curator' },
       { id: 'MODERATOR', name: 'Moderator' },
     ])
+
+    const enableSubmit = ((selectedCategories.length > 0) && (selectedRoles.length > 0))
 
     if (administeredCategories.count() < 1) {
       return null
@@ -281,18 +335,20 @@ class CategoryUserForm extends PureComponent {
             type="rolePicker"
           />
         </div>
-        <p>
-          form needs to send:<br />
-          userId - {userId}<br />
-          categoryId<br />
-          role
-        </p>
+        <button
+          className="role-submit"
+          disabled={!enableSubmit}
+          onClick={e => this.handleSubmitLocal(e)}
+        >
+          <span>Add</span>
+        </button>
       </form>
     )
   }
 }
-CategoryUserForm.propTypes = {
+UserCategoryRolesForm.propTypes = {
   administeredCategories: PropTypes.object.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
   searchCategories: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired,
 }

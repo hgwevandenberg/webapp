@@ -72,6 +72,10 @@ class UserDetailRolesContainer extends PureComponent {
     this.setState({ categorySearchTerm: term })
   }
 
+  handleRolesSubmit(roleParams) {
+    return null
+  }
+
   render() {
     const {
       isOpen,
@@ -86,6 +90,7 @@ class UserDetailRolesContainer extends PureComponent {
         categoryUsers={categoryUsers}
         close={() => this.close()}
         handleMaskClick={e => this.handleMaskClick(e)}
+        handleRolesSubmit={roleParams => this.handleRolesSubmit(roleParams)}
         isOpen={isOpen}
         searchCategories={term => this.searchCategories(term)}
         userId={userId}
