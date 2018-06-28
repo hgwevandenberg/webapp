@@ -76,6 +76,16 @@ const userDetailRolesStyle = css(
     select('& .fs-rolePicker',
       s.ml10,
       { width: 200 },
+
+      media(s.maxBreak2,
+        s.ml0,
+        s.fullWidth,
+      ),
+    ),
+
+    media(s.maxBreak2,
+      s.pr10,
+      s.pl10,
     ),
   ),
   select('& .user-roles',
@@ -85,6 +95,11 @@ const userDetailRolesStyle = css(
     s.resetList,
     s.borderTop,
     { borderColor: '#f2f2f2' },
+
+    media(s.maxBreak2,
+      s.pr10,
+      s.pl10,
+    ),
   ),
 )
 
@@ -204,13 +219,13 @@ function UserRole({
       <span className="controls">
         <button
           className="edit"
-          onClick={e => handleClick('edit')}
+          onClick={() => handleClick('edit')}
         >
           <PencilIcon />
         </button>
         <button
           className="remove"
-          onClick={e => handleClick('remove')}
+          onClick={() => handleClick('remove')}
         >
           <XBoxIcon />
         </button>
@@ -230,6 +245,7 @@ const formStyle = css(
   s.justifySpaceBetween,
   s.fullWidth,
   s.mt30,
+  s.mb10,
 
   select('& .selectors',
     s.flex,
@@ -260,6 +276,27 @@ const formStyle = css(
     select('&:disabled, &:disabled:hover',
       s.bgcA,
       hover({ cursor: 'default' }),
+    ),
+  ),
+
+  media(s.maxBreak3,
+    select('& .selectors',
+      select('& .fs',
+        { width: 200 },
+      ),
+    ),
+  ),
+  media(s.maxBreak2,
+    s.block,
+    s.rightAlign,
+    select('& .selectors',
+      s.block,
+      s.fullWidth,
+      select('& .fs',
+        s.block,
+        s.fullWidth,
+        s.ml0,
+      ),
     ),
   ),
 )

@@ -102,7 +102,7 @@ class UserDetailRolesContainer extends PureComponent {
         administeredCategories={administeredCategories}
         categoryUsers={categoryUsers}
         close={() => this.close()}
-        editRemoveRole={(e, roleActionParams) => this.handleRoleActions(e, roleActionParams)}
+        editRemoveRole={roleActionParams => this.handleRoleActions(roleActionParams)}
         handleMaskClick={e => this.handleMaskClick(e)}
         handleRolesSubmit={roleParams => this.handleRolesSubmit(roleParams)}
         isOpen={isOpen}
