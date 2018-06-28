@@ -3,7 +3,10 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Mousetrap from 'mousetrap'
 import { setIsProfileRolesActive } from '../actions/gui'
-import { searchAdministratedCategories } from '../actions/profile'
+import {
+  searchAdministratedCategories,
+  setAdministratedCategoryRole,
+} from '../actions/profile'
 import UserDetailRoles from '../components/users/UserRolesRenderables'
 import { SHORTCUT_KEYS } from '../constants/application_types'
 import { selectUserCategoryUsers } from '../selectors/user'
@@ -73,6 +76,7 @@ class UserDetailRolesContainer extends PureComponent {
   }
 
   handleRolesSubmit(roleParams) {
+    this.props.dispatch(setAdministratedCategoryRole(roleParams))
     return null
   }
 
