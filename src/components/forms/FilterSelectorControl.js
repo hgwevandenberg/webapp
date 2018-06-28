@@ -793,16 +793,15 @@ export class FilterSelectorControl extends PureComponent {
           {open &&
             <FilterSelectorListWrapper id={`${type}List`}>
               <ul>
-                {Array.from(listItems).map((item, index) => {
-                  return (<ListItem
+                {Array.from(listItems).map((item, index) => (
+                  <ListItem
                     key={`${type}Select:${item.get('id')}`}
                     item={item}
                     index={index}
                     selectedIndexCurrent={selectedIndex}
                     type={type}
                     onSelect={this.onSelectLocal}
-                  />)
-                },
+                  />),
                 )}
               </ul>
             </FilterSelectorListWrapper>
