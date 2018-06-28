@@ -178,22 +178,62 @@ UserRole.propTypes = {
   categorySlug: PropTypes.string.isRequired,
 }
 
+const formStyle = css(
+  s.flex,
+  s.justifySpaceBetween,
+  s.fullWidth,
+  s.mt30,
+
+  select('& .selectors',
+    s.flex,
+    s.justifyStart,
+    select('& .fs',
+      s.block,
+    ),
+  ),
+)
+
 class CategoryUserForm extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      selectedItems: [],
+      selectedCategories: [],
+      selectedRoles: [],
     }
-    this.onSelect = this.onSelect.bind(this)
-    this.onClear = this.onClear.bind(this)
+    this.onSelectCategory = this.onSelectCategory.bind(this)
+    this.onClearCategory = this.onClearCategory.bind(this)
+    this.onSelectRole = this.onSelectRole.bind(this)
+    this.onClearRole = this.onClearRole.bind(this)
   }
 
-  onSelect() {
-    console.log('do the select thing!')
+  onSelectCategory(item) {
+    // abandoning multi-select for now
+    // const { selectedCategories } = this.state
+    const selectedCategories = []
+    selectedCategories.push(item)
+
+    this.setState({ selectedCategories })
   }
 
-  onClear() {
-    console.log('do the thing on clear!')
+  onClearCategory() {
+    this.setState({
+      selectedCategories: [],
+    })
+  }
+
+  onSelectRole(item) {
+    // abandoning multi-select for now
+    // const { selectedRoles } = this.state
+    const selectedRoles = []
+    selectedRoles.push(item)
+
+    this.setState({ selectedRoles })
+  }
+
+  onClearRole() {
+    this.setState({
+      selectedRoles: [],
+    })
   }
 
   render() {
@@ -204,7 +244,8 @@ class CategoryUserForm extends PureComponent {
     } = this.props
 
     const {
-      selectedItems,
+      selectedCategories,
+      selectedRoles,
     } = this.state
 
     const userRoles = Immutable.fromJS([
@@ -217,35 +258,36 @@ class CategoryUserForm extends PureComponent {
       return null
     }
 
-    // TODO: Should be a nice dropdown, like the editor category select
     return (
-      <div>
-        <FilterSelectorControl
-          searchCallback={searchCategories}
-          labelText="Choose Category"
-          listItems={administeredCategories}
-          onSelect={this.onSelect}
-          onClear={this.onClear}
-          searchPromptText="Type category name"
-          selectedItems={selectedItems}
-          type="roleCategoryPicker"
-        />
-        <FilterSelectorControl
-          labelText="Choose position"
-          listItems={userRoles}
-          onSelect={this.onSelect}
-          onClear={this.onClear}
-          searchPromptText="Type position"
-          selectedItems={selectedItems}
-          type="rolePicker"
-        />
+      <form className={formStyle}>
+        <div className="selectors">
+          <FilterSelectorControl
+            searchCallback={searchCategories}
+            labelText="Choose Category"
+            listItems={administeredCategories}
+            onSelect={this.onSelectCategory}
+            onClear={this.onClearCategory}
+            searchPromptText="Type category name"
+            selectedItems={selectedCategories}
+            type="roleCategoryPicker"
+          />
+          <FilterSelectorControl
+            labelText="Choose position"
+            listItems={userRoles}
+            onSelect={this.onSelectRole}
+            onClear={this.onClearRole}
+            searchPromptText="Type position"
+            selectedItems={selectedRoles}
+            type="rolePicker"
+          />
+        </div>
         <p>
           form needs to send:<br />
           userId - {userId}<br />
           categoryId<br />
           role
         </p>
-      </div>
+      </form>
     )
   }
 }

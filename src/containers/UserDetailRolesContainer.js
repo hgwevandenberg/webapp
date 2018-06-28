@@ -82,11 +82,11 @@ class UserDetailRolesContainer extends PureComponent {
 
     return (
       <UserDetailRoles
-        close={() => this.close()}
-        isOpen={isOpen}
-        handleMaskClick={e => this.handleMaskClick(e)}
-        categoryUsers={categoryUsers}
         administeredCategories={administeredCategories}
+        categoryUsers={categoryUsers}
+        close={() => this.close()}
+        handleMaskClick={e => this.handleMaskClick(e)}
+        isOpen={isOpen}
         searchCategories={term => this.searchCategories(term)}
         userId={userId}
       />

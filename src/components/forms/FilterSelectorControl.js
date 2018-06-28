@@ -88,7 +88,9 @@ const selectorSelectedStyle = css(
   ),
   // selected
   select('& .selected',
+    s.fontSize14,
     {
+      lineHeight: 14,
       borderColor: '#979797',
     },
     select('& b',
@@ -208,7 +210,7 @@ const selectorItemsStyle = css(
 
 export function filterSearch(listItems, searchText) {
   if (searchText === '') { return listItems }
-  return listItems.filter(c => c.get('name').toLowerCase().includes(searchText.toLowerCase()))
+  return Array.from(listItems).filter(c => c.get('name').toLowerCase().includes(searchText.toLowerCase()))
 }
 
 export function FilterSelectorControlWrapper({ children, className, handleClick }) {
@@ -317,6 +319,7 @@ export class FilterSelectorControl extends PureComponent {
     searchCallback: PropTypes.func,
     searchPromptText: PropTypes.string,
     selectedItems: PropTypes.array.isRequired,
+    selectedPromptText: PropTypes.string,
     trackEvent: PropTypes.func,
     type: PropTypes.string,
   }
@@ -327,6 +330,7 @@ export class FilterSelectorControl extends PureComponent {
     resetSelection: false,
     searchCallback: null,
     searchPromptText: 'Type something…',
+    selectedPromptText: null,
     trackEvent: null,
     type: 'filter-select',
   }
@@ -416,7 +420,8 @@ export class FilterSelectorControl extends PureComponent {
       }
     }
 
-    return onSelect(item)
+    onSelect(item)
+    return this.close()
   }
 
   setItemSelection() {
@@ -438,7 +443,7 @@ export class FilterSelectorControl extends PureComponent {
       if (!isEditing && (selectedItems.length > 0)) {
         selectedItem = selectedItems[0]
 
-        listItems.map((item, index) => {
+        Array.from(listItems).map((item, index) => {
           if (selectedItem.get('id') === item.get('id')) {
             selectedIndex = index
           }
@@ -448,7 +453,7 @@ export class FilterSelectorControl extends PureComponent {
 
       // grab the selected item from the post (if editing)
       if (isEditing && assignedItems) {
-        listItems.map((item, index) => {
+        Array.from(listItems).map((item, index) => {
           assignedItems.map((assignedItemId) => {
             if (assignedItemId === item.get('id')) {
               selectedItem = item
@@ -497,12 +502,13 @@ export class FilterSelectorControl extends PureComponent {
   }
 
   handleKeyDown = (event) => {
-    const { onSelect, trackEvent, type } = this.props
+    const { trackEvent, type } = this.props
     const {
       listItems,
       selectedIndex,
     } = this.state
-    const max = listItems.length
+    const listItemsArray = Array.from(listItems)
+    const max = listItemsArray.length
     const selectedIsNull = (selectedIndex === null)
 
     if (event.key === 'ArrowDown' && selectedIsNull) {
@@ -518,7 +524,7 @@ export class FilterSelectorControl extends PureComponent {
       event.preventDefault()
       this.setState({ selectedIndex: max - 1 })
     } else if (event.key === 'Enter' && !selectedIsNull) {
-      const selected = listItems[selectedIndex]
+      const selected = listItemsArray[selectedIndex]
 
       if (trackEvent) {
         let trackEventName = null
@@ -538,7 +544,7 @@ export class FilterSelectorControl extends PureComponent {
         }
       }
 
-      onSelect(listItems[selectedIndex])
+      this.onSelectLocal(listItemsArray[selectedIndex])
     } else if (event.key === 'Escape') {
       this.itemSelectorRef.blur()
       this.close()
@@ -582,7 +588,8 @@ export class FilterSelectorControl extends PureComponent {
       listItems,
       selectedIndex,
     } = this.state
-    const selectedItem = listItems[selectedIndex]
+    const listItemsArray = Array.from(listItems)
+    const selectedItem = listItemsArray[selectedIndex]
     let selectedItemDomId = null
     if (selectedItem) {
       selectedItemDomId = `${type}Select_${selectedItem.get('id')}`
@@ -670,10 +677,24 @@ export class FilterSelectorControl extends PureComponent {
     return null
   }
 
-  clearLocal() {
-    const { onClear, trackEvent } = this.props
-    trackEvent('category-post-selector-cleared')
-    onClear()
+  clearLocal(track = true) {
+    const { onClear, trackEvent, type } = this.props
+
+    if (trackEvent && track) {
+      let trackEventName = null
+      switch (type) {
+        case ('postCategorySelect'):
+          trackEventName = 'category-post-selector-cleared'
+          break
+        default:
+          return null
+      }
+
+      if (trackEventName) {
+        trackEvent(trackEventName)
+      }
+    }
+    return onClear()
   }
 
   resetSelection(track = true) {
@@ -706,6 +727,7 @@ export class FilterSelectorControl extends PureComponent {
     const {
       labelText,
       searchPromptText,
+      selectedPromptText,
       type,
     } = this.props
     const {
@@ -719,7 +741,7 @@ export class FilterSelectorControl extends PureComponent {
     // we can assume there is only one selected item at a time.
     return (
       <FilterSelectorControlWrapper
-        className={`fs-${type}`}
+        className={`fs fs-${type}`}
         handleClick={e => this.handleSelectorClick(e)}
       >
         <span ref={this.setWrapperRef}>
@@ -750,11 +772,15 @@ export class FilterSelectorControl extends PureComponent {
             }
             {selectedItem &&
               <span className="selected">
-                <b>
-                  <i>Post into:</i>
-                  &nbsp;
-                  {selectedItem.get('name')}
-                </b>
+                {selectedPromptText ?
+                  <b>
+                    <i>{selectedPromptText}:</i>
+                    &nbsp;
+                    {selectedItem.get('name')}
+                  </b>
+                  :
+                  <b>{selectedItem.get('name')}</b>
+                }
                 <button onClick={() => this.clearLocal()}>
                   <span className="label">Remove</span>
                   <span className="icon">
@@ -767,15 +793,16 @@ export class FilterSelectorControl extends PureComponent {
           {open &&
             <FilterSelectorListWrapper id={`${type}List`}>
               <ul>
-                {listItems.map((item, index) =>
-                  (<ListItem
+                {Array.from(listItems).map((item, index) => {
+                  return (<ListItem
                     key={`${type}Select:${item.get('id')}`}
                     item={item}
                     index={index}
                     selectedIndexCurrent={selectedIndex}
                     type={type}
                     onSelect={this.onSelectLocal}
-                  />),
+                  />)
+                },
                 )}
               </ul>
             </FilterSelectorListWrapper>
