@@ -75,6 +75,15 @@ class UserDetailRolesContainer extends PureComponent {
     this.setState({ categorySearchTerm: term })
   }
 
+  handleRoleActions(roleActionParams) {
+    const { userId } = this.props
+    const actionType = roleActionParams.actionType
+
+    console.log(`
+      action: ${actionType}, userId: ${userId}, roleId: ${roleActionParams.roleId}, categoryId: ${roleActionParams.categoryId}
+    `)
+  }
+
   handleRolesSubmit(roleParams) {
     this.props.dispatch(setAdministratedCategoryRole(roleParams))
     return null
@@ -93,6 +102,7 @@ class UserDetailRolesContainer extends PureComponent {
         administeredCategories={administeredCategories}
         categoryUsers={categoryUsers}
         close={() => this.close()}
+        editRemoveRole={(e, roleActionParams) => this.handleRoleActions(e, roleActionParams)}
         handleMaskClick={e => this.handleMaskClick(e)}
         handleRolesSubmit={roleParams => this.handleRolesSubmit(roleParams)}
         isOpen={isOpen}

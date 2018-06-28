@@ -98,6 +98,7 @@ export default function UserDetailRoles({
   administeredCategories,
   categoryUsers,
   close,
+  editRemoveRole,
   isOpen,
   handleMaskClick,
   handleRolesSubmit,
@@ -131,6 +132,11 @@ export default function UserDetailRoles({
                 name={roleName[cu.get('role')]}
                 categoryName={cu.get('categoryName')}
                 categorySlug={cu.get('categorySlug')}
+                handleClick={
+                  actionType => editRemoveRole(
+                    { actionType, categoryId: cu.get('id'), roleId: cu.get('role') },
+                  )
+                }
               />
             ))}
           </ul>
@@ -143,6 +149,7 @@ UserDetailRoles.propTypes = {
   administeredCategories: PropTypes.object.isRequired,
   categoryUsers: PropTypes.object.isRequired,
   close: PropTypes.func.isRequired,
+  editRemoveRole: PropTypes.func.isRequired,
   handleMaskClick: PropTypes.func.isRequired,
   handleRolesSubmit: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
@@ -185,6 +192,7 @@ const userRoleStyle = css(
 function UserRole({
   categoryName,
   categorySlug,
+  handleClick,
   name,
 }) {
   return (
@@ -194,10 +202,16 @@ function UserRole({
         <Link to={`/discover/${categorySlug}`}>{categoryName}</Link>
       </span>
       <span className="controls">
-        <button className="edit">
+        <button
+          className="edit"
+          onClick={e => handleClick('edit')}
+        >
           <PencilIcon />
         </button>
-        <button className="remove">
+        <button
+          className="remove"
+          onClick={e => handleClick('remove')}
+        >
           <XBoxIcon />
         </button>
       </span>
@@ -205,9 +219,10 @@ function UserRole({
   )
 }
 UserRole.propTypes = {
-  name: PropTypes.string.isRequired,
   categoryName: PropTypes.string.isRequired,
   categorySlug: PropTypes.string.isRequired,
+  handleClick: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
 }
 
 const formStyle = css(
