@@ -411,16 +411,22 @@ class UserCategoryRolesForm extends PureComponent {
     } = this.state
 
     const userRoles = Immutable.fromJS([
-      { id: 'FEATURED', name: 'Featured User' },
-      { id: 'CURATOR', name: 'Curator' },
-      { id: 'MODERATOR', name: 'Moderator' },
+      { id: 'FEATURED', name: 'Featured User', requires: ['CURATOR', 'MODERATOR'] },
+      { id: 'CURATOR', name: 'Curator', requires: ['MODERATOR'] },
+      { id: 'MODERATOR', name: 'Moderator', requires: ['MODERATOR'] },
     ])
-
-    const enableSubmit = ((selectedCategories.length > 0) && (selectedRoles.length > 0))
 
     if (administeredCategories.count() < 1) {
       return null
     }
+
+    const selectedCategoryRole = selectedCategories[0] ? administeredCategories.find(
+      ac => ac.get('id') === selectedCategories[0].get('id'),
+    ).get('role') : Immutable.List()
+
+    const filteredRoles = userRoles.filter(ur => ur.get('requires').includes(selectedCategoryRole))
+
+    const enableSubmit = ((selectedCategories.length > 0) && (selectedRoles.length > 0))
 
     return (
       <form className={formStyle} onSubmit={this.onSubmit}>
@@ -437,7 +443,7 @@ class UserCategoryRolesForm extends PureComponent {
           />
           <FilterSelectorControl
             labelText="Choose position"
-            listItems={userRoles}
+            listItems={filteredRoles}
             onSelect={this.onSelectRole}
             onClear={this.onClearRole}
             searchPromptText="Type position"
