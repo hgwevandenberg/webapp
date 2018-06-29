@@ -19,6 +19,24 @@ export function flagUser(username, kind) {
   }
 }
 
+export function addToCategory({ userId, categoryId, role }) {
+  return {
+    type: ACTION_TYPES.USER.ADD_TO_CATEGORY,
+    payload: {
+      endpoint: api.createCategoryUserPath(),
+      method: 'POST',
+      body: {
+        user_id: userId,
+        category_id: categoryId,
+        role,
+      },
+    },
+    meta: {
+      mappingType: MAPPING_TYPES.CATEGORY_USERS,
+    },
+  }
+}
+
 export function loadUserDetail({ username }) {
   return {
     type: ACTION_TYPES.V3.USER.DETAIL,

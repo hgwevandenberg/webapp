@@ -315,9 +315,3 @@ export function searchAdministratedCategories(term) {
     },
   }
 }
-
-export function setAdministratedCategoryRole(roleParams) {
-  return roleParams
-  // do stuff here
-  // params have role constant as `roleId`, `userId` and `categoryId`
-}

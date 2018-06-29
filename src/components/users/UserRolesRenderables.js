@@ -352,10 +352,10 @@ class UserCategoryRolesForm extends PureComponent {
 
     if (selectedCategories && selectedRoles) {
       const categoryId = selectedCategories[0].get('id')
-      const roleId = selectedRoles[0].get('id')
+      const role = selectedRoles[0].get('id').toLowerCase()
       const roleParams = {
         categoryId,
-        roleId,
+        role,
         userId,
       }
 
@@ -376,7 +376,7 @@ class UserCategoryRolesForm extends PureComponent {
     } = this.state
 
     const userRoles = Immutable.fromJS([
-      { id: 'FEATURED_USER', name: 'Featured User' },
+      { id: 'FEATURED', name: 'Featured User' },
       { id: 'CURATOR', name: 'Curator' },
       { id: 'MODERATOR', name: 'Moderator' },
     ])
@@ -388,7 +388,7 @@ class UserCategoryRolesForm extends PureComponent {
     }
 
     return (
-      <form className={formStyle}>
+      <form className={formStyle} onSubmit={this.onSubmit}>
         <div className="selectors">
           <FilterSelectorControl
             searchCallback={searchCategories}

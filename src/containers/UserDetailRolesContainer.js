@@ -3,10 +3,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Mousetrap from 'mousetrap'
 import { setIsProfileRolesActive } from '../actions/gui'
-import {
-  searchAdministratedCategories,
-  setAdministratedCategoryRole,
-} from '../actions/profile'
+import { searchAdministratedCategories } from '../actions/profile'
+import { addToCategory as setAdministratedCategoryRole } from '../actions/user'
 import UserDetailRoles from '../components/users/UserRolesRenderables'
 import { SHORTCUT_KEYS } from '../constants/application_types'
 import { selectUserCategoryUsers } from '../selectors/user'

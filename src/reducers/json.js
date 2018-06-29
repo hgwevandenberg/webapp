@@ -109,6 +109,16 @@ function normalizeModel(type, model, state) {
       summary: normalizePostContentRegion(model, 'summary', state),
       repostContent: normalizePostContentRegion(model, 'repostContent', state),
     })
+  } else if (type === 'categoryUsers') {
+    const categoryId = model.getIn(['links', 'category', 'id'])
+    const category = state.getIn(['categories', categoryId])
+    return model.merge({
+      categoryId,
+      categoryName: category.get('name'),
+      categorySlug: category.get('slug'),
+      userId: model.getIn(['links', 'user', 'id']),
+      role: model.get('role').toUpperCase(),
+    })
   } else if (type === MAPPING_TYPES.COMMENTS) {
     return model.merge({
       content: normalizePostContentRegion(model, 'content', state),
@@ -401,6 +411,7 @@ export default function json(state = initialState, action = { type: '' }) {
     case ACTION_TYPES.LOAD_STREAM_SUCCESS:
     case ACTION_TYPES.POST.EDITABLE_SUCCESS:
     case ACTION_TYPES.USER.DETAIL_SUCCESS:
+    case ACTION_TYPES.USER.ADD_TO_CATEGORY_SUCCESS:
       // fall through to parse the rest
       break
     case ACTION_TYPES.NOTIFICATIONS.MARK_ANNOUNCEMENT_READ_REQUEST:
