@@ -44,7 +44,7 @@ export function removeFromCategory(categoryUserId) {
     payload: {
       endpoint: api.deleteCategoryUserPath(categoryUserId),
       method: 'DELETE',
-      model: Immutable.Map({id: categoryUserId}),
+      model: Immutable.Map({ id: categoryUserId }),
     },
     meta: {
       mappingType: MAPPING_TYPES.CATEGORY_USERS,

@@ -120,6 +120,7 @@ export default function UserDetailRoles({
   handleRolesSubmit,
   searchCategories,
   userId,
+  isStaff,
 }) {
   if (!isOpen) {
     return null
@@ -145,10 +146,12 @@ export default function UserDetailRoles({
             {categoryUsers.map(cu => (
               <UserRole
                 key={cu.get('id')}
-                name={roleName[cu.get('role')]}
+                roleId={cu.get('role')}
                 categoryUserId={cu.get('id')}
                 categoryName={cu.get('categoryName')}
                 categorySlug={cu.get('categorySlug')}
+                administeredCategories={administeredCategories}
+                isStaff={isStaff}
                 handleDeleteRole={handleDeleteRole}
                 handleClick={
                   actionType => editRemoveRole(
@@ -174,6 +177,7 @@ UserDetailRoles.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   searchCategories: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired,
+  isStaff: PropTypes.bool.isRequired,
 }
 
 const userRoleStyle = css(
@@ -208,44 +212,67 @@ const userRoleStyle = css(
   ),
 )
 
+function canEdit(slug, subjectRole, administeredCategories) {
+  if (administeredCategories.count() === 0) { return false }
+  const category = administeredCategories.find(ac => ac.get('slug') === slug)
+  return category && category.get('role') === 'MODERATOR'
+}
+
+function canDelete(slug, subjectRole, administeredCategories) {
+  if (administeredCategories.count() === 0) { return false }
+  const category = administeredCategories.find(ac => ac.get('slug') === slug)
+  return category && (
+    category.get('role') === 'MODERATOR' ||
+    (category.get('role') === 'CURATOR' && subjectRole === 'FEATURED')
+  )
+}
+
 function UserRole({
+  administeredCategories,
   categoryUserId,
   categoryName,
   categorySlug,
   handleClick,
   handleDeleteRole,
-  name,
+  isStaff,
+  roleId,
 }) {
   return (
     <li className={userRoleStyle}>
       <span className="meta">
-        {name} in&nbsp;
+        {roleName[roleId]} in&nbsp;
         <Link to={`/discover/${categorySlug}`}>{categoryName}</Link>
       </span>
       <span className="controls">
-        <button
-          className="edit"
-          onClick={() => handleClick('edit')}
-        >
-          <PencilIcon />
-        </button>
-        <button
-          className="remove"
-          onClick={() => handleDeleteRole(categoryUserId)}
-        >
-          <XBoxIcon />
-        </button>
+        {isStaff || canEdit(categorySlug, roleId, administeredCategories) ?
+          <button
+            className="edit"
+            onClick={() => handleClick('edit')}
+          >
+            <PencilIcon />
+          </button>
+        : null }
+        {isStaff || canDelete(categorySlug, roleId, administeredCategories) ?
+          <button
+            className="remove"
+            onClick={() => handleDeleteRole(categoryUserId)}
+          >
+            <XBoxIcon />
+          </button>
+        : null }
       </span>
     </li>
   )
 }
 UserRole.propTypes = {
+  administeredCategories: PropTypes.object.isRequired,
   categoryUserId: PropTypes.string.isRequired,
   categoryName: PropTypes.string.isRequired,
   categorySlug: PropTypes.string.isRequired,
   handleClick: PropTypes.func.isRequired,
   handleDeleteRole: PropTypes.func.isRequired,
-  name: PropTypes.string.isRequired,
+  isStaff: PropTypes.bool.isRequired,
+  roleId: PropTypes.string.isRequired,
 }
 
 const formStyle = css(

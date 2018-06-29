@@ -11,6 +11,7 @@ import {
 import UserDetailRoles from '../components/users/UserRolesRenderables'
 import { SHORTCUT_KEYS } from '../constants/application_types'
 import { selectUserCategoryUsers } from '../selectors/user'
+import { selectIsStaff } from '../selectors/profile'
 import { selectAdministeredCategories } from '../selectors/categories'
 
 export function mapStateToProps(state, props) {
@@ -18,6 +19,7 @@ export function mapStateToProps(state, props) {
     classList: state.modal.get('classList'),
     categoryUsers: selectUserCategoryUsers(state, props),
     administeredCategories: selectAdministeredCategories(state, props),
+    isStaff: selectIsStaff(state, props),
   }
 }
 
@@ -29,6 +31,7 @@ class UserDetailRolesContainer extends PureComponent {
     administeredCategories: PropTypes.object.isRequired,
     categorySearchTerm: PropTypes.string,
     userId: PropTypes.string.isRequired,
+    isStaff: PropTypes.bool.isRequired,
   }
 
   static defaultProps = {
@@ -101,6 +104,7 @@ class UserDetailRolesContainer extends PureComponent {
       categoryUsers,
       administeredCategories,
       userId,
+      isStaff,
     } = this.props
 
     return (
@@ -115,6 +119,7 @@ class UserDetailRolesContainer extends PureComponent {
         isOpen={isOpen}
         searchCategories={term => this.searchCategories(term)}
         userId={userId}
+        isStaff={isStaff}
       />
     )
   }
