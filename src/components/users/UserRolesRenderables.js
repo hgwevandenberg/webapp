@@ -140,6 +140,7 @@ export default function UserDetailRoles({
               handleSubmit={handleRolesSubmit}
               searchCategories={searchCategories}
               userId={userId}
+              isStaff={isStaff}
             />
           </div>
           <ul className="user-roles">
@@ -403,6 +404,7 @@ class UserCategoryRolesForm extends PureComponent {
     const {
       administeredCategories,
       searchCategories,
+      isStaff,
     } = this.props
 
     const {
@@ -424,7 +426,9 @@ class UserCategoryRolesForm extends PureComponent {
       ac => ac.get('id') === selectedCategories[0].get('id'),
     ).get('role') : Immutable.List()
 
-    const filteredRoles = userRoles.filter(ur => ur.get('requires').includes(selectedCategoryRole))
+    const filteredRoles = userRoles.filter(ur =>
+      isStaff || ur.get('requires').includes(selectedCategoryRole),
+    )
 
     const enableSubmit = ((selectedCategories.length > 0) && (selectedRoles.length > 0))
 
@@ -467,4 +471,5 @@ UserCategoryRolesForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   searchCategories: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired,
+  isStaff: PropTypes.bool.isRequired,
 }
