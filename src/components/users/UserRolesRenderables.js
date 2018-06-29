@@ -115,6 +115,7 @@ export default function UserDetailRoles({
   close,
   editRemoveRole,
   isOpen,
+  handleDeleteRole,
   handleMaskClick,
   handleRolesSubmit,
   searchCategories,
@@ -145,8 +146,10 @@ export default function UserDetailRoles({
               <UserRole
                 key={cu.get('id')}
                 name={roleName[cu.get('role')]}
+                categoryUserId={cu.get('id')}
                 categoryName={cu.get('categoryName')}
                 categorySlug={cu.get('categorySlug')}
+                handleDeleteRole={handleDeleteRole}
                 handleClick={
                   actionType => editRemoveRole(
                     { actionType, categoryId: cu.get('id'), roleId: cu.get('role') },
@@ -165,6 +168,7 @@ UserDetailRoles.propTypes = {
   categoryUsers: PropTypes.object.isRequired,
   close: PropTypes.func.isRequired,
   editRemoveRole: PropTypes.func.isRequired,
+  handleDeleteRole: PropTypes.func.isRequired,
   handleMaskClick: PropTypes.func.isRequired,
   handleRolesSubmit: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
@@ -205,9 +209,11 @@ const userRoleStyle = css(
 )
 
 function UserRole({
+  categoryUserId,
   categoryName,
   categorySlug,
   handleClick,
+  handleDeleteRole,
   name,
 }) {
   return (
@@ -225,7 +231,7 @@ function UserRole({
         </button>
         <button
           className="remove"
-          onClick={() => handleClick('remove')}
+          onClick={() => handleDeleteRole(categoryUserId)}
         >
           <XBoxIcon />
         </button>
@@ -234,9 +240,11 @@ function UserRole({
   )
 }
 UserRole.propTypes = {
+  categoryUserId: PropTypes.string.isRequired,
   categoryName: PropTypes.string.isRequired,
   categorySlug: PropTypes.string.isRequired,
   handleClick: PropTypes.func.isRequired,
+  handleDeleteRole: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
 }
 

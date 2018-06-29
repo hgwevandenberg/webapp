@@ -87,7 +87,7 @@ export const selectUserMetaTitle = createSelector(
 export const selectUserCategoryUsers = createSelector(
   [selectUser, selectJson], (user, json) =>
     json.get('categoryUsers', Immutable.Map())
-      .filter(cu => cu.userId === user.id)
+      .filter(cu => cu.get('userId') === user.get('id'))
       .valueSeq()
       .toList(),
 )

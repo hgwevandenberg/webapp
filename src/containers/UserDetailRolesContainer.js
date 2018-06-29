@@ -4,7 +4,10 @@ import { connect } from 'react-redux'
 import Mousetrap from 'mousetrap'
 import { setIsProfileRolesActive } from '../actions/gui'
 import { searchAdministratedCategories } from '../actions/profile'
-import { addToCategory as setAdministratedCategoryRole } from '../actions/user'
+import {
+  addToCategory as setAdministratedCategoryRole,
+  removeFromCategory,
+} from '../actions/user'
 import UserDetailRoles from '../components/users/UserRolesRenderables'
 import { SHORTCUT_KEYS } from '../constants/application_types'
 import { selectUserCategoryUsers } from '../selectors/user'
@@ -87,6 +90,11 @@ class UserDetailRolesContainer extends PureComponent {
     return null
   }
 
+  handleDeleteRole(categoryUserId) {
+    this.props.dispatch(removeFromCategory(categoryUserId))
+    return null
+  }
+
   render() {
     const {
       isOpen,
@@ -101,6 +109,7 @@ class UserDetailRolesContainer extends PureComponent {
         categoryUsers={categoryUsers}
         close={() => this.close()}
         editRemoveRole={roleActionParams => this.handleRoleActions(roleActionParams)}
+        handleDeleteRole={cuId => this.handleDeleteRole(cuId)}
         handleMaskClick={e => this.handleMaskClick(e)}
         handleRolesSubmit={roleParams => this.handleRolesSubmit(roleParams)}
         isOpen={isOpen}

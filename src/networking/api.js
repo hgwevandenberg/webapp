@@ -222,6 +222,11 @@ export function createCategoryUserPath() {
     path: getAPIPath('category_users'),
   }
 }
+export function deleteCategoryUserPath(id) {
+  return {
+    path: getAPIPath(`category_users/${id}`),
+  }
+}
 // Watch
 export function watchPost(idOrToken) {
   return {
