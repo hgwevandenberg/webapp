@@ -211,6 +211,7 @@ const userRoleStyle = css(
     select('& .edit, & .remove',
       s.colorA,
       s.transitionColor,
+      { marginTop: -2 },
       hover(
         s.colorBlack,
       ),
@@ -231,6 +232,7 @@ const userRoleStyle = css(
       s.inlineBlock,
       s.bgcGreen,
       {
+        marginTop: -4,
         width: 12,
         height: 12,
         borderRadius: 12,
@@ -373,7 +375,12 @@ const formStyle = css(
         s.block,
         s.fullWidth,
         s.ml0,
+        s.leftAlign,
       ),
+    ),
+    select('& .success-msg',
+      s.inlineBlock,
+      { marginRight: 10 },
     ),
   ),
 )
