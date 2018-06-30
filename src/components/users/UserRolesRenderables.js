@@ -114,13 +114,14 @@ export default function UserDetailRoles({
   categoryUsers,
   close,
   editRemoveRole,
-  isOpen,
   handleDeleteRole,
   handleMaskClick,
   handleRolesSubmit,
+  isOpen,
+  isStaff,
+  newRole,
   searchCategories,
   userId,
-  isStaff,
 }) {
   if (!isOpen) {
     return null
@@ -138,29 +139,38 @@ export default function UserDetailRoles({
             <UserCategoryRolesForm
               administeredCategories={administeredCategories}
               handleSubmit={handleRolesSubmit}
+              newRole={newRole}
               searchCategories={searchCategories}
               userId={userId}
               isStaff={isStaff}
             />
           </div>
           <ul className="user-roles">
-            {categoryUsers.map(cu => (
-              <UserRole
-                key={cu.get('id')}
-                roleId={cu.get('role')}
-                categoryUserId={cu.get('id')}
-                categoryName={cu.get('categoryName')}
-                categorySlug={cu.get('categorySlug')}
-                administeredCategories={administeredCategories}
-                isStaff={isStaff}
-                handleDeleteRole={handleDeleteRole}
-                handleClick={
-                  actionType => editRemoveRole(
-                    { actionType, categoryId: cu.get('id'), roleId: cu.get('role') },
-                  )
-                }
-              />
-            ))}
+            {categoryUsers.map((cu) => {
+              let isNew = false
+              if (newRole && newRole.categoryId === cu.get('categoryId')) {
+                isNew = true
+              }
+
+              return (
+                <UserRole
+                  key={cu.get('id')}
+                  roleId={cu.get('role')}
+                  categoryUserId={cu.get('id')}
+                  categoryName={cu.get('categoryName')}
+                  categorySlug={cu.get('categorySlug')}
+                  administeredCategories={administeredCategories}
+                  isNew={isNew}
+                  isStaff={isStaff}
+                  handleDeleteRole={handleDeleteRole}
+                  handleClick={
+                    actionType => editRemoveRole(
+                      { actionType, categoryId: cu.get('id'), roleId: cu.get('role') },
+                    )
+                  }
+                />
+              )
+            })}
           </ul>
         </div>
       </div>
@@ -176,9 +186,13 @@ UserDetailRoles.propTypes = {
   handleMaskClick: PropTypes.func.isRequired,
   handleRolesSubmit: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
+  newRole: PropTypes.object,
   searchCategories: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired,
   isStaff: PropTypes.bool.isRequired,
+}
+UserDetailRoles.defaultProps = {
+  newRole: null,
 }
 
 const userRoleStyle = css(
@@ -201,14 +215,29 @@ const userRoleStyle = css(
         s.colorBlack,
       ),
     ),
-    select('& .edit svg',
-      {
-        marginTop: -1,
-        transform: 'scale(0.85)',
-      },
+    select('& .edit',
+      { marginLeft: 5 },
+      select('& svg',
+        {
+          marginTop: -1,
+          transform: 'scale(0.85)',
+        },
+      ),
     ),
     select('& .remove',
       { marginLeft: 3 },
+    ),
+    select('& .new-role',
+      s.inlineBlock,
+      s.bgcGreen,
+      {
+        width: 12,
+        height: 12,
+        borderRadius: 12,
+      },
+      select('& i',
+        s.displayNone,
+      ),
     ),
   ),
 )
@@ -235,6 +264,7 @@ function UserRole({
   categorySlug,
   handleClick,
   handleDeleteRole,
+  isNew,
   isStaff,
   roleId,
 }) {
@@ -245,6 +275,9 @@ function UserRole({
         <Link to={`/discover/${categorySlug}`}>{categoryName}</Link>
       </span>
       <span className="controls">
+        {isNew &&
+          <span className="new-role"><i>New!</i></span>
+        }
         {isStaff || canEdit(categorySlug, roleId, administeredCategories) ?
           <button
             className="edit"
@@ -272,6 +305,7 @@ UserRole.propTypes = {
   categorySlug: PropTypes.string.isRequired,
   handleClick: PropTypes.func.isRequired,
   handleDeleteRole: PropTypes.func.isRequired,
+  isNew: PropTypes.bool.isRequired,
   isStaff: PropTypes.bool.isRequired,
   roleId: PropTypes.string.isRequired,
 }
@@ -279,6 +313,7 @@ UserRole.propTypes = {
 const formStyle = css(
   s.flex,
   s.justifySpaceBetween,
+  s.itemsCenter,
   s.fullWidth,
   s.mt30,
   s.mb10,
@@ -315,6 +350,12 @@ const formStyle = css(
     ),
   ),
 
+  select('& .success-msg',
+    s.m0,
+    s.p0,
+    s.colorGreen,
+  ),
+
   media(s.maxBreak3,
     select('& .selectors',
       select('& .fs',
@@ -348,6 +389,13 @@ class UserCategoryRolesForm extends PureComponent {
     this.onClearCategory = this.onClearCategory.bind(this)
     this.onSelectRole = this.onSelectRole.bind(this)
     this.onClearRole = this.onClearRole.bind(this)
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!prevProps.newRole && this.props.newRole) {
+      this.onClearCategory()
+      this.onClearRole()
+    }
   }
 
   onSelectCategory(item) {
@@ -403,8 +451,9 @@ class UserCategoryRolesForm extends PureComponent {
   render() {
     const {
       administeredCategories,
-      searchCategories,
       isStaff,
+      newRole,
+      searchCategories,
     } = this.props
 
     const {
@@ -436,11 +485,11 @@ class UserCategoryRolesForm extends PureComponent {
       <form className={formStyle} onSubmit={this.onSubmit}>
         <div className="selectors">
           <FilterSelectorControl
-            searchCallback={searchCategories}
             labelText="Choose Category"
             listItems={administeredCategories}
             onSelect={this.onSelectCategory}
             onClear={this.onClearCategory}
+            searchCallback={searchCategories}
             searchPromptText="Type category name"
             selectedItems={selectedCategories}
             type="roleCategoryPicker"
@@ -455,6 +504,9 @@ class UserCategoryRolesForm extends PureComponent {
             type="rolePicker"
           />
         </div>
+        {newRole &&
+          <p className="success-msg">Success!</p>
+        }
         <button
           className="role-submit"
           disabled={!enableSubmit}
@@ -469,7 +521,11 @@ class UserCategoryRolesForm extends PureComponent {
 UserCategoryRolesForm.propTypes = {
   administeredCategories: PropTypes.object.isRequired,
   handleSubmit: PropTypes.func.isRequired,
+  isStaff: PropTypes.bool.isRequired,
+  newRole: PropTypes.object,
   searchCategories: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired,
-  isStaff: PropTypes.bool.isRequired,
+}
+UserCategoryRolesForm.defaultProps = {
+  newRole: null,
 }

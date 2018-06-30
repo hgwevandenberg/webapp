@@ -42,6 +42,7 @@ class UserDetailRolesContainer extends PureComponent {
     super(props)
     this.state = {
       categorySearchTerm: null,
+      newRole: null,
     }
   }
 
@@ -66,6 +67,10 @@ class UserDetailRolesContainer extends PureComponent {
 
   close() {
     this.props.dispatch(setIsProfileRolesActive({ isActive: false }))
+
+    this.setState({
+      newRole: null,
+    })
   }
 
   handleMaskClick(e) {
@@ -89,6 +94,9 @@ class UserDetailRolesContainer extends PureComponent {
   }
 
   handleRolesSubmit(roleParams) {
+    this.setState({
+      newRole: roleParams,
+    })
     this.props.dispatch(setAdministratedCategoryRole(roleParams))
     return null
   }
@@ -107,6 +115,8 @@ class UserDetailRolesContainer extends PureComponent {
       isStaff,
     } = this.props
 
+    const { newRole } = this.state
+
     return (
       <UserDetailRoles
         administeredCategories={administeredCategories}
@@ -117,6 +127,7 @@ class UserDetailRolesContainer extends PureComponent {
         handleMaskClick={e => this.handleMaskClick(e)}
         handleRolesSubmit={roleParams => this.handleRolesSubmit(roleParams)}
         isOpen={isOpen}
+        newRole={newRole}
         searchCategories={term => this.searchCategories(term)}
         userId={userId}
         isStaff={isStaff}
