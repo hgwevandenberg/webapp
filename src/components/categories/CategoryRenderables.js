@@ -11,7 +11,7 @@ import {
   ChevronIcon,
   XIcon,
 } from '../assets/Icons'
-import { RoundedRectLink } from '../buttons/Buttons'
+import { DismissButtonLG, RoundedRectLink } from '../buttons/Buttons'
 import { HeroPromotionCTA } from './../heros/HeroParts'
 import { before, css, hover, media, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
@@ -691,6 +691,7 @@ export function CategoryInfo({
           innerWidth={innerWidth}
         />
       </section>
+      <CategoryRoleUserPicker isOpen />
     </aside>
   )
 }
@@ -816,4 +817,108 @@ CategoryInfoTrigger.propTypes = {
   collapsed: PropTypes.bool.isRequired,
   handleTriggerClick: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
+}
+
+
+
+
+
+const categoryRoleUserPickerModalStyle = css(
+  s.block,
+  s.relative,
+  s.bgcF2,
+  { margin: '0 auto' },
+  select(
+    '> .mask',
+    s.fullscreen,
+    s.fullWidth,
+    s.fullHeight,
+    s.bgcModal,
+    s.zModal,
+    { transition: `background-color 0.4s ${s.ease}` },
+
+    media(s.minBreak2,
+      s.flex,
+      s.itemsCenter,
+      s.justifyCenter,
+    ),
+  ),
+)
+const categoryRoleUserPickerStyle = css(
+  s.relative,
+  s.block,
+  s.p20,
+  s.mt40,
+  s.colorBlack,
+  s.fullWidth,
+  s.leftAlign,
+  s.bgcWhite,
+  {
+    maxWidth: 780,
+    borderRadius: 5,
+  },
+
+  media(s.minBreak2,
+    s.m0,
+    s.pt40,
+    { width: '80%' },
+  ),
+  media(s.minBreak4,
+    { width: '60%' },
+  ),
+
+  select('& .CloseModal',
+    s.colorA,
+    { top: 14, right: 20 },
+    hover(s.colorBlack),
+
+    media(s.maxBreak2,
+      { top: 7, right: 7 },
+    ),
+  ),
+
+  select('& h1',
+    s.sansBlack,
+    s.fontSize24,
+  ),
+)
+
+export default function CategoryRoleUserPicker({
+  close,
+  handleMaskClick,
+  // handleRolesSubmit,
+  isOpen,
+  isStaff,
+  userId,
+}) {
+  if (!isOpen) {
+    return null
+  }
+
+  return (
+    <div className={categoryRoleUserPickerModalStyle}>
+      <div className="mask" role="presentation" onClick={handleMaskClick}>
+        <div className={`${categoryRoleUserPickerStyle} content`}>
+          <DismissButtonLG
+            onClick={close}
+          />
+          <div className="pick-user">
+            <h1>Role Administrator</h1>
+            <p>user lookup form will go here</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+CategoryRoleUserPicker.propTypes = {
+  close: PropTypes.func.isRequired,
+  handleMaskClick: PropTypes.func.isRequired,
+  // handleRolesSubmit: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  isStaff: PropTypes.bool.isRequired,
+  userId: PropTypes.string.isRequired,
+}
+CategoryRoleUserPicker.defaultProps = {
+  newRole: null,
 }
