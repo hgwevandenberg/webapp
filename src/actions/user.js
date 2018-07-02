@@ -20,7 +20,7 @@ export function flagUser(username, kind) {
   }
 }
 
-export function addToCategory({ userId, categoryId, role }) {
+export function addToCategory({ userId, categoryId, role }, successAction) {
   return {
     type: ACTION_TYPES.USER.ADD_TO_CATEGORY,
     payload: {
@@ -34,6 +34,7 @@ export function addToCategory({ userId, categoryId, role }) {
     },
     meta: {
       mappingType: MAPPING_TYPES.CATEGORY_USERS,
+      successAction,
     },
   }
 }

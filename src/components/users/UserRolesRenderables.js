@@ -396,13 +396,12 @@ class UserCategoryRolesForm extends PureComponent {
     this.onClearCategory = this.onClearCategory.bind(this)
     this.onSelectRole = this.onSelectRole.bind(this)
     this.onClearRole = this.onClearRole.bind(this)
+    this.resetForm = this.resetForm.bind(this)
   }
 
-  componentDidUpdate(prevProps) {
-    if (!prevProps.newRole && this.props.newRole) {
-      this.onClearCategory()
-      this.onClearRole()
-    }
+  resetForm() {
+    this.onClearCategory()
+    this.onClearRole()
   }
 
   onSelectCategory(item) {
@@ -450,7 +449,7 @@ class UserCategoryRolesForm extends PureComponent {
         userId,
       }
 
-      return handleSubmit(roleParams)
+      return handleSubmit(roleParams, this.resetForm)
     }
     return null
   }

@@ -44,6 +44,8 @@ class UserDetailRolesContainer extends PureComponent {
       categorySearchTerm: null,
       newRole: null,
     }
+    this.handleRolesSubmit = this.handleRolesSubmit.bind(this)
+    this.handleDeleteRole = this.handleDeleteRole.bind(this)
   }
 
   componentDidMount() {
@@ -93,11 +95,11 @@ class UserDetailRolesContainer extends PureComponent {
     `)
   }
 
-  handleRolesSubmit(roleParams) {
+  handleRolesSubmit(roleParams, successCallback) {
     this.setState({
       newRole: roleParams,
     })
-    this.props.dispatch(setAdministratedCategoryRole(roleParams))
+    this.props.dispatch(setAdministratedCategoryRole(roleParams, successCallback))
     return null
   }
 
@@ -123,9 +125,9 @@ class UserDetailRolesContainer extends PureComponent {
         categoryUsers={categoryUsers}
         close={() => this.close()}
         editRemoveRole={roleActionParams => this.handleRoleActions(roleActionParams)}
-        handleDeleteRole={cuId => this.handleDeleteRole(cuId)}
+        handleDeleteRole={this.handleDeleteRole}
         handleMaskClick={e => this.handleMaskClick(e)}
-        handleRolesSubmit={roleParams => this.handleRolesSubmit(roleParams)}
+        handleRolesSubmit={this.handleRolesSubmit}
         isOpen={isOpen}
         newRole={newRole}
         searchCategories={term => this.searchCategories(term)}
