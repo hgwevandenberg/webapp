@@ -1,16 +1,24 @@
 import React from 'react'
-import { LOAD_STREAM } from '../constants/action_types'
-import { POSTS } from '../constants/mapping_types'
-import { followingStream } from '../networking/api'
+import { V3 } from '../constants/action_types'
 import { postsAsGrid, postsAsList } from '../components/streams/StreamRenderables'
 import { ZeroFollowingStream } from '../components/zeros/Zeros'
+import {
+  followingPostStreamQuery,
+} from '../queries/postStreamQueries'
 
-export function loadFollowing() {
+const KINDS = {
+  recent: 'RECENT',
+  trending: 'TRENDING',
+}
+
+export function loadFollowing(kind, before) {
   return {
-    type: LOAD_STREAM,
-    payload: { endpoint: followingStream() },
+    type: V3.LOAD_STREAM,
+    payload: {
+      query: followingPostStreamQuery,
+      variables: { kind: KINDS[kind], before },
+    },
     meta: {
-      mappingType: POSTS,
       renderStream: {
         asList: postsAsList,
         asGrid: postsAsGrid,
