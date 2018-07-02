@@ -86,15 +86,6 @@ class UserDetailRolesContainer extends PureComponent {
     this.setState({ categorySearchTerm: term })
   }
 
-  handleRoleActions(roleActionParams) {
-    const { userId } = this.props
-    const actionType = roleActionParams.actionType
-
-    console.log(`
-      action: ${actionType}, userId: ${userId}, roleId: ${roleActionParams.roleId}, categoryId: ${roleActionParams.categoryId}
-    `)
-  }
-
   handleRolesSubmit(roleParams, successCallback) {
     this.setState({
       newRole: roleParams,
@@ -124,7 +115,6 @@ class UserDetailRolesContainer extends PureComponent {
         administeredCategories={administeredCategories}
         categoryUsers={categoryUsers}
         close={() => this.close()}
-        editRemoveRole={roleActionParams => this.handleRoleActions(roleActionParams)}
         handleDeleteRole={this.handleDeleteRole}
         handleMaskClick={e => this.handleMaskClick(e)}
         handleRolesSubmit={this.handleRolesSubmit}

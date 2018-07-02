@@ -10,22 +10,27 @@ import {
   selectUserPostsAdultContent,
   selectUserCoverImage,
   selectUserUsername,
+  selectUserHasRoles,
 } from '../selectors/user'
-import { selectViewsAdultContent } from '../selectors/profile'
+import {
+  selectViewsAdultContent,
+  selectIsRoleAdministrator,
+} from '../selectors/profile'
 import { selectHeroDPI, selectIsProfileRolesActive } from '../selectors/gui'
 import { HeroProfile } from '../components/heros/HeroRenderables'
 import ShareDialog from '../components/dialogs/ShareDialog'
 
 function mapStateToProps(state, props) {
-  const userId = selectUserId(state, props)
-  const username = selectUserUsername(state, props)
-  const dpi = selectHeroDPI(state)
-  const coverImage = selectUserCoverImage(state, props)
-  const isRolesOpen = selectIsProfileRolesActive(state)
-  const useGif = selectViewsAdultContent(state) ||
-    !selectUserPostsAdultContent(state, props) ||
-    false
-  return { userId, dpi, coverImage, isRolesOpen, useGif, username }
+  return {
+    userId: selectUserId(state, props),
+    username: selectUserUsername(state, props),
+    dpi: selectHeroDPI(state),
+    coverImage: selectUserCoverImage(state, props),
+    isRolesOpen: selectIsProfileRolesActive(state),
+    useGif: selectViewsAdultContent(state) || !selectUserPostsAdultContent(state, props) || false,
+    isRoleAdministrator: selectIsRoleAdministrator(state, props),
+    userHasRoles: selectUserHasRoles(state, props),
+  }
 }
 
 class HeroProfileContainer extends Component {
@@ -37,6 +42,8 @@ class HeroProfileContainer extends Component {
     useGif: PropTypes.bool.isRequired,
     userId: PropTypes.string,
     username: PropTypes.string,
+    isRoleAdministrator: PropTypes.bool.isRequired,
+    userHasRoles: PropTypes.bool.isRequired,
   }
 
   static defaultProps = {
@@ -69,7 +76,7 @@ class HeroProfileContainer extends Component {
   }
 
   render() {
-    const { userId, dpi, coverImage, useGif } = this.props
+    const { userId, dpi, coverImage, useGif, isRoleAdministrator, userHasRoles } = this.props
     if (!userId) { return null }
     return (
       <HeroProfile
@@ -77,6 +84,8 @@ class HeroProfileContainer extends Component {
         sources={coverImage}
         useGif={useGif}
         userId={userId}
+        isRoleAdministrator={isRoleAdministrator}
+        userHasRoles={userHasRoles}
       />
     )
   }

@@ -238,11 +238,16 @@ const userRolesButtonStyle = css(
   ),
 )
 
-export const HeroUserRolesButton = (props, { onClickOpenUserRoles }) =>
-  (<button className={`HeroUserRolesButton ${userRolesButtonStyle}`} onClick={onClickOpenUserRoles} >
+export const HeroUserRolesButton = (props, { onClickOpenUserRoles }) => {
+  if (!props.isRoleAdministrator && !props.userHasRoles) { return null }
+  return (<button className={`HeroUserRolesButton ${userRolesButtonStyle}`} onClick={onClickOpenUserRoles} >
     <RolesIcon />
   </button>)
-
+}
+HeroUserRolesButton.propTypes = {
+  isRoleAdministrator: PropTypes.bool.isRequired,
+  userHasRoles: PropTypes.bool.isRequired,
+}
 HeroUserRolesButton.contextTypes = {
   onClickOpenUserRoles: PropTypes.func.isRequired,
 }

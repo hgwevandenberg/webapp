@@ -113,7 +113,6 @@ export default function UserDetailRoles({
   administeredCategories,
   categoryUsers,
   close,
-  editRemoveRole,
   handleDeleteRole,
   handleMaskClick,
   handleRolesSubmit,
@@ -135,7 +134,7 @@ export default function UserDetailRoles({
             onClick={close}
           />
           <div className="assign-roles">
-            <h1>Role Administrator</h1>
+            <h1>Community Roles</h1>
             <UserCategoryRolesForm
               administeredCategories={administeredCategories}
               handleSubmit={handleRolesSubmit}
@@ -163,11 +162,6 @@ export default function UserDetailRoles({
                   isNew={isNew}
                   isStaff={isStaff}
                   handleDeleteRole={handleDeleteRole}
-                  handleClick={
-                    actionType => editRemoveRole(
-                      { actionType, categoryId: cu.get('id'), roleId: cu.get('role') },
-                    )
-                  }
                 />
               )
             })}
@@ -181,7 +175,6 @@ UserDetailRoles.propTypes = {
   administeredCategories: PropTypes.object.isRequired,
   categoryUsers: PropTypes.object.isRequired,
   close: PropTypes.func.isRequired,
-  editRemoveRole: PropTypes.func.isRequired,
   handleDeleteRole: PropTypes.func.isRequired,
   handleMaskClick: PropTypes.func.isRequired,
   handleRolesSubmit: PropTypes.func.isRequired,
@@ -217,6 +210,7 @@ const userRoleStyle = css(
       ),
     ),
     select('& .edit',
+      s.displayNone, // Hide edit until we wire it up.
       { marginLeft: 5 },
       select('& svg',
         {
@@ -264,7 +258,6 @@ function UserRole({
   categoryUserId,
   categoryName,
   categorySlug,
-  handleClick,
   handleDeleteRole,
   isNew,
   isStaff,
@@ -283,11 +276,10 @@ function UserRole({
         {isStaff || canEdit(categorySlug, roleId, administeredCategories) ?
           <button
             className="edit"
-            onClick={() => handleClick('edit')}
           >
             <PencilIcon />
           </button>
-        : null }
+        : null}
         {isStaff || canDelete(categorySlug, roleId, administeredCategories) ?
           <button
             className="remove"
@@ -305,7 +297,6 @@ UserRole.propTypes = {
   categoryUserId: PropTypes.string.isRequired,
   categoryName: PropTypes.string.isRequired,
   categorySlug: PropTypes.string.isRequired,
-  handleClick: PropTypes.func.isRequired,
   handleDeleteRole: PropTypes.func.isRequired,
   isNew: PropTypes.bool.isRequired,
   isStaff: PropTypes.bool.isRequired,
@@ -399,11 +390,6 @@ class UserCategoryRolesForm extends PureComponent {
     this.resetForm = this.resetForm.bind(this)
   }
 
-  resetForm() {
-    this.onClearCategory()
-    this.onClearRole()
-  }
-
   onSelectCategory(item) {
     // abandoning multi-select for now
     // const { selectedCategories } = this.state
@@ -432,6 +418,11 @@ class UserCategoryRolesForm extends PureComponent {
     this.setState({
       selectedRoles: [],
     })
+  }
+
+  resetForm() {
+    this.onClearCategory()
+    this.onClearRole()
   }
 
   handleSubmitLocal(e) {

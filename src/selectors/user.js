@@ -128,6 +128,10 @@ export const selectUserModeratorCategories = createSelector(
   ),
 )
 
+export const selectUserHasRoles = createSelector(
+  [selectUserCategoryUsers], categoryUsers => !categoryUsers.isEmpty(),
+)
+
 export const selectUserIsEmpty = createSelector(
   [selectUser], user => user.isEmpty(),
 )
