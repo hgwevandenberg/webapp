@@ -5,6 +5,7 @@ import { Link } from 'react-router'
 import { DismissButtonLG } from './../buttons/Buttons'
 import { PencilIcon, XBoxIcon } from './../assets/Icons'
 import { FilterSelectorControl } from './../forms/FilterSelectorControl'
+import StatusMessage from './../forms/StatusMessage'
 import { css, hover, media, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
@@ -343,10 +344,9 @@ const formStyle = css(
     ),
   ),
 
-  select('& .success-msg',
+  select('& .status-msg',
     s.m0,
     s.p0,
-    s.colorGreen,
   ),
 
   media(s.maxBreak3,
@@ -369,7 +369,7 @@ const formStyle = css(
         s.leftAlign,
       ),
     ),
-    select('& .success-msg',
+    select('& .status-msg',
       s.inlineBlock,
       { marginRight: 10 },
     ),
@@ -382,12 +382,20 @@ class UserCategoryRolesForm extends PureComponent {
     this.state = {
       selectedCategories: [],
       selectedRoles: [],
+      showStatusMsg: false,
     }
     this.onSelectCategory = this.onSelectCategory.bind(this)
     this.onClearCategory = this.onClearCategory.bind(this)
     this.onSelectRole = this.onSelectRole.bind(this)
     this.onClearRole = this.onClearRole.bind(this)
     this.resetForm = this.resetForm.bind(this)
+    this.toggleStatusMsg = this.toggleStatusMsg.bind(this)
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.newRole !== this.props.newRole) {
+      this.toggleStatusMsg(true)
+    }
   }
 
   onSelectCategory(item) {
@@ -425,6 +433,12 @@ class UserCategoryRolesForm extends PureComponent {
     this.onClearRole()
   }
 
+  toggleStatusMsg(show = false) {
+    this.setState({
+      showStatusMsg: show,
+    })
+  }
+
   handleSubmitLocal(e) {
     e.preventDefault()
 
@@ -456,6 +470,7 @@ class UserCategoryRolesForm extends PureComponent {
     const {
       selectedCategories,
       selectedRoles,
+      showStatusMsg,
     } = this.state
 
     const userRoles = Immutable.fromJS([
@@ -501,8 +516,8 @@ class UserCategoryRolesForm extends PureComponent {
             type="rolePicker"
           />
         </div>
-        {newRole &&
-          <p className="success-msg">Success!</p>
+        {newRole && showStatusMsg &&
+          <StatusMessage onHideCallback={() => this.toggleStatusMsg()}>Success!</StatusMessage>
         }
         <button
           className="role-submit"
