@@ -663,7 +663,9 @@ export class PostBody extends PureComponent {
 }
 
 const launchCommentEditorStyle = css(
+  s.block,
   s.relative,
+  { height: 50 },
 )
 
 const launchCommentEditorAvatarStyle = css(
