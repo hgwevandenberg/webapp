@@ -71,6 +71,7 @@ class Editor extends Component {
     comment: PropTypes.object,
     dispatch: PropTypes.func.isRequired,
     hasComments: PropTypes.bool,
+    inline: PropTypes.bool,
     isComment: PropTypes.bool,
     isLoggedIn: PropTypes.bool,
     isOwnPage: PropTypes.bool,
@@ -90,6 +91,7 @@ class Editor extends Component {
     autoPopulate: null,
     comment: null,
     hasComments: false,
+    inline: false,
     isComment: false,
     isLoggedIn: false,
     isOwnPage: false,
@@ -234,6 +236,7 @@ class Editor extends Component {
       autoPopulate,
       comment,
       hasComments,
+      inline,
       isComment,
       isLoggedIn,
       isOwnPost,
@@ -283,6 +286,7 @@ class Editor extends Component {
         cancelAction={this.cancel}
         editorId={editorId}
         hasComments={hasComments}
+        inlineEditor={inline}
         isComment={isComment}
         isOwnPost={isOwnPost}
         isPostEditing={isPostEditing}

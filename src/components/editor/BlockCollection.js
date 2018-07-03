@@ -128,6 +128,7 @@ class BlockCollection extends PureComponent {
     hasContent: PropTypes.bool,
     hasMedia: PropTypes.bool,
     hasMention: PropTypes.bool,
+    inlineEditor: PropTypes.bool,
     isComment: PropTypes.bool,
     isLoading: PropTypes.bool,
     isMobileGridStream: PropTypes.bool,
@@ -160,6 +161,7 @@ class BlockCollection extends PureComponent {
     hasContent: false,
     hasMedia: false,
     hasMention: false,
+    inlineEditor: false,
     isComment: false,
     isLoading: false,
     isMobileGridStream: false,
@@ -478,8 +480,8 @@ class BlockCollection extends PureComponent {
   render() {
     const {
       artistInvite, buyLink, cancelAction, collection, dragBlock, editorId, firstBlock, categoryIds,
-      hasContent, hasMedia, hasMention, isComment, isLoading, isPosting, order, orderLength,
-      showArtistInviteSuccess, submitText, hasComments, isOwnPost, isMobileGridStream,
+      hasContent, hasMedia, hasMention, inlineEditor, isComment, isLoading, isPosting, order,
+      orderLength, showArtistInviteSuccess, submitText, hasComments, isOwnPost, isMobileGridStream,
       isGridMode, isPostEditing, isPostReposting, post,
     } = this.props
 
@@ -549,6 +551,7 @@ class BlockCollection extends PureComponent {
             editorId={editorId}
             handleFileAction={this.handleFiles}
             hasMedia={hasMedia}
+            inlineEditor={inlineEditor}
             isGridMode={isGridMode}
             isPostEditing={isPostEditing}
             isPostReposting={isPostReposting}
