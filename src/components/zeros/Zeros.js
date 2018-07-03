@@ -113,7 +113,7 @@ export const ZeroStateSayHello = ({ hasPosted = false, onSubmit, username }) =>
     </h2>
     {hasPosted ?
       <p>{`Notification to @${username} has been sent.`}</p> :
-      <Editor autoPopulate={`Hi @${username} :wave:`} onSubmit={onSubmit} />
+      <Editor autoPopulate={`Hi @${username} :wave:`} onSubmit={onSubmit} inline />
     }
   </ZeroState>)
 
@@ -129,7 +129,7 @@ export const ZeroStateFirstPost = () =>
     <h2 className={titleStyle}>
       It doesn’t look like you’ve posted yet, why don’t you give it a shot.
     </h2>
-    <Editor autoPopulate="Ello World! My first post on :ello:!" />
+    <Editor autoPopulate="Ello World! My first post on :ello:!" inline />
   </ZeroState>)
 
 ZeroStateFirstPost.propTypes = {

@@ -205,6 +205,7 @@ class PostActionBar extends Component {
     featuredInCategories: PropTypes.array.isRequired,
     handleFileAction: PropTypes.func.isRequired,
     hasMedia: PropTypes.bool,
+    inlineEditor: PropTypes.bool.isRequired,
     innerWidth: PropTypes.number.isRequired,
     isComment: PropTypes.bool.isRequired,
     isGridMode: PropTypes.bool.isRequired,
@@ -315,6 +316,7 @@ class PostActionBar extends Component {
       editorId,
       featuredInCategories,
       hasMedia,
+      inlineEditor,
       innerWidth,
       isGridMode,
       isPostEditing,
@@ -331,7 +333,7 @@ class PostActionBar extends Component {
     const { resetCategorySelection } = this.state
     const isBuyLinked = this.props.buyLink && this.props.buyLink.length
     let hasPostIntoCategory = false
-    if (postIntoCategory &&
+    if (!inlineEditor && postIntoCategory &&
       (!isPostEditing ||
       (isPostEditing && postCategories && postCategories.size > 0))) {
       hasPostIntoCategory = true
