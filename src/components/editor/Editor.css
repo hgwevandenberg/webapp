@@ -173,7 +173,7 @@
   border: 0;
 }
 
-.ZeroState .PostActionButton {
+.ZeroState .PostActionButton.forSubmit {
   color: #aaa;
   background-color: #fff;
   border: 1px solid currentColor;
@@ -184,7 +184,7 @@
   stroke: #aaa;
 }
 
-.no-touch .ZeroState .PostActionButton:hover {
+.no-touch .ZeroState .PostActionButton.forSubmit:hover {
   color: #fff;
   background-color: #000;
   border: 1px solid #000;
