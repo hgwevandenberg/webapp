@@ -37,6 +37,7 @@ describe('gui reducer', () => {
         'isNotificationsActive',
         'isNotificationsUnread',
         'isProfileMenuActive',
+        'isProfileRolesActive',
         'isLightBoxActive',
         'isTextToolsActive',
         'lastAnnouncementSeen',

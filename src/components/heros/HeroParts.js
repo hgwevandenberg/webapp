@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import Avatar from '../assets/Avatar'
-import { ChevronCircleIcon, ShareIcon } from '../assets/Icons'
+import { ChevronCircleIcon, RolesIcon, ShareIcon } from '../assets/Icons'
 import { AppleStore, GooglePlayStore } from '../assets/Sprites'
 import { css, hover, media, parent, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
@@ -191,12 +191,18 @@ HeroScrollToContentButton.contextTypes = {
 
 const shareButtonStyle = css(
   s.absolute,
-  { top: 20, right: 20, borderRadius: 20 },
+  { top: 40, right: 40, borderRadius: 20 },
   s.displayNone,
   s.wv40,
   s.hv40,
   s.bgcBlack,
   media(s.minBreak2, s.block),
+  select('& .ShareIcon',
+    s.colorWhite,
+    {
+      marginTop: -6,
+    },
+  ),
 )
 
 export const HeroShareUserButton = (props, { onClickShareProfile }) =>
@@ -208,3 +214,40 @@ HeroShareUserButton.contextTypes = {
   onClickShareProfile: PropTypes.func.isRequired,
 }
 
+// -------------------------------------
+
+const userRolesButtonStyle = css(
+  { ...shareButtonStyle },
+  { right: 95 },
+  select('& .RolesIcon',
+    s.colorWhite,
+    {
+      marginTop: -3,
+    },
+    select('& g',
+      {
+        strokeWidth: 0,
+      },
+      select('& path',
+        {
+          strokeWidth: 0,
+          fill: '#fff',
+        },
+      ),
+    ),
+  ),
+)
+
+export const HeroUserRolesButton = (props, { onClickOpenUserRoles }) => {
+  if (!props.isRoleAdministrator && !props.userHasRoles) { return null }
+  return (<button className={`HeroUserRolesButton ${userRolesButtonStyle}`} onClick={onClickOpenUserRoles} >
+    <RolesIcon />
+  </button>)
+}
+HeroUserRolesButton.propTypes = {
+  isRoleAdministrator: PropTypes.bool.isRequired,
+  userHasRoles: PropTypes.bool.isRequired,
+}
+HeroUserRolesButton.contextTypes = {
+  onClickOpenUserRoles: PropTypes.func.isRequired,
+}

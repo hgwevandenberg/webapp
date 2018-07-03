@@ -109,6 +109,16 @@ function normalizeModel(type, model, state) {
       summary: normalizePostContentRegion(model, 'summary', state),
       repostContent: normalizePostContentRegion(model, 'repostContent', state),
     })
+  } else if (type === 'categoryUsers') {
+    const categoryId = model.getIn(['links', 'category', 'id'])
+    const category = state.getIn(['categories', categoryId])
+    return model.merge({
+      categoryId,
+      categoryName: category.get('name'),
+      categorySlug: category.get('slug'),
+      userId: model.getIn(['links', 'user', 'id']),
+      role: model.get('role').toUpperCase(),
+    })
   } else if (type === MAPPING_TYPES.COMMENTS) {
     return model.merge({
       content: normalizePostContentRegion(model, 'content', state),
@@ -298,6 +308,9 @@ methods.deleteModel = (state, action, mappingType) => {
     case ACTION_TYPES.POST.DELETE_SUCCESS:
       state = postMethods.addOrUpdatePost(state, action)
       break
+    case ACTION_TYPES.USER.REMOVE_FROM_CATEGORY_SUCCESS:
+      state = state.deleteIn(['categoryUsers', model.get('id')])
+      break
     default:
       break
   }
@@ -394,6 +407,10 @@ export default function json(state = initialState, action = { type: '' }) {
     case ACTION_TYPES.COMMENT.DELETE_SUCCESS:
     case ACTION_TYPES.COMMENT.DELETE_FAILURE:
       return methods.deleteModel(state, action, MAPPING_TYPES.COMMENTS)
+    case ACTION_TYPES.USER.REMOVE_FROM_CATEGORY_REQUEST:
+    case ACTION_TYPES.USER.REMOVE_FROM_CATEGORY_SUCCESS:
+    case ACTION_TYPES.USER.REMOVE_FROM_CATEGORY_FAILURE:
+      return methods.deleteModel(state, action, MAPPING_TYPES.CATEGORY_USERS)
     case ACTION_TYPES.COMMENT.TOGGLE_EDITING:
       return commentMethods.toggleEditing(state, action)
     case ACTION_TYPES.COMMENT.EDITABLE_SUCCESS:
@@ -401,6 +418,7 @@ export default function json(state = initialState, action = { type: '' }) {
     case ACTION_TYPES.LOAD_STREAM_SUCCESS:
     case ACTION_TYPES.POST.EDITABLE_SUCCESS:
     case ACTION_TYPES.USER.DETAIL_SUCCESS:
+    case ACTION_TYPES.USER.ADD_TO_CATEGORY_SUCCESS:
       // fall through to parse the rest
       break
     case ACTION_TYPES.NOTIFICATIONS.MARK_ANNOUNCEMENT_READ_REQUEST:

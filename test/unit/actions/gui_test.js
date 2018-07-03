@@ -88,6 +88,26 @@ describe('gui actions', () => {
     })
   })
 
+  context('#setIsProfileRolesActive', () => {
+    const action = subject.setIsProfileRolesActive({ isActive: true })
+
+    it('is an FSA compliant action', () => {
+      expect(isFSA(action)).to.be.true
+    })
+
+    it('has similar action.name and action.type', () => {
+      expect(isFSAName(action, subject.setIsProfileRolesActive)).to.be.true
+    })
+
+    it('has a payload with the correct keys', () => {
+      expect(action.payload).to.have.keys('isProfileRolesActive')
+    })
+
+    it('sets the appropriate payload', () => {
+      expect(action.payload.isProfileRolesActive).to.be.true
+    })
+  })
+
   context('#setLastAnnouncementSeen', () => {
     const action = subject.setLastAnnouncementSeen({ id: '666' })
 
@@ -241,4 +261,3 @@ describe('gui actions', () => {
     })
   })
 })
-

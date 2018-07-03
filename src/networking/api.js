@@ -216,6 +216,17 @@ export function unlovePost(idOrToken) {
     path: getAPIPath(`posts/${idOrToken}/love`),
   }
 }
+// CategoryUsers
+export function createCategoryUserPath() {
+  return {
+    path: getAPIPath('category_users'),
+  }
+}
+export function deleteCategoryUserPath(id) {
+  return {
+    path: getAPIPath(`category_users/${id}`),
+  }
+}
 // Watch
 export function watchPost(idOrToken) {
   return {

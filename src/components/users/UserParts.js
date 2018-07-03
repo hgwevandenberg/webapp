@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import classNames from 'classnames'
-import { ShareIcon } from '../assets/Icons'
+import { RolesIcon, ShareIcon } from '../assets/Icons'
 import { BadgeButton, MiniPillButtonProfile } from '../buttons/Buttons'
 import Hint from '../hints/Hint'
 import { numberToHuman } from '../../lib/number_to_human'
@@ -30,6 +30,17 @@ UserStatsLink.defaultProps = {
 }
 UserStatsLink.contextTypes = {
   onClickScrollToContent: PropTypes.func,
+}
+
+// -----------------
+
+export const UserRolesButton = ({ className, onClick }) =>
+  (<button className={classNames('UserRolesButton', className)} onClick={onClick} >
+    <RolesIcon />
+  </button>)
+UserRolesButton.propTypes = {
+  className: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
 }
 
 // -----------------

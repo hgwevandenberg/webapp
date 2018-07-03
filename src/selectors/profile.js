@@ -1,7 +1,7 @@
 import Immutable from 'immutable'
 import { createSelector } from 'reselect'
-import { selectIsLoggedIn } from '../selectors/authentication'
-import { selectPathname } from '../selectors/routing'
+import { selectIsLoggedIn } from './authentication'
+import { selectPathname } from './routing'
 
 // state.profile.xxx
 export const selectAllowsAnalytics = state => state.profile.get('allowsAnalytics')
@@ -42,6 +42,8 @@ export const selectUuid = state => state.profile.get('uuid')
 export const selectSplit = (state, props) => state.profile.getIn(['splits', props.splitName])
 export const selectSubscribedCategoryIds = state => state.profile.get('followedCategoryIds', Immutable.List())
 export const selectFeaturedInCategoryIds = state => state.profile.getIn(['links', 'categories'], Immutable.List())
+export const selectCuratedCategoryIds = state => state.profile.getIn(['links', 'categories'], Immutable.List())
+export const selectModeratedCategoryIds = state => state.profile.getIn(['links', 'categories'], Immutable.List())
 
 // Memoized selectors
 export const selectIsAvatarBlank = createSelector(
@@ -97,4 +99,9 @@ export const selectProfileIsFeatured = createSelector(
 
 export const selectBioLabel = createSelector(
   [selectIsCommunity], isCommunity => (isCommunity ? 'Community Info' : 'Bio'),
+)
+
+export const selectIsRoleAdministrator = createSelector(
+  [selectIsStaff, selectCuratedCategoryIds, selectModeratedCategoryIds],
+  (isStaff, curated, moderated) => isStaff || !curated.isEmpty() || !moderated.isEmpty(),
 )

@@ -87,7 +87,7 @@ export const selectUserMetaTitle = createSelector(
 export const selectUserCategoryUsers = createSelector(
   [selectUser, selectJson], (user, json) =>
     json.get('categoryUsers', Immutable.Map())
-      .filter(cu => cu.userId === user.id)
+      .filter(cu => cu.get('userId') === user.get('id'))
       .valueSeq()
       .toList(),
 )
@@ -126,6 +126,10 @@ export const selectUserModeratorCategories = createSelector(
   [selectUserModeratorCategoryUsers, selectJson], (cus, json) => cus.map(
     cu => json.getIn(['categories', cu.get('categoryId')]), [],
   ),
+)
+
+export const selectUserHasRoles = createSelector(
+  [selectUserCategoryUsers], categoryUsers => !categoryUsers.isEmpty(),
 )
 
 export const selectUserIsEmpty = createSelector(

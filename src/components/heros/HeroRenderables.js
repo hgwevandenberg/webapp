@@ -11,6 +11,7 @@ import {
   HeroPromotionCTA,
   HeroScrollToContentButton,
   HeroShareUserButton,
+  HeroUserRolesButton,
 } from './HeroParts'
 import Hint from '../hints/Hint'
 import { BadgeFeaturedIcon } from '../assets/Icons'
@@ -67,7 +68,7 @@ const profileStyle = css(
   media(s.minBreak2, { height: 'calc(100vh - 80px)', minHeight: 540 }),
 )
 
-export const HeroProfile = ({ dpi, sources, userId, useGif }) =>
+export const HeroProfile = ({ dpi, sources, userId, useGif, isRoleAdministrator, userHasRoles }) =>
   (<div className={profileStyle}>
     <BackgroundImage
       className="inHeroProfile hasOverlay6"
@@ -76,6 +77,7 @@ export const HeroProfile = ({ dpi, sources, userId, useGif }) =>
       useGif={useGif}
     />
     <UserContainer userId={userId} type="profile" />
+    <HeroUserRolesButton isRoleAdministrator={isRoleAdministrator} userHasRoles={userHasRoles} />
     <HeroShareUserButton />
     <HeroScrollToContentButton />
   </div>)
@@ -85,6 +87,8 @@ HeroProfile.propTypes = {
   sources: PropTypes.object,
   userId: PropTypes.string,
   useGif: PropTypes.bool.isRequired,
+  isRoleAdministrator: PropTypes.bool.isRequired,
+  userHasRoles: PropTypes.bool.isRequired,
 }
 HeroProfile.defaultProps = {
   sources: null,
