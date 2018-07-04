@@ -889,11 +889,14 @@ export default function CategoryRoleUserPicker({
   // handleRolesSubmit,
   isOpen,
   isStaff,
+  roleType,
   userId,
 }) {
   if (!isOpen) {
     return null
   }
+
+  const roleName = roleType === 'curator' ? 'Curator' : 'Moderator'
 
   return (
     <div className={categoryRoleUserPickerModalStyle}>
@@ -903,7 +906,7 @@ export default function CategoryRoleUserPicker({
             onClick={close}
           />
           <div className="pick-user">
-            <h1>Role Administrator</h1>
+            <h1>Add {roleName}</h1>
             <p>user lookup form will go here</p>
           </div>
         </div>
@@ -917,8 +920,10 @@ CategoryRoleUserPicker.propTypes = {
   // handleRolesSubmit: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
   isStaff: PropTypes.bool.isRequired,
+  roleType: PropTypes.string,
   userId: PropTypes.string.isRequired,
 }
 CategoryRoleUserPicker.defaultProps = {
   newRole: null,
+  roleType: 'curator',
 }
