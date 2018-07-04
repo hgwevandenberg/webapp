@@ -27,6 +27,15 @@ export function setIsProfileMenuActive({ isActive }) {
   }
 }
 
+export function setIsProfileRolesActive({ isActive }) {
+  return {
+    type: GUI.SET_IS_PROFILE_ROLES_ACTIVE,
+    payload: {
+      isProfileRolesActive: isActive,
+    },
+  }
+}
+
 export function setIsLightBoxActive({ isActive }) {
   return {
     type: GUI.SET_IS_LIGHT_BOX_ACTIVE,

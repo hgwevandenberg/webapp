@@ -99,11 +99,26 @@ const dismissButtonStyleReverse = css(
 export const DismissButton = () =>
   <button className={`CloseModal ${dismissButtonStyle}`}><XIcon /></button>
 
-export const DismissButtonLG = () =>
-  <button className={`CloseModal ${dismissButtonStyle}`}><XIconLG /></button>
+export const DismissButtonLG = ({ onClick }) => (
+  <button
+    className={`CloseModal ${dismissButtonStyle}`}
+    onClick={onClick}
+  >
+    <XIconLG />
+  </button>
+)
+DismissButtonLG.propTypes = {
+  onClick: PropTypes.func,
+}
 
-export const DismissButtonLGReverse = ({ onClick }) =>
-  <button className={`CloseModal ${dismissButtonStyle} ${dismissButtonStyleReverse}`} onClick={onClick}><XIconLG /></button>
+export const DismissButtonLGReverse = ({ onClick }) => (
+  <button
+    className={`CloseModal ${dismissButtonStyle} ${dismissButtonStyleReverse}`}
+    onClick={onClick}
+  >
+    <XIconLG />
+  </button>
+)
 DismissButtonLGReverse.propTypes = {
   onClick: PropTypes.func,
 }

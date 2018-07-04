@@ -224,11 +224,11 @@ const moreButtonStyle = css(
     s.wv40, s.hv40, s.lh40,
     parent('.isLoggedIn', { right: 'auto', left: 80 }),
     parent('.isLoggedOut', s.inlineBlock, { left: 80 }),
+    { width: 'auto', paddingRight: 20, paddingLeft: 15, borderRadius: 20 },
   ),
   media(s.minBreak4,
     parent('.isLoggedIn'),
     parent('.isLoggedOut', { left: 140 }),
-    { width: 'auto', paddingRight: 20, paddingLeft: 15, borderRadius: 20 },
   ),
 )
 

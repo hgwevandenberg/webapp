@@ -169,20 +169,33 @@
 
 .ZeroState .editable {
   min-height: 0;
-  padding: 0;
+  padding: 20px 0 0;
   border: 0;
 }
 
-.ZeroState .PostActionButton {
+.ZeroState .PostActionButton.forSubmit {
+  width: 85px;
   color: #aaa;
+  background-color: #fff;
   border: 1px solid currentColor;
 }
 
-.ZeroState .PostActionButton:not(.forPost) {
+/* stylelint-disable selector-max-compound-selectors, selector-max-specificity */
+.ZeroState .PostActionButton .SVGIcon > g {
+  stroke: #aaa;
+}
+
+.no-touch .ZeroState .PostActionButton.forSubmit:hover {
+  color: #fff;
+  background-color: #000;
+  border: 1px solid #000;
+}
+
+.ZeroState .PostActionButton:hover .SVGIcon > g {
+  stroke: #fff;
+}
+/* stylelint-enable selector-max-compound-selectors, selector-max-specificity */
+
+.ZeroState .PostActionButton:not(.forSubmit) {
   display: none;
 }
-
-.ZeroState .PostActionButton.forPost {
-  width: 85px;
-}
-

@@ -1,4 +1,5 @@
 import React from 'react'
+import Immutable from 'immutable'
 import * as ACTION_TYPES from '../constants/action_types'
 import * as MAPPING_TYPES from '../constants/mapping_types'
 import * as api from '../networking/api'
@@ -16,6 +17,39 @@ export function flagUser(username, kind) {
       method: 'POST',
     },
     meta: {},
+  }
+}
+
+export function addToCategory({ userId, categoryId, role }, successAction) {
+  return {
+    type: ACTION_TYPES.USER.ADD_TO_CATEGORY,
+    payload: {
+      endpoint: api.createCategoryUserPath(),
+      method: 'POST',
+      body: {
+        user_id: userId,
+        category_id: categoryId,
+        role,
+      },
+    },
+    meta: {
+      mappingType: MAPPING_TYPES.CATEGORY_USERS,
+      successAction,
+    },
+  }
+}
+
+export function removeFromCategory(categoryUserId) {
+  return {
+    type: ACTION_TYPES.USER.REMOVE_FROM_CATEGORY,
+    payload: {
+      endpoint: api.deleteCategoryUserPath(categoryUserId),
+      method: 'DELETE',
+      model: Immutable.Map({ id: categoryUserId }),
+    },
+    meta: {
+      mappingType: MAPPING_TYPES.CATEGORY_USERS,
+    },
   }
 }
 

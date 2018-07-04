@@ -68,6 +68,8 @@ export const requestTypes = [
   ACTION_TYPES.USER.DETAIL,
   ACTION_TYPES.USER.FLAG,
   ACTION_TYPES.USER.HIRE_ME,
+  ACTION_TYPES.USER.ADD_TO_CATEGORY,
+  ACTION_TYPES.USER.REMOVE_FROM_CATEGORY,
 ]
 
 // this is for requests that don't require any

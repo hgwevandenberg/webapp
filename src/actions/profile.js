@@ -1,11 +1,12 @@
 import React from 'react'
 import { replace } from 'react-router-redux'
-import { LOAD_STREAM, PROFILE } from '../constants/action_types'
+import { LOAD_STREAM, PROFILE, V3 } from '../constants/action_types'
 import * as MAPPING_TYPES from '../constants/mapping_types'
 import * as api from '../networking/api'
 import * as StreamFilters from '../components/streams/StreamFilters'
 import * as StreamRenderables from '../components/streams/StreamRenderables'
 import { ErrorState } from '../components/errors/Errors'
+import searchCategories from '../queries/searchCategories'
 
 export function autoCompleteLocation(location) {
   return {
@@ -54,7 +55,6 @@ export function loadProfile() {
     payload: { endpoint: api.profilePath() },
   }
 }
-
 export function signUpUser(email, username, password, invitationCode) {
   return {
     type: PROFILE.SIGNUP,
@@ -301,3 +301,17 @@ export function splitFinish(uuid, name) {
   }
 }
 
+export function searchAdministratedCategories(term) {
+  const variables = { administered: true }
+  if (term) { variables.query = term }
+  return {
+    type: V3.LOAD_STREAM,
+    payload: {
+      query: searchCategories,
+      variables,
+    },
+    meta: {
+      resultKey: 'administeredCategoryProfileSearch',
+    },
+  }
+}

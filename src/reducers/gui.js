@@ -47,6 +47,7 @@ const initialNonPersistedState = Immutable.Map({
   isCompleterActive: false,
   isNotificationsActive: false,
   isProfileMenuActive: false,
+  isProfileRolesActive: false,
   isLightBoxActive: false,
   isTextToolsActive: false,
   notificationScrollPositions: Immutable.Map(),
@@ -121,6 +122,8 @@ export default (state = initialState, action = { type: '' }) => {
       return state.set('isNavbarHidden', get(payload, 'isNavbarHidden', state.isNavbarHidden))
     case GUI.SET_IS_PROFILE_MENU_ACTIVE:
       return state.set('isProfileMenuActive', payload.isProfileMenuActive)
+    case GUI.SET_IS_PROFILE_ROLES_ACTIVE:
+      return state.set('isProfileRolesActive', payload.isProfileRolesActive)
     case GUI.SET_IS_LIGHT_BOX_ACTIVE:
       return state.set('isLightBoxActive', payload.isLightBoxActive)
     case GUI.SET_LAST_ANNOUNCEMENT_SEEN:

@@ -97,6 +97,10 @@ function parseCategoryUser(state, categoryUser) {
     role: categoryUser.role,
     userId: categoryUser.userId || deepGet(categoryUser, ['user', 'id']),
     categoryId: categoryUser.categoryId || deepGet(categoryUser, ['category', 'id']),
+
+    // De-normalize these if available to make access easier - infrequently updated.
+    categorySlug: deepGet(categoryUser, ['category', 'slug']),
+    categoryName: deepGet(categoryUser, ['category', 'name']),
   }))
 }
 
@@ -115,6 +119,7 @@ function parseCategory(state, category) {
     allowInOnboarding: category.allowInOnboarding,
     isCreatorType: category.isCreatorType,
     tileImage: category.tileImage,
+    role: deepGet(category, ['currentUserState', 'role']),
   }))
 }
 
@@ -411,6 +416,10 @@ function parseQueryType(state, type, stream, pathname, query, variables) {
     case 'userLoveStream':
       models = stream.loves
       parser = parsePostFromLove
+      break;
+    case 'searchCategories':
+      models = stream.categories
+      parser = parseCategory
       break;
     default:
       models = null

@@ -8,6 +8,7 @@ import { trackEvent } from '../actions/analytics'
 import { inviteUsers } from '../actions/invitations'
 import { closeModal, openModal } from '../actions/modals'
 import { collabWithUser, hireUser } from '../actions/user'
+import { setIsProfileRolesActive } from '../actions/gui'
 import { BadgeSummaryDialog, TextMarkupDialog } from '../components/dialogs/DialogRenderables'
 import MessageDialog from '../components/dialogs/MessageDialog'
 import ShareDialog from '../components/dialogs/ShareDialog'
@@ -19,7 +20,7 @@ import {
 } from '../components/users/UserRenderables'
 import { selectIsLoggedIn } from '../selectors/authentication'
 import { selectBadgesHasLoaded } from '../selectors/badges'
-import { selectIsMobile } from '../selectors/gui'
+import { selectIsMobile, selectIsProfileRolesActive } from '../selectors/gui'
 import {
   selectInvitationAcceptedAt,
   selectInvitationEmail,
@@ -71,6 +72,7 @@ export function makeMapStateToProps() {
       isCollaborateable: selectUserIsCollaborateable(state, props),
       isHireable: selectUserIsHireable(state, props),
       isLoggedIn: selectIsLoggedIn(state),
+      isRolesOpen: selectIsProfileRolesActive(state),
       isSelf: selectUserIsSelf(state, props),
       isShortBioTruncated: truncatedShortBio.text.length >= 150,
       isMiniProfileCard: selectIsPostDetail(state, props),
@@ -117,6 +119,7 @@ class UserContainer extends Component {
     isLoggedIn: PropTypes.bool.isRequired,
     isMiniProfileCard: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
+    isRolesOpen: PropTypes.bool.isRequired,
     isSelf: PropTypes.bool.isRequired,
     isShortBioTruncated: PropTypes.bool.isRequired,
     isUserEmpty: PropTypes.bool.isRequired,
@@ -173,6 +176,7 @@ class UserContainer extends Component {
     onClickOpenBadgeModal: PropTypes.func,
     onClickReInvite: PropTypes.func,
     onClickShareProfile: PropTypes.func,
+    onClickRoles: PropTypes.func,
   }
 
   getChildContext() {
@@ -194,12 +198,13 @@ class UserContainer extends Component {
       onClickOpenBadgeModal: userBadgeCount && isBadgesLoaded ? this.onClickOpenBadgeModal : null,
       onClickReInvite: this.onClickReInvite,
       onClickShareProfile: isMobile ? this.onClickShareProfile : null,
+      onClickRoles: isMobile ? this.onClickRoles : null,
     }
   }
 
   shouldComponentUpdate(nextProps) {
     return !Immutable.is(nextProps.user, this.props.user) ||
-      ['isLoggedIn', 'isBadgesLoaded', 'isMiniProfileCard', 'isMobile', 'isRelationshipHidden'].some(prop =>
+      ['isLoggedIn', 'isBadgesLoaded', 'isMiniProfileCard', 'isMobile', 'isRelationshipHidden', 'isRolesOpen'].some(prop =>
         nextProps[prop] !== this.props[prop],
       )
   }
@@ -216,6 +221,11 @@ class UserContainer extends Component {
     const { dispatch, username } = this.props
     const action = bindActionCreators(trackEvent, dispatch)
     dispatch(openModal(<ShareDialog username={username} trackEvent={action} />, '', null, 'open-share-dialog-profile'))
+  }
+
+  onClickRoles = () => {
+    const { dispatch, isRolesOpen } = this.props
+    dispatch(setIsProfileRolesActive({ isActive: !isRolesOpen }))
   }
 
   onClickOpenBadgeModal = (e) => {
@@ -303,6 +313,7 @@ class UserContainer extends Component {
       isLoggedIn,
       isMiniProfileCard,
       isMobile,
+      isRolesOpen,
       isSelf,
       isUserEmpty,
       location,
@@ -385,6 +396,7 @@ class UserContainer extends Component {
               isHireable,
               isLoggedIn,
               isMobile,
+              isRolesOpen,
               isSelf,
               location,
               lovesCount,
@@ -407,4 +419,3 @@ class UserContainer extends Component {
 }
 
 export default connect(makeMapStateToProps)(UserContainer)
-
