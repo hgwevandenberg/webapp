@@ -52,20 +52,36 @@ function parsePagination(state, type, models, next, isLastPage, pathname, query,
   }))
 
   const newPageIds = parsePaginationIds(type, models)
+  const existingPageIds = mergedState.getIn(['pages', pathname, 'ids'])
 
-  return mergedState.updateIn(['pages', pathname, 'ids'], (existingPageIds) => {
-    // If we don't have any existingPageIds just return the new ids.
-    if (!existingPageIds || existingPageIds.count() === 0) {
-      return newPageIds
-    }
-    // If we have a before value in the query this is not the first page, so append to ordered set.
-    if (variables.before || (variables.get && variables.get('before'))) {
-      return existingPageIds.concat(newPageIds)
-    }
-    // If we don't have a before value this is either the first page or re-requesting the first
-    // page. In that case we need to prepend to the ordered set.
-    return newPageIds.concat(existingPageIds)
-  })
+  // If we don't have any existingPageIds just return the new ids.
+  if (!existingPageIds || existingPageIds.count() === 0) {
+    return mergedState.setIn(['pages', pathname, 'ids'], newPageIds)
+  }
+
+  // If we have a before value in the query this is not the first page, so append to ordered set.
+  if (variables.before || (variables.get && variables.get('before'))) {
+    return mergedState.setIn(['pages', pathname, 'ids'], existingPageIds.concat(newPageIds))
+  }
+
+  // If we don't have a before value this is either the first page or re-requesting the first
+  // page.
+  const unseenPageIds = newPageIds.subtract(existingPageIds)
+
+  // If there are a full page of unseen ids we just load the page fresh.
+  if (unseenPageIds.count() >= 20) {
+    return mergedState.setIn(['pages', pathname, 'ids'], newPageIds)
+  }
+
+  // In that case we need to prepend to either set to show the "newPosts" icon
+  if (unseenPageIds.count() > 0) {
+    return mergedState.updateIn(['pages', pathname, 'morePostIds'], alreadyUnseen =>
+      unseenPageIds.concat(alreadyUnseen || Immutable.OrderedSet()),
+    )
+  }
+
+  // No new posts
+  return mergedState
 }
 
 function resetSubscribedStreamPagination(state) {
@@ -229,17 +245,6 @@ function commentLinks(comment) {
 
   return links
 }
-
-// function loveLinks(love) {
-//   const links = {}
-//   const userId = deepGet(love, ['user', 'id'])
-//   if (userId) { links.user = { id: userId, type: 'users' } }
-
-//   const postId = deepGet(love, ['post', 'id'])
-//   if (postId) { links.post = { id: postId, type: 'posts' } }
-
-//   return links
-// }
 
 function postLinks(post) {
   const links = {}

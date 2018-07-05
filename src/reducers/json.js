@@ -39,6 +39,12 @@ methods.addNewIdsToResult = (state, action) => {
   const resultKey = get(action, 'payload.resultKey', path)
   let result = state.getIn([MAPPING_TYPES.PAGES, resultKey])
   if (!result || !result.get('morePostIds')) { return state }
+  if (Immutable.OrderedSet.isOrderedSet(result.get('morePostIds'))) {
+    const s1 = state.updateIn([MAPPING_TYPES.PAGES, resultKey, 'ids'], existing =>
+      result.get('morePostIds').concat(existing),
+    )
+    return s1.deleteIn([MAPPING_TYPES.PAGES, resultKey, 'morePostIds'])
+  }
   // if you have created a post it gets prepended to the result ids
   // when we come back with additional ids we want them to be unique
   // and in descending order, which fills in the gaps and is what union does
