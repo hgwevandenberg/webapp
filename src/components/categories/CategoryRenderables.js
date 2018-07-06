@@ -692,7 +692,8 @@ export function CategoryInfo({
           innerWidth={innerWidth}
         />
       </section>
-      <CategoryRolesContainer />
+      <CategoryRolesContainer roleType="curator" />
+      <CategoryRolesContainer roleType="moderator" />
     </aside>
   )
 }

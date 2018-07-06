@@ -1,10 +1,36 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 // import classNames from 'classnames'
-// import { XIcon } from '../assets/Icons'
+import { ChevronIcon } from '../assets/Icons'
 import { DismissButtonLG } from '../buttons/Buttons'
 import { css, hover, media, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
+
+export function CategoryAddRoleTrigger({
+  handleTriggerClick,
+  type,
+}) {
+  const roleName = type === 'curator' ? 'Curator' : 'Moderator'
+
+  return (
+    <button
+      className="category-info open-trigger"
+      title={`Add ${roleName}`}
+      onClick={handleTriggerClick}
+    >
+      <span className="label">
+        Add {roleName}
+      </span>
+      <span className="icon">
+        <ChevronIcon />
+      </span>
+    </button>
+  )
+}
+CategoryAddRoleTrigger.propTypes = {
+  handleTriggerClick: PropTypes.func.isRequired,
+  type: PropTypes.string.isRequired,
+}
 
 const categoryRoleUserPickerModalStyle = css(
   s.block,
@@ -139,7 +165,7 @@ const userPickerStyle = css(
   ),
 )
 
-export default function CategoryRoleUserPicker({
+export function CategoryRoleUserPicker({
   close,
   handleMaskClick,
   // handleRolesSubmit,
