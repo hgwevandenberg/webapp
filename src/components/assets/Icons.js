@@ -276,6 +276,15 @@ export const CircleIconLG = () =>
     </g>
   </SVGIcon>)
 
+export const CircleAddRemove = () =>
+  (<SVGIcon className="CircleAddRemove">
+    <g>
+      <circle cx="10" cy="10" r="9" />
+      <line x1="15.318" y1="10.223" x2="4.682" y2="10.223" />
+      <line x1="10" y1="15.541" x2="10" y2="4.904" />
+    </g>
+  </SVGIcon>)
+
 export const DotsIcon = () =>
   (<SVGIcon className="DotsIcon">
     <g>

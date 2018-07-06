@@ -17,7 +17,7 @@ class CategoryRolesContainer extends PureComponent {
     roleType: PropTypes.string,
   }
   static defaultProps = {
-    roleType: 'curator',
+    roleType: 'curators',
   }
 
   constructor(props) {

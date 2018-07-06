@@ -347,6 +347,7 @@ export const colorA = { color: '#aaa' }
 export const colorC = { color: '#ccc' }
 export const colorWhite = { color: '#fff' }
 export const colorGreen = { color: '#00d100' }
+export const colorDarkGreen = { color: '#16a905' }
 export const colorYellow = { color: '#ffc600' }
 export const colorRed = { color: '#c90000' }
 
@@ -363,6 +364,7 @@ export const bgcE5 = { backgroundColor: '#e5e5e5' }
 export const bgcF2 = { backgroundColor: '#f2f2f2' }
 export const bgcWhite = { backgroundColor: '#fff' }
 export const bgcGreen = { backgroundColor: '#00d100' }
+export const bgcDarkGreen = { backgroundColor: '#16a905' }
 export const bgcRed = { backgroundColor: '#f00' }
 export const bgcYellow = { backgroundColor: '#ffc' }
 

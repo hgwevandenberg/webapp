@@ -67,7 +67,7 @@ const categorySubscribeButtonStyle = css(
     borderRadius: 100,
     transition: `background-color 0.2s ${s.ease}`,
   },
-  hover({ backgroundColor: '#16a905' }),
+  hover(s.bgcDarkGreen),
   select('&.subscribed',
     s.bgcA,
     hover(s.bgcBlack),
@@ -571,6 +571,7 @@ const categoryInfoExpandedStyle = css(
   ),
 
   select('& .users-holder',
+    s.relative,
     s.mb20,
     {
       paddingBottom: 15,
@@ -580,6 +581,12 @@ const categoryInfoExpandedStyle = css(
       s.mb0,
       s.pb0,
       { borderBottomWidth: 0 },
+    ),
+    select('& .roles-holder',
+      select('& .open-trigger',
+        s.absolute,
+        { top: 7, right: 0 },
+      ),
     ),
   ),
 
@@ -692,8 +699,6 @@ export function CategoryInfo({
           innerWidth={innerWidth}
         />
       </section>
-      <CategoryRolesContainer roleType="curator" />
-      <CategoryRolesContainer roleType="moderator" />
     </aside>
   )
 }
@@ -747,6 +752,7 @@ const CategoryUsers = ({ categoryCurators, categoryModerators }) => {
 
   return (
     <nav className={`${kind}-holder users-holder`}>
+      <CategoryRolesContainer roleType={kind} />
       <h4>{title}</h4>
       <ul className={`${kind} ${categoryUsersStyle}`}>
         {categoryUsers.map((categoryUser) => {

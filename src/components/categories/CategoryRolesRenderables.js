@@ -1,20 +1,35 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 // import classNames from 'classnames'
-import { ChevronIcon } from '../assets/Icons'
+import { CircleAddRemove } from '../assets/Icons'
 import { DismissButtonLG } from '../buttons/Buttons'
 import { css, hover, media, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
+
+const categoryAddRoleTriggerStyle = css(
+  s.wv20,
+  s.hv20,
+  select('& .label', s.displayNone),
+  select('& .icon',
+    s.transitionColor,
+    s.colorGreen,
+  ),
+  hover(
+    select('& .icon',
+      s.colorDarkGreen,
+    ),
+  ),
+)
 
 export function CategoryAddRoleTrigger({
   handleTriggerClick,
   type,
 }) {
-  const roleName = type === 'curator' ? 'Curator' : 'Moderator'
+  const roleName = type === 'curators' ? 'Curator' : 'Moderator'
 
   return (
     <button
-      className="category-info open-trigger"
+      className={`add-role open-trigger ${categoryAddRoleTriggerStyle}`}
       title={`Add ${roleName}`}
       onClick={handleTriggerClick}
     >
@@ -22,7 +37,7 @@ export function CategoryAddRoleTrigger({
         Add {roleName}
       </span>
       <span className="icon">
-        <ChevronIcon />
+        <CircleAddRemove />
       </span>
     </button>
   )
@@ -151,9 +166,9 @@ const userPickerStyle = css(
       { borderRadius: 5 },
 
       hover(
+        s.bgcDarkGreen,
         {
           cursor: 'pointer',
-          backgroundColor: '#16a905',
         },
       ),
 
@@ -178,7 +193,7 @@ export function CategoryRoleUserPicker({
     return null
   }
 
-  const roleName = roleType === 'curator' ? 'Curator' : 'Moderator'
+  const roleName = roleType === 'curators' ? 'Curator' : 'Moderator'
 
   return (
     <div className={categoryRoleUserPickerModalStyle}>
