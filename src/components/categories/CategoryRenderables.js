@@ -820,9 +820,6 @@ CategoryInfoTrigger.propTypes = {
 }
 
 
-
-
-
 const categoryRoleUserPickerModalStyle = css(
   s.block,
   s.relative,
@@ -883,6 +880,79 @@ const categoryRoleUserPickerStyle = css(
   ),
 )
 
+const userPickerStyle = css(
+  s.block,
+  s.fullWidth,
+  select('& form',
+    s.flex,
+    s.fullWidth,
+    s.itemsCenter,
+    s.justifySpaceBetween,
+    s.mt30,
+    select('& label',
+      s.relative,
+      { width: 'calc(100% - 100px)' },
+      select('& .label-text',
+        s.absolute,
+        s.colorA,
+        s.zIndex2,
+        {
+          left: 20,
+          top: 7,
+        },
+      ),
+      select('& .input-holder',
+        s.relative,
+        s.fullWidth,
+        select('& input',
+          s.resetInput,
+          s.block,
+          s.fullWidth,
+          s.pr10,
+          s.hv40,
+          s.lh40,
+          s.fontSize14,
+          s.colorBlack,
+          s.bgcEA,
+          s.transitionBgColor,
+          {
+            paddingLeft: 40,
+            borderRadius: 5,
+          },
+
+          select('&:focus',
+            s.bgcF2,
+          ),
+        ),
+      ),
+    ),
+
+    select('& button',
+      s.pr10,
+      s.pl10,
+      s.hv40,
+      s.lh40,
+      s.fontSize14,
+      s.colorWhite,
+      s.bgcGreen,
+      s.transitionBgColor,
+      { borderRadius: 5 },
+
+      hover(
+        {
+          cursor: 'pointer',
+          backgroundColor: '#16a905',
+        },
+      ),
+
+      select('&:disabled, &:disabled:hover',
+        s.bgcA,
+        hover({ cursor: 'default' }),
+      ),
+    ),
+  ),
+)
+
 export default function CategoryRoleUserPicker({
   close,
   handleMaskClick,
@@ -905,9 +975,29 @@ export default function CategoryRoleUserPicker({
           <DismissButtonLG
             onClick={close}
           />
-          <div className="pick-user">
+          <div className={`pick-user ${userPickerStyle}`}>
             <h1>Add {roleName}</h1>
-            <p>user lookup form will go here</p>
+            <form>
+              <label htmlFor={`add-${roleType}`}>
+                <span className="label-text">@</span>
+                <span className="input-holder">
+                  <input
+                    className="username"
+                    name={`add-${roleType}`}
+                    id={`add-${roleType}`}
+                    type="search"
+                    value=""
+                  />
+                </span>
+              </label>
+              <button
+                className="user-submit"
+                disabled={false}
+                // onClick={e => this.handleSubmitLocal(e)}
+              >
+                <span>Add</span>
+              </button>
+            </form>
           </div>
         </div>
       </div>
