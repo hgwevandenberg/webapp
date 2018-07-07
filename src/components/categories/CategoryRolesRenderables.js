@@ -12,29 +12,51 @@ const categoryAddRoleTriggerStyle = css(
   select('& .label', s.displayNone),
   select('& .icon',
     s.transitionColor,
-    s.colorGreen,
+    s.colorA,
   ),
   hover(
     select('& .icon',
-      s.colorDarkGreen,
+      s.colorBlack,
+    ),
+  ),
+
+  // add version
+  select('&.add-role',
+    select('& .icon',
+      s.colorGreen,
+    ),
+    hover(
+      select('& .icon',
+        s.colorDarkGreen,
+      ),
+    ),
+  ),
+  // remove version
+  select('&.remove-role',
+    select('& .icon',
+      select('& svg',
+        { transform: 'rotate(45deg)' },
+      ),
     ),
   ),
 )
 
-export function CategoryAddRoleTrigger({
-  handleTriggerClick,
-  type,
+export function CategoryAddRemoveRoleButton({
+  actionType,
+  handleClick,
+  roleType,
 }) {
-  const roleName = type === 'curators' ? 'Curator' : 'Moderator'
+  const actionName = actionType === 'add' ? 'Add' : 'Remove'
+  const roleName = roleType === 'curators' ? 'Curator' : 'Moderator'
 
   return (
     <button
-      className={`add-role open-trigger ${categoryAddRoleTriggerStyle}`}
-      title={`Add ${roleName}`}
-      onClick={handleTriggerClick}
+      className={`${actionType}-role${actionType === 'add' ? ' open-trigger' : ''} ${categoryAddRoleTriggerStyle}`}
+      title={`${actionName} ${roleName}`}
+      onClick={handleClick}
     >
       <span className="label">
-        Add {roleName}
+        {actionName} {roleName}
       </span>
       <span className="icon">
         <CircleAddRemove />
@@ -42,9 +64,10 @@ export function CategoryAddRoleTrigger({
     </button>
   )
 }
-CategoryAddRoleTrigger.propTypes = {
-  handleTriggerClick: PropTypes.func.isRequired,
-  type: PropTypes.string.isRequired,
+CategoryAddRemoveRoleButton.propTypes = {
+  actionType: PropTypes.string.isRequired,
+  handleClick: PropTypes.func.isRequired,
+  roleType: PropTypes.string.isRequired,
 }
 
 const categoryRoleUserPickerModalStyle = css(
@@ -186,6 +209,7 @@ export function CategoryRoleUserPicker({
   // handleRolesSubmit,
   isOpen,
   // isStaff,
+  // isRoleAdministrator,
   roleType,
   // userId,
 }) {
@@ -236,6 +260,7 @@ CategoryRoleUserPicker.propTypes = {
   handleMaskClick: PropTypes.func.isRequired,
   // handleRolesSubmit: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
+  // isRoleAdministrator: PropTypes.bool.isRequired,
   // isStaff: PropTypes.bool.isRequired,
   roleType: PropTypes.string,
   // userId: PropTypes.string.isRequired,

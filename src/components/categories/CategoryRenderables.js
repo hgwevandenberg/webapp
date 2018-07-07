@@ -588,6 +588,10 @@ const categoryInfoExpandedStyle = css(
         { top: 7, right: 0 },
       ),
     ),
+    select('& .remove-role',
+      s.absolute,
+      { top: 10, right: 0 },
+    ),
   ),
 
   select('& .moderators, & .curators',
@@ -691,10 +695,12 @@ export function CategoryInfo({
       }
       <section className="moderators-curators">
         <CategoryUsers
+          categoryId={categoryId}
           categoryModerators={categoryModerators}
           innerWidth={innerWidth}
         />
         <CategoryUsers
+          categoryId={categoryId}
           categoryCurators={categoryCurators}
           innerWidth={innerWidth}
         />
@@ -720,6 +726,7 @@ CategoryInfo.defaultProps = {
 
 const categoryUsersStyle = css(
   select('& li.category-user',
+    s.relative,
     s.mb0,
     select('& .UserCompact',
       s.m0,
@@ -741,7 +748,7 @@ const categoryUsersStyle = css(
   ),
 )
 
-const CategoryUsers = ({ categoryCurators, categoryModerators }) => {
+const CategoryUsers = ({ categoryId, categoryCurators, categoryModerators }) => {
   const kind = categoryCurators ? 'curators' : 'moderators'
   const title = kind === 'curators' ? 'Curators' : 'Moderators'
   const categoryUsers = categoryCurators || categoryModerators
@@ -752,7 +759,11 @@ const CategoryUsers = ({ categoryCurators, categoryModerators }) => {
 
   return (
     <nav className={`${kind}-holder users-holder`}>
-      <CategoryRolesContainer roleType={kind} />
+      <CategoryRolesContainer
+        actionType="add"
+        categoryId={categoryId}
+        roleType={kind}
+      />
       <h4>{title}</h4>
       <ul className={`${kind} ${categoryUsersStyle}`}>
         {categoryUsers.map((categoryUser) => {
@@ -765,9 +776,17 @@ const CategoryUsers = ({ categoryCurators, categoryModerators }) => {
               className="category-user"
             >
               <UserContainer
+                categoryId={categoryId}
+                roleType={kind}
                 userId={userId}
-                type="compact"
+                type="roles"
                 useSmallRelationships
+              />
+              <CategoryRolesContainer
+                actionType="remove"
+                categoryId={categoryId}
+                roleType={kind}
+                userId={userId}
               />
             </li>
           )
@@ -777,6 +796,7 @@ const CategoryUsers = ({ categoryCurators, categoryModerators }) => {
   )
 }
 CategoryUsers.propTypes = {
+  categoryId: PropTypes.string.isRequired,
   categoryCurators: PropTypes.array,
   categoryModerators: PropTypes.array,
 }

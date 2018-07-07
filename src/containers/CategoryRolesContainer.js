@@ -1,23 +1,36 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-// import { selectInnerWidth, selectIsCategoryDrawerOpen } from '../selectors/gui'
-// import { selectCategoryForPath, selectCategoryUsers } from '../selectors/categories'
-// import { selectRandomPageHeader } from '../selectors/page_headers'
-import { CategoryAddRoleTrigger, CategoryRoleUserPicker } from '../components/categories/CategoryRolesRenderables'
+import { removeFromCategory } from '../actions/user'
+import { selectCategoryUsers } from '../selectors/categories'
+import { selectId, selectHasRoleAssignmentAccess } from '../selectors/profile'
+import { CategoryAddRemoveRoleButton, CategoryRoleUserPicker } from '../components/categories/CategoryRolesRenderables'
 
-// function mapStateToProps(state) {
-//   return {
-//     collapsed: !selectIsCategoryDrawerOpen(state),
-//   }
-// }
+function mapStateToProps(state, props) {
+  return {
+    categoryUsers: selectCategoryUsers(state, props),
+    currentUserId: selectId(state, props),
+    hasAssignmentAccess: selectHasRoleAssignmentAccess(state, props),
+  }
+}
 
 class CategoryRolesContainer extends PureComponent {
   static propTypes = {
+    actionType: PropTypes.oneOf(['add', 'remove']),
+    categoryId: PropTypes.string.isRequired,
+    categoryUsers: PropTypes.array,
+    currentUserId: PropTypes.string,
+    dispatch: PropTypes.func.isRequired,
+    hasAssignmentAccess: PropTypes.bool.isRequired,
     roleType: PropTypes.string,
+    userId: PropTypes.string,
   }
   static defaultProps = {
+    actionType: 'add',
+    categoryUsers: null,
+    currentUserId: null,
     roleType: 'curators',
+    userId: null,
   }
 
   constructor(props) {
@@ -40,26 +53,74 @@ class CategoryRolesContainer extends PureComponent {
     return null
   }
 
+  removeRole() {
+    const {
+      categoryUsers,
+      dispatch,
+      userId,
+    } = this.props
+
+    let categoryUserId = null
+    categoryUsers.map((categoryUser) => {
+      if (userId === categoryUser.get('userId')) {
+        categoryUserId = categoryUser.get('id')
+      }
+      return categoryUserId
+    })
+
+    if (categoryUserId) {
+      return dispatch(removeFromCategory(categoryUserId))
+    }
+    return null
+  }
+
   render() {
-    const { roleType } = this.props
+    const {
+      actionType,
+      categoryId,
+      currentUserId,
+      hasAssignmentAccess,
+      roleType,
+      userId,
+    } = this.props
     const { userPickerOpen } = this.state
 
-    return (
-      <div className="roles-holder">
-        <CategoryAddRoleTrigger
-          handleTriggerClick={() => this.openCloseUserPicker()}
-          type={roleType}
-        />
-        <CategoryRoleUserPicker
-          close={() => this.openCloseUserPicker(false)}
-          handleMaskClick={e => this.handleMaskClick(e)}
-          isOpen={userPickerOpen}
+    if (!hasAssignmentAccess) { return null }
+
+    // add moderator or curator
+    if (actionType === 'add') {
+      return (
+        <div className="roles-holder">
+          <CategoryAddRemoveRoleButton
+            actionType="add"
+            handleClick={() => this.openCloseUserPicker()}
+            roleType={roleType}
+          />
+          <CategoryRoleUserPicker
+            categoryId={categoryId}
+            close={() => this.openCloseUserPicker(false)}
+            handleMaskClick={e => this.handleMaskClick(e)}
+            isOpen={userPickerOpen}
+            roleType={roleType}
+          />
+        </div>
+      )
+    }
+
+    // remove moderator / curator
+    if (userId && (userId !== currentUserId)) {
+      return (
+        <CategoryAddRemoveRoleButton
+          actionType={actionType}
+          handleClick={() => this.removeRole()}
           roleType={roleType}
+          userId={userId}
         />
-      </div>
-    )
+      )
+    }
+
+    return null
   }
 }
 
-// export default connect(mapStateToProps)(CategoryRolesContainer)
-export default connect()(CategoryRolesContainer)
+export default connect(mapStateToProps)(CategoryRolesContainer)

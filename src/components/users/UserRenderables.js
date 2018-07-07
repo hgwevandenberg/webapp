@@ -64,6 +64,50 @@ export class UserCompact extends PureComponent {
   }
 }
 
+// ----------------- -- based on UserCompact --
+export class UserRoleList extends PureComponent {
+  static propTypes = {
+    avatar: PropTypes.object.isRequired,
+    id: PropTypes.string.isRequired,
+    hasRoleAccess: PropTypes.bool.isRequired,
+    relationshipPriority: PropTypes.string,
+    username: PropTypes.string.isRequired,
+    useSmallRelationships: PropTypes.bool,
+  }
+  static defaultProps = {
+    relationshipPriority: null,
+    useSmallRelationships: false,
+  }
+  render() {
+    const {
+      avatar,
+      id,
+      hasRoleAccess,
+      relationshipPriority,
+      username,
+      useSmallRelationships,
+    } = this.props
+    return (
+      <div className="UserCompact">
+        <div className="UserCompactHeader">
+          <Link className="UserCompactUserLink truncate" to={`/${username}`}>
+            <Avatar
+              priority={relationshipPriority}
+              sources={avatar}
+              userId={id}
+              username={username}
+            />
+            <span className="UserCompactUsername">{`@${username}`}</span>
+          </Link>
+        </div>
+        {!hasRoleAccess &&
+          <RelationshipContainer className={`${useSmallRelationships ? 'isInHeader' : ''}`} relationshipPriority={relationshipPriority} userId={id} />
+        }
+      </div>
+    )
+  }
+}
+
 // -----------------
 
 // TODO: Move to InvitationRenderable?
