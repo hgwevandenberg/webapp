@@ -4,6 +4,14 @@
   padding: 10px;
 }
 
+.StreamContainer.empty {
+  padding: 0;
+}
+
+.PostList .TabListStreamContainer {
+  padding-top: 0;
+}
+
 .StreamContainer.isFullWidth {
   padding-right: 0;
   padding-left: 0;
@@ -18,10 +26,6 @@
 @media (--break-2) {
   .StreamContainer {
     padding: 20px;
-  }
-
-  .PostList .TabListStreamContainer {
-    padding-top: 0;
   }
 }
 
