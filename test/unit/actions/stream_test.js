@@ -1,25 +1,21 @@
-import { isFSA, isFSAName } from '../../support/test_helpers'
+import { isFSA } from '../../support/test_helpers'
 import * as subject from '../../../src/actions/stream'
 import { postsAsGrid, postsAsList } from '../../../src/components/streams/StreamRenderables'
 
 describe('stream actions', () => {
   context('#loadFollowing', () => {
-    const action = subject.loadFollowing()
+    const action = subject.loadFollowing('recent')
 
     it('is an FSA compliant action', () => {
       expect(isFSA(action)).to.be.true
     })
 
-    it('has a top level action.type', () => {
-      expect(isFSAName(action, subject.loadFollowing)).to.be.true
+    it('has the correct query in the action', () => {
+      expect(action.payload.query).to.contain('followingPostStream')
     })
 
-    it('has the correct api endpoint in the action', () => {
-      expect(action.payload.endpoint.path).to.contain('/following/posts/recent?per_page=25')
-    })
-
-    it('has the correct mapping type in the action', () => {
-      expect(action.meta.mappingType).to.equal('posts')
+    it('has the correct variables in the action', () => {
+      expect(action.payload.variables.kind).to.equal('RECENT')
     })
 
     it('has asList, asGrid and asZero properties on renderStreams in the action', () => {

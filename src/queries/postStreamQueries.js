@@ -20,3 +20,10 @@ export const categoryPostStreamQuery = `
     categoryPostStream(slug: $slug, kind: $kind, before: $before) { ...postStream }
   }
 `
+
+export const followingPostStreamQuery = `
+  ${postStreamAllFragments}
+  query($kind: StreamKind!, $before: String) {
+    followingPostStream(kind: $kind, before: $before) { ...postStream }
+  }
+`
