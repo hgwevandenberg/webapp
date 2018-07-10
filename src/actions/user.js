@@ -7,6 +7,7 @@ import * as StreamRenderables from '../components/streams/StreamRenderables'
 import { ErrorState } from '../components/errors/Errors'
 import userPostStreamQuery from '../queries/userPostStream'
 import userLoveStreamQuery from '../queries/userLoveStreamQuery'
+import userQuickSearchQuery from '../queries/userQuickSearchQuery'
 import { findUserQuery } from '../queries/findUser'
 
 export function flagUser(username, kind) {
@@ -165,3 +166,18 @@ export function hireUser(id, message) {
   }
 }
 
+export function userQuickSearch(query) {
+  return {
+    type: ACTION_TYPES.V3.USER.QUICK_SEARCH,
+    payload: {
+      query: userQuickSearchQuery,
+      variables: { query },
+    },
+  }
+}
+
+export function clearQuickSearch() {
+  return {
+    type: ACTION_TYPES.V3.USER.QUICK_SEARCH_CLEAR,
+  }
+}

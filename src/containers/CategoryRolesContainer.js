@@ -1,16 +1,29 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { removeFromCategory } from '../actions/user'
+import debounce from 'lodash/debounce'
+import {
+  addToCategory,
+  removeFromCategory,
+  userQuickSearch,
+  clearQuickSearch,
+} from '../actions/user'
+import { selectQuickSearchUsers } from '../selectors/user'
 import { selectCategoryUsers } from '../selectors/categories'
 import { selectId, selectHasRoleAssignmentAccess } from '../selectors/profile'
 import { CategoryAddRemoveRoleButton, CategoryRoleUserPicker } from '../components/categories/CategoryRolesRenderables'
+
+const ROLES = {
+  curators: 'curator',
+  moderators: 'moderator',
+}
 
 function mapStateToProps(state, props) {
   return {
     categoryUsers: selectCategoryUsers(state, props),
     currentUserId: selectId(state, props),
     hasAssignmentAccess: selectHasRoleAssignmentAccess(state, props),
+    quickSearchUsers: selectQuickSearchUsers(state, props),
   }
 }
 
@@ -24,6 +37,7 @@ class CategoryRolesContainer extends PureComponent {
     hasAssignmentAccess: PropTypes.bool.isRequired,
     roleType: PropTypes.string,
     userId: PropTypes.string,
+    quickSearchUsers: PropTypes.object.isRequired,
   }
   static defaultProps = {
     actionType: 'add',
@@ -38,6 +52,8 @@ class CategoryRolesContainer extends PureComponent {
     this.state = {
       userPickerOpen: false,
     }
+    this.searchUsers = this.searchUsers.bind(this)
+    this.addUser = this.addUser.bind(this)
   }
 
   openCloseUserPicker(setOpen = true) {
@@ -74,6 +90,19 @@ class CategoryRolesContainer extends PureComponent {
     return null
   }
 
+  // TODO: this should be better and probably use state in the component instead of accessing
+  // the event etc
+  searchUsers(e) {
+    const { dispatch } = this.props
+    debounce(dispatch, 200)(userQuickSearch(e.target.value))
+  }
+
+  addUser(userId) {
+    const { categoryId, roleType, dispatch } = this.props
+    dispatch(addToCategory({ userId, categoryId, role: ROLES[roleType] }))
+    dispatch(clearQuickSearch())
+  }
+
   render() {
     const {
       actionType,
@@ -82,6 +111,7 @@ class CategoryRolesContainer extends PureComponent {
       hasAssignmentAccess,
       roleType,
       userId,
+      quickSearchUsers,
     } = this.props
     const { userPickerOpen } = this.state
 
@@ -102,6 +132,10 @@ class CategoryRolesContainer extends PureComponent {
             handleMaskClick={e => this.handleMaskClick(e)}
             isOpen={userPickerOpen}
             roleType={roleType}
+            searchUsers={this.searchUsers}
+            quickSearchUsers={quickSearchUsers}
+            addUser={this.addUser}
+            handleRolesSubmit={this.addUser}
           />
         </div>
       )

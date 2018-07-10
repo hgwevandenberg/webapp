@@ -180,3 +180,7 @@ export const selectUserBadgeSummary = createSelector(
       return badge
     }),
 )
+
+export const selectQuickSearchUsers = createSelector([selectJson], json =>
+  (json.get('userQuickSearch') || Immutable.OrderedMap()).valueSeq().toList(),
+)

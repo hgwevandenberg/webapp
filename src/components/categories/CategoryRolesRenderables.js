@@ -206,12 +206,14 @@ const userPickerStyle = css(
 export function CategoryRoleUserPicker({
   close,
   handleMaskClick,
-  // handleRolesSubmit,
+  handleRolesSubmit,
   isOpen,
   // isStaff,
   // isRoleAdministrator,
   roleType,
   // userId,
+  searchUsers,
+  quickSearchUsers,
 }) {
   if (!isOpen) {
     return null
@@ -230,14 +232,13 @@ export function CategoryRoleUserPicker({
             <h1>Add {roleName}</h1>
             <form>
               <label htmlFor={`add-${roleType}`}>
-                <span className="label-text">@</span>
-                <span className="input-holder">
+                <span className="label-text">@</span> <span className="input-holder">
                   <input
                     className="username"
                     name={`add-${roleType}`}
                     id={`add-${roleType}`}
                     type="search"
-                    value=""
+                    onChange={searchUsers}
                   />
                 </span>
               </label>
@@ -250,6 +251,15 @@ export function CategoryRoleUserPicker({
               </button>
             </form>
           </div>
+          <ul>
+            {quickSearchUsers.map(user => (
+              <li key={user.get('id')}>
+                <button onClick={() => handleRolesSubmit(user.get('id'))}>
+                  {user.get('username')}
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>
@@ -258,12 +268,14 @@ export function CategoryRoleUserPicker({
 CategoryRoleUserPicker.propTypes = {
   close: PropTypes.func.isRequired,
   handleMaskClick: PropTypes.func.isRequired,
-  // handleRolesSubmit: PropTypes.func.isRequired,
+  handleRolesSubmit: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
   // isRoleAdministrator: PropTypes.bool.isRequired,
   // isStaff: PropTypes.bool.isRequired,
   roleType: PropTypes.string,
   // userId: PropTypes.string.isRequired,
+  searchUsers: PropTypes.func.isRequired,
+  quickSearchUsers: PropTypes.object.isRequired,
 }
 CategoryRoleUserPicker.defaultProps = {
   newRole: null,
