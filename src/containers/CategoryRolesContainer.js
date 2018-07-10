@@ -56,10 +56,19 @@ class CategoryRolesContainer extends PureComponent {
     this.addUser = this.addUser.bind(this)
   }
 
+  componentWillUnmount() {
+    const { dispatch } = this.props
+    dispatch(clearQuickSearch())
+  }
+
   openCloseUserPicker(setOpen = true) {
+    const { dispatch } = this.props
+
     this.setState({
       userPickerOpen: setOpen,
     })
+
+    dispatch(clearQuickSearch())
   }
 
   handleMaskClick(e) {
@@ -90,11 +99,14 @@ class CategoryRolesContainer extends PureComponent {
     return null
   }
 
-  // TODO: this should be better and probably use state in the component instead of accessing
-  // the event etc
-  searchUsers(e) {
+  searchUsers(searchText) {
     const { dispatch } = this.props
-    debounce(dispatch, 200)(userQuickSearch(e.target.value))
+
+    if (searchText === '') {
+      return dispatch(clearQuickSearch())
+    }
+
+    return debounce(dispatch, 200)(userQuickSearch(searchText))
   }
 
   addUser(userId) {
@@ -127,15 +139,15 @@ class CategoryRolesContainer extends PureComponent {
             roleType={roleType}
           />
           <CategoryRoleUserPicker
+            addUser={this.addUser}
             categoryId={categoryId}
             close={() => this.openCloseUserPicker(false)}
             handleMaskClick={e => this.handleMaskClick(e)}
+            handleRolesSubmit={this.addUser}
             isOpen={userPickerOpen}
+            listItems={quickSearchUsers}
             roleType={roleType}
             searchUsers={this.searchUsers}
-            quickSearchUsers={quickSearchUsers}
-            addUser={this.addUser}
-            handleRolesSubmit={this.addUser}
           />
         </div>
       )

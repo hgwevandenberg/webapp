@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 // import classNames from 'classnames'
 import { CircleAddRemove } from '../assets/Icons'
@@ -232,77 +232,116 @@ const userResultsListStyle = css(
   s.bgcA,
 )
 
-export function CategoryRoleUserPicker({
-  close,
-  handleMaskClick,
-  handleRolesSubmit,
-  isOpen,
-  roleType,
-  searchUsers,
-  quickSearchUsers,
-}) {
-  if (!isOpen) {
-    return null
+export class CategoryRoleUserPicker extends PureComponent {
+  static propTypes = {
+    close: PropTypes.func.isRequired,
+    handleMaskClick: PropTypes.func.isRequired,
+    handleRolesSubmit: PropTypes.func.isRequired,
+    isOpen: PropTypes.bool.isRequired,
+    listItems: PropTypes.object.isRequired,
+    roleType: PropTypes.string,
+    searchUsers: PropTypes.func.isRequired,
+  }
+  static defaultProps = {
+    newRole: null,
+    roleType: 'curator',
   }
 
-  const roleName = roleType === 'curators' ? 'Curator' : 'Moderator'
+  constructor(props) {
+    super(props)
+    this.state = {
+      searchText: '',
+      selectedItem: null,
+      selectedIndex: null,
+    }
+  }
 
-  return (
-    <div className={categoryRoleUserPickerModalStyle}>
-      <div className="mask" role="presentation" onClick={handleMaskClick}>
-        <div className={categoryRoleUserPickerStyle}>
-          <DismissButtonLG
-            onClick={close}
-          />
-          <div className={`pick-user ${userPickerStyle}`}>
-            <h1>Add {roleName}</h1>
-            <form>
-              <label htmlFor={`add-${roleType}`}>
-                <span className="label-text">@</span> <span className="input-holder">
-                  <input
-                    autoComplete="off"
-                    className="username"
-                    name={`add-${roleType}`}
-                    id={`add-${roleType}`}
-                    type="search"
-                    onChange={searchUsers}
-                  />
-                </span>
-                <ul className={userResultsListStyle}>
-                  {quickSearchUsers.map(user => (
-                    <CategoryRoleUser
-                      key={user.get('id')}
-                      handleClick={handleRolesSubmit}
-                      userId={user.get('id')}
-                      username={user.get('username')}
+  handleSearch = (event) => {
+    const searchText = event.target.value
+    const { searchUsers } = this.props
+    const { selectedIndex } = this.state
+
+    let newSelectedIndex = selectedIndex
+    if (!selectedIndex) {
+      newSelectedIndex = searchText === '' ? null : 0
+    }
+    this.setState({
+      selectedIndex: newSelectedIndex,
+      searchText,
+    })
+
+    if (searchUsers) {
+      searchUsers(searchText)
+    }
+  }
+
+  render() {
+    const {
+      close,
+      handleMaskClick,
+      handleRolesSubmit,
+      isOpen,
+      listItems,
+      roleType,
+    } = this.props
+
+    if (!isOpen) {
+      return null
+    }
+
+    const roleName = roleType === 'curators' ? 'Curator' : 'Moderator'
+
+    return (
+      <div className={categoryRoleUserPickerModalStyle}>
+        <div className="mask" role="presentation" onClick={handleMaskClick}>
+          <div className={categoryRoleUserPickerStyle}>
+            <DismissButtonLG
+              onClick={close}
+            />
+            <div className={`pick-user ${userPickerStyle}`}>
+              <h1>Add {roleName}</h1>
+              <form>
+                <label htmlFor={`add-${roleType}`}>
+                  <span className="label-text">@</span> <span className="input-holder">
+                    <input
+                      autoComplete="off"
+                      className="username"
+                      name={`add-${roleType}`}
+                      id={`add-${roleType}`}
+                      type="search"
+                      onChange={this.handleSearch}
+
+                      // type="search"
+                      // value={searchText}
+                      // onChange={this.handleSearch}
+                      // onKeyDown={this.handleKeyDown}
+                      // onBlur={() => this.handleBlur(false)}
+                      // onFocus={() => this.handleBlur(true)}
                     />
-                  ))}
-                </ul>
-              </label>
-              <button
-                className="user-submit"
-                disabled={false}
-                // onClick={e => this.handleSubmitLocal(e)}
-              >
-                <span>Add</span>
-              </button>
-            </form>
+                  </span>
+                  <ul className={userResultsListStyle}>
+                    {listItems.map(user => (
+                      <CategoryRoleUser
+                        key={user.get('id')}
+                        handleClick={handleRolesSubmit}
+                        userId={user.get('id')}
+                        username={user.get('username')}
+                      />
+                    ))}
+                  </ul>
+                </label>
+                <button
+                  className="user-submit"
+                  disabled={false}
+                  // onClick={e => this.handleSubmitLocal(e)}
+                >
+                  <span>Add</span>
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  )
-}
-CategoryRoleUserPicker.propTypes = {
-  close: PropTypes.func.isRequired,
-  handleMaskClick: PropTypes.func.isRequired,
-  handleRolesSubmit: PropTypes.func.isRequired,
-  isOpen: PropTypes.bool.isRequired,
-  roleType: PropTypes.string,
-  searchUsers: PropTypes.func.isRequired,
-  quickSearchUsers: PropTypes.object.isRequired,
-}
-CategoryRoleUserPicker.defaultProps = {
-  newRole: null,
-  roleType: 'curator',
+    )
+  }
 }
