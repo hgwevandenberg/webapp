@@ -70,6 +70,28 @@ CategoryAddRemoveRoleButton.propTypes = {
   roleType: PropTypes.string.isRequired,
 }
 
+const categoryRoleUserStyle = css(
+)
+
+function CategoryRoleUser({
+  handleClick,
+  userId,
+  username,
+}) {
+  return (
+    <li className={categoryRoleUserStyle}>
+      <button onClick={() => handleClick(userId)}>
+        {username}
+      </button>
+    </li>
+  )
+}
+CategoryRoleUser.propTypes = {
+  handleClick: PropTypes.func.isRequired,
+  userId: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired,
+}
+
 const categoryRoleUserPickerModalStyle = css(
   s.block,
   s.relative,
@@ -177,7 +199,7 @@ const userPickerStyle = css(
       ),
     ),
 
-    select('& button',
+    select('& button.user-submit',
       s.pr10,
       s.pl10,
       s.hv40,
@@ -203,15 +225,19 @@ const userPickerStyle = css(
   ),
 )
 
+const userResultsListStyle = css(
+  s.resetList,
+  s.absolute,
+  s.fullWidth,
+  s.bgcA,
+)
+
 export function CategoryRoleUserPicker({
   close,
   handleMaskClick,
   handleRolesSubmit,
   isOpen,
-  // isStaff,
-  // isRoleAdministrator,
   roleType,
-  // userId,
   searchUsers,
   quickSearchUsers,
 }) {
@@ -224,7 +250,7 @@ export function CategoryRoleUserPicker({
   return (
     <div className={categoryRoleUserPickerModalStyle}>
       <div className="mask" role="presentation" onClick={handleMaskClick}>
-        <div className={`${categoryRoleUserPickerStyle} content`}>
+        <div className={categoryRoleUserPickerStyle}>
           <DismissButtonLG
             onClick={close}
           />
@@ -234,6 +260,7 @@ export function CategoryRoleUserPicker({
               <label htmlFor={`add-${roleType}`}>
                 <span className="label-text">@</span> <span className="input-holder">
                   <input
+                    autoComplete="off"
                     className="username"
                     name={`add-${roleType}`}
                     id={`add-${roleType}`}
@@ -241,6 +268,16 @@ export function CategoryRoleUserPicker({
                     onChange={searchUsers}
                   />
                 </span>
+                <ul className={userResultsListStyle}>
+                  {quickSearchUsers.map(user => (
+                    <CategoryRoleUser
+                      key={user.get('id')}
+                      handleClick={handleRolesSubmit}
+                      userId={user.get('id')}
+                      username={user.get('username')}
+                    />
+                  ))}
+                </ul>
               </label>
               <button
                 className="user-submit"
@@ -251,15 +288,6 @@ export function CategoryRoleUserPicker({
               </button>
             </form>
           </div>
-          <ul>
-            {quickSearchUsers.map(user => (
-              <li key={user.get('id')}>
-                <button onClick={() => handleRolesSubmit(user.get('id'))}>
-                  {user.get('username')}
-                </button>
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
     </div>
@@ -270,10 +298,7 @@ CategoryRoleUserPicker.propTypes = {
   handleMaskClick: PropTypes.func.isRequired,
   handleRolesSubmit: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
-  // isRoleAdministrator: PropTypes.bool.isRequired,
-  // isStaff: PropTypes.bool.isRequired,
   roleType: PropTypes.string,
-  // userId: PropTypes.string.isRequired,
   searchUsers: PropTypes.func.isRequired,
   quickSearchUsers: PropTypes.object.isRequired,
 }
