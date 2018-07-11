@@ -112,7 +112,7 @@ class PostDetailContainer extends Component {
     if ((paramsToken !== nextProps.paramsToken || paramsUsername !== nextProps.paramsUsername) ||
         (paramsToken === nextProps.paramsToken && locationKey !== nextProps.locationKey)) {
       // load the new detail or trigger a reload of the current
-      dispatch(loadPostDetail(`~${nextProps.paramsToken}`, `~${nextProps.paramsUsername}`))
+      dispatch(loadPostDetail(nextProps.paramsToken, nextProps.paramsUsername))
       const action = this.getStreamAction()
       if (action) { dispatch(action) }
     }
