@@ -74,9 +74,14 @@ CategoryAddRemoveRoleButton.propTypes = {
 const categoryRoleUserStyle = css(
   s.flex,
   s.itemsCenter,
-  s.p5,
   s.fullWidth,
   s.colorBlack,
+  select('& button',
+    s.block,
+    s.fullWidth,
+    s.p5,
+    s.leftAlign,
+  ),
   select('& .Avatar',
     s.inlineBlock,
     s.wv20,
@@ -98,12 +103,13 @@ const categoryRoleUserStyle = css(
 
 function ListItemUser({
   handleClick,
+  isSelected,
   userId,
   username,
 }) {
   return (
-    <li className={categoryRoleUserStyle}>
-      <button onClick={() => handleClick(userId)}>
+    <li className={`${isSelected ? 'isSelected' : ''} ${categoryRoleUserStyle}`}>
+      <button onClick={e => handleClick(e, userId, username)}>
         <Avatar userId={userId} />
         <span className="username">
           @{username}
@@ -114,6 +120,7 @@ function ListItemUser({
 }
 ListItemUser.propTypes = {
   handleClick: PropTypes.func.isRequired,
+  isSelected: PropTypes.bool.isRequired,
   userId: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
 }
@@ -294,6 +301,63 @@ export class CategoryRoleUserPicker extends PureComponent {
       selectedItem: null,
       selectedIndex: null,
     }
+
+    this.clearResults = this.clearResults.bind(this)
+    this.handleRolesSubmitLocal = this.handleRolesSubmitLocal.bind(this)
+    this.handleSearch = this.handleSearch.bind(this)
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.searchText !== this.state.searchText) {
+      this.setItemSelection()
+    }
+
+    if (prevProps.isOpen && !this.props.isOpen) {
+      this.clearResults()
+    }
+  }
+
+  setItemSelection() {
+    const { listItems } = this.props
+    const { searchText } = this.state
+
+    if (listItems && searchText !== '') {
+      let selectedItem = null
+      let selectedIndex = null
+
+      // grab the selected item + index
+      listItems.map((user, index) => {
+        if (searchText === user.get('username')) {
+          selectedIndex = index
+          selectedItem = user
+        }
+        return selectedIndex
+      })
+
+      return this.setState({
+        selectedItem,
+        selectedIndex,
+      })
+    }
+
+    return this.clearResults()
+  }
+
+  handleRolesSubmitLocal(e, userId, username) {
+    e.preventDefault()
+    const { handleRolesSubmit } = this.props
+
+    if (username) {
+      // display the selection in the input (makes people feel better)
+      this.setState({
+        searchText: username,
+      })
+    }
+
+    if (userId) {
+      // submit the userId
+      handleRolesSubmit(userId)
+    }
   }
 
   handleSearch = (event) => {
@@ -315,15 +379,25 @@ export class CategoryRoleUserPicker extends PureComponent {
     }
   }
 
+  clearResults() {
+    return this.setState({
+      searchText: null,
+    })
+  }
+
   render() {
     const {
       close,
       handleMaskClick,
-      handleRolesSubmit,
       isOpen,
       listItems,
       roleType,
     } = this.props
+
+    const {
+      searchText,
+      selectedItem,
+    } = this.state
 
     if (!isOpen) {
       return null
@@ -347,29 +421,27 @@ export class CategoryRoleUserPicker extends PureComponent {
                     <input
                       autoComplete="off"
                       className={`username${hasItems ? ' has-items' : ''}`}
-                      name={`add-${roleType}`}
                       id={`add-${roleType}`}
-                      type="search"
+                      name={`add-${roleType}`}
                       onChange={this.handleSearch}
-
-                      // type="search"
-                      // value={searchText}
-                      // onChange={this.handleSearch}
-                      // onKeyDown={this.handleKeyDown}
-                      // onBlur={() => this.handleBlur(false)}
-                      // onFocus={() => this.handleBlur(true)}
+                      type="search"
+                      value={searchText || ''}
                     />
                   </span>
                   {hasItems &&
                     <ul className={userResultsListStyle}>
-                      {listItems.map(user => (
-                        <ListItemUser
-                          key={user.get('id')}
-                          handleClick={handleRolesSubmit}
-                          userId={user.get('id')}
-                          username={user.get('username')}
-                        />
-                      ))}
+                      {listItems.map((user) => {
+                        const isSelected = selectedItem && selectedItem.get('username') === user.get('username')
+                        return (
+                          <ListItemUser
+                            key={user.get('id')}
+                            handleClick={this.handleRolesSubmitLocal}
+                            userId={user.get('id')}
+                            username={user.get('username')}
+                            isSelected={isSelected || false}
+                          />
+                        )
+                      })}
                     </ul>
                   }
                 </label>

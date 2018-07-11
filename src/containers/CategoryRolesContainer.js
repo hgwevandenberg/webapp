@@ -113,6 +113,7 @@ class CategoryRolesContainer extends PureComponent {
     const { categoryId, roleType, dispatch } = this.props
     dispatch(addToCategory({ userId, categoryId, role: ROLES[roleType] }))
     dispatch(clearQuickSearch())
+    return this.openCloseUserPicker(false)
   }
 
   render() {
