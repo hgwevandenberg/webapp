@@ -34,6 +34,7 @@ export function addToCategory({ userId, categoryId, role }, successAction) {
       },
     },
     meta: {
+      updateResult: false,
       mappingType: MAPPING_TYPES.CATEGORY_USERS,
       successAction,
     },
@@ -49,6 +50,7 @@ export function removeFromCategory(categoryUserId) {
       model: Immutable.Map({ id: categoryUserId }),
     },
     meta: {
+      updateResult: false,
       mappingType: MAPPING_TYPES.CATEGORY_USERS,
     },
   }
