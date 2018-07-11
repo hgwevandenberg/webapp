@@ -5,6 +5,7 @@ import { CircleAddRemove } from '../assets/Icons'
 import { DismissButtonLG } from '../buttons/Buttons'
 import { css, hover, media, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
+import Avatar from './../assets/Avatar'
 
 const categoryAddRoleTriggerStyle = css(
   s.wv20,
@@ -71,9 +72,31 @@ CategoryAddRemoveRoleButton.propTypes = {
 }
 
 const categoryRoleUserStyle = css(
+  s.flex,
+  s.itemsCenter,
+  s.p5,
+  s.fullWidth,
+  s.colorBlack,
+  select('& .Avatar',
+    s.inlineBlock,
+    s.wv20,
+    s.hv20,
+    s.mr10,
+  ),
+  select('& .username',
+    s.inlineBlock,
+  ),
+  select('&.isSelected, &:hover',
+    s.colorWhite,
+    s.bgcBlack,
+    {
+      cursor: 'pointer',
+      borderRadius: 3,
+    },
+  ),
 )
 
-function CategoryRoleUser({
+function ListItemUser({
   handleClick,
   userId,
   username,
@@ -81,12 +104,15 @@ function CategoryRoleUser({
   return (
     <li className={categoryRoleUserStyle}>
       <button onClick={() => handleClick(userId)}>
-        {username}
+        <Avatar userId={userId} />
+        <span className="username">
+          @{username}
+        </span>
       </button>
     </li>
   )
 }
-CategoryRoleUser.propTypes = {
+ListItemUser.propTypes = {
   handleClick: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
@@ -195,6 +221,13 @@ const userPickerStyle = css(
           select('&:focus',
             s.bgcF2,
           ),
+
+          select('&.has-items',
+            {
+              borderBottomRightRadius: 0,
+              borderBottomLeftRadius: 0,
+            },
+          ),
         ),
       ),
     ),
@@ -229,7 +262,14 @@ const userResultsListStyle = css(
   s.resetList,
   s.absolute,
   s.fullWidth,
-  s.bgcA,
+  s.p10,
+  s.bgcWhite,
+  {
+    border: '1px solid #f2f2f2',
+    borderRadius: 0,
+    borderBottomRightRadius: 5,
+    borderBottomLeftRadius: 5,
+  },
 )
 
 export class CategoryRoleUserPicker extends PureComponent {
@@ -290,6 +330,7 @@ export class CategoryRoleUserPicker extends PureComponent {
     }
 
     const roleName = roleType === 'curators' ? 'Curator' : 'Moderator'
+    const hasItems = listItems && listItems.size > 0
 
     return (
       <div className={categoryRoleUserPickerModalStyle}>
@@ -305,7 +346,7 @@ export class CategoryRoleUserPicker extends PureComponent {
                   <span className="label-text">@</span> <span className="input-holder">
                     <input
                       autoComplete="off"
-                      className="username"
+                      className={`username${hasItems ? ' has-items' : ''}`}
                       name={`add-${roleType}`}
                       id={`add-${roleType}`}
                       type="search"
@@ -319,20 +360,22 @@ export class CategoryRoleUserPicker extends PureComponent {
                       // onFocus={() => this.handleBlur(true)}
                     />
                   </span>
-                  <ul className={userResultsListStyle}>
-                    {listItems.map(user => (
-                      <CategoryRoleUser
-                        key={user.get('id')}
-                        handleClick={handleRolesSubmit}
-                        userId={user.get('id')}
-                        username={user.get('username')}
-                      />
-                    ))}
-                  </ul>
+                  {hasItems &&
+                    <ul className={userResultsListStyle}>
+                      {listItems.map(user => (
+                        <ListItemUser
+                          key={user.get('id')}
+                          handleClick={handleRolesSubmit}
+                          userId={user.get('id')}
+                          username={user.get('username')}
+                        />
+                      ))}
+                    </ul>
+                  }
                 </label>
                 <button
                   className="user-submit"
-                  disabled={false}
+                  disabled={!hasItems}
                   // onClick={e => this.handleSubmitLocal(e)}
                 >
                   <span>Add</span>
