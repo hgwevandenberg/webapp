@@ -106,11 +106,12 @@ function ListItemUser({
   isSelected,
   userId,
   username,
+  avatar,
 }) {
   return (
     <li className={`${isSelected ? 'isSelected' : ''} ${categoryRoleUserStyle}`}>
       <button onClick={e => handleClick(e, userId, username)}>
-        <Avatar userId={userId} />
+        <Avatar userId={userId} size="small" sources={avatar} />
         <span className="username">
           @{username}
         </span>
@@ -123,6 +124,7 @@ ListItemUser.propTypes = {
   isSelected: PropTypes.bool.isRequired,
   userId: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
+  avatar: PropTypes.object.isRequired,
 }
 
 const categoryRoleUserPickerModalStyle = css(
@@ -438,6 +440,7 @@ export class CategoryRoleUserPicker extends PureComponent {
                             handleClick={this.handleRolesSubmitLocal}
                             userId={user.get('id')}
                             username={user.get('username')}
+                            avatar={user.get('avatar')}
                             isSelected={isSelected || false}
                           />
                         )
