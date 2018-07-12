@@ -158,7 +158,7 @@ const categoryRoleUserPickerStyle = css(
   s.leftAlign,
   s.bgcWhite,
   {
-    maxWidth: 780,
+    maxWidth: 300,
     borderRadius: 5,
   },
 
@@ -198,7 +198,7 @@ const userPickerStyle = css(
     s.mt30,
     select('& label',
       s.relative,
-      { width: 'calc(100% - 100px)' },
+      s.fullWidth,
       select('& .label-text',
         s.absolute,
         s.colorA,
@@ -238,30 +238,6 @@ const userPickerStyle = css(
             },
           ),
         ),
-      ),
-    ),
-
-    select('& button.user-submit',
-      s.pr10,
-      s.pl10,
-      s.hv40,
-      s.lh40,
-      s.fontSize14,
-      s.colorWhite,
-      s.bgcGreen,
-      s.transitionBgColor,
-      { borderRadius: 5 },
-
-      hover(
-        s.bgcDarkGreen,
-        {
-          cursor: 'pointer',
-        },
-      ),
-
-      select('&:disabled, &:disabled:hover',
-        s.bgcA,
-        hover({ cursor: 'default' }),
       ),
     ),
   ),
@@ -448,13 +424,6 @@ export class CategoryRoleUserPicker extends PureComponent {
                     </ul>
                   }
                 </label>
-                <button
-                  className="user-submit"
-                  disabled={!hasItems}
-                  // onClick={e => this.handleSubmitLocal(e)}
-                >
-                  <span>Add</span>
-                </button>
               </form>
             </div>
           </div>
