@@ -210,7 +210,7 @@ const userPickerStyle = css(
         s.colorA,
         s.zIndex2,
         {
-          left: 20,
+          left: 10,
           top: 7,
         },
       ),
@@ -229,7 +229,7 @@ const userPickerStyle = css(
           s.bgcEA,
           s.transitionBgColor,
           {
-            paddingLeft: 40,
+            paddingLeft: 30,
             borderRadius: 5,
           },
 
