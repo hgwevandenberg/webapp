@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 // import classNames from 'classnames'
+import { scrollToPosition } from './../../lib/jello'
 import { CircleAddRemove } from '../assets/Icons'
 import { DismissButtonLG } from '../buttons/Buttons'
 import { css, hover, media, select } from '../../styles/jss'
@@ -109,7 +110,10 @@ function ListItemUser({
   avatar,
 }) {
   return (
-    <li className={`${isSelected ? 'isSelected' : ''} ${categoryRoleUserStyle}`}>
+    <li
+      className={`${isSelected ? 'isSelected' : ''} ${categoryRoleUserStyle}`}
+      id={`user_${userId}`}
+    >
       <button onClick={e => handleClick(e, userId, username)}>
         <Avatar userId={userId} size="small" sources={avatar} />
         <span className="username">
@@ -158,14 +162,16 @@ const categoryRoleUserPickerStyle = css(
   s.leftAlign,
   s.bgcWhite,
   {
-    maxWidth: 300,
     borderRadius: 5,
   },
 
   media(s.minBreak2,
     s.m0,
     s.pt40,
-    { width: '80%' },
+    {
+      maxWidth: 300,
+      width: '80%',
+    },
   ),
   media(s.minBreak4,
     { width: '60%' },
@@ -249,12 +255,18 @@ const userResultsListStyle = css(
   s.fullWidth,
   s.p10,
   s.bgcWhite,
+  s.overflowHidden,
+  s.overflowScrollWebY,
   {
     border: '1px solid #f2f2f2',
     borderRadius: 0,
     borderBottomRightRadius: 5,
     borderBottomLeftRadius: 5,
   },
+
+  media('(min-width: 40em) and (max-height: 820px)',
+    { maxHeight: 200 },
+  ),
 )
 
 export class CategoryRoleUserPicker extends PureComponent {
@@ -281,6 +293,7 @@ export class CategoryRoleUserPicker extends PureComponent {
     }
 
     this.clearResults = this.clearResults.bind(this)
+    this.handleKeyDown = this.handleKeyDown.bind(this)
     this.handleRolesSubmitLocal = this.handleRolesSubmitLocal.bind(this)
     this.handleSearch = this.handleSearch.bind(this)
   }
@@ -288,6 +301,11 @@ export class CategoryRoleUserPicker extends PureComponent {
   componentDidUpdate(prevProps, prevState) {
     if (prevState.searchText !== this.state.searchText) {
       this.setItemSelection()
+    }
+
+    if (this.props.isOpen &&
+      (prevState.selectedIndex !== this.state.selectedIndex)) {
+      this.scrollToHighlightedItem()
     }
 
     if (prevProps.isOpen && !this.props.isOpen) {
@@ -321,6 +339,48 @@ export class CategoryRoleUserPicker extends PureComponent {
     return this.clearResults()
   }
 
+  scrollToHighlightedItem() {
+    const { listItems } = this.props
+    const { selectedIndex } = this.state
+    const listItemsArray = Array.from(listItems)
+    const selectedItem = listItemsArray[selectedIndex]
+    let selectedItemDomId = null
+    if (selectedItem) {
+      selectedItemDomId = `user_${selectedItem.get('id')}`
+    }
+
+    // grab elements from the dom
+    const itemListInDom = document.getElementById('userPickerList')
+    const selectedListItemInDom = document.getElementById(selectedItemDomId)
+
+    // determine scroll offset of item in dom
+    let selectedListItemInDomTopOffset = null
+    let itemListInDomTopOffset = null
+    let itemInDomHeight = null
+    let itemListInDomHeight = null
+    if (selectedItemDomId) {
+      selectedListItemInDomTopOffset = selectedListItemInDom.getBoundingClientRect().top
+      itemListInDomTopOffset = itemListInDom.getBoundingClientRect().top
+      itemInDomHeight = selectedListItemInDom.clientHeight
+      itemListInDomHeight = itemListInDom.clientHeight
+    }
+
+    if (selectedListItemInDomTopOffset) {
+      // adjust scroll offset for window height / nav bar
+      const scrollElement = itemListInDom
+      const scrollTo = (selectedListItemInDomTopOffset - itemListInDomTopOffset)
+      const scrollCheckOffset = itemInDomHeight
+
+      if (
+        ((scrollTo + scrollCheckOffset) > itemListInDomHeight) ||
+        (scrollTo < 0)
+      ) {
+        // scroll to new position
+        scrollToPosition(0, scrollTo, { el: scrollElement, duration: 150 })
+      }
+    }
+  }
+
   handleRolesSubmitLocal(e, userId, username) {
     e.preventDefault()
     const { handleRolesSubmit } = this.props
@@ -336,6 +396,37 @@ export class CategoryRoleUserPicker extends PureComponent {
       // submit the userId
       handleRolesSubmit(userId)
     }
+  }
+
+  handleKeyDown = (event) => {
+    const {
+      listItems,
+    } = this.props
+    const {
+      selectedIndex,
+    } = this.state
+    const listItemsArray = Array.from(listItems)
+    const max = listItemsArray.length
+    const selectedIsNull = (selectedIndex === null)
+
+    if (event.key === 'ArrowDown' && selectedIsNull) {
+      this.setState({ selectedIndex: 0 })
+    } else if (event.key === 'ArrowDown' && selectedIndex === (max - 1)) {
+      this.setState({ selectedIndex: 0 })
+    } else if (event.key === 'ArrowDown' && selectedIndex < max) {
+      this.setState({ selectedIndex: selectedIndex + 1 })
+    } else if (event.key === 'ArrowUp' && !selectedIsNull && selectedIndex > 0) {
+      event.preventDefault()
+      this.setState({ selectedIndex: selectedIndex - 1 })
+    } else if (event.key === 'ArrowUp' && !selectedIsNull && selectedIndex === 0) {
+      event.preventDefault()
+      this.setState({ selectedIndex: max - 1 })
+    } else if (event.key === 'Enter' && !selectedIsNull) {
+      const userId = listItemsArray[selectedIndex].get('id')
+      const username = listItemsArray[selectedIndex].get('username')
+      this.handleRolesSubmitLocal(event, userId, username)
+    }
+    return null
   }
 
   handleSearch = (event) => {
@@ -375,6 +466,7 @@ export class CategoryRoleUserPicker extends PureComponent {
     const {
       searchText,
       selectedItem,
+      selectedIndex,
     } = this.state
 
     if (!isOpen) {
@@ -402,14 +494,26 @@ export class CategoryRoleUserPicker extends PureComponent {
                       id={`add-${roleType}`}
                       name={`add-${roleType}`}
                       onChange={this.handleSearch}
+                      onKeyDown={this.handleKeyDown}
                       type="search"
                       value={searchText || ''}
                     />
                   </span>
                   {hasItems &&
-                    <ul className={userResultsListStyle}>
-                      {listItems.map((user) => {
-                        const isSelected = selectedItem && selectedItem.get('username') === user.get('username')
+                    <ul
+                      className={userResultsListStyle}
+                      id="userPickerList"
+                    >
+                      {listItems.map((user, index) => {
+                        // set `isSelected`
+                        let isSelected = false
+                        if (selectedIndex !== null) {
+                          isSelected = selectedIndex === index
+                        }
+                        if ((selectedIndex === null) && selectedItem) {
+                          isSelected = selectedItem && selectedItem.get('username') === user.get('username')
+                        }
+
                         return (
                           <ListItemUser
                             key={user.get('id')}
@@ -417,7 +521,7 @@ export class CategoryRoleUserPicker extends PureComponent {
                             userId={user.get('id')}
                             username={user.get('username')}
                             avatar={user.get('avatar')}
-                            isSelected={isSelected || false}
+                            isSelected={isSelected}
                           />
                         )
                       })}
