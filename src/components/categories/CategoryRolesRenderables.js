@@ -26,6 +26,9 @@ const categoryAddRoleTriggerStyle = css(
   select('&.add-role',
     select('& .icon',
       s.colorGreen,
+      select('& svg',
+        { verticalAlign: 'baseline' },
+      ),
     ),
     hover(
       select('& .icon',

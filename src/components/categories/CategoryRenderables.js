@@ -585,7 +585,7 @@ const categoryInfoExpandedStyle = css(
     select('& .roles-holder',
       select('& .open-trigger',
         s.absolute,
-        { top: 7, right: 0 },
+        { top: 9, right: 0 },
       ),
     ),
     select('& .remove-role',
