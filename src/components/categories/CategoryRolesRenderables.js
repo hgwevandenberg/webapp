@@ -400,6 +400,7 @@ export class CategoryRoleUserPicker extends PureComponent {
 
   handleKeyDown = (event) => {
     const {
+      close,
       listItems,
     } = this.props
     const {
@@ -425,6 +426,8 @@ export class CategoryRoleUserPicker extends PureComponent {
       const userId = listItemsArray[selectedIndex].get('id')
       const username = listItemsArray[selectedIndex].get('username')
       this.handleRolesSubmitLocal(event, userId, username)
+    } else if (event.key === 'Escape' && max === 0) {
+      close()
     }
     return null
   }

@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import Mousetrap from 'mousetrap'
 import debounce from 'lodash/debounce'
 import {
   addToCategory,
@@ -12,6 +13,7 @@ import { selectQuickSearchUsers } from '../selectors/user'
 import { selectCategoryUsers } from '../selectors/categories'
 import { selectId, selectHasRoleAssignmentAccess } from '../selectors/profile'
 import { CategoryAddRemoveRoleButton, CategoryRoleUserPicker } from '../components/categories/CategoryRolesRenderables'
+import { SHORTCUT_KEYS } from '../constants/application_types'
 
 const ROLES = {
   curators: 'curator',
@@ -56,9 +58,20 @@ class CategoryRolesContainer extends PureComponent {
     this.addUser = this.addUser.bind(this)
   }
 
+  componentDidUpdate(prevState) {
+    if (!prevState.userPickerOpen && this.state.userPickerOpen) {
+      this.bindKeys()
+    }
+
+    if (prevState.userPickerOpen && !this.state.userPickerOpen) {
+      this.bindKeys(true)
+    }
+  }
+
   componentWillUnmount() {
     const { dispatch } = this.props
     dispatch(clearQuickSearch())
+    this.bindKeys(true)
   }
 
   openCloseUserPicker(setOpen = true) {
@@ -76,6 +89,20 @@ class CategoryRolesContainer extends PureComponent {
       return this.openCloseUserPicker(false)
     }
     return null
+  }
+
+  bindKeys(unbind = false) {
+    const { quickSearchUsers } = this.props
+
+    Mousetrap.unbind(SHORTCUT_KEYS.ESC)
+
+    if (!unbind) {
+      Mousetrap.bind(SHORTCUT_KEYS.ESC, () => {
+        if (quickSearchUsers.size === 0) {
+          this.openCloseUserPicker(false)
+        }
+      })
+    }
   }
 
   removeRole() {
