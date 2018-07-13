@@ -11,10 +11,11 @@ export const SHORTCUT_KEYS = {
   FOLLOWING: 'f',
   FULLSCREEN: 'g m',
   HELP: '?',
+  LOVE: 'l',
   NOTIFICATIONS: 'r',
   OMNIBAR: '2',
   SEARCH: 's',
   TOGGLE_LAYOUT: '=',
-  NEXT: ['right', 'l', ']', '6'],
+  NEXT: ['right', 'k', ']', '6'],
   PREV: ['left', 'h', '[', '4'],
 }

@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
+import Mousetrap from 'mousetrap'
 import { trackEvent } from '../actions/analytics'
 import { setIsLightBoxActive } from '../actions/gui'
 import { openModal, closeModal } from '../actions/modals'
@@ -30,6 +31,7 @@ import {
   selectPostRepostsCount,
   selectPostViewsCountRounded,
 } from '../selectors/post'
+import { SHORTCUT_KEYS } from '../constants/application_types'
 
 function mapStateToProps(state, props) {
   return {
@@ -113,6 +115,10 @@ class PostLightBoxContainer extends Component {
     }
   }
 
+  componentWillMount() {
+    this.bindKeys()
+  }
+
   shouldComponentUpdate(nextProps) {
     return !Immutable.is(nextProps.post, this.props.post) ||
       [
@@ -121,6 +127,10 @@ class PostLightBoxContainer extends Component {
       ].some(prop =>
         nextProps[prop] !== this.props[prop],
       )
+  }
+
+  componentWillUnmount() {
+    this.bindKeys(true)
   }
 
   onClickLovePost = () => {
@@ -221,6 +231,14 @@ class PostLightBoxContainer extends Component {
       tabs.push({ type: 'reposts', children: 'Reposters' })
     }
     return tabs
+  }
+
+  bindKeys(unbind) {
+    Mousetrap.unbind(SHORTCUT_KEYS.LOVE)
+
+    if (!unbind) {
+      Mousetrap.bind(SHORTCUT_KEYS.LOVE, () => { this.onClickLovePost() })
+    }
   }
 
   render() {
