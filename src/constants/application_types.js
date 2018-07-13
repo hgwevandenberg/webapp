@@ -17,5 +17,5 @@ export const SHORTCUT_KEYS = {
   SEARCH: 's',
   TOGGLE_LAYOUT: '=',
   NEXT: ['right', 'k', ']', '6'],
-  PREV: ['left', 'h', '[', '4'],
+  PREV: ['left', 'j', '[', '4'],
 }
