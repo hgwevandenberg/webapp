@@ -1,5 +1,6 @@
 import Immutable from 'immutable'
 import { createSelector } from 'reselect'
+import get from 'lodash/get'
 import { selectIsLoggedIn } from './authentication'
 import { selectPathname } from './routing'
 
@@ -104,4 +105,62 @@ export const selectBioLabel = createSelector(
 export const selectIsRoleAdministrator = createSelector(
   [selectIsStaff, selectCuratedCategoryIds, selectModeratedCategoryIds],
   (isStaff, curated, moderated) => isStaff || !curated.isEmpty() || !moderated.isEmpty(),
+)
+
+export const selectCategoryRoleIds = createSelector(
+  [selectCuratedCategoryIds, selectModeratedCategoryIds],
+  (curated, moderated) => {
+    if (curated.isEmpty() && moderated.isEmpty()) {
+      return null
+    }
+
+    const categoryRoleIds = {
+      curatedIds: curated,
+      moderatedIds: moderated,
+    }
+    return categoryRoleIds
+  },
+)
+
+// can this current profile add/remove roles from other users in a category
+// expects `categoryId` and `roleType` to be in props
+const selectPropsCategoryId = (state, props) => get(props, 'categoryId')
+const selectPropsRoleType = (state, props) => get(props, 'roleType')
+export const selectHasRoleAssignmentAccess = createSelector(
+  [
+    selectIsStaff,
+    selectIsRoleAdministrator,
+    selectCuratedCategoryIds,
+    selectModeratedCategoryIds,
+    selectPropsCategoryId,
+    selectPropsRoleType,
+  ],
+  (isStaff, isRoleAdministrator, curated, moderated, categoryId, roleType) => {
+    let hasRoleAssignmentAccess = false
+
+    // super staff
+    if (isStaff) { hasRoleAssignmentAccess = true }
+
+    // if not staff, but some level of role administrator, check if it applies to this category
+    if (
+      !isStaff &&
+      isRoleAdministrator &&
+      (!curated.isEmpty() || !moderated.isEmpty()) &&
+      categoryId
+    ) {
+      let categoryRoleIds = null
+      if (roleType === 'curators' && !curated.isEmpty()) { categoryRoleIds = curated }
+      if (roleType === 'moderators' && !moderated.isEmpty()) { categoryRoleIds = moderated }
+
+      if (categoryRoleIds) {
+        categoryRoleIds.map((categoryRoleId) => {
+          if (categoryRoleId === categoryId) {
+            hasRoleAssignmentAccess = true
+          }
+          return hasRoleAssignmentAccess
+        })
+      }
+    }
+    return hasRoleAssignmentAccess
+  },
 )

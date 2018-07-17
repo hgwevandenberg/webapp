@@ -332,9 +332,9 @@ const formStyle = css(
     { borderRadius: 5 },
 
     hover(
+      s.bgcDarkGreen,
       {
         cursor: 'pointer',
-        backgroundColor: '#16a905',
       },
     ),
 

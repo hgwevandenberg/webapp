@@ -469,6 +469,13 @@ function parseUserDetail(state, { payload: { response: { data: { findUser: user 
   return parseUser(state, user)
 }
 
+function parseUserQuickSearch(state, { payload: { response: { data } } }) {
+  const { searchUsers: { users } } = data
+  return state.set('userQuickSearch', users.reduce((map, user) => (
+    map.set(user.id, Immutable.fromJS(user))
+  ), Immutable.OrderedMap()))
+}
+
 // Dispatch different graphql response types for parsing (reducing)
 export default function (state, action) {
   const { type } = action
@@ -491,6 +498,10 @@ export default function (state, action) {
     case ACTION_TYPES.PROFILE.FOLLOW_CATEGORIES_SUCCESS:
     case ACTION_TYPES.PROFILE.UNFOLLOW_CATEGORIES_SUCCESS:
       return resetSubscribedStreamPagination(state)
+    case ACTION_TYPES.V3.USER.QUICK_SEARCH_SUCCESS:
+      return parseUserQuickSearch(state, action)
+    case ACTION_TYPES.V3.USER.QUICK_SEARCH_CLEAR:
+      return state.delete('userQuickSearch')
     default:
       return state
   }

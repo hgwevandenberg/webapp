@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import UserContainer from '../../containers/UserContainer'
 import CategoryInfoTriggerContainer from '../../containers/CategoryInfoTriggerContainer'
 import CategorySubscribeButtonContainer from '../../containers/CategorySubscribeButtonContainer'
+import CategoryRolesContainer from '../../containers/CategoryRolesContainer'
 import {
   BadgeFeaturedIcon,
   CheckCircleIcon,
@@ -66,7 +67,7 @@ const categorySubscribeButtonStyle = css(
     borderRadius: 100,
     transition: `background-color 0.2s ${s.ease}`,
   },
-  hover({ backgroundColor: '#16a905' }),
+  hover(s.bgcDarkGreen),
   select('&.subscribed',
     s.bgcA,
     hover(s.bgcBlack),
@@ -570,6 +571,7 @@ const categoryInfoExpandedStyle = css(
   ),
 
   select('& .users-holder',
+    s.relative,
     s.mb20,
     {
       paddingBottom: 15,
@@ -579,6 +581,16 @@ const categoryInfoExpandedStyle = css(
       s.mb0,
       s.pb0,
       { borderBottomWidth: 0 },
+    ),
+    select('& .roles-holder',
+      select('& .open-trigger',
+        s.absolute,
+        { top: 9, right: 0 },
+      ),
+    ),
+    select('& .remove-role',
+      s.absolute,
+      { top: 10, right: 0 },
     ),
   ),
 
@@ -683,10 +695,12 @@ export function CategoryInfo({
       }
       <section className="moderators-curators">
         <CategoryUsers
+          categoryId={categoryId}
           categoryModerators={categoryModerators}
           innerWidth={innerWidth}
         />
         <CategoryUsers
+          categoryId={categoryId}
           categoryCurators={categoryCurators}
           innerWidth={innerWidth}
         />
@@ -712,6 +726,7 @@ CategoryInfo.defaultProps = {
 
 const categoryUsersStyle = css(
   select('& li.category-user',
+    s.relative,
     s.mb0,
     select('& .UserCompact',
       s.m0,
@@ -733,7 +748,7 @@ const categoryUsersStyle = css(
   ),
 )
 
-const CategoryUsers = ({ categoryCurators, categoryModerators }) => {
+const CategoryUsers = ({ categoryId, categoryCurators, categoryModerators }) => {
   const kind = categoryCurators ? 'curators' : 'moderators'
   const title = kind === 'curators' ? 'Curators' : 'Moderators'
   const categoryUsers = categoryCurators || categoryModerators
@@ -744,6 +759,11 @@ const CategoryUsers = ({ categoryCurators, categoryModerators }) => {
 
   return (
     <nav className={`${kind}-holder users-holder`}>
+      <CategoryRolesContainer
+        actionType="add"
+        categoryId={categoryId}
+        roleType={kind}
+      />
       <h4>{title}</h4>
       <ul className={`${kind} ${categoryUsersStyle}`}>
         {categoryUsers.map((categoryUser) => {
@@ -756,9 +776,17 @@ const CategoryUsers = ({ categoryCurators, categoryModerators }) => {
               className="category-user"
             >
               <UserContainer
+                categoryId={categoryId}
+                roleType={kind}
                 userId={userId}
-                type="compact"
+                type="roles"
                 useSmallRelationships
+              />
+              <CategoryRolesContainer
+                actionType="remove"
+                categoryId={categoryId}
+                roleType={kind}
+                userId={userId}
               />
             </li>
           )
@@ -768,6 +796,7 @@ const CategoryUsers = ({ categoryCurators, categoryModerators }) => {
   )
 }
 CategoryUsers.propTypes = {
+  categoryId: PropTypes.string.isRequired,
   categoryCurators: PropTypes.array,
   categoryModerators: PropTypes.array,
 }

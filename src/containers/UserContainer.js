@@ -17,6 +17,7 @@ import {
   UserInvitee,
   UserProfileCard,
   UserProfile,
+  UserRoleList,
 } from '../components/users/UserRenderables'
 import { selectIsLoggedIn } from '../selectors/authentication'
 import { selectBadgesHasLoaded } from '../selectors/badges'
@@ -25,7 +26,7 @@ import {
   selectInvitationAcceptedAt,
   selectInvitationEmail,
 } from '../selectors/invitations'
-import { selectViewsAdultContent } from '../selectors/profile'
+import { selectHasRoleAssignmentAccess, selectViewsAdultContent } from '../selectors/profile'
 import { selectIsPostDetail } from '../selectors/routing'
 import {
   selectUser,
@@ -65,6 +66,7 @@ export function makeMapStateToProps() {
       followersCount: selectUserFollowersCount(state, props),
       followingCount: selectUserFollowingCount(state, props),
       formattedShortBio: selectUserFormattedShortBio(state, props),
+      hasRoleAccess: selectHasRoleAssignmentAccess(state, props),
       id: selectUserId(state, props),
       invitationAcceptedAt: selectInvitationAcceptedAt(state, props),
       invitationEmail: selectInvitationEmail(state, props),
@@ -110,6 +112,7 @@ class UserContainer extends Component {
     ]).isRequired,
     followingCount: PropTypes.number.isRequired,
     formattedShortBio: PropTypes.string,
+    hasRoleAccess: PropTypes.bool,
     invitationAcceptedAt: PropTypes.string,
     invitationEmail: PropTypes.string,
     id: PropTypes.string,
@@ -135,6 +138,7 @@ class UserContainer extends Component {
       'invitee',
       'grid',
       'profile',
+      'roles',
     ]).isRequired,
     useGif: PropTypes.bool,
     useSmallRelationships: PropTypes.bool,
@@ -152,6 +156,7 @@ class UserContainer extends Component {
     className: null,
     externalLinksList: null,
     formattedShortBio: null,
+    hasRoleAccess: false,
     id: null,
     invitationAcceptedAt: null,
     invitationEmail: null,
@@ -304,6 +309,7 @@ class UserContainer extends Component {
       externalLinksList,
       followersCount,
       followingCount,
+      hasRoleAccess,
       id,
       invitationAcceptedAt,
       invitationEmail,
@@ -409,6 +415,19 @@ class UserContainer extends Component {
               userBadgeCount,
               username,
               userProfileBadges,
+            }}
+          />
+        )
+      case 'roles':
+        return (
+          <UserRoleList
+            {...{
+              avatar,
+              id,
+              hasRoleAccess,
+              useSmallRelationships,
+              relationshipPriority,
+              username,
             }}
           />
         )
