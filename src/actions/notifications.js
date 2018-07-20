@@ -8,7 +8,11 @@ import { notificationStreamQuery } from '../queries/notificationsQueries'
 
 const NOTIFICATION_CATEGORIES = {
   all: 'ALL',
-
+  comments: 'COMMENTS',
+  mentions: 'MENTIONS',
+  loves: 'LOVES',
+  reposts: 'REPOSTS',
+  relationships: 'RELATIONSHIPS',
 }
 
 export function loadNotifications(params = {}) {
