@@ -31,6 +31,9 @@ import {
 import * as MAPPING_TYPES from '../constants/mapping_types'
 import { getLinkObject } from '../helpers/json_helper'
 import { selectJson } from '../selectors/store'
+import {
+  selectNotification,
+} from '../selectors/notifications'
 
 const NOTIFICATION_KIND = {
   APPROVED_ARTIST_INVITE_SUBMISSION: 'approved_artist_invite_submission',
@@ -71,7 +74,7 @@ const SUBJECT_TYPE = {
 }
 
 function mapStateToProps(state, ownProps) {
-  const { notification } = ownProps
+  const notification = selectNotification(state, ownProps)
   const json = selectJson(state)
   const subject = getLinkObject(notification, 'subject', json)
 
