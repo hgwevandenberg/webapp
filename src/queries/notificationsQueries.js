@@ -95,7 +95,6 @@ export const notificationStreamQuery = `
         kind
         subjectType
         createdAt
-        originatingUser { ...authorSummary }
         subject {
           __typename
           ... on Post { ...postSummary repostedSource { ...postSummary } }
