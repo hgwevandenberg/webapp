@@ -7,9 +7,7 @@ import {
   AUTHENTICATION,
   EDITOR,
   GUI,
-  HEAD_FAILURE,
-  HEAD_SUCCESS,
-  LOAD_STREAM_SUCCESS,
+  V3,
   PROFILE,
   SET_LAYOUT_MODE,
   ZEROS,
@@ -148,17 +146,13 @@ export default (state = initialState, action = { type: '' }) => {
     case GUI.RESET_ONBOARD_TO_ARTIST_INVITE:
       return state.set('onboardToArtistInvite', null)
         .set('isCompletingOnboardToArtistInvite', false)
-    case HEAD_FAILURE:
-      return state.set('isNotificationsUnread', false)
-    case HEAD_SUCCESS:
-      if (payload.serverStatus === 304) {
-        return state.set('isNotificationsUnread', false)
-      } else if (payload.serverStatus === 204) {
-        return state.set('isNotificationsUnread', true)
-      }
-      return state
-    case LOAD_STREAM_SUCCESS:
-      if (action.meta && /\/notifications/.test(action.meta.resultKey)) {
+    case V3.NOTIFICATIONS.NEW_CONTENT_SUCCESS:
+      return state.set(
+        'isNotificationsUnread',
+        payload.response.data.newNotificationStreamContent.newContent,
+      )
+    case V3.LOAD_STREAM_SUCCESS:
+      if (action.meta && action.meta.resultKey.includes('/notifications')) {
         return state.set('isNotificationsUnread', false)
           .set('lastNotificationCheck', new Date().toUTCString())
       }

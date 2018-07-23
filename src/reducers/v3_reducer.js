@@ -460,7 +460,8 @@ function parseEditorial(state, editorial) {
 }
 
 function parseNotificationSubject(state, subject) {
-  switch (subject.__typename) {
+  const { __typename: typename } = subject
+  switch (typename) {
     case 'Post':
       return { type: 'posts', state: parsePost(state, subject) }
     case 'Comment':

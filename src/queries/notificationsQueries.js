@@ -4,6 +4,10 @@ import {
   responsiveImageVersions,
 } from './fragments'
 
+export const newNotificationsQuery = `
+  query { newNotificationStreamContent { newContent } }
+`
+
 export const notificationStreamQuery = `
   ${imageVersionProps}
   ${tshirtImageVersions}

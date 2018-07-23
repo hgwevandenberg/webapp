@@ -4,7 +4,10 @@ import * as MAPPING_TYPES from '../constants/mapping_types'
 import * as api from '../networking/api'
 import * as StreamRenderables from '../components/streams/StreamRenderables'
 import { ZeroState } from '../components/zeros/Zeros'
-import { notificationStreamQuery } from '../queries/notificationsQueries'
+import {
+  notificationStreamQuery,
+  newNotificationsQuery,
+} from '../queries/notificationsQueries'
 
 const NOTIFICATION_CATEGORIES = {
   all: 'ALL',
@@ -38,10 +41,10 @@ export function loadNotifications(params = {}) {
 
 export function checkForNewNotifications() {
   return {
-    type: ACTION_TYPES.HEAD,
+    type: ACTION_TYPES.V3.NOTIFICATIONS.NEW_CONTENT,
     payload: {
-      endpoint: api.newNotifications(),
-      method: 'HEAD',
+      query: newNotificationsQuery,
+      variables: {},
     },
   }
 }
