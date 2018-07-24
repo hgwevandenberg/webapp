@@ -31,6 +31,7 @@ class UserDetailRolesContainer extends PureComponent {
     administeredCategories: PropTypes.object.isRequired,
     categorySearchTerm: PropTypes.string,
     userId: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
     isStaff: PropTypes.bool.isRequired,
   }
 
@@ -105,6 +106,7 @@ class UserDetailRolesContainer extends PureComponent {
       categoryUsers,
       administeredCategories,
       userId,
+      username,
       isStaff,
     } = this.props
 
@@ -122,6 +124,7 @@ class UserDetailRolesContainer extends PureComponent {
         newRole={newRole}
         searchCategories={term => this.searchCategories(term)}
         userId={userId}
+        username={username}
         isStaff={isStaff}
       />
     )

@@ -9,6 +9,101 @@ import StatusMessage from './../forms/StatusMessage'
 import { css, hover, media, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
+const userDetailRemoveRoleStyle = css(
+  s.colorA,
+  select('& .confirm-text',
+    s.ml5,
+    s.mr5,
+    select('& a',
+      hover(s.colorBlack),
+    ),
+    select('& button',
+      s.ml10,
+      s.colorA,
+      s.transitionColor,
+      select('&.remove-confirm',
+        s.colorBlack,
+      ),
+      hover(s.colorBlack),
+    ),
+  ),
+)
+
+class UserDetailRemoveRole extends PureComponent {
+  constructor(props) {
+    super(props)
+    this.state = {
+      open: false,
+    }
+  }
+
+  toggleDoubleConfirm() {
+    const { open } = this.state
+
+    this.setState({
+      open: !open,
+    })
+  }
+
+
+  render() {
+    const {
+      categoryName,
+      categorySlug,
+      categoryUserId,
+      handleDeleteRole,
+      username,
+    } = this.props
+
+    const { open } = this.state
+
+    if (open) {
+      return (
+        <span className={userDetailRemoveRoleStyle}>
+          <span className="confirm-text">
+            Remove @{username} from <Link to={`/discover/${categorySlug}`}>{categoryName}</Link>?
+            <button
+              className="remove-confirm"
+              onClick={() => handleDeleteRole(categoryUserId)}
+            >
+              Yes
+            </button>
+            <button
+              className="remove-cancel"
+              onClick={() => this.toggleDoubleConfirm()}
+            >
+              No
+            </button>
+          </span>
+          <button
+            className="remove"
+            onClick={() => this.toggleDoubleConfirm()}
+          >
+            <XBoxIcon />
+          </button>
+        </span>
+      )
+    }
+    return (
+      <button
+        className="remove"
+        onClick={() => this.toggleDoubleConfirm()}
+      >
+        <XBoxIcon />
+      </button>
+    )
+  }
+}
+UserDetailRemoveRole.propTypes = {
+  categoryName: PropTypes.string.isRequired,
+  categorySlug: PropTypes.string.isRequired,
+  categoryUserId: PropTypes.string.isRequired,
+  handleDeleteRole: PropTypes.func.isRequired,
+  username: PropTypes.string.isRequired,
+}
+// UserDetailRemoveRole.defaultProps = {
+// }
+
 const userDetailRolesModalStyle = css(
   s.block,
   s.relative,
@@ -122,6 +217,7 @@ export default function UserDetailRoles({
   newRole,
   searchCategories,
   userId,
+  username,
 }) {
   if (!isOpen) {
     return null
@@ -155,14 +251,15 @@ export default function UserDetailRoles({
               return (
                 <UserRole
                   key={cu.get('id')}
-                  roleId={cu.get('role')}
+                  administeredCategories={administeredCategories}
                   categoryUserId={cu.get('id')}
                   categoryName={cu.get('categoryName')}
                   categorySlug={cu.get('categorySlug')}
-                  administeredCategories={administeredCategories}
+                  handleDeleteRole={handleDeleteRole}
                   isNew={isNew}
                   isStaff={isStaff}
-                  handleDeleteRole={handleDeleteRole}
+                  roleId={cu.get('role')}
+                  username={username}
                 />
               )
             })}
@@ -183,6 +280,7 @@ UserDetailRoles.propTypes = {
   newRole: PropTypes.object,
   searchCategories: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired,
   isStaff: PropTypes.bool.isRequired,
 }
 UserDetailRoles.defaultProps = {
@@ -263,6 +361,7 @@ function UserRole({
   isNew,
   isStaff,
   roleId,
+  username,
 }) {
   return (
     <li className={userRoleStyle}>
@@ -282,12 +381,13 @@ function UserRole({
           </button>
         : null}
         {isStaff || canDelete(categorySlug, roleId, administeredCategories) ?
-          <button
-            className="remove"
-            onClick={() => handleDeleteRole(categoryUserId)}
-          >
-            <XBoxIcon />
-          </button>
+          <UserDetailRemoveRole
+            categoryName={categoryName}
+            categorySlug={categorySlug}
+            categoryUserId={categoryUserId}
+            handleDeleteRole={handleDeleteRole}
+            username={username}
+          />
         : null }
       </span>
     </li>
@@ -302,6 +402,7 @@ UserRole.propTypes = {
   isNew: PropTypes.bool.isRequired,
   isStaff: PropTypes.bool.isRequired,
   roleId: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired,
 }
 
 const formStyle = css(
@@ -376,6 +477,7 @@ const formStyle = css(
   ),
 )
 
+/* eslint-disable react/no-multi-comp */
 class UserCategoryRolesForm extends PureComponent {
   constructor(props) {
     super(props)

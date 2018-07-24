@@ -468,6 +468,7 @@ export class UserProfile extends PureComponent {
         <UserDetailRolesContainer
           isOpen={isRolesOpen}
           userId={id}
+          username={username}
         />
       </div>
     )
