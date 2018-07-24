@@ -9,18 +9,87 @@ import StatusMessage from './../forms/StatusMessage'
 import { css, hover, media, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
-function UserDetailRemoveRole({
-  categoryUserId,
-  handleDeleteRole,
-}) {
-  return (
-    <button
-      className="remove"
-      onClick={() => handleDeleteRole(categoryUserId)}
-    >
-      <XBoxIcon />
-    </button>
-  )
+const userDetailRemoveRoleStyle = css(
+  s.colorA,
+  select('& .confirm-text',
+    s.ml5,
+    s.mr5,
+    select('& a',
+      hover(s.colorBlack),
+    ),
+    select('& button',
+      s.ml10,
+      s.colorA,
+      s.transitionColor,
+      select('&.remove-confirm',
+        s.colorBlack,
+      ),
+      hover(s.colorBlack),
+    ),
+  ),
+)
+
+class UserDetailRemoveRole extends PureComponent {
+  constructor(props) {
+    super(props)
+    this.state = {
+      open: false,
+    }
+  }
+
+  toggleDoubleConfirm() {
+    const { open } = this.state
+
+    this.setState({
+      open: !open,
+    })
+  }
+
+
+  render() {
+    const {
+      categoryUserId,
+      handleDeleteRole,
+    } = this.props
+
+    const { open } = this.state
+
+    if (open) {
+      return (
+        <span className={userDetailRemoveRoleStyle}>
+          <span className="confirm-text">
+            Remove @todd from <a href="#thing">Photography</a>?
+            <button
+              className="remove-confirm"
+              onClick={() => handleDeleteRole(categoryUserId)}
+            >
+              Yes
+            </button>
+            <button
+              className="remove-cancel"
+              onClick={() => this.toggleDoubleConfirm()}
+            >
+              No
+            </button>
+          </span>
+          <button
+            className="remove"
+            onClick={() => this.toggleDoubleConfirm()}
+          >
+            <XBoxIcon />
+          </button>
+        </span>
+      )
+    }
+    return (
+      <button
+        className="remove"
+        onClick={() => this.toggleDoubleConfirm()}
+      >
+        <XBoxIcon />
+      </button>
+    )
+  }
 }
 UserDetailRemoveRole.propTypes = {
   categoryUserId: PropTypes.string.isRequired,
