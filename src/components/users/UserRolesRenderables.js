@@ -48,8 +48,11 @@ class UserDetailRemoveRole extends PureComponent {
 
   render() {
     const {
+      categoryName,
+      categorySlug,
       categoryUserId,
       handleDeleteRole,
+      username,
     } = this.props
 
     const { open } = this.state
@@ -58,7 +61,7 @@ class UserDetailRemoveRole extends PureComponent {
       return (
         <span className={userDetailRemoveRoleStyle}>
           <span className="confirm-text">
-            Remove @todd from <a href="#thing">Photography</a>?
+            Remove @{username} from <Link to={`/discover/${categorySlug}`}>{categoryName}</Link>?
             <button
               className="remove-confirm"
               onClick={() => handleDeleteRole(categoryUserId)}
@@ -92,8 +95,11 @@ class UserDetailRemoveRole extends PureComponent {
   }
 }
 UserDetailRemoveRole.propTypes = {
+  categoryName: PropTypes.string.isRequired,
+  categorySlug: PropTypes.string.isRequired,
   categoryUserId: PropTypes.string.isRequired,
   handleDeleteRole: PropTypes.func.isRequired,
+  username: PropTypes.string.isRequired,
 }
 // UserDetailRemoveRole.defaultProps = {
 // }
@@ -211,6 +217,7 @@ export default function UserDetailRoles({
   newRole,
   searchCategories,
   userId,
+  username,
 }) {
   if (!isOpen) {
     return null
@@ -244,14 +251,15 @@ export default function UserDetailRoles({
               return (
                 <UserRole
                   key={cu.get('id')}
-                  roleId={cu.get('role')}
+                  administeredCategories={administeredCategories}
                   categoryUserId={cu.get('id')}
                   categoryName={cu.get('categoryName')}
                   categorySlug={cu.get('categorySlug')}
-                  administeredCategories={administeredCategories}
+                  handleDeleteRole={handleDeleteRole}
                   isNew={isNew}
                   isStaff={isStaff}
-                  handleDeleteRole={handleDeleteRole}
+                  roleId={cu.get('role')}
+                  username={username}
                 />
               )
             })}
@@ -272,6 +280,7 @@ UserDetailRoles.propTypes = {
   newRole: PropTypes.object,
   searchCategories: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired,
   isStaff: PropTypes.bool.isRequired,
 }
 UserDetailRoles.defaultProps = {
@@ -352,6 +361,7 @@ function UserRole({
   isNew,
   isStaff,
   roleId,
+  username,
 }) {
   return (
     <li className={userRoleStyle}>
@@ -372,8 +382,11 @@ function UserRole({
         : null}
         {isStaff || canDelete(categorySlug, roleId, administeredCategories) ?
           <UserDetailRemoveRole
-            handleDeleteRole={handleDeleteRole}
+            categoryName={categoryName}
+            categorySlug={categorySlug}
             categoryUserId={categoryUserId}
+            handleDeleteRole={handleDeleteRole}
+            username={username}
           />
         : null }
       </span>
@@ -389,6 +402,7 @@ UserRole.propTypes = {
   isNew: PropTypes.bool.isRequired,
   isStaff: PropTypes.bool.isRequired,
   roleId: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired,
 }
 
 const formStyle = css(
@@ -463,6 +477,7 @@ const formStyle = css(
   ),
 )
 
+/* eslint-disable react/no-multi-comp */
 class UserCategoryRolesForm extends PureComponent {
   constructor(props) {
     super(props)
