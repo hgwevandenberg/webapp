@@ -76,7 +76,7 @@ const element = (
   </Provider>
 )
 
-const whitelist = ['authentication', 'editor', 'gui', 'json', 'profile']
+const whitelist = ['authentication', 'editor', 'gui', 'profile']
 
 // capture auth/gui so we can migrate to immutable
 // TODO: should probably be removed by 6/6/17
