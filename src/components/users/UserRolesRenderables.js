@@ -9,6 +9,26 @@ import StatusMessage from './../forms/StatusMessage'
 import { css, hover, media, select } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
+function UserDetailRemoveRole({
+  categoryUserId,
+  handleDeleteRole,
+}) {
+  return (
+    <button
+      className="remove"
+      onClick={() => handleDeleteRole(categoryUserId)}
+    >
+      <XBoxIcon />
+    </button>
+  )
+}
+UserDetailRemoveRole.propTypes = {
+  categoryUserId: PropTypes.string.isRequired,
+  handleDeleteRole: PropTypes.func.isRequired,
+}
+// UserDetailRemoveRole.defaultProps = {
+// }
+
 const userDetailRolesModalStyle = css(
   s.block,
   s.relative,
@@ -282,12 +302,10 @@ function UserRole({
           </button>
         : null}
         {isStaff || canDelete(categorySlug, roleId, administeredCategories) ?
-          <button
-            className="remove"
-            onClick={() => handleDeleteRole(categoryUserId)}
-          >
-            <XBoxIcon />
-          </button>
+          <UserDetailRemoveRole
+            handleDeleteRole={handleDeleteRole}
+            categoryUserId={categoryUserId}
+          />
         : null }
       </span>
     </li>
