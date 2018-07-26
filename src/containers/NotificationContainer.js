@@ -66,6 +66,7 @@ const NOTIFICATION_KIND = {
 const SUBJECT_TYPE = {
   LOVE: 'love',
   POST: 'post',
+  COMMENT: 'comment',
   USER: 'user',
   WATCH: 'watch',
   ARTIST_INVITE_SUBMISSION: 'artistinvitesubmission',
@@ -94,7 +95,7 @@ function mapStateToProps(state, ownProps) {
   const subjectType = notification.get('subjectType').toLowerCase()
 
   // subject is a post or comment
-  if (subjectType === SUBJECT_TYPE.POST) {
+  if (subjectType === SUBJECT_TYPE.POST || subjectType === SUBJECT_TYPE.COMMENT) {
     postAuthor = getLinkObject(subject, 'author', json) ||
       json.getIn([MAPPING_TYPES.USERS, subject.get('authorId')])
     // comment

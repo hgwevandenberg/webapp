@@ -152,7 +152,7 @@ export default (state = initialState, action = { type: '' }) => {
         payload.response.data.newNotificationStreamContent.newContent,
       )
     case V3.LOAD_STREAM_SUCCESS:
-      if (action.meta && action.meta.resultKey.includes('/notifications')) {
+      if (action.meta && action.meta.resultKey && action.meta.resultKey.includes('/notifications')) {
         return state.set('isNotificationsUnread', false)
           .set('lastNotificationCheck', new Date().toUTCString())
       }

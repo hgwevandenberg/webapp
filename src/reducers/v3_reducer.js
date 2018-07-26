@@ -459,9 +459,8 @@ function parseEditorial(state, editorial) {
   }))
 }
 
-function parseNotificationSubject(state, subject) {
-  const { __typename: typename } = subject
-  switch (typename) {
+function parseNotificationSubject(state, subject, type) {
+  switch (type) {
     case 'Post':
       return { type: 'posts', state: parsePost(state, subject) }
     case 'Comment':
@@ -479,7 +478,7 @@ function parseNotificationSubject(state, subject) {
     case 'Watch':
       return { type: 'watches', state: parseWatch(state, subject) }
     default:
-      return state
+      return { type: null, state }
   }
 }
 
@@ -489,7 +488,7 @@ function parseNotification(state, notification) {
   const {
     type,
     state: state1,
-  } = parseNotificationSubject(state, notification.subject)
+  } = parseNotificationSubject(state, notification.subject, notification.subjectType)
   return smartMergeDeepIn(state1, ['notifications', notification.id], Immutable.fromJS({
     id: notification.id,
     subjectType: notification.subjectType,
