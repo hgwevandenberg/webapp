@@ -708,13 +708,17 @@ export class PostToolsLightBox extends PureComponent {
     }
     if (categoryPostActions) {
       cells.push(
-        <FeatureCategoryPostTool
+        <span
           key={`FeatureCategoryPostTool_${postId}`}
-          actions={categoryPostActions}
-          categoryPostActions
-          fireAction={categoryPostFireAction}
-          status={categoryPostStatus}
-        />,
+          className="PostTool FeatureCategoryPostTool isLightBox"
+        >
+          <FeatureCategoryPostTool
+            actions={categoryPostActions}
+            categoryPostActions
+            fireAction={categoryPostFireAction}
+            status={categoryPostStatus}
+          />
+        </span>,
       )
     }
     cells.push(
