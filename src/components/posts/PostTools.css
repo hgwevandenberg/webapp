@@ -47,7 +47,7 @@
 }
 
 .PostTool.isLightBox .CurateIcon.SVGBox {
-  padding-top: 3px;
+  padding-top: 5px;
   transform: scale(1.1);
 }
 
@@ -133,7 +133,7 @@
 }
 
 .PostTool.isLightBox.ViewsTool .SVGIcon {
-  margin-top: -3px;
+  margin-top: -2px;
   margin-right: 10px;
 }
 
