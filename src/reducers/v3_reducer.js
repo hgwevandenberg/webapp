@@ -76,7 +76,9 @@ function parsePagination(state, type, models, next, isLastPage, pathname, query,
   // In that case we need to prepend to either set to show the "newPosts" icon
   if (unseenPageIds.count() > 0) {
     return mergedState.updateIn(['pages', pathname, 'morePostIds'], alreadyUnseen =>
-      unseenPageIds.concat(alreadyUnseen || Immutable.OrderedSet()),
+      // Prepend full set, so we can ensure order is correct later, duplicates will be removed
+      // when prepended to what is on page.
+      newPageIds.concat(alreadyUnseen || Immutable.OrderedSet()),
     )
   }
 
