@@ -131,6 +131,7 @@ class PostLightBoxContainer extends Component {
   shouldComponentUpdate(nextProps) {
     return !Immutable.is(nextProps.post, this.props.post) ||
       [
+        'categoryPostStatus',
         'isLoggedIn',
         'postId',
       ].some(prop =>

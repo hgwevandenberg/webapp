@@ -42,6 +42,10 @@
   transition-delay: 200ms;
 }
 
+.PostTool.isLightBox button.featured:hover .CurateIcon.SVGBox path {
+  fill: #16a905;
+}
+
 .PostTool.isLightBox .CurateIcon.SVGBox {
   padding-top: 3px;
   transform: scale(1.1);
