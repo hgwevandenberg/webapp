@@ -186,6 +186,18 @@ function parseArtistInvite(state, invite) {
   }))
 }
 
+function artistInviteSubmissionLinks(submission) {
+  const links = {}
+
+  const inviteId = deepGet(submission, ['artist_invite', 'id'])
+  if (inviteId) { links.artistInvite = { type: 'artist_invites', id: inviteId } }
+
+  const postId = deepGet(submission, ['post', 'id'])
+  if (postId) { links.post = { type: 'posts', id: postId } }
+
+  return links
+}
+
 function parseArtistInviteSubmission(state, submission) {
   if (!submission || !submission.id) { return state }
   const state2 = parseArtistInvite(state, submission.artistInvite)
@@ -194,8 +206,11 @@ function parseArtistInviteSubmission(state, submission) {
     id: submission.id,
     status: submission.status,
     actions: submission.actions,
+    inviteTitle: deepGet(submission, ['artistInvite', 'title']),
+    inviteSlug: deepGet(submission, ['artistInvite', 'slug']),
     postId: deepGet(submission, ['post', 'id']),
     artistInviteId: deepGet(submission, ['artistInvite', 'id']),
+    links: artistInviteSubmissionLinks(submission),
   }))
 }
 
@@ -273,13 +288,13 @@ function commentLinks(comment) {
 function postLinks(post) {
   const links = {}
   const authorId = deepGet(post, ['author', 'id'])
-  if (authorId) { links.author = { id: authorId, type: 'user' } }
+  if (authorId) { links.author = { id: authorId, type: 'users' } }
 
   const repostAuthorId = deepGet(post, ['repostedSource', 'author', 'id'])
-  if (repostAuthorId) { links.repostAuthor = { id: repostAuthorId, type: 'user' } }
+  if (repostAuthorId) { links.repostAuthor = { id: repostAuthorId, type: 'users' } }
 
   const repostId = deepGet(post, ['repostedSource', 'id'])
-  if (repostId) { links.repostedSource = { id: repostId, type: 'post' } }
+  if (repostId) { links.repostedSource = { id: repostId, type: 'posts' } }
 
   const categories = deepGet(post, ['categories'])
   if (categories && !!categories.length) {
@@ -369,6 +384,7 @@ function parsePost(state, post) {
     summary: parseRegion(post, 'summary', assetsById),
     content: parseRegion(post, 'content', assetsById),
     repostContent: parseRegion(post, 'repostContent', repostAssetsById),
+    repostId: deepGet(post, ['repostedSource', 'id']),
 
     // Stats
     lovesCount: deepGet(post, ['postStats', 'lovesCount']),

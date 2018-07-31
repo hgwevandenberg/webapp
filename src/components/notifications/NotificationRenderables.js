@@ -241,7 +241,7 @@ export const ApprovedArtistInviteSubmissionFromFollowingNotification = (props) =
     >
       <p>
         <UserTextLink user={postActionAuthor} />
-        {"'s submission to"}
+        {"'s submission to "}
         <ArtistInviteTextLink title={artistInviteTitle} slug={artistInviteSlug} />
         {' was accepted'}
       </p>
