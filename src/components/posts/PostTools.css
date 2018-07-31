@@ -25,13 +25,30 @@
   font-size: 16px;
 }
 
-.PostTool.isLightBox .SVGIcon {
+.PostTool.isLightBox .SVGIcon,
+.PostTool.isLightBox .CurateIcon.SVGBox {
   margin-top: -2px;
   transform: scale(1.4);
 }
 
-.PostTool.isLightBox .SVGIcon g {
+.PostTool.isLightBox .SVGIcon g,
+.PostTool.isLightBox .CurateIcon.SVGBox path {
   stroke-width: 1;
+}
+
+.PostTool.isLightBox button:hover .CurateIcon.SVGBox path {
+  fill: #fff;
+  transition: fill var(--speed) var(--ease);
+  transition-delay: 200ms;
+}
+
+.PostTool.isLightBox button.featured:hover .CurateIcon.SVGBox path {
+  fill: #16a905;
+}
+
+.PostTool.isLightBox .CurateIcon.SVGBox {
+  padding-top: 5px;
+  transform: scale(1.1);
 }
 
 .PostTool.isLightBox .Hint {
@@ -100,7 +117,7 @@
 }
 
 .CommentTool.isLightBox.PostTool button.isNotZero .PostToolValue {
-  padding-left: 12px;
+  padding-left: 6px;
 }
 
 .CommentTool.isLightBox .Hint {
@@ -116,8 +133,12 @@
 }
 
 .PostTool.isLightBox.ViewsTool .SVGIcon {
-  margin-top: -3px;
-  margin-right: 10px;
+  margin-top: -2px;
+  margin-right: 8px;
+}
+
+.PostTool.isLightBox .PostToolDrawerButton {
+  margin-left: -5px;
 }
 
 .ViewsTool.isPill {
@@ -257,7 +278,7 @@
 
 .PostTools.with-lightbox .ViewsTool {
   position: absolute;
-  top: 19px;
+  top: 28px;
   right: 10px;
 }
 
@@ -267,7 +288,8 @@
   right: -10px;
 }
 
-.PostTools.with-lightbox .ShareTool {
+.PostTools.with-lightbox .ShareTool,
+.PostTools.with-lightbox .FeatureCategoryPostTool {
   position: relative;
   top: auto;
   right: auto;

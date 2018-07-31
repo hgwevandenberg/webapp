@@ -215,11 +215,12 @@ const postLightBoxContainerStyle = css(
   },
 
   select('& .PostTools.with-lightbox',
-    s.block,
+    s.flex,
+    s.itemsCenter,
     s.relative,
     s.fullWidth,
-    s.pt20,
-    s.pb20,
+    s.pt30,
+    s.pb10,
     s.pl10,
     s.pr10,
     {

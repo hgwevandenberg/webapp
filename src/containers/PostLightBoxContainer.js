@@ -7,6 +7,7 @@ import Mousetrap from 'mousetrap'
 import { trackEvent } from '../actions/analytics'
 import { setIsLightBoxActive } from '../actions/gui'
 import { openModal, closeModal } from '../actions/modals'
+import { sendCategoryPostAction } from '../actions/category_posts'
 import { UserModal } from '../components/posts/PostRenderables'
 import {
   loadEditablePost,
@@ -20,6 +21,8 @@ import { selectDeviceSize } from '../selectors/gui'
 import {
   selectPost,
   selectPostAuthor,
+  selectPostCategoryPostStatusForPath,
+  selectPostCategoryPostActionsForPath,
   selectPostCommentsCount,
   selectPostDetailPath,
   selectPostIsCommentsRequesting,
@@ -36,6 +39,8 @@ import { SHORTCUT_KEYS } from '../constants/application_types'
 function mapStateToProps(state, props) {
   return {
     author: selectPostAuthor(state, props),
+    categoryPostStatus: selectPostCategoryPostStatusForPath(state, props),
+    categoryPostActions: selectPostCategoryPostActionsForPath(state, props),
     detailPath: selectPostDetailPath(state, props),
     deviceSize: selectDeviceSize(state),
     isCommentsRequesting: selectPostIsCommentsRequesting(state, props),
@@ -55,6 +60,8 @@ function mapStateToProps(state, props) {
 class PostLightBoxContainer extends Component {
   static propTypes = {
     author: PropTypes.object.isRequired,
+    categoryPostStatus: PropTypes.string,
+    categoryPostActions: PropTypes.object,
     detailPath: PropTypes.string.isRequired,
     deviceSize: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired,
@@ -75,6 +82,8 @@ class PostLightBoxContainer extends Component {
   }
 
   static defaultProps = {
+    categoryPostStatus: null,
+    categoryPostActions: null,
     isRelatedPost: false,
     postCommentsCount: null,
     postLoved: false,
@@ -122,6 +131,7 @@ class PostLightBoxContainer extends Component {
   shouldComponentUpdate(nextProps) {
     return !Immutable.is(nextProps.post, this.props.post) ||
       [
+        'categoryPostStatus',
         'isLoggedIn',
         'postId',
       ].some(prop =>
@@ -211,6 +221,11 @@ class PostLightBoxContainer extends Component {
     dispatch(closeModal())
   }
 
+  onFireCategoryPostAction = (action) => {
+    const { dispatch } = this.props
+    dispatch(sendCategoryPostAction(action))
+  }
+
   onTrackRelatedPostClick = () => {
     const { dispatch, isRelatedPost } = this.props
     if (isRelatedPost) { dispatch(trackEvent('related_post_clicked')) }
@@ -244,6 +259,8 @@ class PostLightBoxContainer extends Component {
   render() {
     const {
       author,
+      categoryPostStatus,
+      categoryPostActions,
       detailPath,
       isCommentsRequesting,
       isLoggedIn,
@@ -262,6 +279,9 @@ class PostLightBoxContainer extends Component {
     return (
       <PostToolsLightBox
         author={author}
+        categoryPostStatus={categoryPostStatus}
+        categoryPostActions={categoryPostActions}
+        categoryPostFireAction={this.onFireCategoryPostAction}
         detailPath={detailPath}
         isCommentsRequesting={isCommentsRequesting}
         isLoggedIn={isLoggedIn}

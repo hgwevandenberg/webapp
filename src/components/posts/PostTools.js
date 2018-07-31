@@ -617,6 +617,9 @@ export class PostTools extends PureComponent {
 export class PostToolsLightBox extends PureComponent {
   static propTypes = {
     author: PropTypes.object.isRequired,
+    categoryPostStatus: PropTypes.string,
+    categoryPostFireAction: PropTypes.func,
+    categoryPostActions: PropTypes.object,
     detailPath: PropTypes.string.isRequired,
     isCommentsRequesting: PropTypes.bool.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
@@ -632,9 +635,18 @@ export class PostToolsLightBox extends PureComponent {
     postViewsCountRounded: PropTypes.string.isRequired,
   }
 
+  static defaultProps = {
+    categoryPostActions: null,
+    categoryPostFireAction: null,
+    categoryPostStatus: null,
+  }
+
   render() {
     const {
       author,
+      categoryPostActions,
+      categoryPostFireAction,
+      categoryPostStatus,
       detailPath,
       isCommentsRequesting,
       isLoggedIn,
@@ -692,6 +704,21 @@ export class PostToolsLightBox extends PureComponent {
           isLoggedIn={isLoggedIn}
           key={`ShareTool_${postId}`}
         />,
+      )
+    }
+    if (categoryPostActions) {
+      cells.push(
+        <span
+          key={`FeatureCategoryPostTool_${postId}`}
+          className="PostTool FeatureCategoryPostTool isLightBox"
+        >
+          <FeatureCategoryPostTool
+            actions={categoryPostActions}
+            categoryPostActions
+            fireAction={categoryPostFireAction}
+            status={categoryPostStatus}
+          />
+        </span>,
       )
     }
     cells.push(
