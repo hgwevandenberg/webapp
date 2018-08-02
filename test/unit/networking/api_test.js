@@ -118,19 +118,6 @@ describe('api.js', () => {
     })
   })
 
-  context('notifications', () => {
-    it('#notifications', () => {
-      expect(api.notifications().path).to.match(/\/notifications/)
-    })
-    it('#notifications?category=mentions', () => {
-      expect(api.notifications({ category: 'mentions' }).path)
-        .to.match(/\/notifications\?.*\bcategory=mentions/)
-    })
-    it('#notifications?category=all', () => {
-      expect(api.notifications({ category: 'all' }).path).to.match(/\/notifications/)
-    })
-  })
-
   context('availability', () => {
     it('#availability', () => {
       expect(api.availability().path).to.match(/\/availability$/)

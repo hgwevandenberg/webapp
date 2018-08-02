@@ -1,4 +1,3 @@
-import Immutable from 'immutable'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import EmbedRegion from '../regions/EmbedRegion'
@@ -186,7 +185,7 @@ export function regionItemsForNotifications(content, detailPath) {
             isNotification
             key={`ImageRegion_${JSON.stringify(region.get('data'))}`}
             links={region.get('links')}
-            shouldUseVideo={!!(asset && asset.getIn(['attachment', 'video'], Immutable.Map()).size) && !isIOS()}
+            shouldUseVideo={!!(asset && asset.getIn(['attachment', 'video', 'url'], null)) && !isIOS()}
           />,
         )
         break

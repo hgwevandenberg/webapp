@@ -141,10 +141,27 @@ function parseCategory(state, category) {
   }))
 }
 
+function categoryPostLinks(categoryPost) {
+  const links = {}
+
+  const categoryId = deepGet(categoryPost, ['category', 'id'])
+  if (categoryId) { links.category = { type: 'categories', id: categoryId } }
+
+  const postId = deepGet(categoryPost, ['post', 'id'])
+  if (postId) { links.post = { type: 'posts', id: postId } }
+
+  const featuredById = deepGet(categoryPost, ['featuredBy', 'id'])
+  if (featuredById) { links.featuredBy = { type: 'users', id: featuredById } }
+
+  return links
+}
+
 function parseCategoryPost(state, categoryPost) {
   if (!categoryPost) { return state }
   const state2 = parseCategory(state, categoryPost.category)
-  return smartMergeDeepIn(state2, ['categoryPosts', categoryPost.id], Immutable.fromJS({
+  const state3 = parsePost(state2, categoryPost.post)
+  const state4 = parseUser(state3, categoryPost.featuredBy)
+  return smartMergeDeepIn(state4, ['categoryPosts', categoryPost.id], Immutable.fromJS({
     id: categoryPost.id,
     status: categoryPost.status,
     submittedAt: categoryPost.submittedAt,
@@ -154,7 +171,9 @@ function parseCategoryPost(state, categoryPost) {
     categorySlug: deepGet(categoryPost, ['category', 'slug']),
     categoryName: deepGet(categoryPost, ['category', 'name']),
     categoryId: deepGet(categoryPost, ['category', 'id']),
+    postId: deepGet(categoryPost, ['post', 'id']),
     actions: categoryPost.actions,
+    links: categoryPostLinks(categoryPost),
   }))
 }
 
@@ -167,13 +186,31 @@ function parseArtistInvite(state, invite) {
   }))
 }
 
+function artistInviteSubmissionLinks(submission) {
+  const links = {}
+
+  const inviteId = deepGet(submission, ['artist_invite', 'id'])
+  if (inviteId) { links.artistInvite = { type: 'artist_invites', id: inviteId } }
+
+  const postId = deepGet(submission, ['post', 'id'])
+  if (postId) { links.post = { type: 'posts', id: postId } }
+
+  return links
+}
+
 function parseArtistInviteSubmission(state, submission) {
   if (!submission || !submission.id) { return state }
   const state2 = parseArtistInvite(state, submission.artistInvite)
-  return smartMergeDeepIn(state2, ['artistInviteSubmissions', submission.id], Immutable.fromJS({
+  const state3 = parsePost(state2, submission.post)
+  return smartMergeDeepIn(state3, ['artistInviteSubmissions', submission.id], Immutable.fromJS({
     id: submission.id,
     status: submission.status,
     actions: submission.actions,
+    inviteTitle: deepGet(submission, ['artistInvite', 'title']),
+    inviteSlug: deepGet(submission, ['artistInvite', 'slug']),
+    postId: deepGet(submission, ['post', 'id']),
+    artistInviteId: deepGet(submission, ['artistInvite', 'id']),
+    links: artistInviteSubmissionLinks(submission),
   }))
 }
 
@@ -251,13 +288,13 @@ function commentLinks(comment) {
 function postLinks(post) {
   const links = {}
   const authorId = deepGet(post, ['author', 'id'])
-  if (authorId) { links.author = { id: authorId, type: 'user' } }
+  if (authorId) { links.author = { id: authorId, type: 'users' } }
 
   const repostAuthorId = deepGet(post, ['repostedSource', 'author', 'id'])
-  if (repostAuthorId) { links.repostAuthor = { id: repostAuthorId, type: 'user' } }
+  if (repostAuthorId) { links.repostAuthor = { id: repostAuthorId, type: 'users' } }
 
   const repostId = deepGet(post, ['repostedSource', 'id'])
-  if (repostId) { links.repostedSource = { id: repostId, type: 'post' } }
+  if (repostId) { links.repostedSource = { id: repostId, type: 'posts' } }
 
   const categories = deepGet(post, ['categories'])
   if (categories && !!categories.length) {
@@ -297,10 +334,11 @@ function parseComment(state, comment) {
 
   const state1 = parseUser(state, comment.author)
   const state2 = parseList(state1, comment.assets, parseAsset)
+  const state3 = parsePost(state2, comment.parentPost)
 
   const assetsById = reduceAssets(comment.assets)
 
-  return smartMergeDeepIn(state2, ['comments', comment.id], Immutable.fromJS({
+  return smartMergeDeepIn(state3, ['comments', comment.id], Immutable.fromJS({
     // ids
     id: comment.id,
     authorId: deepGet(comment, ['author', 'id']), // We don't use links for this
@@ -346,6 +384,7 @@ function parsePost(state, post) {
     summary: parseRegion(post, 'summary', assetsById),
     content: parseRegion(post, 'content', assetsById),
     repostContent: parseRegion(post, 'repostContent', repostAssetsById),
+    repostId: deepGet(post, ['repostedSource', 'id']),
 
     // Stats
     lovesCount: deepGet(post, ['postStats', 'lovesCount']),
@@ -365,6 +404,48 @@ function parsePost(state, post) {
 
 function parsePostFromLove(store, love) {
   return parsePost(store, love.post)
+}
+
+function loveLinks(love) {
+  const links = {}
+
+  const postId = deepGet(love, ['post', 'id'])
+  if (postId) { links.post = { id: postId, type: 'posts' } }
+
+  const userId = deepGet(love, ['user', 'id'])
+  if (userId) { links.user = { id: userId, type: 'users' } }
+
+  return links
+}
+
+function parseLove(state, love) {
+  if (!love) { return state }
+  const state2 = parsePost(state, love.post)
+  const state3 = parseUser(state2, love.user)
+
+  return smartMergeDeepIn(state3, ['loves', love.id], Immutable.fromJS({
+    id: love.id,
+    postId: deepGet(love, ['post', 'id']),
+    userId: deepGet(love, ['user', 'id']),
+    createdAt: love.createdAt,
+    links: loveLinks(love),
+  }))
+}
+
+function watchLinks(watch) { return loveLinks(watch) }
+
+function parseWatch(state, watch) {
+  if (!watch) { return state }
+  const state2 = parsePost(state, watch.post)
+  const state3 = parseUser(state2, watch.user)
+
+  return smartMergeDeepIn(state3, ['watches', watch.id], Immutable.fromJS({
+    id: watch.id,
+    postId: deepGet(watch, ['post', 'id']),
+    userId: deepGet(watch, ['user', 'id']),
+    createdAt: watch.createdAt,
+    links: watchLinks(watch),
+  }))
 }
 
 function editorialLinks(editorial) {
@@ -393,6 +474,51 @@ function parseEditorial(state, editorial) {
     url: editorial.url,
     path: editorial.path,
     links: editorialLinks(editorial),
+  }))
+}
+
+function parseNotificationSubject(state, subject, type) {
+  switch (type) {
+    case 'Post':
+      return { type: 'posts', state: parsePost(state, subject) }
+    case 'Comment':
+      return { type: 'comments', state: parseComment(state, subject) }
+    case 'User':
+      return { type: 'users', state: parseUser(state, subject) }
+    case 'Love':
+      return { type: 'loves', state: parseLove(state, subject) }
+    case 'CategoryPost':
+      return { type: 'category_posts', state: parseCategoryPost(state, subject) }
+    case 'CategoryUser':
+      return { type: 'category_users', state: parseCategoryUser(state, subject) }
+    case 'ArtistInviteSubmission':
+      return { type: 'artist_invite_submissions', state: parseArtistInviteSubmission(state, subject) }
+    case 'Watch':
+      return { type: 'watches', state: parseWatch(state, subject) }
+    default:
+      return { type: null, state }
+  }
+}
+
+function parseNotification(state, notification) {
+  if (!notification) { return state }
+  if (!notification.subject) { return state }
+  const {
+    type,
+    state: state1,
+  } = parseNotificationSubject(state, notification.subject, notification.subjectType)
+  return smartMergeDeepIn(state1, ['notifications', notification.id], Immutable.fromJS({
+    id: notification.id,
+    subjectType: notification.subjectType,
+    subjectId: notification.subject.id,
+    kind: notification.kind,
+    createdAt: notification.createdAt,
+    links: {
+      subject: {
+        id: notification.subject.id,
+        type,
+      },
+    },
   }))
 }
 
@@ -428,6 +554,10 @@ function parseQueryType(state, type, stream, pathname, query, variables) {
     case 'searchCategories':
       models = stream.categories
       parser = parseCategory
+      break;
+    case 'notificationStream':
+      models = stream.notifications
+      parser = parseNotification
       break;
     default:
       models = null

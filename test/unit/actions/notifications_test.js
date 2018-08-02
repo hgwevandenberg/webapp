@@ -1,6 +1,5 @@
-import { isFSA, isFSAName } from '../../support/test_helpers'
+import { isFSA } from '../../support/test_helpers'
 import { notificationList } from '../../../src/components/streams/StreamRenderables'
-import { notificationsFromActivities } from '../../../src/components/streams/StreamFilters'
 import * as subject from '../../../src/actions/notifications'
 
 describe('notifications actions', () => {
@@ -11,12 +10,8 @@ describe('notifications actions', () => {
       expect(isFSA(action)).to.be.true
     })
 
-    it('has a top level action.type', () => {
-      expect(isFSAName(action, subject.loadNotifications)).to.be.true
-    })
-
-    it('has the correct api endpoint in the action', () => {
-      expect(action.payload.endpoint.path).to.contain('/notifications?per_page=25')
+    it('has the correct query in the action', () => {
+      expect(action.payload.query).to.contain('notificationStream')
     })
 
     it('has the correct mapping type in the action', () => {
@@ -27,10 +22,6 @@ describe('notifications actions', () => {
       expect(action.meta.renderStream.asList).to.equal(notificationList)
       expect(action.meta.renderStream.asGrid).to.equal(notificationList)
       expect(action.meta.renderStream.asZero).to.exist
-    })
-
-    it('has the correct resultFilter in the action', () => {
-      expect(action.meta.resultFilter).to.equal(notificationsFromActivities)
     })
 
     it('has the correct resultKey in the action', () => {
@@ -46,8 +37,7 @@ describe('notifications actions', () => {
     const action = subject.loadNotifications({ category: 'comments' })
 
     it('has the correct api endpoint in the action', () => {
-      const path = action.payload.endpoint.path
-      expect(path).to.contain('/notifications?per_page=25&category=comments')
+      expect(action.payload.variables.category).to.equal('COMMENTS')
     })
 
     it('has the correct resultKey in the action', () => {
@@ -62,17 +52,8 @@ describe('notifications actions', () => {
       expect(isFSA(action)).to.be.true
     })
 
-    it('has similar action.name and action.type')
-    // it('has similar action.name and action.type', () => {
-    //   expect(isFSAName(action, subject.checkForNewNotifications)).to.be.true
-    // })
-
-    it('has the correct api endpoint in the action', () => {
-      expect(action.payload.endpoint.path).to.contain('/notifications')
-    })
-
-    it('has the correct method type in the action', () => {
-      expect(action.payload.method).to.equal('HEAD')
+    it('has the correct query in the action', () => {
+      expect(action.payload.query).to.contain('newNotificationStreamContent')
     })
   })
 })

@@ -4,6 +4,9 @@ import { ANNOUNCEMENTS } from '../constants/mapping_types'
 import { selectLastAnnouncementSeen } from './gui'
 
 export const selectAnnouncements = state => state.json.get(ANNOUNCEMENTS, Immutable.Map())
+export const selectNotifications = state => state.json.get('notifications', Immutable.Map())
+
+export const selectPropsNotificationId = (state, props) => props.notificationId
 
 // Memoized selectors
 export const selectAnnouncement = createSelector(
@@ -53,4 +56,9 @@ export const selectAnnouncementHasBeenViewed = createSelector(
   [selectAnnouncementId, selectAnnouncementIsUnread, selectLastAnnouncementSeen],
   (announcementId, isUnread, lastAnnouncementSeen) =>
     !isUnread || announcementId === lastAnnouncementSeen,
+)
+
+export const selectNotification = createSelector(
+  [selectNotifications, selectPropsNotificationId],
+  (notifications, id) => notifications.get(id, Immutable.Map()),
 )

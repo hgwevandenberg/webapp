@@ -501,17 +501,13 @@ export const usersAsInviteeGrid = invitationIds =>
     )}
   </div>)
 
-
-// notifications and settings don't have an id so they are
-// preserved in the order received by using a stream filter
-// and the models are passed directly to these methods
 // NOTIFICATIONS
 export const notificationList = notifications =>
   (<div className="Notifications">
-    {notifications.map((notification, i) =>
+    {notifications.map(id =>
       (<NotificationContainer
-        key={`notificationParser_${notification.get('createdAt', Date.now())}_${i + 1}`}
-        notification={notification}
+        key={`notificationParser_${id}`}
+        notificationId={id}
       />),
     )}
   </div>)
