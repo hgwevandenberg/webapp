@@ -529,6 +529,23 @@ describe('user selectors', () => {
       expect(result).to.equal(expected)
     })
 
+    it('filters null badges', () => {
+      clearJSON()
+      stubBadges()
+      stub('user', {
+            badges: ['experimental', 'not a badge'],
+            id: '666',
+          })
+
+      let state = { json }
+      const props = { userId: '666' }
+      const result = selector.selectUserBadgeSummary(state, props)
+      const expected = Immutable.List([
+        selectBadge(state, { badgeId: 'experimental' }),
+      ])
+      expect(result).to.equal(expected)
+    })
+
     it('returns an empty list if the user has no badges for a summary', () => {
       const props = { userId: '667' }
       const result = selector.selectUserBadgeSummary(state, props)
