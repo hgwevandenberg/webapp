@@ -171,7 +171,7 @@ export const selectUserBadgeSummary = createSelector(
   (userBadges, storeBadges, categories) =>
     userBadges.flatMap((userBadge) => {
       let badge = storeBadges.find(storeBadge => storeBadge.get('slug') === userBadge)
-      if (!badge)  return []
+      if (!badge) return []
 
       if (userBadge === 'featured') {
         const cats = categories.map(category =>

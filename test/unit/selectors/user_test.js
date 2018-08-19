@@ -533,15 +533,15 @@ describe('user selectors', () => {
       clearJSON()
       stubBadges()
       stub('user', {
-            badges: ['experimental', 'not a badge'],
-            id: '666',
-          })
+        badges: ['experimental', 'not a badge'],
+        id: '666',
+      })
 
-      let state = { json }
+      const filteredState = { json }
       const props = { userId: '666' }
-      const result = selector.selectUserBadgeSummary(state, props)
+      const result = selector.selectUserBadgeSummary(filteredState, props)
       const expected = Immutable.List([
-        selectBadge(state, { badgeId: 'experimental' }),
+        selectBadge(filteredState, { badgeId: 'experimental' }),
       ])
       expect(result).to.equal(expected)
     })
