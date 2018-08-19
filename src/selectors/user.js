@@ -169,15 +169,17 @@ export const selectUserProfileCardBadges = createSelector(
 export const selectUserBadgeSummary = createSelector(
   [selectUserBadges, selectBadges, selectUserFeaturedCategories],
   (userBadges, storeBadges, categories) =>
-    userBadges.map((userBadge) => {
+    userBadges.flatMap((userBadge) => {
       let badge = storeBadges.find(storeBadge => storeBadge.get('slug') === userBadge)
-      if (badge && userBadge === 'featured') {
+      if (!badge) return []
+
+      if (userBadge === 'featured') {
         const cats = categories.map(category =>
           Immutable.Map({ slug: category.get('slug'), name: category.get('name') }),
         )
         badge = badge.set('featuredIn', cats)
       }
-      return badge
+      return [badge]
     }),
 )
 
