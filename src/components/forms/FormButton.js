@@ -54,7 +54,7 @@ FormButton.defaultProps = {
 }
 
 FormButton.propTypes = {
-  children: PropTypes.object,
+  children: PropTypes.node.isRequired,
   className: PropTypes.string,
 }
 
