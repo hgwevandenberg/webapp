@@ -16,6 +16,7 @@ import { selectIsLoggedIn } from '../selectors/authentication'
 import {
   selectComment,
   selectCommentAuthor,
+  selectCommentBadge,
   selectCommentBody,
   selectCommentCanBeDeleted,
   selectCommentContent,
@@ -43,6 +44,7 @@ export function makeMapStateToProps() {
     const isGridMode = selectIsGridMode(state)
     return {
       author: selectCommentAuthor(state, props),
+      badge: selectCommentBadge(state, props),
       canDeleteComment: selectCommentCanBeDeleted(state, props),
       columnWidth: selectColumnWidth(state),
       comment: selectComment(state, props),
@@ -70,6 +72,7 @@ class CommentContainer extends Component {
 
   static propTypes = {
     author: PropTypes.object.isRequired,
+    badge: PropTypes.string.isRequired,
     canDeleteComment: PropTypes.bool.isRequired,
     columnWidth: PropTypes.number.isRequired,
     comment: PropTypes.object.isRequired,
@@ -212,6 +215,7 @@ class CommentContainer extends Component {
   render() {
     const {
       author,
+      badge,
       canDeleteComment,
       columnWidth,
       comment,
@@ -240,7 +244,7 @@ class CommentContainer extends Component {
     return (
       <div className="Comment">
         {!isEditing && !isLightBox ?
-          <CommentHeader author={author} commentId={commentId} /> :
+          <CommentHeader author={author} badge={badge} commentId={commentId} /> :
           null
         }
         {isEditing && commentBody && !ElloAndroidInterface.supportsNativeEditor() ?
