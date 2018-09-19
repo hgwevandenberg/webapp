@@ -143,10 +143,10 @@ export const NavbarLoggedOut = ({
               }
               <NavbarLink
                 className="LabelOnly"
-                label="Artist Invites"
+                label="Invites"
                 onClick={onClickArtistInvites}
                 pathname={pathname}
-                to="/artist-invites"
+                to="/invites"
               />
               <NavbarLink
                 className="LabelOnly"
@@ -270,10 +270,10 @@ export const NavbarLoggedIn = ({
               {!artistInvitesInProfileMenu &&
                 <NavbarLink
                   className="LabelOnly"
-                  label="Artist Invites"
+                  label="Invites"
                   onClick={onClickArtistInvites}
                   pathname={pathname}
-                  to="/artist-invites"
+                  to="/invites"
                 />
               }
               <NavbarLink
