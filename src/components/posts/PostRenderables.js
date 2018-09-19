@@ -475,8 +475,8 @@ export class ArtistInviteSubmissionHeader extends PureComponent {
         </div>
         <RelationshipContainer className="isInHeader" user={author} />
         <div className="ArtistInviteSubmissionHeaderInvite">
-          <Link className="PostHeaderLink" to="/artist-invites">
-            <span className="ArtistInviteSubmissionHeaderInviteName">Artist Invite Submission</span>
+          <Link className="PostHeaderLink" to="/invites">
+            <span className="ArtistInviteSubmissionHeaderInviteName">Invite Submission</span>
           </Link>
         </div>
         <div className="PostHeaderTools">

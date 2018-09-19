@@ -316,7 +316,7 @@ export const ArtistInviteGrid = ({
   status,
   title,
 }, { onClickArtistInviteDetail }) => (
-  <Link to={`/artist-invites/${slug}`} onClick={onClickArtistInviteDetail} className={gridContainerStyle}>
+  <Link to={`/invites/${slug}`} onClick={onClickArtistInviteDetail} className={gridContainerStyle}>
     <div className={imageContainerStyle}>
       <BackgroundImage className="hasOverlay3" dpi={dpi} sources={headerImage} />
       <ImageAsset className={logoImageStyle} src={logoImage.getIn(['optimized', 'url'])} />

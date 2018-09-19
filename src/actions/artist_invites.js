@@ -37,7 +37,7 @@ export const loadArtistInviteSubmissions = (path, key, slug, headerText) => (
         asList: ids => artistInviteSubmissionsAsList(ids, headerText),
         asGrid: (ids, colCount) => artistInviteSubmissionsAsGrid(ids, colCount, headerText),
       },
-      resultKey: `/artist-invites/${slug}/${key}`,
+      resultKey: `/invites/${slug}/${key}`,
     },
   }
 )
