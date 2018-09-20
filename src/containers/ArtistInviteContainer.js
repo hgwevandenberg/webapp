@@ -104,13 +104,10 @@ class ArtistInviteContainer extends PureComponent {
       hasSubmissions: false,
       hasLoaded: false,
     }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { artistInvite } = nextProps
-    const redirectURL = artistInvite.get('redirectURL')
-    if (redirectURL && redirectURL !== '') {
-      const win = window.open(redirectURL, '_blank')
+    const { artistInvite } = this.props
+    const redirectUrl = artistInvite.get('redirectUrl')
+    if (redirectUrl && redirectUrl !== '') {
+      const win = window.open(redirectUrl, '_blank')
       win.focus()
       const { dispatch } = this.props
       dispatch(replace({ pathname: '/invites' }))
