@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { replace } from 'react-router-redux'
 import { trackEvent } from '../actions/analytics'
 import { openOmnibar } from '../actions/omnibar'
 import {
@@ -102,6 +103,17 @@ class ArtistInviteContainer extends PureComponent {
     this.state = {
       hasSubmissions: false,
       hasLoaded: false,
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { artistInvite } = nextProps
+    const redirectURL = artistInvite.get('redirectURL')
+    if (redirectURL && redirectURL !== '') {
+      const win = window.open(redirectURL, '_blank')
+      win.focus()
+      const { dispatch } = this.props
+      dispatch(replace({ pathname: '/invites' }))
     }
   }
 
