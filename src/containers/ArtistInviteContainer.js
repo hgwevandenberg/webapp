@@ -23,6 +23,7 @@ import {
   selectLinks,
   selectLogoImage,
   selectOpenedAt,
+  selectRedirectUrl,
   selectShortDescription,
   selectSlug,
   selectStatus,
@@ -45,6 +46,7 @@ function mapStateToProps(state, props) {
     links: selectLinks(state, props),
     logoImage: selectLogoImage(state, props),
     openedAt: selectOpenedAt(state, props),
+    redirectUrl: selectRedirectUrl(state, props),
     shortDescription: selectShortDescription(state, props),
     slug: selectSlug(state, props),
     status: selectStatus(state, props),
@@ -72,12 +74,17 @@ class ArtistInviteContainer extends PureComponent {
     links: PropTypes.object.isRequired,
     logoImage: PropTypes.object.isRequired,
     openedAt: PropTypes.string.isRequired,
+    redirectUrl: PropTypes.string,
     shortDescription: PropTypes.string.isRequired,
     slug: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
     submissionBodyBlock: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     isCompletingOnboarding: PropTypes.bool.isRequired,
+  }
+
+  static defaultProps = {
+    redirectUrl: null,
   }
 
   static contextTypes = {
@@ -104,11 +111,12 @@ class ArtistInviteContainer extends PureComponent {
       hasSubmissions: false,
       hasLoaded: false,
     }
-    const { artistInvite } = this.props
-    const redirectUrl = artistInvite.get('redirectUrl')
+    const { redirectUrl, kind } = this.props
     if (redirectUrl && redirectUrl !== '') {
-      const win = window.open(redirectUrl, '_blank')
-      win.focus()
+      if (kind === 'detail') {
+        const win = window.open(redirectUrl, '_blank')
+        win.focus()
+      }
       const { dispatch } = this.props
       dispatch(replace({ pathname: '/invites' }))
     }
@@ -128,6 +136,15 @@ class ArtistInviteContainer extends PureComponent {
   onClickArtistInviteDetail = () => {
     const { dispatch, slug } = this.props
     dispatch(trackEvent('clicked_artist_invite_detail', { slug }))
+
+    const { redirectUrl } = this.props
+    if (redirectUrl && redirectUrl !== '') {
+      // console.log('=============== ArtistInviteContainer.js at line 138 ===============');
+      // const win = window.open(redirectUrl, '_blank')
+      // win.focus()
+      return false
+    }
+    return true
   }
 
   onClickScrollToContent = () => {
@@ -196,6 +213,7 @@ class ArtistInviteContainer extends PureComponent {
       links,
       logoImage,
       openedAt,
+      redirectUrl,
       shortDescription,
       slug,
       status,
@@ -234,6 +252,7 @@ class ArtistInviteContainer extends PureComponent {
             inviteType={inviteType}
             logoImage={logoImage}
             openedAt={openedAt}
+            redirectUrl={redirectUrl}
             shortDescription={shortDescription}
             slug={slug}
             status={status}

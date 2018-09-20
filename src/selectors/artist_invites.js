@@ -33,6 +33,7 @@ export const selectInviteType = createSelector([selectArtistInvite], ai => ai.ge
 export const selectLinks = createSelector([selectArtistInvite], ai => ai.get('links', Immutable.Map()))
 export const selectLogoImage = createSelector([selectArtistInvite], ai => ai.get('logoImage', Immutable.Map()))
 export const selectOpenedAt = createSelector([selectArtistInvite], ai => ai.get('openedAt'))
+export const selectRedirectUrl = createSelector([selectArtistInvite], ai => ai.get('redirectUrl'))
 export const selectShortDescription = createSelector([selectArtistInvite], ai => ai.get('shortDescription'))
 export const selectSlug = createSelector([selectArtistInvite], ai => ai.get('slug'))
 export const selectStatus = createSelector([selectArtistInvite], ai => ai.get('status'))
