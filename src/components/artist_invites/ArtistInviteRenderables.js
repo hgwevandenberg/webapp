@@ -349,7 +349,6 @@ export const ArtistInviteGrid = ({
 ArtistInviteGrid.defaultProps = {
   redirectUrl: null,
 }
-
 ArtistInviteGrid.propTypes = {
   closedAt: PropTypes.string.isRequired,
   dpi: PropTypes.string.isRequired,

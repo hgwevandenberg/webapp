@@ -136,15 +136,6 @@ class ArtistInviteContainer extends PureComponent {
   onClickArtistInviteDetail = () => {
     const { dispatch, slug } = this.props
     dispatch(trackEvent('clicked_artist_invite_detail', { slug }))
-
-    const { redirectUrl } = this.props
-    if (redirectUrl && redirectUrl !== '') {
-      // console.log('=============== ArtistInviteContainer.js at line 138 ===============');
-      // const win = window.open(redirectUrl, '_blank')
-      // win.focus()
-      return false
-    }
-    return true
   }
 
   onClickScrollToContent = () => {
