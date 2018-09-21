@@ -320,7 +320,12 @@ export const ArtistInviteGrid = ({
   const link = redirectUrl || `/invites/${slug}`
   const target = redirectUrl ? '_blank' : null
   return (
-    <Link to={link} target={target} className={gridContainerStyle} onClick={onClickArtistInviteDetail}>
+    <Link
+      to={link}
+      target={target}
+      className={gridContainerStyle}
+      onClick={onClickArtistInviteDetail}
+    >
       <div className={imageContainerStyle}>
         <BackgroundImage className="hasOverlay3" dpi={dpi} sources={headerImage} />
         <ImageAsset className={logoImageStyle} src={logoImage.getIn(['optimized', 'url'])} />
