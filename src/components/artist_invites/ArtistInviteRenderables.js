@@ -311,35 +311,49 @@ export const ArtistInviteGrid = ({
   inviteType,
   logoImage,
   openedAt,
+  redirectUrl,
   shortDescription,
   slug,
   status,
   title,
-}, { onClickArtistInviteDetail }) => (
-  <Link to={`/invites/${slug}`} onClick={onClickArtistInviteDetail} className={gridContainerStyle}>
-    <div className={imageContainerStyle}>
-      <BackgroundImage className="hasOverlay3" dpi={dpi} sources={headerImage} />
-      <ImageAsset className={logoImageStyle} src={logoImage.getIn(['optimized', 'url'])} />
-    </div>
-    <div className={contentContainerStyle}>
-      <h2 className={titleStyle}>{title}</h2>
-      <div className={detailsStyle}>
-        <p className={inviteTypeStyle}>{inviteType}</p>
-        {renderBulletStatus(status)}
-        <ArtistInviteCountDown
-          className={dateRangeStyle}
-          status={status}
-          openedAt={openedAt}
-          closedAt={closedAt}
+}, { onClickArtistInviteDetail }) => {
+  const link = redirectUrl || `/invites/${slug}`
+  const target = redirectUrl ? '_blank' : null
+  return (
+    <Link
+      to={link}
+      target={target}
+      className={gridContainerStyle}
+      onClick={onClickArtistInviteDetail}
+    >
+      <div className={imageContainerStyle}>
+        <BackgroundImage className="hasOverlay3" dpi={dpi} sources={headerImage} />
+        <ImageAsset className={logoImageStyle} src={logoImage.getIn(['optimized', 'url'])} />
+      </div>
+      <div className={contentContainerStyle}>
+        <h2 className={titleStyle}>{title}</h2>
+        <div className={detailsStyle}>
+          <p className={inviteTypeStyle}>{inviteType}</p>
+          {renderBulletStatus(status)}
+          <ArtistInviteCountDown
+            className={dateRangeStyle}
+            status={status}
+            openedAt={openedAt}
+            closedAt={closedAt}
+          />
+        </div>
+        <div
+          className={shortDescriptionStyle}
+          dangerouslySetInnerHTML={{ __html: shortDescription }}
         />
       </div>
-      <div
-        className={shortDescriptionStyle}
-        dangerouslySetInnerHTML={{ __html: shortDescription }}
-      />
-    </div>
-  </Link>
-)
+    </Link>
+  )
+}
+
+ArtistInviteGrid.defaultProps = {
+  redirectUrl: null,
+}
 ArtistInviteGrid.propTypes = {
   closedAt: PropTypes.string.isRequired,
   dpi: PropTypes.string.isRequired,
@@ -347,6 +361,7 @@ ArtistInviteGrid.propTypes = {
   inviteType: PropTypes.string.isRequired,
   logoImage: PropTypes.object.isRequired,
   openedAt: PropTypes.string.isRequired,
+  redirectUrl: PropTypes.string,
   shortDescription: PropTypes.string.isRequired,
   slug: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,

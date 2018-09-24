@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { replace } from 'react-router-redux'
 import { trackEvent } from '../actions/analytics'
 import { openOmnibar } from '../actions/omnibar'
 import {
@@ -22,6 +23,7 @@ import {
   selectLinks,
   selectLogoImage,
   selectOpenedAt,
+  selectRedirectUrl,
   selectShortDescription,
   selectSlug,
   selectStatus,
@@ -44,6 +46,7 @@ function mapStateToProps(state, props) {
     links: selectLinks(state, props),
     logoImage: selectLogoImage(state, props),
     openedAt: selectOpenedAt(state, props),
+    redirectUrl: selectRedirectUrl(state, props),
     shortDescription: selectShortDescription(state, props),
     slug: selectSlug(state, props),
     status: selectStatus(state, props),
@@ -71,12 +74,17 @@ class ArtistInviteContainer extends PureComponent {
     links: PropTypes.object.isRequired,
     logoImage: PropTypes.object.isRequired,
     openedAt: PropTypes.string.isRequired,
+    redirectUrl: PropTypes.string,
     shortDescription: PropTypes.string.isRequired,
     slug: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
     submissionBodyBlock: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     isCompletingOnboarding: PropTypes.bool.isRequired,
+  }
+
+  static defaultProps = {
+    redirectUrl: null,
   }
 
   static contextTypes = {
@@ -102,6 +110,15 @@ class ArtistInviteContainer extends PureComponent {
     this.state = {
       hasSubmissions: false,
       hasLoaded: false,
+    }
+    const { redirectUrl, kind } = this.props
+    if (redirectUrl && redirectUrl !== '') {
+      if (kind === 'detail') {
+        const win = window.open(redirectUrl, '_blank')
+        win.focus()
+      }
+      const { dispatch } = this.props
+      dispatch(replace({ pathname: '/invites' }))
     }
   }
 
@@ -187,6 +204,7 @@ class ArtistInviteContainer extends PureComponent {
       links,
       logoImage,
       openedAt,
+      redirectUrl,
       shortDescription,
       slug,
       status,
@@ -225,6 +243,7 @@ class ArtistInviteContainer extends PureComponent {
             inviteType={inviteType}
             logoImage={logoImage}
             openedAt={openedAt}
+            redirectUrl={redirectUrl}
             shortDescription={shortDescription}
             slug={slug}
             status={status}
