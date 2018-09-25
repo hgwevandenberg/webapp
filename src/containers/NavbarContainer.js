@@ -27,7 +27,7 @@ import {
 } from '../selectors/gui'
 import { selectAnnouncementHasBeenViewed } from '../selectors/notifications'
 import { selectPage } from '../selectors/pages'
-import { selectAvatar, selectUsername, selectIsBrand } from '../selectors/profile'
+import { selectAvatar, selectUsername, selectIsBrand, selectIsStaff } from '../selectors/profile'
 import { selectPathname, selectViewNameFromRoute } from '../selectors/routing'
 
 function mapStateToProps(state, props) {
@@ -53,16 +53,17 @@ function mapStateToProps(state, props) {
       areCategoriesSubscribed,
       deviceSize,
       hasLoadMoreButton,
+      isBrand: selectIsBrand(state),
       isGridMode,
-      isLightBoxActive,
       isLayoutToolHidden: selectIsLayoutToolHidden(state, props),
+      isLightBoxActive,
       isLoggedIn,
       isNotificationsActive: selectIsNotificationsActive(state),
       isNotificationsUnread: isUnread,
       isProfileMenuActive: selectIsProfileMenuActive(state),
+      isStaff: selectIsStaff(state),
       pathname,
       username: selectUsername(state),
-      isBrand: selectIsBrand(state),
       viewName,
       innerWidth,
     }
