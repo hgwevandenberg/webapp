@@ -637,16 +637,18 @@ export function CategoryInfo({
   innerWidth,
   name,
 }) {
+  const isCloseable = !category.get('brandAccountId')
   const categoryCurators = categoryUsers.filter(categoryUser => categoryUser.get('role') === 'CURATOR')
   const categoryModerators = categoryUsers.filter(categoryUser => categoryUser.get('role') === 'MODERATOR')
   const categoryId = category.get('id')
   const description = category.get('description')
   const showRules = false // hide this for now
 
-  if (collapsed) {
+  if (collapsed && isCloseable) {
     return (
       <p className={categoryInfoCollapsedStyle}>
         <CategoryInfoTriggerContainer
+          isCloseable={isCloseable}
           name={name}
         />
       </p>
@@ -655,6 +657,7 @@ export function CategoryInfo({
   return (
     <aside className={`sidebar ${categoryInfoExpandedStyle}`}>
       <CategoryInfoTriggerContainer
+        isCloseable={isCloseable}
         name={name}
       />
       <h2>
@@ -809,8 +812,9 @@ export function CategoryInfoTrigger({
   collapsed,
   handleTriggerClick,
   name,
+  isCloseable,
 }) {
-  if (collapsed) {
+  if (collapsed && isCloseable) {
     return (
       <button
         className="category-info open-trigger"
@@ -826,6 +830,7 @@ export function CategoryInfoTrigger({
       </button>
     )
   }
+
   return (
     <button
       className="category-info close-trigger"
@@ -835,9 +840,11 @@ export function CategoryInfoTrigger({
       <span className="label">
         Close
       </span>
-      <span className="icon">
-        <XIcon />
-      </span>
+      {isCloseable &&
+        <span className="icon">
+          <XIcon />
+        </span>
+      }
     </button>
   )
 }
@@ -845,4 +852,5 @@ CategoryInfoTrigger.propTypes = {
   collapsed: PropTypes.bool.isRequired,
   handleTriggerClick: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
+  isCloseable: PropTypes.bool.isRequired,
 }

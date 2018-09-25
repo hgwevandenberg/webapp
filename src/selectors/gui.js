@@ -10,6 +10,7 @@ import {
   selectLastDiscoverBeaconVersion as discoverBeaconVersion,
   selectLastFollowingBeaconVersion as followingBeaconVersion,
 } from './gui'
+import { selectCategoryForPath } from '../selectors/categories'
 import { DISCOVER, FOLLOWING } from '../constants/locales/en'
 
 // state.gui.xxx
@@ -91,15 +92,19 @@ export const selectContentWidth = createSelector(
 )
 
 export const selectIsCategoryDrawerOpen = createSelector(
-  [selectIsCategoryDrawerOpenBase, selectPathname], (isCategoryDrawerOpen, pathname) =>
-    isCategoryDrawerOpen &&
-    pathname.includes('/discover') &&
-    !(
-      pathname.includes('/discover/subscribed') ||
-      pathname === '/discover' ||
-      pathname === '/discover/trending/' ||
-      pathname === '/discover/recent' ||
-      pathname === '/discover/shop'
+  [selectIsCategoryDrawerOpenBase, selectPathname, selectCategoryForPath],
+  (isCategoryDrawerOpen, pathname, category) =>
+    category.get('brandAccountId') ||
+    (
+      isCategoryDrawerOpen &&
+      pathname.includes('/discover') &&
+      !(
+        pathname.includes('/discover/subscribed') ||
+        pathname === '/discover' ||
+        pathname === '/discover/trending/' ||
+        pathname === '/discover/recent' ||
+        pathname === '/discover/shop'
+      )
     ),
 )
 
