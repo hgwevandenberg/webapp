@@ -381,6 +381,7 @@ export const NavbarProfile = ({
   avatar,
   isBrand,
   isProfileMenuActive,
+  isStaff,
   onClickAvatar,
   onLogOut,
   username,
@@ -400,7 +401,7 @@ export const NavbarProfile = ({
               : null }
           <Link className={profileLinkStyle} to="/invitations">Invite</Link>
           <Link className={profileLinkStyle} to="/settings">Settings</Link>
-          {isBrand &&
+          {(isBrand || isStaff) &&
             <a className={profileLinkStyle} href="/manage">Analytics</a>
           }
           <hr className={dividerStyle} />
@@ -430,6 +431,7 @@ NavbarProfile.propTypes = {
   artistInvitesInProfileMenu: PropTypes.bool.isRequired,
   avatar: PropTypes.object,
   isBrand: PropTypes.bool.isRequired,
+  isStaff: PropTypes.bool.isRequired,
   isProfileMenuActive: PropTypes.bool.isRequired,
   onClickAvatar: PropTypes.func.isRequired,
   onLogOut: PropTypes.func.isRequired,

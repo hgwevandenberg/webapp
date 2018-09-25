@@ -234,6 +234,7 @@ export const NavbarLoggedIn = ({
   isNotificationsActive,
   isNotificationsUnread,
   isProfileMenuActive,
+  isStaff,
   notificationCategory,
   onClickAvatar,
   onClickLoadMorePosts,
@@ -321,6 +322,7 @@ export const NavbarLoggedIn = ({
               avatar={avatar}
               isBrand={isBrand}
               isProfileMenuActive={isProfileMenuActive}
+              isStaff={isStaff}
               onClickAvatar={onClickAvatar}
               onLogOut={onLogOut}
               username={username}
@@ -370,6 +372,7 @@ NavbarLoggedIn.propTypes = {
   isNotificationsActive: PropTypes.bool.isRequired,
   isNotificationsUnread: PropTypes.bool.isRequired,
   isProfileMenuActive: PropTypes.bool.isRequired,
+  isStaff: PropTypes.bool.isRequired,
   notificationCategory: PropTypes.string.isRequired,
   onClickAvatar: PropTypes.func.isRequired,
   onClickLoadMorePosts: PropTypes.func.isRequired,
