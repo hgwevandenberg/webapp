@@ -106,6 +106,24 @@ function reduceAssets(assets) {
     ), {})
 }
 
+function categoryUserLinks(categoryUser) {
+  const links = {}
+
+  const categoryId = deepGet(categoryUser, ['category', 'id'])
+  if (categoryId) { links.category = { type: 'categories', id: categoryId } }
+
+  const featuredById = deepGet(categoryUser, ['featuredBy', 'id'])
+  if (featuredById) { links.featuredBy = { type: 'users', id: featuredById } }
+
+  const curatorById = deepGet(categoryUser, ['curatorBy', 'id'])
+  if (curatorById) { links.curatorBy = { type: 'users', id: curatorById } }
+
+  const moderatorById = deepGet(categoryUser, ['moderatorBy', 'id'])
+  if (moderatorById) { links.moderatorBy = { type: 'users', id: moderatorById } }
+
+  return links
+}
+
 function parseCategoryUser(state, categoryUser) {
   if (!categoryUser) { return state }
   const state1 = parseUser(state, categoryUser.user)
@@ -119,6 +137,7 @@ function parseCategoryUser(state, categoryUser) {
     // De-normalize these if available to make access easier - infrequently updated.
     categorySlug: deepGet(categoryUser, ['category', 'slug']),
     categoryName: deepGet(categoryUser, ['category', 'name']),
+    links: categoryUserLinks(categoryUser),
   }))
 }
 
