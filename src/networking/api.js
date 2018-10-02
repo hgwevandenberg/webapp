@@ -404,6 +404,22 @@ export function searchUsers(params) {
     params: newParams,
   }
 }
+// Notifications
+export function notifications(params = {}) {
+  const newParams = { per_page: PER_PAGE, ...params }
+  if (newParams.category && newParams.category === 'all') {
+    delete newParams.category
+  }
+  return {
+    path: getAPIPath('notifications', newParams),
+    newParams,
+  }
+}
+export function newNotifications() {
+  return {
+    path: getAPIPath('notifications'),
+  }
+}
 // AVAILABILITY
 export function availability() {
   return {
