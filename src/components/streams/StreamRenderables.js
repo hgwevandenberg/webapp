@@ -67,7 +67,7 @@ export const editorials = (editorialIds) => {
     .map(pageIds => <EditorialLayout key={pageIds} ids={pageIds} />)
 }
 
-export const postsAsPostStream = (postIds, columnCount, isPostHeaderHidden, renderProps) => (
+export const postsAsPostStream = (postIds, renderProps) => (
   <SlickCarousel postIds={postIds} renderProps={renderProps} />
 )
 
