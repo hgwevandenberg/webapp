@@ -299,7 +299,9 @@ UserAddedAsFeaturedNotification.defaultProps = {
 
 export const UserAddedAsCuratorNotification = (props) => {
   const { createdAt, category, curatorBy } = props
-  const path = `/discover/${category.get('slug')}`
+  const categorySlug = category && category.get('slug')
+  const categoryName = (category && category.get('name')) || 'unknown category'
+  const path = `/discover/${categorySlug}`
 
   return (
     <Notification
@@ -310,9 +312,9 @@ export const UserAddedAsCuratorNotification = (props) => {
       <p>
         <UserTextLink user={curatorBy} />
         {' has invited you to help curate '}
-        <Link to={`/discover/${category.get('slug')}`}>
-          {category.get('name')}
-        </Link>
+        {categorySlug ? <Link to={`/discover/${categorySlug}`}>
+          {categoryName}
+        </Link> : categoryName}
         {'.'}
       </p>
     </Notification>

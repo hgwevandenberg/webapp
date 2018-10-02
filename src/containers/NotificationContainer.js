@@ -148,19 +148,19 @@ function mapStateToProps(state, ownProps) {
   let identifier
   if (subjectType === SUBJECT_TYPE.CATEGORY_USER) {
     switch (notification.get('kind')) {
-      case 'user_added_as_featured_notification':
+      case NOTIFICATION_KIND.USER_ADDED_AS_FEATURED:
         identifier = 'featuredBy'
         break;
-      case 'user_added_as_curator_notification':
+      case NOTIFICATION_KIND.USER_ADDED_AS_CURATOR:
         identifier = 'curatorBy'
         break;
-      case 'user_added_as_moderator_notification':
+      case NOTIFICATION_KIND.USER_ADDED_AS_MODERATOR:
         identifier = 'moderatorBy'
         break;
       default:
         break;
     }
-    postActionUser = getLinkObject(subject, identifier, json)
+    postActionUser = getLinkObject(subject, identifier, json) || getLinkObject(subject, 'user', json)
     postActionCategory = getLinkObject(subject, 'category', json)
   }
 
