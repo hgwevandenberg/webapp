@@ -1,4 +1,4 @@
-import { isFSA } from '../../support/test_helpers'
+import { isFSA, isFSAName } from '../../support/test_helpers'
 import { notificationList } from '../../../src/components/streams/StreamRenderables'
 import * as subject from '../../../src/actions/notifications'
 
@@ -10,8 +10,13 @@ describe('notifications actions', () => {
       expect(isFSA(action)).to.be.true
     })
 
+    it('has a top level action.type', () => {
+      expect(isFSAName(action, subject.loadNotifications)).to.be.true
+    })
+
     it('has the correct query in the action', () => {
-      expect(action.payload.query).to.contain('notificationStream')
+      const path = action.payload.endpoint.path
+      expect(path).to.contain('/notifications?per_page=25')
     })
 
     it('has the correct mapping type in the action', () => {
@@ -37,7 +42,8 @@ describe('notifications actions', () => {
     const action = subject.loadNotifications({ category: 'comments' })
 
     it('has the correct api endpoint in the action', () => {
-      expect(action.payload.variables.category).to.equal('COMMENTS')
+      const path = action.payload.endpoint.path
+      expect(path).to.contain('/notifications?per_page=25&category=comments')
     })
 
     it('has the correct resultKey in the action', () => {

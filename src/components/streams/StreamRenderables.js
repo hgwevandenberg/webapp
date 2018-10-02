@@ -501,13 +501,16 @@ export const usersAsInviteeGrid = invitationIds =>
     )}
   </div>)
 
+const generateNotificationId = (notification, i) =>
+  (`notificationParser_${notification.get('createdAt', Date.now())}_${i + 1}`)
+
 // NOTIFICATIONS
 export const notificationList = notifications =>
   (<div className="Notifications">
-    {notifications.map(id =>
+    {notifications.map((notification, i) =>
       (<NotificationContainer
-        key={`notificationParser_${id}`}
-        notificationId={id}
+        key={generateNotificationId(notification, i)}
+        notification={notification}
       />),
     )}
   </div>)
