@@ -1,6 +1,7 @@
-import { tshirtImageVersions, imageVersionProps } from './fragments'
+import { authorSummary, tshirtImageVersions, imageVersionProps } from './fragments'
 
 export default `
+  ${authorSummary}
   ${imageVersionProps}
   ${tshirtImageVersions}
   {
@@ -12,6 +13,7 @@ export default `
       order
       allowInOnboarding
       isCreatorType
+      brandAccount { ...authorSummary }
       tileImage { ...tshirtImageVersions }
     }
   }

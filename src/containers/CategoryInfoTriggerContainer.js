@@ -16,6 +16,7 @@ function mapStateToProps(state) {
 class CategoryInfoTriggerContainer extends PureComponent {
   static propTypes = {
     isCategoryDrawerOpen: PropTypes.bool.isRequired,
+    isCloseable: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
     name: PropTypes.string.isRequired,
   }
@@ -32,6 +33,7 @@ class CategoryInfoTriggerContainer extends PureComponent {
     const {
       isCategoryDrawerOpen,
       name,
+      isCloseable,
     } = this.props
 
     return (
@@ -39,6 +41,7 @@ class CategoryInfoTriggerContainer extends PureComponent {
         collapsed={!isCategoryDrawerOpen}
         handleTriggerClick={this.handleTriggerClick}
         name={name}
+        isCloseable={isCloseable}
       />
     )
   }

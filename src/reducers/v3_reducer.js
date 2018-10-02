@@ -149,7 +149,8 @@ function parseCategory(state, category) {
   const state1 = parseList(state, category.categoryUsers, parseCategoryUser, {
     categoryId: category.id,
   })
-  return smartMergeDeepIn(state1, ['categories', category.id], Immutable.fromJS({
+  const state2 = parseUser(state1, category.brandAccount)
+  return smartMergeDeepIn(state2, ['categories', category.id], Immutable.fromJS({
     id: category.id,
     slug: category.slug,
     name: category.name,
@@ -160,6 +161,7 @@ function parseCategory(state, category) {
     isCreatorType: category.isCreatorType,
     tileImage: category.tileImage,
     role: deepGet(category, ['currentUserState', 'role']),
+    brandAccountId: deepGet(category, ['brandAccount', 'id']),
   }))
 }
 

@@ -10,6 +10,7 @@ export default `
       name
       slug
       description
+      brandAccount { ...authorSummary }
 
       categoryUsers(roles: $roles) {
         id
