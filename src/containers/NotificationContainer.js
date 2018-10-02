@@ -160,7 +160,7 @@ function mapStateToProps(state, ownProps) {
       default:
         break;
     }
-    postActionUser = getLinkObject(subject, identifier, json)
+    postActionUser = getLinkObject(subject, identifier, json) || getLinkObject(subject, 'user', json)
     postActionCategory = getLinkObject(subject, 'category', json)
   }
 

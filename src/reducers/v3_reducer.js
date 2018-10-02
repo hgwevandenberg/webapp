@@ -112,6 +112,9 @@ function categoryUserLinks(categoryUser) {
   const categoryId = deepGet(categoryUser, ['category', 'id'])
   if (categoryId) { links.category = { type: 'categories', id: categoryId } }
 
+  const userId = deepGet(categoryUser, ['user', 'id'])
+  if (userId) { links.user = { type: 'users', id: userId } }
+
   const featuredById = deepGet(categoryUser, ['featuredBy', 'id'])
   if (featuredById) { links.featuredBy = { type: 'users', id: featuredById } }
 
