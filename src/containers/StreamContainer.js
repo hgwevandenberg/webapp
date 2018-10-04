@@ -256,7 +256,7 @@ class StreamContainer extends Component {
   }
 
   setScroll() {
-    const path = get(this.state, 'action.payload.endpoint.path')
+    const path = selectActionPath(this.state)
     if (!path) { return }
     if (/\/notifications/.test(path)) {
       const category = getQueryParamValue('category', path) || 'all'

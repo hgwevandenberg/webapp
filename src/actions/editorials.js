@@ -1,8 +1,5 @@
-import React from 'react'
 import { V3 } from '../constants/action_types'
-import { editorials as editorialRenderable, postsAsPostStream } from '../components/streams/StreamRenderables'
-import { ErrorStateEditorial } from '../components/errors/Errors'
-import { ZeroStateEditorial } from '../components/zeros/Zeros'
+import { editorials as editorialRenderable } from '../components/streams/StreamRenderables'
 import { editorialStreamQuery } from '../queries/editorialStreamQueries'
 import { findPostsQuery } from '../queries/findPosts'
 
@@ -22,28 +19,13 @@ export const loadEditorials = (isPreview, before) => (
   }
 )
 
-export const loadPostStream = ({ query: queryName, variables, resultKey, ...props }) => {
-  let query
-  switch (queryName) {
-    case 'findPosts':
-      query = findPostsQuery
-      break
-    default:
-      query = findPostsQuery
-  }
-  return {
+export const loadPostStream = ({ variables, resultKey, ...props }) =>
+  ({
     type: V3.POST.LOAD_MANY,
-    payload: { query, variables },
+    payload: { query: findPostsQuery, variables },
     meta: {
       renderProps: { ...props },
-      renderStream: {
-        asList: postsAsPostStream,
-        asGrid: postsAsPostStream,
-        asZero: <ZeroStateEditorial />,
-        asError: <ErrorStateEditorial />,
-      },
       resultKey,
     },
-  }
-}
+  })
 

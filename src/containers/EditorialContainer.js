@@ -20,7 +20,6 @@ import {
   selectEditorialKind,
   selectEditorialPath,
   selectEditorialPostId,
-  selectEditorialPostStreamQuery,
   selectEditorialPostStreamVariables,
   selectEditorialUrl,
 } from '../selectors/editorial'
@@ -42,7 +41,6 @@ const makeMapStateToProps = () => (
       post: selectPost(state, { postId }),
       postAuthor: selectPostAuthor(state, { postId }),
       postPath: selectPostDetailPath(state, { postId }),
-      postStreamQuery: selectEditorialPostStreamQuery(state, props),
       postStreamVariables: selectEditorialPostStreamVariables(state, props),
       sources: selectEditorialImageSource(state, props),
       url: selectEditorialUrl(state, props),

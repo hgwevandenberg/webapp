@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import { loadPostStream } from '../../actions/editorials'
 import InvitationFormContainer from '../../containers/InvitationFormContainer'
-import StreamContainer from '../../containers/StreamContainer'
+import EditorialStreamContainer from '../../containers/EditorialStreamContainer'
 import BackgroundImage from '../assets/BackgroundImage'
 import RegistrationRequestForm from '../forms/RegistrationRequestForm'
 import { ShareIcon } from '../assets/Icons'
@@ -118,21 +118,17 @@ const postStreamBaseStyle = css(
 
 export const PostStream = props => (
   <div className={postStreamBaseStyle}>
-    { props.postStreamQuery &&
-      <StreamContainer
-        className="inEditorial"
-        action={loadPostStream({
-          query: props.postStreamQuery,
-          variables: props.postStreamVariables,
-          editorialTrackOptions: props.trackOptions,
-          fallbackSources: props.sources,
-          onClickEditorial: props.onClickEditorial,
-          resultKey: `${props.editorialId}_${props.size}_${props.position}`,
-          title: props.editorial.get('title'),
-        })}
-        shouldInfiniteScroll={false}
-      />
-    }
+    <EditorialStreamContainer
+      action={loadPostStream({
+        variables: props.postStreamVariables,
+        editorialTrackOptions: props.trackOptions,
+        fallbackSources: props.sources,
+        onClickEditorial: props.onClickEditorial,
+        resultKey: `${props.editorialId}_${props.size}_${props.position}`,
+        title: props.editorial.get('title'),
+      })}
+      shouldInfiniteScroll={false}
+    />
   </div>
 )
 
@@ -142,7 +138,6 @@ PostStream.propTypes = {
   onClickEditorial: PropTypes.func.isRequired,
   sources: PropTypes.object.isRequired,
   position: PropTypes.number.isRequired,
-  postStreamQuery: PropTypes.string.isRequired,
   postStreamVariables: PropTypes.object.isRequired,
   trackOptions: PropTypes.object.isRequired,
   size: PropTypes.string.isRequired,
