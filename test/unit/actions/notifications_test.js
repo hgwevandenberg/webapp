@@ -58,8 +58,12 @@ describe('notifications actions', () => {
       expect(isFSA(action)).to.be.true
     })
 
-    it('has the correct query in the action', () => {
-      expect(action.payload.query).to.contain('newNotificationStreamContent')
+    it('has the correct api endpoint in the action', () => {
+      expect(action.payload.endpoint.path).to.contain('/notifications')
+    })
+
+    it('has the correct method type in the action', () => {
+      expect(action.payload.method).to.equal('HEAD')
     })
   })
 })
