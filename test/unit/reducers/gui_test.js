@@ -4,7 +4,9 @@ import {
   AUTHENTICATION,
   EDITOR,
   GUI,
-  V3,
+  HEAD_FAILURE,
+  HEAD_SUCCESS,
+  LOAD_STREAM_SUCCESS,
   PROFILE,
   SET_LAYOUT_MODE,
   ZEROS,
@@ -217,28 +219,37 @@ describe('gui reducer', () => {
     })
   })
 
-  context('V3.NOTIFICATIONS.NEW_CONTENT_SUCCESS', () => {
-    it('newContent false updates isNotificationsUnread', () => {
+  context('HEAD', () => {
+    it('HEAD_FAILURE updates isNotificationsUnread', () => {
       const testState = initialState.set('isNotificationsUnread', true)
       expect(testState).to.have.property('isNotificationsUnread', true)
-      const action = {
-        type: V3.NOTIFICATIONS.NEW_CONTENT_SUCCESS,
-        payload: {
-          response: { data: { newNotificationStreamContent: { newContent: false } } },
-        },
-      }
+      const action = { type: HEAD_FAILURE }
       expect(reducer(testState, action)).to.have.property('isNotificationsUnread', false)
     })
 
-    it('newContent true updates isNotificationsUnread', () => {
+    it('HEAD_SUCCESS updates isNotificationsUnread', () => {
       expect(initialState).to.have.property('isNotificationsUnread', false)
-      const action = {
-        type: V3.NOTIFICATIONS.NEW_CONTENT_SUCCESS,
-        payload: {
-          response: { data: { newNotificationStreamContent: { newContent: true } } },
-        },
-      }
+      const action = { type: HEAD_SUCCESS, payload: { serverStatus: 204 } }
       expect(reducer(initialState, action)).to.have.property('isNotificationsUnread', true)
+    })
+  })
+
+  context('LOAD_STREAM_SUCCESS', () => {
+    it('LOAD_STREAM_SUCCESS updates lastNotificationCheck', () => {
+      const action = { type: LOAD_STREAM_SUCCESS, meta: { resultKey: '/discover' } }
+      const nextState = reducer(initialState, action)
+      // faking a tick of the frame :)
+      const initialTime = new Date(initialState.get('lastNotificationCheck')).getTime() - 60
+      const nextTime = new Date(nextState.get('lastNotificationCheck')).getTime()
+      expect(initialTime).to.be.below(nextTime)
+    })
+
+    it('LOAD_STREAM_SUCCESS does not update red dot when stream is a notification', () => {
+      const action = { type: LOAD_STREAM_SUCCESS, meta: { resultKey: '/notifications' } }
+      const nextState = reducer(initialState, {}).set('isNotificationsUnread', true)
+      expect(nextState).to.have.property('isNotificationsUnread', true)
+      const finalState = reducer(nextState, action)
+      expect(finalState).to.have.property('isNotificationsUnread', false)
     })
   })
 

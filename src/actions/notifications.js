@@ -5,9 +5,6 @@ import * as api from '../networking/api'
 import * as StreamFilters from '../components/streams/StreamFilters'
 import * as StreamRenderables from '../components/streams/StreamRenderables'
 import { ZeroState } from '../components/zeros/Zeros'
-import {
-  newNotificationsQuery,
-} from '../queries/notificationsQueries'
 
 export function loadNotifications(params = {}) {
   const categoryResult = params.category && params.category !== 'all' ? `/${params.category}` : ''
@@ -30,10 +27,10 @@ export function loadNotifications(params = {}) {
 
 export function checkForNewNotifications() {
   return {
-    type: ACTION_TYPES.V3.NOTIFICATIONS.NEW_CONTENT,
+    type: ACTION_TYPES.HEAD,
     payload: {
-      query: newNotificationsQuery,
-      variables: {},
+      endpoint: api.newNotifications(),
+      method: 'HEAD',
     },
   }
 }

@@ -94,7 +94,7 @@ const containerStyle = css(
   s.block,
   s.maxSiteWidth,
   s.fullWidth,
-  { margin: '0 auto', height: 80 },
+  { margin: '0 auto' },
 )
 
 const mainStyle = css(

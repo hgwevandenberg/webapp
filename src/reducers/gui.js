@@ -7,6 +7,9 @@ import {
   AUTHENTICATION,
   EDITOR,
   GUI,
+  HEAD_FAILURE,
+  HEAD_SUCCESS,
+  LOAD_STREAM_SUCCESS,
   V3,
   PROFILE,
   SET_LAYOUT_MODE,
@@ -151,8 +154,17 @@ export default (state = initialState, action = { type: '' }) => {
         'isNotificationsUnread',
         payload.response.data.newNotificationStreamContent.newContent,
       )
-    case V3.LOAD_STREAM_SUCCESS:
-      if (action.meta && action.meta.resultKey && action.meta.resultKey.includes('/notifications')) {
+    case HEAD_FAILURE:
+      return state.set('isNotificationsUnread', false)
+    case HEAD_SUCCESS:
+      if (payload.serverStatus === 304) {
+        return state.set('isNotificationsUnread', false)
+      } else if (payload.serverStatus === 204) {
+        return state.set('isNotificationsUnread', true)
+      }
+      return state
+    case LOAD_STREAM_SUCCESS:
+      if (action.meta && /\/notifications/.test(action.meta.resultKey)) {
         return state.set('isNotificationsUnread', false)
           .set('lastNotificationCheck', new Date().toUTCString())
       }
