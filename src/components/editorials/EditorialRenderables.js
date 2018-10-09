@@ -208,18 +208,7 @@ export const LinkEditorial = (props, context) => (
         <span className={linkTextStyle}>{props.url}</span>
       </Link>
     }
-    {props.url && props.kind === 'external' &&
-      <a
-        className={linkStyle}
-        href={props.url}
-        onClick={props.onClickEditorial}
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        <span className={linkTextStyle}>{props.url}</span>
-      </a>
-    }
-    {props.url && props.kind === 'sponsored' &&
+    {props.url && (props.kind === 'external' || props.kind === 'sponsored') &&
       <a
         className={linkStyle}
         href={props.url}
@@ -240,17 +229,7 @@ export const LinkEditorial = (props, context) => (
           path={props.path}
         />
       </div>
-      {props.url && props.kind === 'external' &&
-        <div className={toolsStyle}>
-          <ToolButton
-            className={shareButtonStyle}
-            onClick={context.onClickShareExternal}
-          >
-            <ShareIcon />
-          </ToolButton>
-        </div>
-      }
-      {props.url && props.kind === 'sponsored' &&
+      {props.url && (props.kind === 'external' || props.kind === 'sponsored') &&
         <div className={toolsStyle}>
           <ToolButton
             className={shareButtonStyle}
