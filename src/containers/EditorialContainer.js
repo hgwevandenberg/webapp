@@ -145,6 +145,7 @@ class EditorialContainer extends Component {
     }
     switch (this.props.kind) {
       case 'external':
+      case 'sponsored':
       case 'internal':
         return <LinkEditorial {...props} />
       case 'invite':
