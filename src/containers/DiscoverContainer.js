@@ -19,6 +19,7 @@ import {
 export function getStreamAction(stream, kind, before) {
   switch (stream) {
     case 'global':
+    case 'changes':
       return loadGlobalPostStream(kind, before)
     case 'subscribed':
       return loadSubscribedPostStream(kind, before)
