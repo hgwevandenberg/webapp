@@ -255,7 +255,6 @@
     width: 110px;
   }
 
-  .no-touch .NavbarLink[href^="/find"]:hover,
   .no-touch .NavbarLink[href^="/search"]:hover {
     width: 72px;
   }
