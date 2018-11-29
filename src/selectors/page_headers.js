@@ -15,11 +15,11 @@ export const selectPageHeaderKind = createSelector([selectPathname], (pathname) 
     return null
   } else if (pathname === '/discover') {
     return 'GENERIC'
-  } else if (/\/discover\/(subscribed|featured|trending|recent|shop).*/i.test(pathname)) {
+  } else if (/^\/discover\/(subscribed|featured|trending|recent|shop).*/i.test(pathname)) {
     return 'GENERIC'
-  } else if (/\/discover\/.*/i.test(pathname)) {
+  } else if (/^\/discover\/.*/i.test(pathname)) {
     return 'CATEGORY'
-  } else if (/\/(enter|join|forgot-password|auth\/reset-my-password).*/i.test(pathname)) {
+  } else if (pathname === '/enter' || pathname === '/join' || pathname === '/forgot-password' || pathname === '/auth/reset-my-password') {
     return 'AUTHENTICATION'
   }
   return null
