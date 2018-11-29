@@ -5,11 +5,11 @@ import { selectParamsUsername } from './params'
 const POST_DETAIL_EXPRESSION = /^\/[\w-]+\/post\/.+/
 
 const AUTHENTICATION_ROUTES = [
-  /^\/enter\b/,
-  /^\/forgot-password\b/,
-  /^\/auth\/reset-my-password\b/,
-  /^\/join\b/,
-  /^\/signup\b/,
+  /^\/enter(\/|$)/,
+  /^\/forgot-password(\/|$)/,
+  /^\/auth\/reset-my-password(\/|$)/,
+  /^\/join(\/|$)/,
+  /^\/signup(\/|$)/,
 ]
 
 // props.routing.xxx
