@@ -43,7 +43,7 @@ class DeleteAccountDialog extends PureComponent {
     this.interval = setInterval(() => {
       this.counter -= 1
       this.counterEl.innerHTML = this.counter
-      if (this.counter === 0) {
+      if (this.counter <= 0) {
         this.onClickNotKidding()
       }
     }, 1000)
