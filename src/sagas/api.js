@@ -14,11 +14,14 @@ import {
 } from '../selectors/authentication'
 
 export function getHeaders(accessToken) {
-  return {
+  const headers = {
     Accept: 'application/json',
-    Authorization: `Bearer ${accessToken}`,
     'Content-Type': 'application/json',
   }
+  if (accessToken) {
+    headers.Authorization = `Bearer ${accessToken}`
+  }
+  return headers
 }
 
 export function getHeadHeader(accessToken, lastCheck) {
