@@ -1,7 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import { browserHistory } from 'react-router'
 import { isElloAndroid } from '../../lib/jello'
+import { trackEvent } from '../../actions/analytics'
+import { shouldShowBlog } from '../../helpers/ab_helper'
 import {
   BoltIcon,
   CircleIcon,
@@ -118,6 +121,7 @@ export const NavbarLoggedOut = ({
   categoryTabs,
   areCategoriesSubscribed,
   deviceSize,
+  dispatch,
   isLightBoxActive,
   hasLoadMoreButton,
   onClickLoadMorePosts,
@@ -125,6 +129,10 @@ export const NavbarLoggedOut = ({
   pathname,
 }, { onClickArtistInvites, onClickLogin, onClickSignup }) => {
   const isTruncatedHeader = deviceSize === 'mobile' || deviceSize === 'tablet'
+  const elloBlogPath = '/elloblog'
+  const trackBlogLink = ((e) => {
+    dispatch(trackEvent('elloblog-nav-link-clicked'))
+  })
   return (
     <nav className={`Navbar ${navbarStyle}`} >
       <div className={`navbar-content ${wrapperStyle}`}>
@@ -155,6 +163,14 @@ export const NavbarLoggedOut = ({
                 pathname={pathname}
                 to="/discover"
               />
+              {innerWidth > 700 && shouldShowBlog()
+                  ? <NavbarLink
+                    className="LabelOnly"
+                    label="Blog"
+                    pathname={pathname}
+                    to={elloBlogPath}
+                    onClick={trackBlogLink}
+                  /> : null }
               <NavbarLink
                 className="LabelOnly"
                 label="Giveaways"
@@ -203,6 +219,7 @@ NavbarLoggedOut.propTypes = {
   categoryTabs: PropTypes.array,
   areCategoriesSubscribed: PropTypes.bool,
   deviceSize: PropTypes.string.isRequired,
+  dispatch: PropTypes.func.isRequired,
   isLightBoxActive: PropTypes.bool,
   hasLoadMoreButton: PropTypes.bool.isRequired,
   onClickLoadMorePosts: PropTypes.func.isRequired,
@@ -226,6 +243,7 @@ export const NavbarLoggedIn = ({
   categoryTabs,
   areCategoriesSubscribed,
   deviceSize,
+  dispatch,
   hasLoadMoreButton,
   isBrand,
   isGridMode,
@@ -252,6 +270,10 @@ export const NavbarLoggedIn = ({
   innerWidth,
 }, { onClickArtistInvites }) => {
   const isTruncatedHeader = deviceSize === 'mobile' || deviceSize === 'tablet'
+  const elloBlogPath = '/elloblog'
+  const trackBlogLink = ((e) => {
+    dispatch(trackEvent('elloblog-nav-link-clicked'))
+  })
   return (
     <nav className={`Navbar ${navbarStyle}`}>
       <div className={`navbar-content ${wrapperStyle}`}>
@@ -277,6 +299,14 @@ export const NavbarLoggedIn = ({
                   to="/invites"
                 />
               }
+              {innerWidth > 700 && shouldShowBlog()
+                  ? <NavbarLink
+                    className="LabelOnly"
+                    label="Blog"
+                    pathname={pathname}
+                    to={elloBlogPath}
+                    onClick={trackBlogLink}
+                  /> : null }
               <NavbarLink
                 className="LabelOnly"
                 icon={<SparklesIcon />}
@@ -364,6 +394,7 @@ NavbarLoggedIn.propTypes = {
   categoryTabs: PropTypes.array,
   areCategoriesSubscribed: PropTypes.bool,
   deviceSize: PropTypes.string.isRequired,
+  dispatch: PropTypes.func.isRequired,
   hasLoadMoreButton: PropTypes.bool.isRequired,
   isBrand: PropTypes.bool.isRequired,
   isGridMode: PropTypes.bool,
