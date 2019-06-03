@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import Avatar from '../assets/Avatar'
 import {
   ArrowIcon,
-  ElloLogoType,
+  ElloPrideLogoType,
   PencilIcon,
   XIconLG,
 } from '../assets/Icons'
@@ -192,7 +192,7 @@ export const NavbarMark = ({ onClick }) => (
     onClick={onClick}
     to="/"
   >
-    <ElloLogoType />
+    <ElloPrideLogoType />
   </Link>
 )
 
