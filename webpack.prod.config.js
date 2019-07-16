@@ -32,6 +32,9 @@ module.exports = env => ({
     path: path.join(__dirname, 'public/static'),
     publicPath: `${(process.env.CDN || '')}/`,
   },
+  optimization: {
+    minimize: true
+  },
   plugins: [
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.DefinePlugin({ 'process.env': { NODE_ENV: "'production'" } }),
@@ -44,12 +47,12 @@ module.exports = env => ({
       inject: 'body',
     }),
     new webpack.optimize.ModuleConcatenationPlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        screw_ie8: true,
-      },
-      sourceMap: true,
-    }),
+    // new webpack.optimize.minimize({
+    //   compress: {
+    //     screw_ie8: true,
+    //   },
+    //   sourceMap: true,
+    // }),
     new S3Plugin({
       s3Options: {
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
