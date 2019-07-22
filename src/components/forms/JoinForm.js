@@ -12,6 +12,7 @@ import {
   getPasswordState,
 } from './Validators'
 import { checkAvailability, signUpUser } from '../../actions/profile'
+import { nonce } from '../../actions/authentication'
 import { FORM_CONTROL_STATUS as STATUS } from '../../constants/status_types'
 import { signupPath } from '../../networking/api'
 import * as ENV from '../../../env'
@@ -41,11 +42,13 @@ class JoinForm extends PureComponent {
     email: PropTypes.string,
     inEditorial: PropTypes.bool.isRequired,
     invitationCode: PropTypes.string,
+    nonce: PropTypes.string,
   }
 
   static defaultProps = {
     availability: null,
     invitationCode: null,
+    nonce: null,
   }
 
   componentWillMount() {
@@ -67,6 +70,8 @@ class JoinForm extends PureComponent {
   componentDidMount() {
     // fixes a weird bug with iOS when the keyboard is open
     scrollToPosition(0, 0)
+    const { dispatch } = this.props
+    dispatch(nonce())
   }
 
   componentWillReceiveProps(nextProps) {

@@ -50,6 +50,11 @@ export default (state = initialState, action) => {
         expirationDate: new Date((auth.createdAt + auth.expiresIn) * 1000),
         isLoggedIn: true,
       })
+    case AUTHENTICATION.NONCE_SUCCESS:
+      auth = action.payload.response
+      return state.merge({
+        nonce: auth.nonce,
+      })
     case LOCATION_CHANGE:
       if (window.nonImmutableState && window.nonImmutableState.authentication) {
         state = Immutable.fromJS(JSON.parse(window.nonImmutableState.authentication))

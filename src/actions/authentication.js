@@ -84,6 +84,17 @@ export function sendResetPasswordRequest(password, resetPasswordToken) {
   }
 }
 
+export function nonce() {
+  return {
+    type: AUTHENTICATION.NONCE,
+    meta: {},
+    payload: {
+      method: 'GET',
+      endpoint: api.noncePath(),
+    },
+    }
+}
+
 export function signIn(email, password) {
   return {
     type: AUTHENTICATION.SIGN_IN,
