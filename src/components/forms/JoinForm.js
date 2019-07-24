@@ -12,12 +12,13 @@ import {
   getPasswordState,
 } from './Validators'
 import { checkAvailability, signUpUser } from '../../actions/profile'
-import { nonce } from '../../actions/authentication'
+import { fetchNonce } from '../../actions/authentication'
 import { FORM_CONTROL_STATUS as STATUS } from '../../constants/status_types'
 import { signupPath } from '../../networking/api'
 import * as ENV from '../../../env'
 import { scrollToPosition } from '../../lib/jello'
 import { selectAvailability } from '../../selectors/profile'
+import { selectNonce } from '../../selectors/authentication'
 
 function renderStatus(state) {
   return () => {
@@ -31,11 +32,11 @@ function renderStatus(state) {
 function mapStateToProps(state) {
   return {
     availability: selectAvailability(state),
+    nonce: selectNonce(state),
   }
 }
 
 class JoinForm extends PureComponent {
-
   static propTypes = {
     availability: PropTypes.object,
     dispatch: PropTypes.func.isRequired,
@@ -71,7 +72,7 @@ class JoinForm extends PureComponent {
     // fixes a weird bug with iOS when the keyboard is open
     scrollToPosition(0, 0)
     const { dispatch } = this.props
-    dispatch(nonce())
+    dispatch(fetchNonce())
   }
 
   componentWillReceiveProps(nextProps) {
@@ -118,9 +119,9 @@ class JoinForm extends PureComponent {
 
   onSubmit = (e) => {
     e.preventDefault()
-    const { email, dispatch, invitationCode } = this.props
+    const { email, dispatch, invitationCode, nonce } = this.props
     dispatch(
-      signUpUser(email, this.usernameValue, this.passwordValue, invitationCode),
+      signUpUser(email, this.usernameValue, this.passwordValue, nonce, invitationCode),
     )
   }
 

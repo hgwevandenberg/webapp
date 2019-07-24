@@ -55,7 +55,7 @@ export function loadProfile() {
     payload: { endpoint: api.profilePath() },
   }
 }
-export function signUpUser(email, username, password, invitationCode) {
+export function signUpUser(email, username, password, nonce, invitationCode) {
   return {
     type: PROFILE.SIGNUP,
     meta: {
@@ -68,6 +68,7 @@ export function signUpUser(email, username, password, invitationCode) {
         email,
         username,
         password,
+        nonce,
         invitation_code: invitationCode,
       },
     },

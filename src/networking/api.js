@@ -101,6 +101,12 @@ export function signupPath() {
   }
 }
 
+export function noncePath() {
+  return {
+    path: `${basePath()}/v2/nonce`,
+  }
+}
+
 export function authenticationPromo() {
   return {
     path: `${ENV.PROMO_HOST}/authentication.json`,
