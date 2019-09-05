@@ -9,6 +9,7 @@ import * as s from '../../styles/jso'
 const editorialWrapperStyle = css(
   s.relative,
   s.fullHeight,
+  select('& .slick-slide > div', s.fullHeight),
   select('& .slick-slider, & .slick-list, & .slick-track', s.fullHeight),
 )
 const editorialNavStyle = css(
@@ -26,7 +27,7 @@ const itemBaseStyle = css(
   s.px20,
   s.py20,
   s.bgcTransparent,
-  media(s.minBreak2, s.px40, s.py40),
+  media(s.minBreak2, s.p0),
 )
 
 export class SlickCarousel extends PureComponent {
