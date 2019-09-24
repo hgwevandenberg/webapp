@@ -102,8 +102,8 @@ function parseAsset(state, asset) {
 
 function reduceAssets(assets) {
   return (assets || []).reduce((byId, asset) => (
-      { ...byId, [asset.id]: asset }
-    ), {})
+    { ...byId, [asset.id]: asset }
+  ), {})
 }
 
 function categoryUserLinks(categoryUser) {
@@ -254,7 +254,7 @@ function parseUser(state, user) {
     // Extended properties
     coverImage: user.coverImage,
     badges: user.badges,
-    externalLinksLink: user.externalLinksLink,
+    externalLinksList: user.externalLinksList,
     formattedShortBio: user.formattedShortBio,
     location: user.location,
     metaAttributes: user.metaAttributes,
