@@ -4,7 +4,6 @@ import classNames from 'classnames'
 import { browserHistory } from 'react-router'
 import { isElloAndroid } from '../../lib/jello'
 import { trackEvent } from '../../actions/analytics'
-import { shouldShowBlog } from '../../helpers/ab_helper'
 import {
   BoltIcon,
   CircleIcon,
@@ -163,7 +162,7 @@ export const NavbarLoggedOut = ({
                 pathname={pathname}
                 to="/discover"
               />
-              {innerWidth > 700 && shouldShowBlog()
+              {innerWidth > 700
                   ? <NavbarLink
                     className="LabelOnly"
                     label="Blog"
@@ -299,7 +298,7 @@ export const NavbarLoggedIn = ({
                   to="/invites"
                 />
               }
-              {innerWidth > 700 && shouldShowBlog()
+              {innerWidth > 700
                   ? <NavbarLink
                     className="LabelOnly"
                     label="Blog"

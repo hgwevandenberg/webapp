@@ -6,16 +6,3 @@ export function getABState() {
     return {}
   }
 }
-
-
-export function shouldShowBlog() {
-  const abState = getABState()
-  if (abState.shouldShowBlog !== true && abState.shouldShowBlog !== false) {
-    abState.shouldShowBlog = Math.random() > 0.8
-    try {
-      localStorage.setItem('abState', JSON.stringify(abState))
-    } catch (error) {
-    }
-  }
-  return abState.shouldShowBlog
-}
