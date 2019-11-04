@@ -155,13 +155,6 @@ export const NavbarLoggedOut = ({
                 pathname={pathname}
                 to="/invites"
               />
-              <NavbarLink
-                className="LabelOnly"
-                icon={<SparklesIcon />}
-                label="Discover"
-                pathname={pathname}
-                to="/discover"
-              />
               {innerWidth > 700
                   ? <NavbarLink
                     className="LabelOnly"
@@ -170,6 +163,13 @@ export const NavbarLoggedOut = ({
                     to={elloBlogPath}
                     onClick={trackBlogLink}
                   /> : null }
+              <NavbarLink
+                className="LabelOnly"
+                icon={<SparklesIcon />}
+                label="Discover"
+                pathname={pathname}
+                to="/discover"
+              />
               <NavbarLink
                 className="LabelOnly"
                 label="Giveaways"
