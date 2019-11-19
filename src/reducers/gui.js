@@ -172,17 +172,6 @@ export default (state = initialState, action = { type: '' }) => {
     case LOCATION_CHANGE: {
       location = payload
       const pathname = location.pathname
-      if (window.nonImmutableState && window.nonImmutableState.gui) {
-        state = convertStateToImmutable(JSON.parse(window.nonImmutableState.gui))
-        delete window.nonImmutableState.gui
-        return state
-      }
-      if (HOME_STREAMS_WHITELIST.some(re => re.test(pathname))) {
-        return state.withMutations((s) => {
-          s.set('isGridMode', getIsGridMode(state))
-           .set('isNavbarHidden', false)
-        })
-      }
       return state.withMutations((s) => {
         s.set('isGridMode', getIsGridMode(state))
           .set('isNavbarHidden', false)
@@ -194,12 +183,6 @@ export default (state = initialState, action = { type: '' }) => {
         .set('innerHeight', state.get('innerHeight'))
     }
     case REHYDRATE:
-      // TODO: remove this since Immutable has been around for quite some time now
-      if (window.nonImmutableState && window.nonImmutableState.gui) {
-        state = convertStateToImmutable(JSON.parse(window.nonImmutableState.gui))
-        delete window.nonImmutableState.gui
-        return state
-      }
       return state.withMutations((s) => {
         s.merge(payload.gui || {})
           .merge(initialNonPersistedState)

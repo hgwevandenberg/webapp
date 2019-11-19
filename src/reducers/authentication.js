@@ -57,13 +57,6 @@ export default (state = initialState, action) => {
       return state.merge({
         nonce: auth.nonces.nonce,
       })
-    case LOCATION_CHANGE:
-      if (window.nonImmutableState && window.nonImmutableState.authentication) {
-        state = Immutable.fromJS(JSON.parse(window.nonImmutableState.authentication))
-        delete window.nonImmutableState.authentication
-        return state
-      }
-      return state
     case UPDATE_STATE_FROM_NATIVE: {
       if (!action.payload.authentication.isEmpty()) {
         return action.payload.authentication
@@ -72,10 +65,6 @@ export default (state = initialState, action) => {
     }
     case REHYDRATE:
       auth = action.payload.authentication
-      if (window.nonImmutableState && window.nonImmutableState.authentication) {
-        auth = Immutable.fromJS(JSON.parse(window.nonImmutableState.authentication))
-        delete window.nonImmutableState.authentication
-      }
       if (auth) {
         return auth.set(
           'expirationDate', new Date((auth.get('createdAt') + auth.get('expiresIn')) * 1000),
