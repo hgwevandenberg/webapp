@@ -120,8 +120,10 @@ class JoinForm extends PureComponent {
   onSubmit = (e) => {
     e.preventDefault()
     const { email, dispatch, invitationCode, nonce } = this.props
+    const recaptchaToken = window.recaptchaToken
     dispatch(
-      signUpUser(email, this.usernameValue, this.passwordValue, nonce, invitationCode),
+      signUpUser(email, this.usernameValue, this.passwordValue,
+        nonce, recaptchaToken, invitationCode),
     )
   }
 
