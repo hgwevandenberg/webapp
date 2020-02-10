@@ -207,8 +207,9 @@ class RegistrationRequestForm extends Component {
         <h2>
           Be part of what&apos;s next in art, design, fashion, web culture & more.
         </h2>
-        <h2 style="color: red;">
-          We have been having issues delivering to all Yahoo accounts, we recommend using a different email provider if at all possible.  Contact
+        <h2 style={{ color: 'red' }}>
+          We have been having issues delivering to all Yahoo accounts, we
+          recommend using a different email provider if at all possible.
         </h2>
         <form
           action={invite().path}
