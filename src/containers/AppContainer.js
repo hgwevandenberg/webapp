@@ -28,6 +28,7 @@ import MetaContainer from '../containers/MetaContainer'
 import ModalContainer from '../containers/ModalContainer'
 import NavbarContainer from '../containers/NavbarContainer'
 import OmnibarContainer from '../containers/OmnibarContainer'
+import SurveyBanner from '../containers/SurveyBanner'
 import ViewportContainer from '../containers/ViewportContainer'
 import { scrollToPosition, isLink } from '../lib/jello'
 import * as ElloAndroidInterface from '../lib/android_interface'
@@ -258,7 +259,7 @@ class AppContainer extends Component {
         <HeroDispatchContainer params={params} />
         {children}
         <NavbarContainer params={params} />
-        {shouldShowSurveyBanner ? 'test!' : null}
+        {shouldShowSurveyBanner ? <SurveyBanner /> : null}
         {!isAuthenticationView && <FooterContainer params={params} />}
         {isLoggedIn ? <InputContainer /> : null}
         <ModalContainer />
