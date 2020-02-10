@@ -40,6 +40,7 @@ export const selectTextToolsCoordinates = state => state.gui.get('textToolsCoord
 export const selectTextToolsStates = state => state.gui.get('textToolsStates')
 export const selectOnboardToArtistInvite = state => state.gui.get('onboardToArtistInvite')
 export const selectIsCompletingOnboardingWithArtistInvite = state => state.gui.get('isCompletingOnboardToArtistInvite')
+export const selectHideSurveyBannerExpiration = state => state.gui.get('hideSurveyBannerExpiration')
 
 // Memoized selectors
 export const selectActiveNotificationScrollPosition = createSelector(
@@ -165,5 +166,32 @@ export const selectBroadcast = createSelector(
       return lastFollowingBeaconVersion !== FOLLOWING.BEACON_VERSION ? FOLLOWING.BEACON_TEXT : null
     }
     return null
+  },
+)
+
+export const selectShouldShowSurveyBanner = createSelector(
+  [selectIsLoggedIn, selectHideSurveyBannerExpiration],
+  (isLoggedIn, hideSurveyBannerExpiration) => {
+    if (window.location.search === '?show-popups=true') {
+      return true
+    }
+
+    if (!isLoggedIn) {
+      return false
+    }
+
+    if (new Date() < new Date('2020-02-11T00:00:00')) {
+      return false
+    }
+
+    if (new Date() > new Date('2020-02-25T00:00:00')) {
+      return false
+    }
+
+    if (hideSurveyBannerExpiration && (hideSurveyBannerExpiration === 'never' || hideSurveyBannerExpiration > new Date())) {
+      return false
+    }
+
+    return true
   },
 )

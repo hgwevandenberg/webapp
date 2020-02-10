@@ -32,7 +32,7 @@ import ViewportContainer from '../containers/ViewportContainer'
 import { scrollToPosition, isLink } from '../lib/jello'
 import * as ElloAndroidInterface from '../lib/android_interface'
 import { selectIsLoggedIn } from '../selectors/authentication'
-import { selectIsGridMode } from '../selectors/gui'
+import { selectIsGridMode, selectShouldShowSurveyBanner } from '../selectors/gui'
 import { selectIsStaff, selectShowCreatorTypeModal } from '../selectors/profile'
 import { selectIsAuthenticationView } from '../selectors/routing'
 import { selectRandomAuthPageHeader } from '../selectors/page_headers'
@@ -43,6 +43,7 @@ function mapStateToProps(state) {
   return {
     authPromo,
     authPromoUser: authPromo ? selectUser(state, { userId: authPromo.get('userId') }) : Map(),
+    shouldShowSurveyBanner: selectShouldShowSurveyBanner(state),
     isAuthenticationView: selectIsAuthenticationView(state),
     isLoggedIn: selectIsLoggedIn(state),
     isStaff: selectIsStaff(state),
@@ -52,11 +53,11 @@ function mapStateToProps(state) {
 }
 
 class AppContainer extends Component {
-
   static propTypes = {
     authPromo: PropTypes.object,
     authPromoUser: PropTypes.object,
     children: PropTypes.node.isRequired,
+    shouldShowSurveyBanner: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
     isAuthenticationView: PropTypes.bool.isRequired,
     isGridMode: PropTypes.bool.isRequired,
@@ -241,7 +242,9 @@ class AppContainer extends Component {
   }
 
   render() {
-    const { children, isAuthenticationView, isLoggedIn, params } = this.props
+    const { children, isAuthenticationView, isLoggedIn, params, shouldShowSurveyBanner } = this.props
+    console.log('=============== AppContainer.js at line 246 ===============');
+    console.log({ shouldShowSurveyBanner })
     const appClasses = classNames(
       'AppContainer',
       { isLoggedIn },
@@ -255,6 +258,7 @@ class AppContainer extends Component {
         <HeroDispatchContainer params={params} />
         {children}
         <NavbarContainer params={params} />
+        {shouldShowSurveyBanner ? 'test!' : null}
         {!isAuthenticationView && <FooterContainer params={params} />}
         {isLoggedIn ? <InputContainer /> : null}
         <ModalContainer />
@@ -267,4 +271,3 @@ class AppContainer extends Component {
 }
 
 export default connect(mapStateToProps)(AppContainer)
-

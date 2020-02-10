@@ -1,4 +1,5 @@
 import { GUI } from '../constants/action_types'
+import moment from 'moment'
 
 export function setIsCategoryDrawerOpen({ isOpen }) {
   return {
@@ -109,3 +110,17 @@ export function toggleNotifications({ isActive }) {
   }
 }
 
+export function neverShowSurveyBanner() {
+  return {
+    type: GUI.HIDE_SURVEY_BANNER_EXPIRATION,
+    payload: { expires: 'never' },
+  }
+}
+
+export function dontShowSurveyBannerToday() {
+  const expires = moment().add(1, 'days').toDate()
+  return {
+    type: GUI.HIDE_SURVEY_BANNER_EXPIRATION,
+    payload: { expires },
+  }
+}

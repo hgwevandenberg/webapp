@@ -6,7 +6,6 @@ import BackgroundImage from '../../components/assets/BackgroundImage'
 import { DismissButton } from '../../components/buttons/Buttons'
 
 class RegistrationRequestDialog extends PureComponent {
-
   static propTypes = {
     pageHeader: PropTypes.object.isRequired,
     user: PropTypes.object.isRequired,
