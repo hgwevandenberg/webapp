@@ -1,5 +1,5 @@
-import { GUI } from '../constants/action_types'
 import moment from 'moment'
+import { GUI } from '../constants/action_types'
 
 export function setIsCategoryDrawerOpen({ isOpen }) {
   return {

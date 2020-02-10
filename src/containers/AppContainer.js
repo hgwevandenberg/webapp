@@ -133,7 +133,7 @@ class AppContainer extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return ['isAuthenticationView', 'isLoggedIn', 'params', 'children'].some(prop =>
+    return ['isAuthenticationView', 'isLoggedIn', 'params', 'children', 'shouldShowSurveyBanner'].some(prop =>
       nextProps[prop] !== this.props[prop],
     )
   }
@@ -243,9 +243,10 @@ class AppContainer extends Component {
   }
 
   render() {
-    const { children, isAuthenticationView, isLoggedIn, params, shouldShowSurveyBanner } = this.props
-    console.log('=============== AppContainer.js at line 246 ===============');
-    console.log({ shouldShowSurveyBanner })
+    const {
+      children, isAuthenticationView, isLoggedIn, params,
+      shouldShowSurveyBanner,
+    } = this.props
     const appClasses = classNames(
       'AppContainer',
       { isLoggedIn },

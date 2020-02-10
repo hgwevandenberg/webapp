@@ -11,6 +11,9 @@ export const media = (query, ...styles) =>
 export const parent = (selector, ...styles) =>
   css({ [`${selector} &`]: styles })
 
+export const descendent = (selector, ...styles) =>
+  css({ [`& ${selector.split(',').join(',& ')}`]: styles })
+
 export const modifier = (selector, ...styles) =>
   css({ [`&${selector}`]: styles })
 
