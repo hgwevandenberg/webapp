@@ -39,7 +39,7 @@ class SurveyBanner extends PureComponent {
 
   render() {
     const { isMobile } = this.props
-    return (<div className={isMobile ? 'mobile' : 'desktop'}>
+    return (<div className={isMobile ? 'SurveyBanner' : 'SurveyBanner'}>
       <button><Link to="https://tlnt.formstack.com/forms/survey" target="_blank" onClick={this.onClickOK} >OK</Link></button>
       <button onClick={this.onClickNotNow} >Not right Now</button>
       <button onClick={this.onClickNotAgain} >Don’t show this again</button>
