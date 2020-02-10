@@ -23,8 +23,6 @@ class SurveyBanner extends PureComponent {
   onClickOK = () => {
     const { dispatch } = this.props
     dispatch(neverShowSurveyBanner())
-
-    return false
   }
 
   onClickNotNow = () => {
@@ -40,7 +38,7 @@ class SurveyBanner extends PureComponent {
   render() {
     const { isMobile } = this.props
     return (<div className={isMobile ? 'SurveyBanner' : 'SurveyBanner'}>
-      <button><Link to="https://tlnt.formstack.com/forms/survey" target="_blank" onClick={this.onClickOK} >OK</Link></button>
+      <button><Link to="https://tlnt.at/2UInPAq" target="_blank" >OK</Link></button>
       <button onClick={this.onClickNotNow} >Not right Now</button>
       <button onClick={this.onClickNotAgain} >Don’t show this again</button>
     </div>)

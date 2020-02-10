@@ -253,13 +253,13 @@ class AppContainer extends Component {
     )
     return (
       <section className={appClasses}>
+        {shouldShowSurveyBanner ? <SurveyBanner /> : null}
         <MetaContainer params={params} />
         <ViewportContainer params={params} />
         {isLoggedIn ? <OmnibarContainer /> : null}
         <HeroDispatchContainer params={params} />
         {children}
         <NavbarContainer params={params} />
-        {shouldShowSurveyBanner ? <SurveyBanner /> : null}
         {!isAuthenticationView && <FooterContainer params={params} />}
         {isLoggedIn ? <InputContainer /> : null}
         <ModalContainer />
