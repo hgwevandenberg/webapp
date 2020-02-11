@@ -115,7 +115,7 @@ class SurveyBanner extends PureComponent {
           Can you take 3 minutes to answer a quick survey about your experience on Ello?
         </p>
         <p>
-          You will be opted in to a drawing for a $50 gift certificate.
+          You will be opted in to a drawing for a <strong>$50 amazon gift card</strong>.
         </p>
         <div className="actions">
           <Link className="button" target="_blank" href="https://tlnt.at/2UInPAq" onClick={this.onClickOK}>OK</Link>
