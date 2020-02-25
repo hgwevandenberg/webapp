@@ -184,7 +184,7 @@ export const selectShouldShowSurveyBanner = createSelector(
       return false
     }
 
-    if (new Date() > new Date('2020-02-25T00:00:00')) {
+    if (new Date() > new Date('2020-02-26T00:00:00')) {
       return false
     }
 
