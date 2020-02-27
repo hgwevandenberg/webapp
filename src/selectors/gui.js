@@ -169,29 +169,4 @@ export const selectBroadcast = createSelector(
   },
 )
 
-export const selectShouldShowSurveyBanner = createSelector(
-  [selectIsLoggedIn, selectHideSurveyBannerExpiration],
-  (isLoggedIn, hideSurveyBannerExpiration) => {
-    if (window.location.search === '?show-popups=true') {
-      return true
-    }
-
-    if (!isLoggedIn) {
-      return false
-    }
-
-    if (new Date() < new Date('2020-02-11T00:00:00')) {
-      return false
-    }
-
-    if (new Date() > new Date('2020-02-26T00:00:00')) {
-      return false
-    }
-
-    if (hideSurveyBannerExpiration && (hideSurveyBannerExpiration === 'never' || hideSurveyBannerExpiration > new Date())) {
-      return false
-    }
-
-    return true
-  },
-)
+export const selectShouldShowSurveyBanner = () => false
