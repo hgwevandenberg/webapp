@@ -116,7 +116,7 @@ const linkStyle = css(
 
 const highlightingRules = {
   '/following': /^\/following/,
-  '/invites': /(^\/invites$)|^\/invites(?:\/.*\.?.*)/,
+  '/creative-briefs': /(^\/creative-briefs$)|^\/creative-briefs(?:\/.*\.?.*)/,
   '/discover/subscribed': /^\/discover/,
 }
 
@@ -394,7 +394,7 @@ export const NavbarProfile = ({
         <nav className={classNames(`${profileLinksStyle}`, { isActive: isProfileMenuActive })} >
           <Link className={profileLinkStyle} to={`/${username}`}>{`@${username}`}</Link>
           { artistInvitesInProfileMenu &&
-            <Link className={profileLinkStyle} onClick={onClickArtistInvites} to="/invites">Creative Briefs</Link>
+            <Link className={profileLinkStyle} onClick={onClickArtistInvites} to="/creative-briefs">Creative Briefs</Link>
           }
           <Link className={profileLinkStyle} to={`/${username}/loves`}>Loves</Link>
           { innerWidth < 500 ? <Link className={profileLinkStyle} to="/elloartgiveaways">Giveaways</Link>

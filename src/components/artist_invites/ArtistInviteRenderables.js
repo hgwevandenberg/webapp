@@ -317,7 +317,7 @@ export const ArtistInviteGrid = ({
   status,
   title,
 }, { onClickArtistInviteDetail }) => {
-  const link = redirectUrl || `/invites/${slug}`
+  const link = redirectUrl || `/creative-briefs/${slug}`
   const target = redirectUrl ? '_blank' : null
   return (
     <Link

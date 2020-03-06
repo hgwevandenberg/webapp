@@ -101,7 +101,7 @@ class OnboardingSettingsContainer extends PureComponent {
         type: GUI.COMPLETE_ONBOARD_TO_ARTIST_INVITE,
         payload: {},
       })
-      dispatch(push(`/invites/${onboardToArtistInvite.get('slug')}`))
+      dispatch(push(`/creative-briefs/${onboardToArtistInvite.get('slug')}`))
     } else {
       dispatch(push('/following'))
     }

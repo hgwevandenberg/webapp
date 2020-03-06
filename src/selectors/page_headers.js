@@ -9,7 +9,7 @@ const allPageHeadersAsArray = createSelector([allPageHeaders],
 export const selectPageHeaderKind = createSelector([selectPathname], (pathname) => {
   if (pathname === '/') {
     return 'EDITORIAL'
-  } else if (pathname === '/invites') {
+  } else if (pathname === '/creative-briefs') {
     return 'ARTIST_INVITE'
   } else if (pathname === '/discover/all') {
     return null

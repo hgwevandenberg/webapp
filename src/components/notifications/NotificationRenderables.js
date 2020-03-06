@@ -68,7 +68,7 @@ PostTextLink.defaultProps = {
 const ArtistInviteTextLink = ({ title, slug }) => {
   if (!title || !slug) { return null }
   return (
-    <Link to={`/invites/${slug}`}>
+    <Link to={`/creative-briefs/${slug}`}>
       {title}
     </Link>
   )
@@ -199,7 +199,7 @@ AnnouncementNotification.contextTypes = {
 // Artist Invite Submission
 export const ApprovedAristInviteSubmissionNotification = (props) => {
   const { createdAt, subject } = props
-  const activityPath = `/invites/${subject.get('inviteSlug')}`
+  const activityPath = `/creative-briefs/${subject.get('inviteSlug')}`
   const body = (<p key={`ai-sub-${subject.get('inviteSlug')}`}>
     Your submission to the {subject.get('inviteTitle')} Invite has been accepted
     <Emoji name="v" title="Yay!" />

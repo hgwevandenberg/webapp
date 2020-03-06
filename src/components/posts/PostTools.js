@@ -375,7 +375,7 @@ export class ArtistInviteSubmissionStatusTool extends PureComponent {
       const hint = `Accepted Submission to ${title}`
       resp = (
         <span className="PostTool ArtistInviteSubmissionStatusTool">
-          <Link to={`/invites/${slug}`}>
+          <Link to={`/creative-briefs/${slug}`}>
             <ArtistInviteSubmissionApprovedIcon />
             <Hint>{hint}</Hint>
           </Link>
@@ -386,7 +386,7 @@ export class ArtistInviteSubmissionStatusTool extends PureComponent {
       const hint = `Selected Submission to ${title}`
       resp = (
         <span className="PostTool ArtistInviteSubmissionStatusTool">
-          <Link to={`/invites/${slug}`}>
+          <Link to={`/creative-briefs/${slug}`}>
             <ArtistInviteSubmissionSelectedIcon />
             <Hint>{hint}</Hint>
           </Link>

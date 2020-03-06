@@ -153,7 +153,7 @@ export const NavbarLoggedOut = ({
                 label="Creative Briefs"
                 onClick={onClickArtistInvites}
                 pathname={pathname}
-                to="/invites"
+                to="/creative-briefs"
               />
               {innerWidth > 700
                   ? <NavbarLink
@@ -295,7 +295,7 @@ export const NavbarLoggedIn = ({
                   label="Creative Briefs"
                   onClick={onClickArtistInvites}
                   pathname={pathname}
-                  to="/invites"
+                  to="/creative-briefs"
                 />
               }
               {innerWidth > 700

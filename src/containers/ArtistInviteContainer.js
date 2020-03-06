@@ -118,7 +118,7 @@ class ArtistInviteContainer extends PureComponent {
         win.focus()
       }
       const { dispatch } = this.props
-      dispatch(replace({ pathname: '/invites' }))
+      dispatch(replace({ pathname: '/creative-briefs' }))
     }
   }
 
