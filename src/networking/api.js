@@ -17,7 +17,7 @@ function getAPIPath(relPath, queryParams = {}) {
   }
   return path
 }
-// Artist Invites
+// Creative Briefs
 export function artistInvites(isPreview) {
   const query = {
     per_page: ARTIST_INVITES_PER_PAGE,

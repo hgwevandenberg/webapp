@@ -394,7 +394,7 @@ export const NavbarProfile = ({
         <nav className={classNames(`${profileLinksStyle}`, { isActive: isProfileMenuActive })} >
           <Link className={profileLinkStyle} to={`/${username}`}>{`@${username}`}</Link>
           { artistInvitesInProfileMenu &&
-            <Link className={profileLinkStyle} onClick={onClickArtistInvites} to="/invites">Invites</Link>
+            <Link className={profileLinkStyle} onClick={onClickArtistInvites} to="/invites">Creative Briefs</Link>
           }
           <Link className={profileLinkStyle} to={`/${username}/loves`}>Loves</Link>
           { innerWidth < 500 ? <Link className={profileLinkStyle} to="/elloartgiveaways">Giveaways</Link>
