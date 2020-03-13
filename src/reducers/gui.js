@@ -144,8 +144,8 @@ export default (state = initialState, action = { type: '' }) => {
     case GUI.RESET_ONBOARD_TO_ARTIST_INVITE:
       return state.set('onboardToArtistInvite', null)
         .set('isCompletingOnboardToArtistInvite', false)
-    case GUI.HIDE_SURVEY_BANNER_EXPIRATION:
-      return state.set('hideSurveyBannerExpiration', payload.expires)
+    case GUI.ACCEPT_DATA_POLICY:
+      return state.set('acceptedDataPolicy', payload.now)
     case V3.NOTIFICATIONS.NEW_CONTENT_SUCCESS:
       return state.set(
         'isNotificationsUnread',

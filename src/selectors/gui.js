@@ -40,7 +40,7 @@ export const selectTextToolsCoordinates = state => state.gui.get('textToolsCoord
 export const selectTextToolsStates = state => state.gui.get('textToolsStates')
 export const selectOnboardToArtistInvite = state => state.gui.get('onboardToArtistInvite')
 export const selectIsCompletingOnboardingWithArtistInvite = state => state.gui.get('isCompletingOnboardToArtistInvite')
-export const selectHideSurveyBannerExpiration = state => state.gui.get('hideSurveyBannerExpiration')
+export const selectAcceptedDataPolicy = state => state.gui.get('acceptedDataPolicy')
 
 // Memoized selectors
 export const selectActiveNotificationScrollPosition = createSelector(
@@ -169,4 +169,9 @@ export const selectBroadcast = createSelector(
   },
 )
 
-export const selectShouldShowSurveyBanner = () => false
+export const selectShouldShowDataPolicy = createSelector(
+  [selectAcceptedDataPolicy],
+  (acceptedDataPolicy) => {
+    return !acceptedDataPolicy
+  },
+)

@@ -110,17 +110,10 @@ export function toggleNotifications({ isActive }) {
   }
 }
 
-export function neverShowSurveyBanner() {
+export function acceptDataPolicy() {
+  const now = moment().toDate()
   return {
-    type: GUI.HIDE_SURVEY_BANNER_EXPIRATION,
-    payload: { expires: 'never' },
-  }
-}
-
-export function dontShowSurveyBannerToday() {
-  const expires = moment().add(1, 'days').toDate()
-  return {
-    type: GUI.HIDE_SURVEY_BANNER_EXPIRATION,
-    payload: { expires },
+    type: GUI.ACCEPT_DATA_POLICY,
+    payload: { now: now },
   }
 }

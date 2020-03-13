@@ -28,12 +28,12 @@ import MetaContainer from '../containers/MetaContainer'
 import ModalContainer from '../containers/ModalContainer'
 import NavbarContainer from '../containers/NavbarContainer'
 import OmnibarContainer from '../containers/OmnibarContainer'
-import SurveyBanner from '../containers/SurveyBanner'
+import DataPolicy from '../containers/DataPolicy'
 import ViewportContainer from '../containers/ViewportContainer'
 import { scrollToPosition, isLink } from '../lib/jello'
 import * as ElloAndroidInterface from '../lib/android_interface'
 import { selectIsLoggedIn } from '../selectors/authentication'
-import { selectIsGridMode, selectShouldShowSurveyBanner } from '../selectors/gui'
+import { selectIsGridMode, selectShouldShowDataPolicy } from '../selectors/gui'
 import { selectIsStaff, selectShowCreatorTypeModal } from '../selectors/profile'
 import { selectIsAuthenticationView } from '../selectors/routing'
 import { selectRandomAuthPageHeader } from '../selectors/page_headers'
@@ -44,7 +44,7 @@ function mapStateToProps(state) {
   return {
     authPromo,
     authPromoUser: authPromo ? selectUser(state, { userId: authPromo.get('userId') }) : Map(),
-    shouldShowSurveyBanner: selectShouldShowSurveyBanner(state),
+    shouldShowDataPolicy: selectShouldShowDataPolicy(state),
     isAuthenticationView: selectIsAuthenticationView(state),
     isLoggedIn: selectIsLoggedIn(state),
     isStaff: selectIsStaff(state),
@@ -58,7 +58,7 @@ class AppContainer extends Component {
     authPromo: PropTypes.object,
     authPromoUser: PropTypes.object,
     children: PropTypes.node.isRequired,
-    shouldShowSurveyBanner: PropTypes.bool.isRequired,
+    shouldShowDataPolicy: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
     isAuthenticationView: PropTypes.bool.isRequired,
     isGridMode: PropTypes.bool.isRequired,
@@ -133,7 +133,7 @@ class AppContainer extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return ['isAuthenticationView', 'isLoggedIn', 'params', 'children', 'shouldShowSurveyBanner'].some(prop =>
+    return ['isAuthenticationView', 'isLoggedIn', 'params', 'children', 'shouldShowDataPolicy'].some(prop =>
       nextProps[prop] !== this.props[prop],
     )
   }
@@ -245,7 +245,7 @@ class AppContainer extends Component {
   render() {
     const {
       children, isAuthenticationView, isLoggedIn, params,
-      shouldShowSurveyBanner,
+      shouldShowDataPolicy,
     } = this.props
     const appClasses = classNames(
       'AppContainer',
@@ -260,7 +260,7 @@ class AppContainer extends Component {
         <HeroDispatchContainer params={params} />
         {children}
         <NavbarContainer params={params} />
-        {shouldShowSurveyBanner ? <SurveyBanner /> : null}
+        {shouldShowDataPolicy ? <DataPolicy /> : null}
         {!isAuthenticationView && <FooterContainer params={params} />}
         {isLoggedIn ? <InputContainer /> : null}
         <ModalContainer />

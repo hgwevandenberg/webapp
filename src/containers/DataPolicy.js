@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
-import { neverShowSurveyBanner, dontShowSurveyBannerToday } from '../actions/gui'
+import { acceptDataPolicy } from '../actions/gui'
 import { css, select, media, descendent } from '../styles/jss'
 
 export function mapStateToProps(_) {
@@ -10,7 +10,7 @@ export function mapStateToProps(_) {
   }
 }
 
-const surveyBannerStyle = css(
+const dataPolicyStyle = css(
   {
     position: 'fixed',
     top: '50%',
@@ -35,7 +35,7 @@ const surveyBannerStyle = css(
     textAlign: 'center',
     marginTop: '2rem',
   }),
-  descendent('a.button', {
+  descendent('button.main', {
     width: '100%',
     marginBottom: '1rem',
     height: '3.75rem',
@@ -52,7 +52,7 @@ const surveyBannerStyle = css(
     borderImage: 'initial',
     transition: 'background-color 0.2s cubic-bezier(0.23, 1, 0.32, 1) 0s, border-color 0.2s cubic-bezier(0.23, 1, 0.32, 1) 0s, color 0.2s cubic-bezier(0.23, 1, 0.32, 1) 0s, width 0.2s cubic-bezier(0.23, 1, 0.32, 1) 0s',
   }),
-  descendent('a.button:hover, a.button:focus, a.button:active', {
+  descendent('button.main:hover, button.main:focus, button.main:active', {
     color: 'rgb(255, 255, 255)',
     backgroundColor: 'rgb(0, 177, 0)',
     borderColor: 'rgb(0, 177, 0)',
@@ -82,7 +82,7 @@ const surveyBannerStyle = css(
   }),
 )
 
-class SurveyBanner extends PureComponent {
+class DataPolicy extends PureComponent {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
   }
@@ -90,40 +90,25 @@ class SurveyBanner extends PureComponent {
   static defaultProps = {
   }
 
-  onClickOK = () => {
+  onClickAccept = () => {
     const { dispatch } = this.props
-    dispatch(neverShowSurveyBanner())
-  }
-
-  onClickNotNow = () => {
-    const { dispatch } = this.props
-    dispatch(dontShowSurveyBannerToday())
-  }
-
-  onClickNotAgain = () => {
-    const { dispatch } = this.props
-    dispatch(neverShowSurveyBanner())
+    dispatch(acceptDataPolicy())
   }
 
   render() {
     return (
-      <div className={surveyBannerStyle}>
+      <div className={dataPolicyStyle}>
         <h2>
-          Take our survey!
+          Ello Data Policy
         </h2>
         <p>
-          Can you take 3 minutes to answer a quick survey about your experience on Ello?
-        </p>
-        <p>
-          You will be opted in to a drawing for a <strong>$50 amazon gift card</strong>.
+          Our website uses cookies and Web Storage necessary for the site to function, and give you the very best experience. To learn more about our cookies, how we use them and their benefits, read our <a href="/wtf/policies/data-policy">Data Policy</a>.
         </p>
         <div className="actions">
-          <Link className="button" target="_blank" href="https://tlnt.at/2UInPAq" onClick={this.onClickOK}>OK</Link>
-          <button onClick={this.onClickNotNow}>Not right now</button>
-          <button onClick={this.onClickNotAgain}>Don&rsquo;t show this again</button>
+          <button className="main" onClick={this.onClickAccept}>Accept</button>
         </div>
       </div>)
   }
 }
 
-export default connect(mapStateToProps)(SurveyBanner)
+export default connect(mapStateToProps)(DataPolicy)
