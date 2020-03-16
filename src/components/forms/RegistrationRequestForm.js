@@ -24,7 +24,7 @@ import { isAndroid } from '../../lib/jello'
 import { invite } from '../../networking/api'
 import { selectParamsInvitationCode } from '../../selectors/params'
 import { selectAvailability, selectEmail } from '../../selectors/profile'
-import { css, media, parent } from '../../styles/jss'
+import { css, media, parent, descendent } from '../../styles/jss'
 import * as s from '../../styles/jso'
 
 function mapStateToProps(state, props) {
@@ -35,7 +35,17 @@ function mapStateToProps(state, props) {
   }
 }
 
-const emailFormWrapperStyle = css(s.relative, s.zIndex1)
+const emailFormWrapperStyle = css(
+    s.relative,
+    s.zIndex1,
+    descendent('a:link, a:visited, a:hover, a:focus, a:active', {
+        textDecoration: 'underline',
+    }),
+    descendent('input[type="checkbox"]', {
+      '-moz-appearance': 'checkbox',
+      '-webkit-appearance': 'checkbox',
+    })
+    )
 const accountLinkStyle = css(
   { marginTop: 15 },
   s.fontSize14,
@@ -69,6 +79,7 @@ class RegistrationRequestForm extends Component {
       emailState: { status: STATUS.INDETERMINATE, message: '' },
       formStatus: STATUS.INDETERMINATE,
       invitationCodeState: { status: STATUS.INDETERMINATE, message: '' },
+      isTermsChecked: false
     }
     this.emailValue = ''
     this.checkServerForAvailability = debounce(this.checkServerForAvailability, 666)
@@ -123,6 +134,11 @@ class RegistrationRequestForm extends Component {
     }
   }
 
+  onChangeTermsControl = () => {
+    const { isTermsChecked } = this.state
+    this.setState({ isTermsChecked: !isTermsChecked })
+  }
+
   onClickLogin = () => {
     const { dispatch } = this.props
     dispatch(trackEvent('clicked_signup_login'))
@@ -130,10 +146,12 @@ class RegistrationRequestForm extends Component {
 
   onSubmit = (e) => {
     e.preventDefault()
-    const { emailState } = this.state
-    if (emailState.status === STATUS.SUCCESS) {
+    const { emailState, isTermsChecked } = this.state
+    if (isTermsChecked && emailState.status === STATUS.SUCCESS) {
       this.setState({ emailState: { status: STATUS.REQUEST, message: 'checking...' } })
       this.checkServerForAvailability({ email: this.emailValue, is_signup: true })
+    } else if (!isTermsChecked) {
+      this.setState({ formStatus: STATUS.FAILURE })
     }
   }
 
@@ -194,11 +212,15 @@ class RegistrationRequestForm extends Component {
 
   renderEmailForm() {
     const { inEditorial } = this.props
-    const { emailState } = this.state
-    const { message, status } = emailState
+    const { emailState, formStatus, isTermsChecked } = this.state
+    const { emailMessage, status } = emailState
     const isValid = isFormValid([emailState])
-    const showMessage = (message && message.length) &&
+    const showEmailMessage = (emailMessage && emailMessage.length) &&
       (status === STATUS.FAILURE || status === STATUS.SUCCESS)
+    const termsMessage = formStatus == STATUS.FAILURE && !isTermsChecked
+      ? 'You must first accept the Terms and Privacy Policy' : null
+    const showTermMessage = termsMessage && termsMessage.length
+    const termsCheckboxId = "termsCheckbox"
     return (
       <div className={emailFormWrapperStyle}>
         <h1>
@@ -207,7 +229,7 @@ class RegistrationRequestForm extends Component {
         <h2>
           Be part of what&apos;s next in art, design, fashion, web culture & more.
         </h2>
-        <h2 style={{ color: 'red' }}>
+        <h2>
           We have been having issues delivering to all Yahoo accounts, we
           recommend using a different email provider if at all possible.
         </h2>
@@ -227,8 +249,17 @@ class RegistrationRequestForm extends Component {
             onFocus={isAndroid() ? () => document.body.classList.add('isCreditsHidden') : null}
             tabIndex="1"
           />
-          {showMessage &&
-            <p className="HoppyStatusMessage hasContent">{message}</p>
+          <input
+            checked={isTermsChecked}
+            id={termsCheckboxId}
+            onChange={this.onChangeTermsControl}
+            type="checkbox"
+          /><label htmlFor={termsCheckboxId}>I have read and accept Ello’s <Link to="/wtf/policies/terms/" target="_blank">Terms</Link> and <Link to="/wtf/policies/privacy/" target="_blank">Privacy Policy</Link></label>
+          {showEmailMessage &&
+            <p className="HoppyStatusMessage hasContent">{emailMessage}</p>
+          }
+          {showTermMessage &&
+            <p className="HoppyStatusMessage hasContent">{termsMessage}</p>
           }
           <FormButton className="FormButton isRounded isGreen" disabled={!isValid} tabIndex="2">
             Create account
