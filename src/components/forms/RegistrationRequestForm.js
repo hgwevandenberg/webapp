@@ -41,6 +41,9 @@ const emailFormWrapperStyle = css(
     descendent('a:link, a:visited, a:hover, a:focus, a:active', {
         textDecoration: 'underline',
     }),
+    descendent('label[for]', {
+      paddingLeft: 5,
+    }),
     descendent('input[type="checkbox"]', {
       '-moz-appearance': 'checkbox',
       '-webkit-appearance': 'checkbox',
