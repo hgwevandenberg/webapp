@@ -97,15 +97,10 @@ export function webappToken() {
 
 export function signupPath() {
   return {
-    path: `${basePath()}/v2/signup`,
+    path: getAPIPath('signup'),
   }
 }
 
-export function noncePath() {
-  return {
-    path: `${basePath()}/v2/nonce`,
-  }
-}
 
 export function authenticationPromo() {
   return {

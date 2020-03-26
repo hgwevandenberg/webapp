@@ -32,7 +32,7 @@ describe('profile actions', () => {
 
   context('#signUpUser', () => {
     const action = subject.signUpUser('vader@ello.co', 'vader', '12345678',
-      'nonce', 'recaptcha', 'i-am-your-father')
+      'recaptcha', 'i-am-your-father')
 
     it('is an FSA compliant action', () => {
       expect(isFSA(action)).to.be.true

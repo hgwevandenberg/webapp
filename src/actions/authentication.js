@@ -2,7 +2,6 @@ import { AUTHENTICATION } from '../constants/action_types'
 import {
   loginToken,
   logout as logoutEndpoint,
-  noncePath,
   forgotPassword,
   resetPassword,
   refreshAuthToken,
@@ -81,16 +80,6 @@ export function sendResetPasswordRequest(password, resetPasswordToken) {
         password,
         reset_password_token: resetPasswordToken,
       },
-    },
-  }
-}
-
-export function fetchNonce() {
-  return {
-    type: AUTHENTICATION.NONCE,
-    payload: {
-      endpoint: noncePath(),
-      method: 'GET',
     },
   }
 }

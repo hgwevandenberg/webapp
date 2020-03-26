@@ -12,13 +12,11 @@ import {
   getPasswordState,
 } from './Validators'
 import { checkAvailability, signUpUser } from '../../actions/profile'
-import { fetchNonce } from '../../actions/authentication'
 import { FORM_CONTROL_STATUS as STATUS } from '../../constants/status_types'
 import { signupPath } from '../../networking/api'
 import * as ENV from '../../../env'
 import { scrollToPosition } from '../../lib/jello'
 import { selectAvailability } from '../../selectors/profile'
-import { selectNonce } from '../../selectors/authentication'
 
 function renderStatus(state) {
   return () => {
@@ -32,7 +30,6 @@ function renderStatus(state) {
 function mapStateToProps(state) {
   return {
     availability: selectAvailability(state),
-    nonce: selectNonce(state),
   }
 }
 
@@ -43,13 +40,11 @@ class JoinForm extends PureComponent {
     email: PropTypes.string,
     inEditorial: PropTypes.bool.isRequired,
     invitationCode: PropTypes.string,
-    nonce: PropTypes.string,
   }
 
   static defaultProps = {
     availability: null,
     invitationCode: null,
-    nonce: null,
   }
 
   componentWillMount() {
@@ -71,8 +66,6 @@ class JoinForm extends PureComponent {
   componentDidMount() {
     // fixes a weird bug with iOS when the keyboard is open
     scrollToPosition(0, 0)
-    const { dispatch } = this.props
-    dispatch(fetchNonce())
   }
 
   componentWillReceiveProps(nextProps) {
@@ -119,11 +112,11 @@ class JoinForm extends PureComponent {
 
   onSubmit = (e) => {
     e.preventDefault()
-    const { email, dispatch, invitationCode, nonce } = this.props
+    const { email, dispatch, invitationCode } = this.props
     const recaptchaToken = window.recaptchaToken
     dispatch(
       signUpUser(email, this.usernameValue, this.passwordValue,
-        nonce, recaptchaToken, invitationCode),
+        recaptchaToken, invitationCode),
     )
   }
 
@@ -158,6 +151,7 @@ class JoinForm extends PureComponent {
       this.setState({ showUsernameError: true })
     }
   }
+
   render() {
     const { passwordState, showPasswordError, showUsernameError, usernameState } = this.state
     const isValid = isFormValid([usernameState, passwordState])

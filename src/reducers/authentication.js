@@ -14,7 +14,6 @@ export const initialState = Immutable.Map({
   expirationDate: null,
   expiresIn: null,
   isLoggedIn: false,
-  nonce: null,
   refreshToken: null,
   tokenType: null,
   publicToken: Immutable.Map({
@@ -50,13 +49,6 @@ export default (state = initialState, action) => {
         ...auth,
         expirationDate: new Date((auth.createdAt + auth.expiresIn) * 1000),
         isLoggedIn: true,
-        nonce: null,
-      })
-    case AUTHENTICATION.NONCE_SUCCESS:
-      auth = action.payload.response
-      return state.merge({
-        nonce: auth.nonces.nonce,
-      })
     case UPDATE_STATE_FROM_NATIVE: {
       if (!action.payload.authentication.isEmpty()) {
         return action.payload.authentication

@@ -2,7 +2,6 @@
 export const selectAccessToken = state => state.authentication.get('accessToken')
 export const selectExpirationDate = state => state.authentication.get('expirationDate')
 export const selectIsLoggedIn = state => state.authentication.get('isLoggedIn')
-export const selectNonce = state => state.authentication.get('nonce')
 export const selectRefreshToken = state => state.authentication.get('refreshToken')
 export const selectPublicToken = state => state.authentication.getIn(['publicToken', 'accessToken'])
 export const selectPublicTokenExpirationDate = state =>
