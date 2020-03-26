@@ -169,17 +169,6 @@ export default (state = initialState, action = { type: '' }) => {
     case LOCATION_CHANGE: {
       location = payload
       const pathname = location.pathname
-      if (window.grecaptcha && window.grecaptcha.execute && window.recaptchaKey) {
-        let recaptchaAction
-        if (/^\/join/.test(pathname)) {
-          recaptchaAction = 'join'
-        } else if (/^\/enter/.test(pathname)) {
-          recaptchaAction = 'login'
-        } else {
-          recaptchaAction = 'any'
-        }
-        window.grecaptcha.execute(window.recaptchaKey, { action: recaptchaAction })
-      }
       return state.withMutations((s) => {
         s.set('isGridMode', getIsGridMode(state))
           .set('isNavbarHidden', false)

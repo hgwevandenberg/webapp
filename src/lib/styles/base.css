@@ -381,7 +381,3 @@ input[type="search"]::-webkit-search-decoration {
 
 /* stylelint-enable no-unsupported-browser-features, property-no-vendor-prefix */
 /* stylelint-enable selector-list-comma-newline-after, selector-no-qualifying-type */
-
-.grecaptcha-badge {
-  display: none;
-}
