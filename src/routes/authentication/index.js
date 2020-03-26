@@ -43,6 +43,13 @@ export default (store) => {
       onEnter,
     },
     {
+      path: 'confirm(/:confirmationCode)',
+      getComponents(location, cb) {
+        cb(null, SignupContainer)
+      },
+      onEnter,
+    },
+    {
       path: 'signup(/:invitationCode)',
       getComponents(location, cb) {
         cb(null, SignupContainer)

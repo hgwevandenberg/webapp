@@ -33,7 +33,9 @@ function updateFollowedCategoryIds(state, { payload: { body } }) {
 export default (state = initialState, action) => {
   switch (action.type) {
     case PROFILE.AVAILABILITY_SUCCESS:
+      const isValid = get(action, 'payload.response.availability.email') === true
       return state.merge({
+        email: isValid ? get(action, 'payload.body.email') : null,
         availability: {
           original: action.meta.original,
           ...action.payload.response.availability,

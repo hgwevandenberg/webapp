@@ -70,6 +70,7 @@ class EnterContainer extends PureComponent {
       showPasswordError: false,
       showUserError: false,
       userState: { status: STATUS.INDETERMINATE, message: '' },
+      formStatus: STATUS.INDETERMINATE,
     }
     this.userValue = ''
     this.passwordValue = ''
@@ -100,9 +101,9 @@ class EnterContainer extends PureComponent {
     this.setState({ showUserError: false })
     this.delayedShowUserError()
     this.userValue = usernameOrEmail
-    const { userState } = this.state
+    const { userState, formStatus } = this.state
     const currentStatus = userState.status
-    const newState = getUserStateFromClient({ value: usernameOrEmail, currentStatus })
+    const newState = getUserStateFromClient({ value: usernameOrEmail, currentStatus, formStatus })
     if (newState.status !== currentStatus) {
       this.setState({ userState: newState })
     }
@@ -122,6 +123,7 @@ class EnterContainer extends PureComponent {
 
   onSubmit = (e) => {
     e.preventDefault()
+    this.setState({ formStatus: STATUS.SUBMITTED })
 
     const { dispatch, registrationId } = this.props
     const action = signIn(this.userValue, this.passwordValue)

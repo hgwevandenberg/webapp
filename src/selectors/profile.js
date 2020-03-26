@@ -73,7 +73,7 @@ export const selectIsInfoFormBlank = createSelector(
     const hasLinks = externalLinksList && externalLinksList.length
     const hasName = name && name.length
     const hasShortBio = shortBio && shortBio.length
-    return !hasLinks && !hasName && !hasShortBio
+    return !(hasLinks || hasName || hasShortBio)
   },
 )
 

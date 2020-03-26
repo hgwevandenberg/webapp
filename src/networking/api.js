@@ -101,6 +101,17 @@ export function signupPath() {
   }
 }
 
+export function emailConfirmation() {
+  return {
+    path: getAPIPath('email-confirmation'),
+  }
+}
+
+export function checkConfirmationCode() {
+  return {
+    path: getAPIPath('check-confirmation-code'),
+  }
+}
 
 export function authenticationPromo() {
   return {

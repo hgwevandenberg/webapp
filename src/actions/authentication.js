@@ -2,6 +2,8 @@ import { AUTHENTICATION } from '../constants/action_types'
 import {
   loginToken,
   logout as logoutEndpoint,
+  emailConfirmation as emailConfirmationEndpoint,
+  checkConfirmationCode as checkConfirmationCodeEndpoint,
   forgotPassword,
   resetPassword,
   refreshAuthToken,
@@ -80,6 +82,28 @@ export function sendResetPasswordRequest(password, resetPasswordToken) {
         password,
         reset_password_token: resetPasswordToken,
       },
+    },
+  }
+}
+
+export function sendEmailForConfirmation(email) {
+  return {
+    type: AUTHENTICATION.SEND_EMAIL_FOR_CONFIRMATION,
+    payload: {
+      body: { email },
+      endpoint: emailConfirmationEndpoint(),
+      method: 'POST',
+    },
+  }
+}
+
+export function checkConfirmationCode({ email, code }) {
+  return {
+    type: AUTHENTICATION.CHECK_CONFIRMATION_CODE,
+    payload: {
+      body: { email, code },
+      endpoint: checkConfirmationCodeEndpoint(),
+      method: 'POST',
     },
   }
 }

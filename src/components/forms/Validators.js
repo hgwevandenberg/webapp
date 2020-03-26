@@ -3,7 +3,7 @@ import { ERROR_MESSAGES as ERROR } from '../../constants/locales/en'
 import { FORM_CONTROL_STATUS as STATUS } from '../../constants/status_types'
 
 export function isFormValid(states) {
-  return states.every(state => state.status === STATUS.SUCCESS)
+  return states.every(state => state === STATUS.SUCCESS || state.status === STATUS.SUCCESS)
 }
 
 export function containsSpace(value) {
@@ -65,19 +65,23 @@ export function getUsernameStateFromServer({ availability, currentStatus, inEdit
 }
 
 export function isValidEmail(value) {
-  return value.match(/(.+)@(.+)\.([a-z]{2,})/)
+  return value.match(/(.+)@(.+)\.([a-z]{2,})$/)
 }
 
 // Client-side only validation
-export function getEmailStateFromClient({ currentStatus, value }) {
+export function getEmailStateFromClient({ currentStatus, value, formStatus }) {
   if (!value && !value.length && currentStatus) {
     return { status: STATUS.INDETERMINATE, message: ERROR.NONE }
   }
-  return (
-    isValidEmail(value) ?
-      { status: STATUS.SUCCESS, message: ERROR.NONE } :
-      { status: STATUS.FAILURE, message: ERROR.EMAIL.INVALID }
-  )
+  else if (isValidEmail(value)) {
+    return { status: STATUS.SUCCESS, message: ERROR.NONE }
+  }
+  else if (formStatus === STATUS.INDETERMINATE) {
+    return { status: STATUS.INDETERMINATE, message: ERROR.NONE }
+  }
+  else {
+    return { status: STATUS.FAILURE, message: ERROR.EMAIL.INVALID }
+  }
 }
 
 export const isValidInvitationCode = value => value.match(/^\S+$/)
@@ -119,7 +123,7 @@ export function getEmailStateFromServer({ availability, currentStatus }) {
   if (email && currentStatus !== STATUS.SUCCESS) {
     return { status: STATUS.SUCCESS, message: ERROR.NONE }
   } else if (!email && currentStatus !== STATUS.FAILURE) {
-    return { status: STATUS.FAILURE, message: message || 'That email is invalid' }
+    return { status: STATUS.FAILURE, message: message || ERROR.EMAIL.UNAVAILABLE }
   }
   return { status: STATUS.INDETERMINATE, message: ERROR.NONE }
 }
@@ -157,12 +161,12 @@ export function getBatchEmailState({ currentStatus, value }) {
 }
 
 // Email or Username control
-export function getUserStateFromClient({ currentStatus, value }) {
+export function getUserStateFromClient({ currentStatus, value, formStatus }) {
   if (!value && !value.length && currentStatus !== STATUS.INDETERMINATE) {
     return { status: STATUS.INDETERMINATE, suggestions: null, message: ERROR.NONE }
   }
   const usernameState = getUsernameStateFromClient({ currentStatus, value })
-  const emailState = getEmailStateFromClient({ currentStatus, value })
+  const emailState = getEmailStateFromClient({ currentStatus, value, formStatus })
   return (
     usernameState.status === STATUS.SUCCESS || emailState.status === STATUS.SUCCESS ?
       { status: STATUS.SUCCESS, message: ERROR.NONE } :

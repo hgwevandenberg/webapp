@@ -40,11 +40,13 @@ class JoinForm extends PureComponent {
     email: PropTypes.string,
     inEditorial: PropTypes.bool.isRequired,
     invitationCode: PropTypes.string,
+    confirmationCode: PropTypes.string,
   }
 
   static defaultProps = {
     availability: null,
     invitationCode: null,
+    confirmationCode: null,
   }
 
   componentWillMount() {
@@ -112,11 +114,11 @@ class JoinForm extends PureComponent {
 
   onSubmit = (e) => {
     e.preventDefault()
-    const { email, dispatch, invitationCode } = this.props
+    const { email, dispatch, invitationCode, confirmationCode } = this.props
     const recaptchaToken = window.recaptchaToken
     dispatch(
       signUpUser(email, this.usernameValue, this.passwordValue,
-        recaptchaToken, invitationCode),
+        confirmationCode, recaptchaToken, invitationCode),
     )
   }
 

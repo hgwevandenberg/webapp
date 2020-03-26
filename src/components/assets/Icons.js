@@ -338,6 +338,13 @@ export const ChevronIcon = () =>
     </g>
   </SVGIcon>)
 
+export const BackIcon = () =>
+  (<SVGIcon className={`ChevronIcon ${chevronStyle}`}>
+    <g>
+      <polyline points="12,16 6,10 12,4" />
+    </g>
+  </SVGIcon>)
+
 export const CircleIcon = () =>
   (<SVGIcon className="CircleIcon">
     <g>

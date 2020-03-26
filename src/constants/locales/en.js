@@ -8,6 +8,7 @@ export const ERROR_MESSAGES = {
   NONE: '',
   EMAIL: {
     INVALID: 'That email is invalid. Please try again.',
+    UNAVAILABLE: 'That email is unavailable.',
   },
   INVITATION_CODE: {
     INVALID: 'That code is invalid. Please try again.',

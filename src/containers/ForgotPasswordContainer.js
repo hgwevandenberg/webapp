@@ -22,9 +22,9 @@ class ForgotPasswordContainer extends PureComponent {
 
   onChangeControl = ({ email }) => {
     this.emailValue = email
-    const { emailState } = this.state
+    const { emailState, formStatus } = this.state
     const currentStatus = emailState.status
-    const newState = getEmailStateFromClient({ value: email, currentStatus })
+    const newState = getEmailStateFromClient({ value: email, currentStatus, formStatus })
     if (newState.status !== currentStatus) {
       this.setState({ emailState: newState })
     }
@@ -33,9 +33,9 @@ class ForgotPasswordContainer extends PureComponent {
   onSubmit = (e) => {
     e.preventDefault()
     const { dispatch } = this.props
-    const { emailState } = this.state
+    const { emailState, formStatus } = this.state
     const currentStatus = emailState.status
-    const newState = getEmailStateFromClient({ value: this.emailValue, currentStatus })
+    const newState = getEmailStateFromClient({ value: this.emailValue, currentStatus, formStatus })
     if (newState.status === STATUS.SUCCESS) {
       dispatch(sendForgotPasswordRequest(this.emailValue))
       this.setState({ formStatus: STATUS.SUBMITTED })

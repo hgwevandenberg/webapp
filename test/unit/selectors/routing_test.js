@@ -160,6 +160,9 @@ describe('routing selectors', () => {
       state = { routing: state.routing.setIn(['location', 'pathname'], '/forgot-password') }
       expect(selectViewNameFromRoute(state)).to.equal('authentication')
 
+      state = { routing: state.routing.setIn(['location', 'pathname'], '/confirm/ABCDEF') }
+      expect(selectViewNameFromRoute(state)).to.equal('authentication')
+
       state = { routing: state.routing.setIn(['location', 'pathname'], '/signup') }
       expect(selectViewNameFromRoute(state)).to.equal('authentication')
 

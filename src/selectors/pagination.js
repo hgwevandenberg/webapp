@@ -11,6 +11,7 @@ const PAGING_BLACKLIST = [
   /^\/enter\b/,
   /^\/forgot-password\b/,
   /^\/join\b/,
+  /^\/confirm\b/,
   /^\/signup\b/,
   /^\/following$/,
   /^\/notifications\b/,

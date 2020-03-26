@@ -14,6 +14,7 @@ export const initialState = Immutable.Map({
   expirationDate: null,
   expiresIn: null,
   isLoggedIn: false,
+  confirmationCodeIsValid: false,
   refreshToken: null,
   tokenType: null,
   publicToken: Immutable.Map({
@@ -35,6 +36,11 @@ export default (state = initialState, action) => {
         ...auth,
         expirationDate: new Date((auth.createdAt + auth.expiresIn) * 1000),
       }))
+    case AUTHENTICATION.CHECK_CONFIRMATION_CODE_SUCCESS:
+    case AUTHENTICATION.CHECK_CONFIRMATION_CODE_FAILURE:
+      return state.merge({
+        confirmationCodeIsValid: action.payload.serverStatus === 204,
+      })
     case AUTHENTICATION.LOGOUT_SUCCESS:
     case AUTHENTICATION.LOGOUT_FAILURE:
     case AUTHENTICATION.REFRESH_FAILURE:
@@ -49,6 +55,8 @@ export default (state = initialState, action) => {
         ...auth,
         expirationDate: new Date((auth.createdAt + auth.expiresIn) * 1000),
         isLoggedIn: true,
+        confirmationCode: null,
+      })
     case UPDATE_STATE_FROM_NATIVE: {
       if (!action.payload.authentication.isEmpty()) {
         return action.payload.authentication

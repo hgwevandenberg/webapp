@@ -3,6 +3,7 @@ import get from 'lodash/get'
 
 // props.params.xxx
 export const selectParamsInvitationCode = (state, props) => get(props, 'params.invitationCode')
+export const selectParamsConfirmationCode = (state, props) => get(props, 'params.confirmationCode')
 export const selectParamsToken = (state, props) => {
   const token = get(props, 'params.token')
   return token ? token.toLowerCase() : null

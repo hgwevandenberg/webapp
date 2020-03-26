@@ -91,6 +91,12 @@ function mapStateToProps(state, props) {
         title: META.SEARCH_TITLE,
       }
     case 'authentication': {
+      if (pathname.startsWith('/confirm')) {
+          return {
+            ...baseTags,
+          }
+      }
+
       switch (pathname) {
         case '/enter':
           return {

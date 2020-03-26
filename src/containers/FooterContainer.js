@@ -130,7 +130,7 @@ class FooterContainer extends Component {
     emailValue = email
     const { emailStatus, isFormDisabled, formStatus } = this.state
     const currentStatus = emailStatus
-    const clientState = getEmailStateFromClient({ value: email, currentStatus })
+    const clientState = getEmailStateFromClient({ value: email, currentStatus, formStatus })
     if (formStatus !== STATUS.INDETERMINATE) {
       this.setState({ formStatus: STATUS.INDETERMINATE, formMessage: '' })
     }

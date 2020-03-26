@@ -19,7 +19,7 @@ export const selectPageHeaderKind = createSelector([selectPathname], (pathname) 
     return 'GENERIC'
   } else if (/^\/discover\/.*/i.test(pathname)) {
     return 'CATEGORY'
-  } else if (pathname === '/enter' || pathname === '/join' || pathname === '/forgot-password' || pathname === '/auth/reset-my-password') {
+  } else if (pathname === '/enter' || pathname === '/join' || pathname === '/forgot-password' || pathname === '/auth/reset-my-password' || pathname.startsWith('/confirm')) {
     return 'AUTHENTICATION'
   }
   return null

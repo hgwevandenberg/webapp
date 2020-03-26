@@ -109,6 +109,7 @@ const linkStyle = css(
     select('.isLoggedIn &[href^="/search"]', s.absolute, s.m0, { top: -3, left: 100 }),
     select('.isLoggedOut &[href^="/search"]', s.absolute, s.m0, { top: -5, left: 60 }),
     select('.isLoggedOut &[href="/join"]', s.absolute, s.m0, { top: 0, left: 'auto', right: 0 }),
+    select('.isLoggedOut &[href="/confirm"]', s.absolute, s.m0, { top: 0, left: 'auto', right: 0 }),
     select('.isLoggedOut &[href="/enter"]', { top: -5, right: 100 }),
   ),
   media(s.minBreak3, modifier('.isSignUp', s.hv40, s.lh40)),

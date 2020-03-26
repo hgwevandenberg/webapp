@@ -9,6 +9,7 @@ const AUTHENTICATION_ROUTES = [
   /^\/forgot-password(\/|$)/,
   /^\/auth\/reset-my-password(\/|$)/,
   /^\/join(\/|$)/,
+  /^\/confirm\/(\w+)(\/|$)/,
   /^\/signup(\/|$)/,
 ]
 

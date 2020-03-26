@@ -55,7 +55,7 @@ export function loadProfile() {
     payload: { endpoint: api.profilePath() },
   }
 }
-export function signUpUser(email, username, password, recaptcha, invitationCode) {
+export function signUpUser(email, username, password, confirmationCode, recaptcha, invitationCode) {
   return {
     type: PROFILE.SIGNUP,
     meta: {
@@ -65,6 +65,7 @@ export function signUpUser(email, username, password, recaptcha, invitationCode)
       method: 'POST',
       endpoint: api.signupPath(),
       body: {
+        code: confirmationCode,
         email,
         username,
         password,
